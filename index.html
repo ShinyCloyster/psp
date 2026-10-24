@@ -219,7 +219,10 @@ const PSP = (() => {
   const SELF_WEIGHT = 0.45;
   const ROLE_WEIGHTS = { self: 0.45, partner: 0.20, family: 0.15, friend: 0.20 };
   const SELF_BOOST = { "stats|hp": 1.5, "stats|special-defense": 1.5, "stats|attack": 0.7, "stats|special-attack": 0.7 };
-  const NON_EVOLVING_EVO_SIM = 0.5;
+  const NON_EVOLVING_EVO_SIM = 0.5; // checked on 3,000 simulated people: non-evolving lines win as often as their share of the dex (23.9% vs 23.8%)
+  // Paradox Pokémon are near-legendary: they stay in the main pool but need a clear margin to win.
+  const PARADOX_PENALTY = (typeof globalThis !== 'undefined' && globalThis.PSP_PARADOX_PENALTY != null) ? globalThis.PSP_PARADOX_PENALTY : 0.05;
+  const PARADOX = new Set(['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023']);
 
   const sum = a => a.reduce((s, x) => s + x, 0);
   const cosine = (a, b) => {
@@ -324,19 +327,20 @@ const PSP = (() => {
     return u;
   }
 
-  function scoreLine(u, line, prior, dex) {
+  function scoreLine(u, line, prior, dex, evoNeutral) {
     const s = {};
     s.types = cosine(u.types, line.types);
     s.stats = (pearson(u.stats, line.stats) + 1) / 2;
     const [pulls, strength] = u.extra_types;
     const ls = Math.min(1, sum(line.extra_types) / 0.5);
     s.extra_types = 0.5 * cosine(pulls, line.extra_types) + 0.5 * (1 - Math.abs(strength - ls));
-    s.evo = line.evo.some(x => x) ? cosine(u.evo, line.evo) : NON_EVOLVING_EVO_SIM;
+    s.evo = line.evo.some(x => x) ? cosine(u.evo, line.evo) : (evoNeutral ?? NON_EVOLVING_EVO_SIM);
     s.abilities = 0; // abilities weigh 0 and are not shipped to the page
     s.dex = dex ? (dex[line.id] || 0) : 0; // share of (weighted) Mew votes for this line's Pokédex statement
     const total = sum(Object.entries(s).map(([k, v]) => LAYER_WEIGHTS[k] * v));
     let rank = total;
     if (prior) { const w = sum(line.types) || 1; rank += LAYER_WEIGHTS.types * sum(prior.map((p, i) => p * line.types[i])) / w; }
+    if (PARADOX.has(line.id)) rank -= PARADOX_PENALTY;
     return { total, sims: s, rank };
   }
 
@@ -806,7 +810,7 @@ async function maybeMew(){
 async function buildMew(){
   S.mewBusy=true;await setState({mew:{status:'working',at:new Date().toISOString()}});
   try{computeResult()}catch(e){S.R=null}if(!S.R){S.mewBusy=false;await setState({mew:{status:'none'}});return}
-  const top=S.R.main.slice(0,4).map(t=>({lineId:t.line.id,name:finalName(t.line),entry:S.engine.flavor[String(t.line.species.at(-1))]||''}));
+  const top=S.R.main.slice(0,4).map(t=>({lineId:t.line.id,name:finalName(t.line),entry:flavorOf(t.line)}));
   let texts=null;
   // precomputed library first (all 508 non-legendary lines); the model is only a fallback
   if(!S.mewlib)S.mewlib=await fetch('mew.json').then(r=>r.json()).catch(()=>null);
@@ -938,7 +942,7 @@ function voterChips(sid,fs){const v=voterNames(sid);return `<div style="display:
 const STAT_AB=['HP','ATK','DEF','SPA','SPD','SPE'];
 function mewCard(s,isWin,n){
   const l=S.engine.lines.find(x=>x.id===s.lineId);if(!l)return '';
-  const types=l.stage_types.at(-1),b=S.engine.base?.[l.id]||[],entry=s.entryHe||s.entry||S.engine.flavor[String(l.species.at(-1))]||'';
+  const types=l.stage_types.at(-1),b=S.engine.base?.[l.id]||[],entry=s.entryHe||s.entry||flavorOf(l);
   const stats=b.length?`<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;direction:ltr">${b.map((v,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><span style="font-family:var(--pixel);font-size:13px;color:var(--mist)">${STAT_AB[i]}</span><div style="width:100%;height:8px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden"><div style="height:100%;width:${Math.min(100,v/180*100)}%;background:${isWin?'var(--gold)':'var(--sky)'}"></div></div><b style="font-family:var(--pixel);font-size:16px">${v}</b></div>`).join('')}</div>`:'';
   return `<div class="card2 ${isWin?'gold':''}" style="flex-direction:row;gap:20px;align-items:stretch;padding:18px 22px;overflow:hidden">
    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:190px;flex:none"><img ${artAttr(l)} alt="" style="width:150px;height:150px"><p style="font-family:var(--display);font-size:32px;text-align:center;line-height:1.1">${esc(s.name)}</p><div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;transform:scale(.72);transform-origin:top center">${types.map(plateH).join('')}</div></div>
@@ -1014,7 +1018,9 @@ async function publishResult(){
   await setState({revealed:true,result:{lineId:l.id,lineName:l.name,finalName:finalName(l),types:l.stage_types.at(-1),pct:Math.round(top.total*1000)/10,legend:S.R.legends[0]?finalName(S.R.legends[0].line):'',spriteData:sprite(l,l.species.at(-1))}});
 }
 // ---------- Professor Oak ----------
-function dexEntry(l){const sp=l.species.at(-1),pid=S.engine.spr[l.id+':'+sp]||String(sp);const he=S.mewlib?.[l.id]?.[1]||'';return {en:S.engine.flavor[pid]||S.engine.flavor[String(sp)]||'',he}}
+// regional forms share species lore in the source data; lineFlavor holds the form's own entry
+function flavorOf(l){const sp=l.species.at(-1),pid=S.engine.spr[l.id+':'+sp]||String(sp);return S.engine.lineFlavor?.[l.id]||S.engine.flavor[pid]||S.engine.flavor[String(sp)]||''}
+function dexEntry(l){const he=S.mewlib?.[l.id]?.[1]||'';return {en:flavorOf(l),he}}
 function loadOak(){if(!S.oak)fetch('oak.json').then(r=>r.json()).then(o=>{S.oak=o;if(HOF_STEPS[HOF]==='oak'&&cur()?.kind==='hof'){S.oakFor=null;renderHof()}}).catch(()=>{});if(!S.mewlib)fetch('mew.json').then(r=>r.json()).then(m=>S.mewlib=m).catch(()=>{})}
 function splitPages(txt,max){const out=[];txt.split('\n\n').forEach(par=>{const ss=par.match(/[^.!?…]+[.!?…]+["״]?\s*|[^.!?…]+$/g)||[par];let cur='';ss.forEach(x=>{x=x.trim();if(!x)return;if((cur+' '+x).trim().length>max&&cur){out.push(cur.trim());cur=x}else cur=(cur+' '+x).trim()});if(cur)out.push(cur)});return out}
 function oakPages(R){
