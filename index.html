@@ -225,6 +225,8 @@ table.prog th{color:var(--mist);font-weight:500}
 .gbp-menu>button.gbp-add{justify-content:center;font-size:18px;background:none;border:2px dashed #6A8CC8;border-radius:8px;color:#1E2238;padding:8px;width:100%;margin-top:8px;font-family:var(--body)}
 .gbp-tot{margin-top:10px;font-size:18px}.gbp-err{color:#C0392B;display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:15px}
 .gbp-menu>button.gbp-ok{justify-content:center;display:flex;width:100%;margin-top:12px;background:#E4483F;color:#fff;border:0;border-radius:8px;padding:12px;font-family:var(--display);font-size:22px}
+.btn.on{outline:3px solid var(--gold);outline-offset:2px}
+.ravail .btn{width:auto;display:inline-block;margin:4px 0 0 6px}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -439,7 +441,7 @@ const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
 // subject's grammatical gender, chosen in Oak's intro ('m' | 'f'); default masculine
 const gs=(m,f)=>S.setup?.gender==='f'?f:m;
 // the person holding this phone, during Oak's intro
-const gx=(m,f)=>(S.intro?.g||genderOf(person(S.me)))==='f'?f:m;
+const gx=(m,f)=>(S.intro?.g||(S.remoteMode?S.rdoc?.gender:null)||genderOf(person(S.me)))==='f'?f:m;
 function genderOf(p){if(!p)return null;if(S.intro&&p.id===S.me&&S.intro.g)return S.intro.g;return p.role==='self'?(S.setup?.gender||null):(S.joinedG?.[p.id]||null)}
 // ---------- avatars ----------
 const AV={'ערי':'eri','דולב':'dolev','רון':'ron','דורון':'doron','ניר':'nir','אייל':'eyal'};
@@ -488,6 +490,9 @@ function dialMount(root){
 }
 function roster(){const r=S.setup?.roster;return r&&r.length?r:[{id:'subj',name:subjectName(),role:'self',weight:45}]}
 const person=id=>roster().find(p=>p.id===id);
+// people in the room (remote respondents answer from home: no rounds, no lobby, no Mew)
+const inRoom=()=>roster().filter(p=>!p.remote);
+const answersOf=id=>(S.answers[id]||S.remote?.[id])?.answers;
 const fill=(t,n)=>t.replaceAll('{n}',n);
 
 async function boot(){
@@ -498,6 +503,7 @@ async function boot(){
   S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};q.docs.forEach(d=>{const g=d.data()?.gender;if(g)S.joinedG[d.id]=g});changed()},()=>{});
+  S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
     q.docChanges().forEach(c=>{if(c.type==='removed')delete S.answers[c.doc.id]});
@@ -508,11 +514,12 @@ function clone(o){try{return JSON.parse(JSON.stringify(o))}catch(e){return o}}
 function changed(){ if(isScreen()) screenData(); else render(); }
 window.addEventListener('hashchange',()=>{if(isScreen())startScreen();else render()});
 
-function myDoc(){return S.answers[S.me]||(S.answers[S.me]={answers:{},mew:''})}
+function myDoc(){if(S.remoteMode)return S.rdoc||(S.rdoc={answers:{}});return S.answers[S.me]||(S.answers[S.me]={answers:{},mew:''})}
 function saveMine(){
   clearTimeout(S.saving);
   S.saving=setTimeout(async()=>{
     const d=myDoc();
+    if(S.remoteMode){try{await S.db.doc('remote/'+S.rid).set({name:d.name,relation:d.relation,gender:d.gender||'m',answers:d.answers,done:Object.keys(d.answers).length>=150,at:new Date().toISOString()})}catch(e){toast('השמירה נכשלה, ננסה שוב בתשובה הבאה')}S.saving=null;return}
     try{await S.db.doc('answers/'+S.me).set({answers:d.answers,mew:d.mew||'',at:new Date().toISOString()})}
     catch(e){toast('השמירה נכשלה, ננסה שוב בתשובה הבאה')}
     S.saving=null;
@@ -525,7 +532,8 @@ function saveMine(){
 function render(){
   if(isScreen()){startScreen();return}
   const app=$('#app');app.hidden=false;
-  app.innerHTML=`<div class="col">${phoneView()}</div>`;bindPhone();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
+  S.remoteMode=(location.hash||'').replace('#','')==='remote';
+  app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;bindPhone();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
   if(!S.dex)fetch('dex151.json').then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
@@ -553,6 +561,30 @@ function phoneView(){
   return `<p class="eyebrow">ROUND ${open}/4 · CLEAR</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">סבב ${open} הושלם</h1></div>
   <div class="card center"><p>ענית על כל השאלות של הסבב. אפשר לנוח עד הסבב הבא. ככה כולם מתקדמים:</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),open,{labelCol:'#F6F1E7'})}</div></div>${progressCard(P,ans)}${switchLink(me)}`;
 }
+
+// ----- remote questionnaire (#remote): for people who won't be at the evening. One flow, no rounds, no Mew, no results. -----
+function remoteView(){
+  const subj=subjectName();
+  if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר…</h1>`;
+  if(!S.rid){S.rid=store.get('psp-remote-id')||('r'+Math.random().toString(36).slice(2,9));store.set('psp-remote-id',S.rid)}
+  if(!S.rdoc&&S.remote?.[S.rid])S.rdoc={...clone(S.remote[S.rid]),started:true};
+  const d=S.rdoc;
+  if(!d||!d.name||!d.started){const g=d?.gender||'';
+    return `<p class="eyebrow">PSP · REMOTE TRAINER</p><h1>שאלון PSP על ${esc(subj)}</h1>
+    <div class="card"><p>${esc(subj)} רוצה לשמוע גם ממך. השאלון מורכב מ־150 משפטים קצרים, ועל כל אחד עונים עד כמה הוא נכון לגבי ${esc(subj)}, מ־1 עד 5. לוקח בערך 20 דקות, ואפשר לעצור ולחזור לאותו קישור מאותו טלפון.</p>
+    <p class="muted">התשובות אנונימיות: אף אחד לא רואה מה ענית, רק את השקלול של כולם יחד.</p></div>
+    <div class="card"><label class="muted" for="r-name">השם שלך</label><input type="text" id="r-name" value="${esc(d?.name||'')}" placeholder="השם שלך">
+     <label class="muted" for="r-rel">מה הקשר שלך ל${esc(subj)}?</label><select id="r-rel">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${(d?.relation||'family')===k?'selected':''}>${v}</option>`).join('')}</select>
+     <label class="muted">בן או בת? (רק בשביל הניסוח)</label><div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost small ${g==='m'?'on':''}" data-rg="m">בן</button><button class="btn ghost small ${g==='f'?'on':''}" data-rg="f">בת</button></div></div>
+    <button class="btn" data-act="rstart">מתחילים</button>`}
+  const me={id:S.rid,name:d.name,role:d.relation||'family'},P=planFor(S.rid),units=P.rounds.flat(),ans=d.answers||{};
+  const total=countIds(units),done=answeredIn(units,ans);
+  if(done>=total)return `<p class="eyebrow">PSP · CLEAR</p><h1>תודה, ${esc(d.name)}!</h1><div class="card center"><div class="ball wobble" style="--s:110px"></div><p>ענית על כל השאלון. התשובות שלך נשמרו ויישקללו בערב של ${esc(subj)}.</p></div>`;
+  const pending=units.filter(u=>u.ids.some(id=>!(id in ans)));
+  if(S.view==='review'&&S.reviewUnit)return unitView(S.reviewUnit,me,done,total,true);
+  if(S.holdUnit)return unitView(S.holdUnit,me,done,total,false);
+  return unitView(pending[0],me,done,total,false);
+}
 function phoneDialSize(){return Math.max(220,Math.min(320,innerWidth-130))}
 function switchLink(me){return `<button class="btn ghost small" data-act="switch">לא ${esc(me.name)}? החלפת שם</button>`}
 function progressCard(P,ans){
@@ -566,7 +598,7 @@ function pickView(){
   <div class="names"><button class="name" data-pick="subj">${esc(subj)}<small>${gs('הנבדק','הנבדקת')}</small></button></div>
   <p class="muted">כל השאר: העמוד יתעדכן לבד ברגע שההיכרות עם אוק תסתיים.</p>`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1><p class="muted">בוחרים את השם שלך פעם אחת. הטלפון יזכור.</p>
-  <div class="names">${[...roster()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
+  <div class="names">${[...inRoom()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
 }
 
 // ----- subject setup -----
@@ -587,7 +619,7 @@ function setupView(){
    ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" placeholder="שם" aria-label="שם"><button class="x" data-del="${i}" aria-label="הסרה">×</button></div>
      <select id="rl-${i}" data-i="${i}" data-f="role" aria-label="קשר">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?'selected':''}>${v}</option>`).join('')}</select></div>
      <div class="step"><button data-w="${i}" data-d="-1" aria-label="פחות">−</button><b>${+p.weight||0}%</b><button data-w="${i}" data-d="1" aria-label="יותר">+</button></div></div>`).join('')}
-   <button class="btn ghost small" data-act="addp">+ הוספת משתתף</button>
+   <button class="btn ghost small" data-act="addp">+ הוספת משתתף</button>${remoteBlock()}
    <div class="row"><span class="grow">סה״כ</span><b style="font-size:20px;color:${tot===100?'var(--ok)':'var(--gold)'}">${tot}%</b></div>
   </div>
   ${S.setupErr?`<div class="err">${S.setupErr.map(e=>`<span>${esc(e)}</span>`).join('')}</div>`:''}
@@ -644,7 +676,7 @@ function introView(){
      ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" placeholder="שם" aria-label="שם"><button class="x" data-del="${i}" aria-label="הסרה">×</button></div>
        <select id="rl-${i}" data-i="${i}" data-f="role" aria-label="קשר">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?'selected':''}>${v}</option>`).join('')}</select></div>
        <div class="step"><button data-w="${i}" data-d="-1" aria-label="פחות">−</button><b>${+p.weight||0}%</b><button data-w="${i}" data-d="1" aria-label="יותר">+</button></div></div>`).join('')}
-     <button class="gbp-add" data-act="addp">+ הוספת משתתף</button>
+     <button class="gbp-add" data-act="addp">+ הוספת משתתף</button>${remoteBlock()}
      <div class="row gbp-tot"><span class="grow">סה״כ</span><b style="color:${tot===100?'#2E8B57':'#C0392B'}">${tot}%</b></div>
      ${S.setupErr?`<div class="gbp-err">${S.setupErr.map(e=>`<span>${esc(e)}</span>`).join('')}</div>`:''}
      <button class="gbp-ok" data-act="introsave">▶ המשך</button></div>`}
@@ -670,6 +702,9 @@ function introAdvance(){
   }
 }
 function introNext(){const I=S.intro;I.step++;I.page=0;I.ci=0;I.typed='';render()}
+function remoteAvail(){const d=draft();return Object.entries(S.remote||{}).filter(([id,r])=>r.done&&!d.some(p=>p.id===id))}
+function remoteBlock(){const av=remoteAvail();if(!av.length)return '';
+  return `<div class="ravail"><p class="muted" style="margin:10px 0 4px">ענו מרחוק ועוד לא בחלוקה:</p>${av.map(([id,r])=>`<button class="btn ghost small" data-addr="${esc(id)}">+ ${esc(r.name)}</button>`).join(' ')}</div>`}
 function validateSetup(){
   const d=draft(),errs=[];const names=new Set();
   d.forEach((p,i)=>{const n=(p.name||'').trim();
@@ -692,7 +727,7 @@ function scaleRow(id,val){
 }
 function unitView(u,me,done,total,review){
   const ans=myDoc().answers,self=me.role==='self',n=subjectName(),P=planFor(me.id);
-  const head=`<div class="row" style="justify-content:space-between;align-items:center"><p class="eyebrow" style="margin:0">ROUND ${S.state.open}/4 · ${done}/${total}</p>${avHead(me,30,avColor(me,0))}</div><div class="bar"><i style="width:${total?done/total*100:0}%"></i></div>`;
+  const head=S.remoteMode?`<p class="eyebrow" style="margin:0">PSP · ${done}/${total}</p><div class="bar"><i style="width:${total?done/total*100:0}%"></i></div>`:`<div class="row" style="justify-content:space-between;align-items:center"><p class="eyebrow" style="margin:0">ROUND ${S.state.open}/4 · ${done}/${total}</p>${avHead(me,30,avColor(me,0))}</div><div class="bar"><i style="width:${total?done/total*100:0}%"></i></div>`;
   if(u.kind==='scenario'){
     const its=u.ids.map(id=>ITEMS[id]);
     return `${head}<div class="card"><p class="muted">תרחיש</p><p class="scen">${esc(its[0].scenario)}</p><p class="muted">${esc(fill(BANK.scenario_prompt[self?0:1],n))} מדרגים כל תגובה בנפרד.</p>
@@ -731,7 +766,9 @@ function bindPhone(){
     if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);S.view='';S.joinSent=false;render();return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
+    if(b.dataset.addr){const r=S.remote?.[b.dataset.addr];if(r){draft().push({id:b.dataset.addr,name:r.name,role:r.relation||'family',weight:0,remote:true});S.setupErr=null;render()}return}
     if(b.dataset.mew){S.mewPick=b.dataset.mew;render();return}
+    if(b.dataset.rg){S.rdoc=S.rdoc||{answers:{}};S.rdoc.name=$('#r-name')?.value||S.rdoc.name||'';S.rdoc.relation=$('#r-rel')?.value||S.rdoc.relation;S.rdoc.gender=b.dataset.rg;render();return}
     if(b.dataset.ig){S.intro.g=b.dataset.ig;render();setTimeout(introNext,350);return}
     if(b.dataset.in){if(b.dataset.in==='def'){S.intro.name=S.state?.subject||'ערי';introNext()}else{S.intro.naming=true;render();setTimeout(()=>$('#gbp-name')?.focus(),50)}return}
     if(b.dataset.a){
@@ -745,10 +782,11 @@ function bindPhone(){
     const act=b.dataset.act;
     if(act==='switch'){S.me=null;store.set('psp-me','');S.intro=null;render()}
     if(act==='ia'){introAdvance();return}
+    if(act==='rstart'){const n=($('#r-name')?.value||'').trim();if(!n){toast('צריך שם');return}const d=S.rdoc=S.rdoc||{answers:{}};d.name=n;d.relation=$('#r-rel')?.value||'family';d.gender=d.gender||'m';d.answers=d.answers||{};d.started=true;S.view='';saveMine();render();return}
     if(act==='inameok'){const v=($('#gbp-name')?.value||'').trim();if(!v){toast('צריך שם');return}S.intro.name=v;S.intro.naming=false;introNext();return}
     if(act==='introsave'){
       const errs=validateSetup();if(errs.length){S.setupErr=errs;render();return}S.setupErr=null;
-      const I=S.intro,r=[{id:'subj',name:I.name,role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight}))];
+      const I=S.intro,r=[{id:'subj',name:I.name,role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight,...(p.remote?{remote:true}:{})}))];
       S.db.doc('setup/main').set({roster:r,name:I.name,gender:I.g||'m',at:new Date().toISOString()}).then(()=>{S.draft=null;introNext()}).catch(()=>toast('השמירה נכשלה. נסו שוב.'));
       return;
     }
@@ -756,7 +794,7 @@ function bindPhone(){
     if(act==='addp'){draft().push({id:newId(),name:'',role:'friend',weight:0});render()}
     if(act==='savesetup'){
       const errs=validateSetup();if(errs.length){S.setupErr=errs;render();return}
-      const r=[{id:'subj',name:subjectName(),role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight}))];
+      const r=[{id:'subj',name:subjectName(),role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight,...(p.remote?{remote:true}:{})}))];
       S.db.doc('setup/main').set({roster:r,name:subjectName(),gender:S.setup?.gender||'m',at:new Date().toISOString()}).then(()=>{toast('נשמר');S.view='';S.draft=null;render()}).catch(()=>toast('השמירה נכשלה. נסו שוב.'));
     }
     if(act==='next'){if(S.view==='review'){S.view='';S.reviewUnit=null}else if(S.holdUnit){S.lastUnit=S.holdUnit;S.holdUnit=null}render()}
@@ -865,11 +903,11 @@ function onEnterSlide(id){
 async function setState(patch){try{await S.db.doc('state/main').update(patch)}catch(e){toast('לא נשמר: '+(e.code||'שגיאה'))}}
 function screenData(){ if(!S.screenOn)return; screenOverlay(); renderPanel(); maybeMew(); const it=cur(); if(it&&it.kind==='live'&&!S.liveFrozen)$('#cv').innerHTML=liveHTML(it.k); }
 function stats(){
-  return roster().map(p=>{const P=planFor(p.id),a=S.answers[p.id]?.answers||{};return {p,rounds:P.rounds.map(u=>[answeredIn(u,a),countIds(u)]),all:answeredIn(P.rounds.flat(),a),mew:!!S.answers[p.id]?.mew}});
+  return inRoom().map(p=>{const P=planFor(p.id),a=S.answers[p.id]?.answers||{};return {p,rounds:P.rounds.map(u=>[answeredIn(u,a),countIds(u)]),all:answeredIn(P.rounds.flat(),a),mew:!!S.answers[p.id]?.mew}});
 }
 function renderLobby(){
   const box=$('#lobby');if(!box)return;S.lobbyShown=S.lobbyShown||new Set();
-  const j=S.joined||new Set(),ppl=roster().filter(p=>j.has(p.id)||Object.keys(S.answers[p.id]?.answers||{}).length);
+  const j=S.joined||new Set(),ppl=inRoom().filter(p=>j.has(p.id)||Object.keys(S.answers[p.id]?.answers||{}).length);
   const n=ppl.length+1,h=n<=4?240:n<=8?185:150;
   box.innerHTML=`<div class="lb-item"><img class="avf" src="img/tr-red.webp" alt="" style="height:${h}px"><span>המאמן</span></div>`+ppl.map(p=>`<div class="lb-item${S.lobbyShown.has(p.id)?'':' lb-new'}">${avFull(p,h)}<span>${esc(p.name)}</span></div>`).join('');
   ppl.forEach(p=>S.lobbyShown.add(p.id));
@@ -890,7 +928,7 @@ function screenOverlay(){
 function profile(){
   const raters=[];
   for(const p of roster()){
-    const a=S.answers[p.id]?.answers;if(!a||!Object.keys(a).length)continue;
+    const a=answersOf(p.id);if(!a||!Object.keys(a).length)continue;
     const r={pid:p.id,name:p.name,role:p.role,scores:PSP.scoreRater(a,BANK)};
     if(p.role!=='self')r.weight=+p.weight||1;
     raters.push(r);
@@ -1198,13 +1236,14 @@ function renderPanel(){
   <p class="muted" style="font-size:13px">מקשים: חצים או רווח למעבר, H לפאנל, F למסך מלא.</p>
   <div class="row"><label class="muted" for="subjname">שם הנבדק</label><input type="text" id="subjname" value="${esc(subjectName())}" style="flex:1"><button class="btn ghost small" data-pa="subj">שמירה</button></div>
   <p class="muted" style="font-size:13px">${S.setup?`המשתתפים הוגדרו: ${roster().map(x=>esc(x.name)+' '+x.weight+'%').join(' · ')}`:'הנבדק עוד לא הגדיר משתתפים בטלפון.'}</p>
+  <p class="muted" style="font-size:13px">שאלון מרחוק (${location.origin+location.pathname}#remote): ${Object.values(S.remote||{}).map(r=>esc(r.name)+(r.done?' ✓':' '+Object.keys(r.answers||{}).length+'/150')).join(' · ')||'עוד אף אחד'}</p>
   <table class="prog"><thead><tr><th>משתתף</th>${[1,2,3,4].map(k=>`<th>ס${k}</th>`).join('')}<th>מיו</th></tr></thead><tbody>
   ${st.map(x=>`<tr><td>${esc(x.p.name)}</td>${x.rounds.map(([d,t])=>`<td style="color:${d>=t?'var(--ok)':d?'var(--cream)':'var(--mist)'}">${d}/${t}</td>`).join('')}<td>${x.mew?'✓':'–'}</td></tr>`).join('')}</tbody></table>
   <p class="muted" style="font-size:13px">רק כמויות. מה כל אחד ענה לא מוצג בשום מקום.</p>
   <div class="row"><span class="muted">סבב פתוח: ${open||'אין'}</span>${[1,2,3,4].map(k=>`<button class="btn ghost small" data-pa="open" data-k="${k}">פתיחת ${k}</button>`).join('')}</div>
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
-  <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
+  <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
   ${S.confirmReset?`<div class="row"><span class="grow">למחוק את כל התשובות, המשתתפים ושאלת מיו?</span><button class="btn red small" data-pa="reset2">כן, למחוק</button><button class="btn ghost small" data-pa="reset0">ביטול</button></div>`:''}`;
   p.onclick=async e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;const a=b.dataset.pa;
     if(a==='close'){p.hidden=true}
@@ -1212,6 +1251,7 @@ function renderPanel(){
     if(a==='open'){const k=+b.dataset.k;setState({open:k})}
     if(a==='mew'){await setState({mew:{status:'none'}});S.mewBusy=false;buildMew()}
     if(a==='demo')demoFill();
+    if(a==='save')saveResults();
     if(a==='reset'){S.confirmReset=true;renderPanel()}
     if(a==='reset0'){S.confirmReset=false;renderPanel()}
     if(a==='reset2'){S.confirmReset=false;await resetAll()}
@@ -1219,7 +1259,7 @@ function renderPanel(){
   p.onchange=e=>{if(e.target.id==='jump'){POS=+e.target.value;show(true)}};
 }
 async function demoFill(){
-  let ros=roster();
+  let ros=inRoom();
   if(!S.setup){ros=[{id:'subj',name:subjectName(),role:'self',weight:45},{id:'pdemo1',name:'רון',role:'partner',relation:'בן/בת זוג',weight:20},{id:'pdemo2',name:'אייל',role:'friend',relation:'חבר/ה',weight:12},{id:'pdemo3',name:'דולב',role:'friend',relation:'חבר/ה',weight:12},{id:'pdemo4',name:'דורון',role:'friend',relation:'חבר/ה',weight:11}];await S.db.doc('setup/main').set({roster:ros,demo:true})}
   for(const p of ros){
     const cur=S.answers[p.id]?.answers||{},a={...cur},r=rng('demo-'+p.id+Date.now()),bias={};
@@ -1227,6 +1267,13 @@ async function demoFill(){
     const ms=S.state?.mew?.statements;await S.db.doc('answers/'+p.id).set({answers:a,mew:S.answers[p.id]?.mew||(ms?ms[Math.floor(r()*ms.length)].id:''),demo:true,at:new Date().toISOString()});
   }
   toast('מולא לבדיקה. שאלת מיו תיבנה עכשיו.');
+}
+// a snapshot of everything, kept in Firestore (the reset never touches 'archive') and downloaded as a file
+async function saveResults(){
+  let R=null;try{computeResult();R=S.R?{main:S.R.main.map(t=>({line:t.line.id,name:t.line.name,total:t.total,sims:t.sims})),legends:S.R.legends.map(t=>({line:t.line.id,name:t.line.name,total:t.total})),gaps:S.R.gaps}:null}catch(e){}
+  const snap=clone({at:new Date().toISOString(),subject:subjectName(),state:S.state,setup:S.setup,answers:S.answers,remote:S.remote||{},result:R});
+  try{await S.db.doc('archive/'+snap.at.replace(/[:.]/g,'-')).set(snap);toast('התוצאות נשמרו')}catch(e){toast('השמירה בענן נכשלה, הקובץ יורד בכל זאת')}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(snap,null,1)],{type:'application/json'}));a.download=`psp-${snap.at.slice(0,16).replace(/[:T]/g,'-')}.json`;document.body.appendChild(a);a.click();a.remove();
 }
 async function resetAll(){
   for(const id of Object.keys(S.answers))await S.db.doc('answers/'+id).delete().catch(()=>{});

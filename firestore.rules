@@ -7,5 +7,7 @@ service cloud.firestore {
     match /setup/{doc}   { allow read, write: if signedIn(); }
     match /answers/{pid} { allow read, write: if signedIn(); }
     match /joined/{pid}  { allow read, write: if signedIn(); }
+    match /remote/{rid}  { allow read, write: if signedIn(); }
+    match /archive/{aid} { allow read, write: if isHost(); }
   }
 }
