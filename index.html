@@ -927,6 +927,8 @@ function screenOverlay(){
 // ---------- results ----------
 function profile(){
   const raters=[];
+  // host-only preview: the Hall of Fame computed from the remote respondents alone (equal weights, nothing is published)
+  if(S.previewRemote){Object.entries(S.remote||{}).forEach(([id,d])=>{const a=d.answers||{};if(Object.keys(a).length)raters.push({pid:id,name:d.name,role:d.relation==='self'?'family':(d.relation||'family'),weight:1,scores:PSP.scoreRater(a,BANK)})});return {raters}}
   for(const p of roster()){
     const a=answersOf(p.id);if(!a||!Object.keys(a).length)continue;
     const r={pid:p.id,name:p.name,role:p.role,scores:PSP.scoreRater(a,BANK)};
@@ -954,7 +956,7 @@ function dexVotes(raters){
 
 // ---------- Mew statements: built from the Pokédex entries of the 4 closest lines ----------
 async function maybeMew(){
-  if(!S.engine||!S.state)return;
+  if(!S.engine||!S.state||S.previewRemote)return;
   const m=S.state.mew,stale=m?.status==='working'&&!S.mewBusy&&(!m.at||Date.now()-Date.parse(m.at)>30000);
   if(m&&m.status!=='none'&&!stale)return;
   // everyone still in the game (anyone who has started answering) must have finished all 150
@@ -1168,6 +1170,7 @@ function openBall(){
   },matchMedia('(prefers-reduced-motion:reduce)').matches?50:3300);
 }
 async function publishResult(){
+  if(S.previewRemote)return;
   const top=S.R.main[0],l=top.line;
   await setState({revealed:true,result:{lineId:l.id,lineName:l.name,finalName:finalName(l),types:l.stage_types.at(-1),pct:Math.round(top.total*1000)/10,legend:S.R.legends[0]?finalName(S.R.legends[0].line):'',spriteData:sprite(l,l.species.at(-1))}});
 }
@@ -1236,7 +1239,8 @@ function renderPanel(){
   <p class="muted" style="font-size:13px">מקשים: חצים או רווח למעבר, H לפאנל, F למסך מלא.</p>
   <div class="row"><label class="muted" for="subjname">שם הנבדק</label><input type="text" id="subjname" value="${esc(subjectName())}" style="flex:1"><button class="btn ghost small" data-pa="subj">שמירה</button></div>
   <p class="muted" style="font-size:13px">${S.setup?`המשתתפים הוגדרו: ${roster().map(x=>esc(x.name)+' '+x.weight+'%').join(' · ')}`:'הנבדק עוד לא הגדיר משתתפים בטלפון.'}</p>
-  <p class="muted" style="font-size:13px">שאלון מרחוק (${location.origin+location.pathname}#remote): ${Object.values(S.remote||{}).map(r=>esc(r.name)+(r.done?' ✓':' '+Object.keys(r.answers||{}).length+'/150')).join(' · ')||'עוד אף אחד'}</p>
+  <p class="muted" style="font-size:13px">שאלון מרחוק (${location.origin+location.pathname}#remote): ${Object.values(S.remote||{}).map(r=>{const v=Object.values(r.answers||{}),dk=v.filter(x=>+x===0).length;return esc(r.name)+' '+v.length+'/150'+(r.done?' ✓':'')+(dk?` (${dk} לא יודע/ת)`:'')}).join(' · ')||'עוד אף אחד'}</p>
+  <div class="row">${S.previewRemote?`<span class="grow" style="color:var(--gold)">מוצג עכשיו: רק המשיבים מרחוק</span><button class="btn ghost small" data-pa="prevoff">חזרה לנתוני הערב</button>`:`<button class="btn ghost small" data-pa="prevremote" ${Object.keys(S.remote||{}).length?'':'disabled'}>היכל התהילה רק מהמשיבים מרחוק</button>`}</div>
   <table class="prog"><thead><tr><th>משתתף</th>${[1,2,3,4].map(k=>`<th>ס${k}</th>`).join('')}<th>מיו</th></tr></thead><tbody>
   ${st.map(x=>`<tr><td>${esc(x.p.name)}</td>${x.rounds.map(([d,t])=>`<td style="color:${d>=t?'var(--ok)':d?'var(--cream)':'var(--mist)'}">${d}/${t}</td>`).join('')}<td>${x.mew?'✓':'–'}</td></tr>`).join('')}</tbody></table>
   <p class="muted" style="font-size:13px">רק כמויות. מה כל אחד ענה לא מוצג בשום מקום.</p>
@@ -1252,6 +1256,7 @@ function renderPanel(){
     if(a==='mew'){await setState({mew:{status:'none'}});S.mewBusy=false;buildMew()}
     if(a==='demo')demoFill();
     if(a==='save')saveResults();
+    if(a==='prevremote'||a==='prevoff'){S.previewRemote=a==='prevremote';S.oakFor=null;computeResult();const i=SEQ.findIndex(x=>x.id==='hof');if(S.previewRemote&&i>=0){POS=i;HOF=0;SUB=0;show(true)}else if(cur()?.kind==='hof')renderHof();previewBadge();renderPanel()}
     if(a==='reset'){S.confirmReset=true;renderPanel()}
     if(a==='reset0'){S.confirmReset=false;renderPanel()}
     if(a==='reset2'){S.confirmReset=false;await resetAll()}
@@ -1275,6 +1280,7 @@ async function saveResults(){
   try{await S.db.doc('archive/'+snap.at.replace(/[:.]/g,'-')).set(snap);toast('התוצאות נשמרו')}catch(e){toast('השמירה בענן נכשלה, הקובץ יורד בכל זאת')}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(snap,null,1)],{type:'application/json'}));a.download=`psp-${snap.at.slice(0,16).replace(/[:T]/g,'-')}.json`;document.body.appendChild(a);a.click();a.remove();
 }
+function previewBadge(){let b=$('#prevbadge');if(!S.previewRemote){b?.remove();return}if(!b){b=document.createElement('div');b.id='prevbadge';b.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:50;background:#E4483F;color:#fff;font:600 15px var(--body);padding:6px 14px;border-radius:999px';document.body.append(b)}b.textContent='תצוגה מקדימה: רק המשיבים מרחוק · לא נשלח לטלפונים'}
 async function resetAll(){
   for(const id of Object.keys(S.answers))await S.db.doc('answers/'+id).delete().catch(()=>{});
   await S.db.doc('setup/main').delete().catch(()=>{});
