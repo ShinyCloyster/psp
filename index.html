@@ -663,6 +663,7 @@ async function startScreen(){
   S.slides=sl;S.engine=en;S.sprites=sp;
   SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});const m=s.id.match(/^x-break-(\d)$/);if(m)SEQ.push({kind:'live',k:+m[1],id:'live-'+m[1]});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'})});
   if(POS>=SEQ.length)POS=0;
+  setTimeout(maybeMew,0);
   if(!S.state)await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
   $('#scr').onclick=e=>{if(e.target.closest('button'))return;go(1)};
   $('#gear').onclick=()=>{const p=$('#panel');p.hidden=!p.hidden;renderPanel()};
@@ -795,14 +796,16 @@ function dexVotes(raters){
 
 // ---------- Mew statements: built from the Pokédex entries of the 4 closest lines ----------
 async function maybeMew(){
-  const m=S.state?.mew;if(!S.state||(m&&m.status!=='none'))return;
+  if(!S.engine||!S.state)return;
+  const m=S.state.mew,stale=m?.status==='working'&&!S.mewBusy&&(!m.at||Date.now()-Date.parse(m.at)>30000);
+  if(m&&m.status!=='none'&&!stale)return;
   // everyone still in the game (anyone who has started answering) must have finished all 150
   const act=stats().filter(x=>x.all>0);if(!act.length||act.some(x=>x.all<150))return;
   if(S.mewBusy)return;buildMew();
 }
 async function buildMew(){
-  S.mewBusy=true;await setState({mew:{status:'working'}});
-  computeResult();if(!S.R){S.mewBusy=false;await setState({mew:{status:'none'}});return}
+  S.mewBusy=true;await setState({mew:{status:'working',at:new Date().toISOString()}});
+  try{computeResult()}catch(e){S.R=null}if(!S.R){S.mewBusy=false;await setState({mew:{status:'none'}});return}
   const top=S.R.main.slice(0,4).map(t=>({lineId:t.line.id,name:finalName(t.line),entry:S.engine.flavor[String(t.line.species.at(-1))]||''}));
   let texts=null;
   // precomputed library first (all 508 non-legendary lines); the model is only a fallback
