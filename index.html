@@ -462,6 +462,7 @@ async function boot(){
   render();
   S.db=await fbInit();
   if(!S.db){S.dbFail=true;render();return}
+  render();
   S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));changed()},()=>{});
