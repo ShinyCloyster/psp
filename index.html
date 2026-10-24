@@ -240,9 +240,10 @@ const PSP = (() => {
   const ROLE_WEIGHTS = { self: 0.45, partner: 0.20, family: 0.15, friend: 0.20 };
   const SELF_BOOST = { "stats|hp": 1.5, "stats|special-defense": 1.5, "stats|attack": 0.7, "stats|special-attack": 0.7 };
   const NON_EVOLVING_EVO_SIM = 0.5; // checked on 3,000 simulated people: non-evolving lines win as often as their share of the dex (23.9% vs 23.8%)
-  // Paradox Pokémon are near-legendary: they stay in the main pool but need a clear margin to win.
+  // Paradox Pokémon and Ultra Beasts are near-legendary: they stay in the main pool but need a clear margin to win.
   const PARADOX_PENALTY = (typeof globalThis !== 'undefined' && globalThis.PSP_PARADOX_PENALTY != null) ? globalThis.PSP_PARADOX_PENALTY : 0.05;
-  const PARADOX = new Set(['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023']);
+  const PARADOX = new Set(['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023',
+    /* Ultra Beasts */ '793','794','795','796','797','798','799','803-804','805','806']);
 
   const sum = a => a.reduce((s, x) => s + x, 0);
   const cosine = (a, b) => {
@@ -580,7 +581,7 @@ function draft(){
 function setupView(){
   const d=draft(),subj=subjectName(),tot=45+d.reduce((s,p)=>s+(+p.weight||0),0);
   return `<p class="eyebrow">PSP · SETUP</p><h1>מי עונה עליך?</h1>
-  <p class="muted">אתה תמיד 45%. את 55% הנותרים מחלקים בין מי שעונים עליך: ככל שמישהו מכיר אותך טוב יותר, תן לו יותר. אפשר להוסיף משתתפים.</p>
+  <p class="muted">${gs('אתה','את')} תמיד 45%. את 55% הנותרים מחלקים בין מי שעונים עליך: ככל שמישהו מכיר אותך טוב יותר, ${gs('תן','תני')} לו יותר. אפשר להוסיף משתתפים.</p>
   <div class="card">
    <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px">${avHead(subjP(),38)}<div style="display:flex;flex-direction:column"><b>${esc(subj)}</b><span class="muted" style="font-size:13px">${gs('הנבדק','הנבדקת')} · קבוע</span></div></div><div class="step"><b>45%</b></div></div>
    ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" placeholder="שם" aria-label="שם"><button class="x" data-del="${i}" aria-label="הסרה">×</button></div>
@@ -594,6 +595,12 @@ function setupView(){
 }
 
 // ----- Professor Oak's intro: everyone meets him once. The subject also names themself and splits the weights. -----
+// slides were written for Eri; adapt the subject's name and grammatical gender at render time
+function slideHTML(h){
+  if(S.setup?.gender==='f')[['שהנבדק קבע','שהנבדקת קבעה'],['הנבדק עצמו','הנבדקת עצמה'],['הנבדק','הנבדקת'],['ערי מספר ','ערי מספרת '],['כשערי ישלח','כשערי תשלח']].forEach(([x,y])=>{h=h.split(x).join(y)});
+  const n=subjectName();if(n&&n!=='ערי')h=h.split('ערי').join(n);
+  return h;
+}
 function introScript(){
   const I=S.intro,self=I.role==='self',nm=I.name||'',subj=subjectName(),eyal=nm.trim()==='אייל';
   const open=['שלום! ברוכים הבאים לעולם של PSP!','שמי אוק. אנשים קוראים לי פרופסור הפוקימונים.','העולם הזה מלא ביצורים שנקראים פוקימונים. יש אנשים שחיים איתם כחיות מחמד, ויש שנלחמים לצידם.','ואני? אני חוקר פוקימונים. והערב אני חוקר מישהו אחד במיוחד.','אבל קודם, ספרו לי: בן או בת?'];
@@ -681,7 +688,7 @@ function validateSetup(){
 function scaleRow(id,val){
   return `<div class="scale">${[1,2,3,4,5].map(v=>`<button data-a="${id}" data-v="${v}" class="${val===v?'on':''}" aria-label="${v}">${v}</button>`).join('')}</div>
   <div class="ends"><span>1 · בכלל לא</span><span>5 · מאוד</span></div>
-  <button class="dk ${val===0?'on':''}" data-a="${id}" data-v="0">לא יודע/ת</button>`;
+  <button class="dk ${val===0?'on':''}" data-a="${id}" data-v="0">${gx('לא יודע','לא יודעת')}</button>`;
 }
 function unitView(u,me,done,total,review){
   const ans=myDoc().answers,self=me.role==='self',n=subjectName(),P=planFor(me.id);
@@ -810,7 +817,7 @@ function show(fresh,atEnd){
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   const cv=$('#cv');
   if(it.kind==='slide'){
-    cv.innerHTML=S.slides[it.i].html;cv.firstElementChild?.classList.add('fadein');
+    cv.innerHTML=slideHTML(S.slides[it.i].html);cv.firstElementChild?.classList.add('fadein');
     if(it.id==='cover'){const red=cv.querySelector('img[alt="tr-red"]');if(red){red.parentElement.style.visibility='hidden';cv.firstElementChild.insertAdjacentHTML('beforeend','<div id="lobby"></div>');S.lobbyShown=new Set()}}
     const qr=cv.querySelector('img[alt="QR"]');if(qr)qr.parentElement.outerHTML='<div id="dialbox" style="width:800px;height:800px;margin-inline-start:-40px;flex:none;position:relative;display:flex;align-items:center;justify-content:center"></div>';
     const n=buildOrders().length;BUILD=atEnd?n:0;applyBuilds();
