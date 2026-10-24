@@ -205,6 +205,26 @@ table.prog th{color:var(--mist);font-weight:500}
 .dial .ok{position:absolute;right:-4px;bottom:-4px;width:42%;height:42%;border-radius:50%;background:#3DBE6B;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #161A2E;line-height:1}
 .dial .mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
 .name.taken{opacity:.38;filter:grayscale(1)}
+.gbp{display:flex;flex-direction:column;gap:12px}
+.gbp-scene{height:250px;border:4px solid #20253F;border-radius:14px;background:linear-gradient(180deg,#A8D8F0 0%,#D8F0F8 62%,#9CCB6B 62%,#7FB24E 100%);display:flex;align-items:flex-end;justify-content:center;gap:34px;padding-bottom:18px;overflow:hidden}
+.gbp-fig{height:175px;image-rendering:pixelated;filter:drop-shadow(0 6px 0 rgba(0,0,0,.18));transition:transform .2s}
+.gbp-fig[src*="gb-"]{height:150px}.gbp-fig.pick{transform:translateY(-10px) scale(1.06)}
+.gbp-box,.gbp-menu{background:#F8F8F8;color:#1E2238;border:4px solid #2A2E45;border-radius:10px;box-shadow:inset 0 0 0 3px #F8F8F8,inset 0 0 0 6px #6A8CC8}
+.gbp-box{position:relative;display:block;width:100%;min-height:128px;padding:18px 20px 30px;font-family:var(--body);font-size:21px;line-height:1.55;text-align:right;white-space:pre-line}
+.gbp-tri{position:absolute;left:16px;bottom:8px;color:#E4483F;font-style:normal;font-size:18px;animation:gbblink 1s steps(2) infinite}
+@keyframes gbblink{50%{opacity:0}}
+.gbp-menu{padding:8px 6px}
+.gbp-menu>button{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;color:#1E2238;font-family:var(--body);font-size:22px;padding:10px 14px;text-align:right}
+.gbp-menu>button::before{content:'▶';font-size:16px;color:#1E2238;opacity:0}
+.gbp-menu>button:first-child::before,.gbp-menu>button:hover::before,.gbp-menu>button:focus::before{opacity:1}
+.gbp-naming{display:flex;gap:8px;padding:12px}.gbp-naming input{flex:1;font-size:22px;background:#fff;color:#1E2238;border:2px solid #2A2E45;border-radius:8px;padding:8px 10px}
+.gbp-naming>button{width:auto;flex:none;border:2px solid #2A2E45;border-radius:8px}.gbp-naming>button::before{display:none}
+.gbp-roster{padding:12px;color:#1E2238}.gbp-roster .prow{border-color:#D5D8E5}.gbp-roster input,.gbp-roster select{background:#fff;color:#1E2238;border-color:#2A2E45}
+.gbp-roster .step button{background:#E8EAF2;color:#1E2238;border-color:#2A2E45}.gbp-roster .muted{color:#555}
+.gbp-menu>button.gbp-add::before,.gbp-menu>button.gbp-ok::before{display:none}
+.gbp-menu>button.gbp-add{justify-content:center;font-size:18px;background:none;border:2px dashed #6A8CC8;border-radius:8px;color:#1E2238;padding:8px;width:100%;margin-top:8px;font-family:var(--body)}
+.gbp-tot{margin-top:10px;font-size:18px}.gbp-err{color:#C0392B;display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:15px}
+.gbp-menu>button.gbp-ok{justify-content:center;display:flex;width:100%;margin-top:12px;background:#E4483F;color:#fff;border:0;border-radius:8px;padding:12px;font-family:var(--display);font-size:22px}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -414,7 +434,9 @@ const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).
 // ---------- state ----------
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
-const subjectName=()=>S.state?.subject||'ערי';
+const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
+// subject's grammatical gender, chosen in Oak's intro ('m' | 'f'); default masculine
+const gx=(m,f)=>((S.intro&&S.intro.g)||S.setup?.gender)==='f'?f:m;
 // ---------- avatars ----------
 const AV={'ערי':'eri','דולב':'dolev','רון':'ron','דורון':'doron','ניר':'nir','אייל':'eyal'};
 const AVCOL={eri:'#FF7AB6',dolev:'#4FA3FF',ron:'#F4EBD0',doron:'#B57BFF',nir:'#6EE7A0',eyal:'#FFB547'};
@@ -498,7 +520,7 @@ function saveMine(){
 function render(){
   if(isScreen()){startScreen();return}
   const app=$('#app');app.hidden=false;
-  app.innerHTML=`<div class="col">${phoneView()}</div>`;bindPhone();dialMount(app.querySelector('.dial'));
+  app.innerHTML=`<div class="col">${phoneView()}</div>`;bindPhone();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
   if(!S.dex)fetch('dex151.json').then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
@@ -508,6 +530,7 @@ function phoneView(){
   const subj=subjectName(),me=person(S.me);
   if(!me)return pickView();
   if(!S.joinSent&&S.db){S.joinSent=true;S.db.doc('joined/'+me.id).set({at:new Date().toISOString()}).catch(()=>{S.joinSent=false})}
+  if(me.role==='self'&&(S.intro?.live||(!S.setup&&S.view!=='setup')))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
   if(S.state.revealed&&S.state.result)return resultCard();
   const open=S.state.open||0,P=planFor(me.id),ans=myDoc().answers;
@@ -533,11 +556,11 @@ function progressCard(P,ans){
 function pickView(){
   const subj=subjectName();
   if(!S.setup)return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1>
-  <p class="muted">${esc(subj)} עוד לא הגדיר מי עונה עליו. ${esc(subj)}, זה אתה? תתחיל כאן.</p>
-  <div class="names"><button class="name" data-pick="subj">${avFull(subjP(),110)}${esc(subj)}<small>הנבדק</small></button></div>
-  <p class="muted">כל השאר: העמוד יתעדכן לבד ברגע ש${esc(subj)} יסיים.</p>`;
+  <p class="muted">${esc(subj)}, הכול מתחיל אצלך: פרופסור אוק מחכה לך.</p>
+  <div class="names"><button class="name" data-pick="subj">${avFull(subjP(),110)}${esc(subj)}<small>${gx('הנבדק','הנבדקת')}</small></button></div>
+  <p class="muted">כל השאר: העמוד יתעדכן לבד ברגע שההיכרות עם אוק תסתיים.</p>`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1><p class="muted">בוחרים את השם שלך פעם אחת. הטלפון יזכור.</p>
-  <div class="names">${[...roster()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${avFull(p,110)}${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?'הנבדק':esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
+  <div class="names">${[...roster()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${avFull(p,110)}${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gx('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
 }
 
 // ----- subject setup -----
@@ -554,7 +577,7 @@ function setupView(){
   return `<p class="eyebrow">PSP · SETUP</p><h1>מי עונה עליך?</h1>
   <p class="muted">אתה תמיד 45%. את 55% הנותרים מחלקים בין מי שעונים עליך: ככל שמישהו מכיר אותך טוב יותר, תן לו יותר. אפשר להוסיף משתתפים.</p>
   <div class="card">
-   <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px">${avHead(subjP(),38)}<div style="display:flex;flex-direction:column"><b>${esc(subj)}</b><span class="muted" style="font-size:13px">הנבדק · קבוע</span></div></div><div class="step"><b>45%</b></div></div>
+   <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px">${avHead(subjP(),38)}<div style="display:flex;flex-direction:column"><b>${esc(subj)}</b><span class="muted" style="font-size:13px">${gx('הנבדק','הנבדקת')} · קבוע</span></div></div><div class="step"><b>45%</b></div></div>
    ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" placeholder="שם" aria-label="שם"><button class="x" data-del="${i}" aria-label="הסרה">×</button></div>
      <select id="rl-${i}" data-i="${i}" data-f="role" aria-label="קשר">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?'selected':''}>${v}</option>`).join('')}</select></div>
      <div class="step"><button data-w="${i}" data-d="-1" aria-label="פחות">−</button><b>${+p.weight||0}%</b><button data-w="${i}" data-d="1" aria-label="יותר">+</button></div></div>`).join('')}
@@ -564,11 +587,62 @@ function setupView(){
   ${S.setupErr?`<div class="err">${S.setupErr.map(e=>`<span>${esc(e)}</span>`).join('')}</div>`:''}
   <button class="btn" data-act="savesetup">המשך</button>`;
 }
+
+// ----- Professor Oak's intro (subject only, first time): boy or girl, name, who answers and how much -----
+function introScript(){
+  const I=S.intro,nm=I.name||'';
+  return [
+    {say:['שלום! ברוכים הבאים לעולם של PSP!','שמי אוק. אנשים קוראים לי פרופסור הפוקימונים.','העולם הזה מלא ביצורים שנקראים פוקימונים. יש אנשים שחיים איתם כחיות מחמד, ויש שנלחמים לצידם.','ואני? אני חוקר פוקימונים. והערב אני חוקר מישהו אחד במיוחד.','אז ספרו לי: בן או בת?'],ask:'gender'},
+    {say:[gx('אה, בן! מצוין.','אה, בת! מצוין.'),'ומה השם שלך?'],ask:'name'},
+    {say:[`${nm}! איזה שם נהדר.`,`הערב החברים שלך יעזרו לי לחקור אותך, ${nm}.`,'45% מהתמונה שמורים לך. את 55% הנותרים מחלקים ביניהם: מי שמכיר אותך טוב יותר, מקבל יותר.'],ask:'roster'},
+    {say:[`${nm}!`,'המסע שלך בעולם של PSP עומד להתחיל!','עולם שלם של חלומות והרפתקאות עם פוקימונים מחכה לך.',gx('קדימה, בוא נצא לדרך!','קדימה, בואי נצא לדרך!')],ask:'done'},
+  ];
+}
+function introView(){
+  const I=S.intro||(S.intro={step:0,page:0,g:null,name:null,ci:0,typed:'',live:true});
+  const sc=introScript()[I.step],last=I.page>=sc.say.length-1,key=I.step+':'+I.page,typed=I.typed===key,asking=last&&typed&&sc.ask!=='done';
+  const me={name:I.name||subjectName(),role:'self'},mine=I.g?(avKey(me)?`img/av-f-${avKey(me)}.webp`:`img/gb-${I.g==='f'?'girl':'boy'}.png`):'';
+  let figs=`<img class="gbp-fig" src="img/tr-oak.webp" alt="פרופסור אוק">`;
+  if(sc.ask==='gender'&&last)figs=`<img class="gbp-fig${I.g==='m'?' pick':''}" src="img/gb-boy.png" alt="בן"><img class="gbp-fig${I.g==='f'?' pick':''}" src="img/gb-girl.png" alt="בת">`;
+  else if(I.step>=2&&mine)figs+=`<img class="gbp-fig" src="${mine}" alt="${esc(me.name)}">`;
+  let below='';
+  if(asking&&sc.ask==='gender')below=`<div class="gbp-menu"><button data-ig="m">בן</button><button data-ig="f">בת</button></div>`;
+  if(asking&&sc.ask==='name'){const def=S.state?.subject||'ערי';
+    below=I.naming?`<div class="gbp-menu gbp-naming"><input id="gbp-name" type="text" maxlength="14" value="${esc(I.draftName||'')}" placeholder="השם שלך" aria-label="השם שלך"><button data-act="inameok">אישור</button></div>`
+      :`<div class="gbp-menu"><button data-in="def">${esc(def)}</button><button data-in="new">שם חדש</button></div>`}
+  if(asking&&sc.ask==='roster'){const d=draft(),tot=45+d.reduce((t,p)=>t+(+p.weight||0),0);
+    below=`<div class="gbp-menu gbp-roster">
+     <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px">${avHead(me,38)}<b>${esc(me.name)}</b></div><div class="step"><b>45%</b></div></div>
+     ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" placeholder="שם" aria-label="שם"><button class="x" data-del="${i}" aria-label="הסרה">×</button></div>
+       <select id="rl-${i}" data-i="${i}" data-f="role" aria-label="קשר">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?'selected':''}>${v}</option>`).join('')}</select></div>
+       <div class="step"><button data-w="${i}" data-d="-1" aria-label="פחות">−</button><b>${+p.weight||0}%</b><button data-w="${i}" data-d="1" aria-label="יותר">+</button></div></div>`).join('')}
+     <button class="gbp-add" data-act="addp">+ הוספת משתתף</button>
+     <div class="row gbp-tot"><span class="grow">סה״כ</span><b style="color:${tot===100?'#2E8B57':'#C0392B'}">${tot}%</b></div>
+     ${S.setupErr?`<div class="gbp-err">${S.setupErr.map(e=>`<span>${esc(e)}</span>`).join('')}</div>`:''}
+     <button class="gbp-ok" data-act="introsave">▶ המשך</button></div>`}
+  return `<p class="eyebrow">PSP · NEW GAME</p>
+  <div class="gbp"><div class="gbp-scene">${figs}</div>
+   <button class="gbp-box" data-act="ia" aria-label="המשך"><span id="gbp-text"></span><i class="gbp-tri" style="visibility:${typed&&!asking?'visible':'hidden'}">▼</i></button>${below}</div>`;
+}
+function introType(){
+  const el=$('#gbp-text'),I=S.intro;if(!el||!I)return;clearInterval(S.introT);
+  const sc=introScript()[I.step],txt=sc.say[I.page],key=I.step+':'+I.page;
+  if(I.typed===key){el.textContent=txt;return}
+  let i=I.ci||0;el.textContent=txt.slice(0,i);
+  S.introT=setInterval(()=>{i+=1;I.ci=i;el.textContent=txt.slice(0,i);if(i>=txt.length){clearInterval(S.introT);I.typed=key;I.ci=0;render()}},28);
+}
+function introAdvance(){
+  const I=S.intro;if(!I)return;const sc=introScript()[I.step],key=I.step+':'+I.page;
+  if(I.typed!==key){clearInterval(S.introT);I.typed=key;I.ci=0;render();return}
+  if(I.page<sc.say.length-1){I.page++;I.ci=0;render();return}
+  if(sc.ask==='done'){S.intro=null;S.view='';render()}
+}
+function introNext(){const I=S.intro;I.step++;I.page=0;I.ci=0;I.typed='';render()}
 function validateSetup(){
   const d=draft(),errs=[];const names=new Set();
   d.forEach((p,i)=>{const n=(p.name||'').trim();
     if(!n)errs.push(`למשתתף מספר ${i+1} אין שם.`);
-    else if(names.has(n)||n===subjectName())errs.push(`השם "${n}" מופיע פעמיים.`);
+    else if(names.has(n)||n===(S.intro?.name||subjectName()))errs.push(`השם "${n}" מופיע פעמיים.`);
     names.add(n);
     if(!(+p.weight>0))errs.push(`ל${n||'משתתף מספר '+(i+1)} יש 0%. אי אפשר לתת 0%, אפשר לפחות 1%.`);
   });
@@ -618,7 +692,7 @@ function resultCard(){
 }
 function bindPhone(){
   const app=$('#app');
-  app.oninput=e=>{const el=e.target;if(el.dataset.f){const d=draft();d[+el.dataset.i][el.dataset.f]=el.value;S.setupErr=null;if(el.dataset.f==='name'){const a=$('#av-'+el.dataset.i);if(a)a.innerHTML=avHead({name:el.value},38)}}};
+  app.oninput=e=>{const el=e.target;if(el.id==='gbp-name'&&S.intro){S.intro.draftName=el.value;return}if(el.dataset.f){const d=draft();d[+el.dataset.i][el.dataset.f]=el.value;S.setupErr=null;if(el.dataset.f==='name'){const a=$('#av-'+el.dataset.i);if(a)a.innerHTML=avHead({name:el.value},38)}}};
   app.onchange=e=>{const el=e.target;if(el.dataset.f==='role'){draft()[+el.dataset.i].role=el.value}};
   app.onclick=e=>{
     const b=e.target.closest('button');if(!b)return;
@@ -626,6 +700,8 @@ function bindPhone(){
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
     if(b.dataset.mew){S.mewPick=b.dataset.mew;render();return}
+    if(b.dataset.ig){S.intro.g=b.dataset.ig;render();setTimeout(introNext,350);return}
+    if(b.dataset.in){if(b.dataset.in==='def'){S.intro.name=S.state?.subject||'ערי';introNext()}else{S.intro.naming=true;render();setTimeout(()=>$('#gbp-name')?.focus(),50)}return}
     if(b.dataset.a){
       const d=myDoc();d.answers[b.dataset.a]=+b.dataset.v;saveMine();
       const it=ITEMS[b.dataset.a];
@@ -635,13 +711,21 @@ function bindPhone(){
       return;
     }
     const act=b.dataset.act;
-    if(act==='switch'){S.me=null;store.set('psp-me','');render()}
+    if(act==='switch'){S.me=null;store.set('psp-me','');S.intro=null;render()}
+    if(act==='ia'){introAdvance();return}
+    if(act==='inameok'){const v=($('#gbp-name')?.value||'').trim();if(!v){toast('צריך שם');return}S.intro.name=v;S.intro.naming=false;introNext();return}
+    if(act==='introsave'){
+      const errs=validateSetup();if(errs.length){S.setupErr=errs;render();return}S.setupErr=null;
+      const I=S.intro,r=[{id:'subj',name:I.name,role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight}))];
+      S.db.doc('setup/main').set({roster:r,name:I.name,gender:I.g||'m',at:new Date().toISOString()}).then(()=>{S.draft=null;introNext()}).catch(()=>toast('השמירה נכשלה. נסו שוב.'));
+      return;
+    }
     if(act==='editsetup'){S.view='setup';S.draft=null;render()}
     if(act==='addp'){draft().push({id:newId(),name:'',role:'friend',weight:0});render()}
     if(act==='savesetup'){
       const errs=validateSetup();if(errs.length){S.setupErr=errs;render();return}
       const r=[{id:'subj',name:subjectName(),role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight}))];
-      S.db.doc('setup/main').set({roster:r,at:new Date().toISOString()}).then(()=>{toast('נשמר');S.view='';S.draft=null;render()}).catch(()=>toast('השמירה נכשלה. נסו שוב.'));
+      S.db.doc('setup/main').set({roster:r,name:subjectName(),gender:S.setup?.gender||'m',at:new Date().toISOString()}).then(()=>{toast('נשמר');S.view='';S.draft=null;render()}).catch(()=>toast('השמירה נכשלה. נסו שוב.'));
     }
     if(act==='next'){if(S.view==='review'){S.view='';S.reviewUnit=null}else if(S.holdUnit){S.lastUnit=S.holdUnit;S.holdUnit=null}render()}
     if(act==='back'){S.view='review';S.reviewUnit=S.lastUnit;render()}
@@ -889,7 +973,7 @@ function renderHof(){
     h=hofShell('EVOLUTION · 3/3',`איך ${n} מתפתח`,'מהדרך הכי פחות מתאימה ועד הכי מתאימה. לחיצה לכל אחת.',`<div style="position:absolute;top:330px;right:160px;left:160px;display:flex;flex-direction:column;gap:30px">${ord.map((i,j)=>`<div class="hbar off" id="ev${j}"><span style="font-family:var(--display);font-size:40px">${esc(EVO_HE[ax.evo[i]])}</span><div class="track"><div class="fill" style="width:${pct(ev[i])*100}%;background:${j===4?'var(--gold)':'var(--sky)'}"></div></div><b>${Math.round(pct(ev[i])*100)}%</b></div>`).join('')}</div><div id="evmean" class="card2 gold" style="position:absolute;bottom:80px;right:160px;left:160px;opacity:0;transition:opacity .6s"><p class="k">הדרך המובילה</p><p>${esc(BANK.constructs.evo[ax.evo[ord[4]]])}</p></div>`);
   }
   else if(step==='gaps'){
-    h=hofShell('BLIND SPOTS',`נקודות עיוורות`,`איפה ${n} רואה את עצמו אחרת ממה שהקבוצה רואה אותו.`,`<div style="position:absolute;top:330px;right:160px;left:160px;display:flex;flex-direction:column;gap:26px">${R.gaps.slice(0,5).map(g=>`<div style="display:grid;grid-template-columns:420px 1fr;gap:28px;align-items:center"><span style="font-family:var(--display);font-size:36px">${esc(dimName(g))}</span><div style="display:flex;flex-direction:column;gap:8px">${gbar('var(--gold)',g.self,avHead(subjP(),38)+n)}${gbar('var(--sky)',g.others,othersStack(30)+'הקבוצה')}</div></div>`).join('')||'<p class="lead">צריך תשובות גם מהנבדק וגם מאחרים.</p>'}</div>`);
+    h=hofShell('BLIND SPOTS',`נקודות עיוורות`,`איפה ${n} רואה את ${gx('עצמו','עצמה')} אחרת ממה שהקבוצה רואה ${gx('אותו','אותה')}.`,`<div style="position:absolute;top:330px;right:160px;left:160px;display:flex;flex-direction:column;gap:26px">${R.gaps.slice(0,5).map(g=>`<div style="display:grid;grid-template-columns:420px 1fr;gap:28px;align-items:center"><span style="font-family:var(--display);font-size:36px">${esc(dimName(g))}</span><div style="display:flex;flex-direction:column;gap:8px">${gbar('var(--gold)',g.self,avHead(subjP(),38)+n)}${gbar('var(--sky)',g.others,othersStack(30)+'הקבוצה')}</div></div>`).join('')||`<p class="lead">צריך תשובות גם מ${gx('הנבדק','הנבדקת')} וגם מאחרים.</p>`}</div>`);
   }
   else if(step==='mewvotes'){
     const m=S.state?.mew,votes=mewVotes();
@@ -902,7 +986,7 @@ function renderHof(){
   else if(step==='reveal'){
     const t=R.main[0],l=t.line,last=l.species.length-1,types=l.stage_types[last];
     const ent=dexEntry(l);
-    h=`<div class="st"><div class="center" style="gap:18px"><p class="lead">${n} הוא…</p><img ${artAttr(l)} alt="${esc(finalName(l))}" style="width:320px;height:320px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))">
+    h=`<div class="st"><div class="center" style="gap:18px"><p class="lead">${n} ${gx('הוא','היא')}…</p><img ${artAttr(l)} alt="${esc(finalName(l))}" style="width:320px;height:320px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))">
     <div class="big">${esc(finalName(l))}</div><div style="display:flex;gap:16px;justify-content:center">${types.map(plateH).join('')}</div>
     ${l.species.length>1?`<div style="display:flex;gap:26px;align-items:flex-end;direction:ltr">${l.species.map((s,i)=>`${i?'<span style="color:var(--gold);font-size:40px;padding-bottom:40px">→</span>':''}<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><img class="pix" src="${spriteURL(sprite(l,s))}" alt="" style="width:96px;height:96px"><span style="font-size:20px;color:var(--mist)">${esc(l.name.split(' → ')[i])}</span></div>`).join('')}</div>`:''}
     <p class="pct">${(t.total*100).toFixed(1)}% MATCH</p>
@@ -921,7 +1005,7 @@ function renderHof(){
   }
   else if(step==='map'){
     const l=R.main[0].line;
-    h=`<div class="st"><div class="center"><img ${artAttr(l)} alt="" style="width:260px;height:260px"><div class="big" style="max-width:1500px">הפוקימון של ${n} הוא לא ${n}.</div><p style="font-family:var(--display);font-size:72px;color:var(--gold)">הוא המפה הכי טובה שיש לנו אליו.</p></div></div>`;
+    h=`<div class="st"><div class="center"><img ${artAttr(l)} alt="" style="width:260px;height:260px"><div class="big" style="max-width:1500px">הפוקימון של ${n} הוא לא ${n}.</div><p style="font-family:var(--display);font-size:72px;color:var(--gold)">הוא המפה הכי טובה שיש לנו ${gx('אליו','אליה')}.</p></div></div>`;
   }
   else if(step==='oak'){
     const l=R.main[0].line;
@@ -1032,21 +1116,21 @@ function oakPages(R){
   const meaning=k=>shortMeaning(BANK.constructs.types[k]);
   const pct=x=>Math.round(x*100)+'%';
   const P=[];
-  P.push(`אה, ${n}! הנה אתה. חיכיתי לך.\n\nבדקתי את כל התשובות, של ${n} ושל כל מי שמכיר אותו, ויש לי חדשות מצוינות: הפוקימון שלך הוא ${name}! בוא נעבור ביחד על מה שהוביל אותי לשם.`);
+  P.push(`אה, ${n}! הנה ${gx('אתה','את')}. חיכיתי לך.\n\nבדקתי את כל התשובות, של ${n} ושל כל מי שמכיר ${gx('אותו','אותה')}, ויש לי חדשות מצוינות: הפוקימון שלך הוא ${name}! ${gx('בוא','בואי')} נעבור ביחד על מה שהוביל אותי לשם.`);
   const shared=lt.filter(x=>tt.slice(0,3).includes(x));
   P.push(shared.length?`נתחיל בסוגים. הסוגים הכי חזקים שלך היו ${TYPE_HE[tt[0]]} ו${TYPE_HE[tt[1]]}. ל־${name} יש ${lt.map(x=>TYPE_HE[x]).join(' ו')}, ${shared.length>1?'בדיוק השניים שבראש הרשימה שלך!':`ו${TYPE_HE[shared[0]]} נמצא אצלך ממש בראש הרשימה.`} ${TYPE_HE[shared[0]]} ב־PSP זה ${meaning(shared[0])}. שכבת הסוגים לבד התאימה ב־${pct(t.sims.types)}.`
     :`נתחיל בסוגים. הסוגים הכי חזקים שלך היו ${TYPE_HE[tt[0]]} ו${TYPE_HE[tt[1]]}. ל־${name} יש ${lt.map(x=>TYPE_HE[x]).join(' ו')}, שהם לא בדיוק בראש הרשימה שלך, אבל קרובים מספיק. וזה המקום להזכיר: הפוקימון נבחר מכל השכבות יחד, לא רק מהסוגים.`);
   P.push(`עכשיו הסטטים. הסטט הכי בולט שלך הוא ${sn(sStat[0])}, ${sh(sStat[0])}, ואחריו ${sn(sStat[1])}, ${sh(sStat[1])}.${bTop.length?` אצל ${name} הסטטים הכי גבוהים הם ${bTop.map(sn).join(' ו־')}.`:''} צורת הסטטים שלכם התאימה ב־${pct(t.sims.stats)}, וזה אחד הדברים שהכי קירבו בינך לבין ${name}.`);
   const lev=l.evo.some(x=>x)?ax.evo[ord(l.evo)[0]]:null;
-  P.push(lev?`ואיך אתה מתפתח? אצלך הדרך המובילה היא ${EVO_HE[eord[0]]}. ${name} מתפתח דרך ${EVO_HE[lev]}${lev===eord[0]?', בדיוק כמוך':''}. ${BANK.constructs.evo[lev]}.`
-    :`ואיך אתה מתפתח? ${name} בכלל לא מתפתח: מה שרואים מההתחלה הוא מה שיש, שלם כבר מהיום הראשון. המנוע לא מעניש ולא מתגמל על זה, אבל זה בהחלט מוסיף לו אופי.`);
+  P.push(lev?`ואיך ${gx('אתה','את')} ${gx('מתפתח','מתפתחת')}? אצלך הדרך המובילה היא ${EVO_HE[eord[0]]}. ${name} מתפתח דרך ${EVO_HE[lev]}${lev===eord[0]?', בדיוק כמוך':''}. ${BANK.constructs.evo[lev]}.`
+    :`ואיך ${gx('אתה','את')} ${gx('מתפתח','מתפתחת')}? ${name} בכלל לא מתפתח: מה שרואים מההתחלה הוא מה שיש, שלם כבר מהיום הראשון. המנוע לא מעניש ולא מתגמל על זה, אבל זה בהחלט מוסיף לו אופי.`);
   const ex=R.agg.extra_types||[];const lx=l.extra_types||[];
   if(ex.length&&lx.some(x=>x>0)){const pe=ax.types[ord(ex).filter(i=>!tt.slice(0,2).includes(ax.types[i]))[0]],le=ax.types[ord(lx)[0]];
     P.push(`ויש עוד משהו: הסוג הנוסף, מה שמבצבץ מעבר לסוגים הראשיים. אצלך זה ${TYPE_HE[pe]}, ואצל ${name} זה ${TYPE_HE[le]}, דרך ההתקפות שהוא לומד ומה שהפוקדקס מספר עליו.${pe===le?' אותה משיכה בדיוק!':''}`)}
   const m=S.state?.mew;const ms=m?.statements?.find(s=>s.lineId===l.id);
   if(ms){const v=voterNames(ms.id);P.push(v.length?`וזוכרים את שאלת מיו? ההיגד "${ms.text}" נכתב בדיוק על ${name}. ${(a=>a.length>1?a.slice(0,-1).join(', ')+' ו'+a[a.length-1]:a[0])(v.map(x=>x.name))} ${v.length>1?'בחרו':'בחר'} בו, וזה נתן לו עוד דחיפה קטנה.`:`וזוכרים את שאלת מיו? ההיגד "${ms.text}" נכתב בדיוק על ${name}. הפעם אף אחד לא בחר בו, אבל עכשיו אתם יודעים.`)}
   const o=S.oak?.[l.id];
-  if(o){P.push(o[0]);P.push(o[1])}
+  if(o){P.push(o[0]);P.push(gx(o[1],o[2]||o[1]))}
   P.push(`זה הכול ממני, ${n}. ${name} הוא שותף נהדר, ואני בטוח שתעשו דברים גדולים ביחד. ועכשיו… יש לי עוד כמה הפתעות בשבילך!`);
   return splitPages(P.join('\n\n'),190);
 }
