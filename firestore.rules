@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isHost() { return signedIn() && request.auth.token.email == 'eyal.kiryati@gmail.com'; }
+    match /state/{doc}   { allow read: if signedIn(); allow write: if isHost(); }
+    match /setup/{doc}   { allow read: if signedIn(); allow write: if isHost(); }
+    match /answers/{pid} { allow read, write: if signedIn(); }
+    match /joined/{pid}  { allow read, write: if signedIn(); }
+  }
+}
