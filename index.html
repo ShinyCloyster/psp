@@ -204,6 +204,7 @@ table.prog th{color:var(--mist);font-weight:500}
 @keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.45)}70%{transform:scale(.92)}100%{transform:scale(1)}}
 .dial .ok{position:absolute;right:-4px;bottom:-4px;width:42%;height:42%;border-radius:50%;background:#3DBE6B;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #161A2E;line-height:1}
 .dial .mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
+.name.taken{opacity:.38;filter:grayscale(1)}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -532,7 +533,7 @@ function pickView(){
   <div class="names"><button class="name" data-pick="subj">${avFull(subjP(),110)}${esc(subj)}<small>הנבדק</small></button></div>
   <p class="muted">כל השאר: העמוד יתעדכן לבד ברגע ש${esc(subj)} יסיים.</p>`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1><p class="muted">בוחרים את השם שלך פעם אחת. הטלפון יזכור.</p>
-  <div class="names">${roster().map(p=>`<button class="name" data-pick="${esc(p.id)}">${avFull(p,110)}${esc(p.name)}<small>${p.role==='self'?'הנבדק':esc(p.relation||ROLES[p.role]||'')}</small></button>`).join('')}</div>`;
+  <div class="names">${[...roster()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${avFull(p,110)}${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?'הנבדק':esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
 }
 
 // ----- subject setup -----
