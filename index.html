@@ -189,6 +189,31 @@ table.prog th{color:var(--mist);font-weight:500}
 .oakscene{background:linear-gradient(180deg,#A8D8F0 0%,#D8F0F8 58%,#9CCB6B 58%,#7FB24E 100%)}
 .oakfloor{position:absolute;left:0;right:0;top:600px;height:6px;background:rgba(0,0,0,.08)}
 .oakimg{position:absolute;right:230px;top:110px;width:420px;height:420px;image-rendering:pixelated;object-fit:contain;filter:drop-shadow(0 14px 0 rgba(0,0,0,.18))}
+.battle{background:#F6F1E7;color:#22263A}
+.bteb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#E5484D}
+.btti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400;color:#161A2E}
+.btsub{position:absolute;right:128px;top:236px;font-size:30px;color:#4A4F63}
+.btrow{position:absolute;left:110px;right:110px;top:310px;display:flex;align-items:stretch;gap:30px;direction:rtl}
+.btc{flex:1;background:#FFFDF8;border:3px solid #E4DCCB;border-radius:28px;padding:20px 30px 22px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:box-shadow .5s,border-color .5s}
+.btc.win{border-color:#F2C94C;box-shadow:0 0 0 6px rgba(242,201,76,.35),0 0 60px rgba(242,201,76,.45)}
+.btc.hit .bti{animation:bthit .45s}@keyframes bthit{0%,100%{transform:none;filter:none}25%{transform:translateX(-14px);filter:brightness(2)}60%{transform:translateX(10px)}}
+.bti{width:230px;height:230px;object-fit:contain}.btn2{font-family:var(--display);font-size:44px;line-height:1}.btt{display:flex;gap:10px;transform:scale(.85)}
+.bthp{display:grid;grid-template-columns:50px 1fr 70px;gap:12px;align-items:center;width:100%;font:400 18px var(--pixel)}
+.bthp div{height:20px;border-radius:10px;background:#E4DCCB;overflow:hidden}.bthp i{display:block;height:100%;width:100%;background:#5BC48A;transition:width .5s,background .5s}
+.bthp b{font-weight:400;direction:ltr;text-align:left}
+.bts{display:flex;gap:18px;font-size:20px;color:#5A5F73;direction:ltr}.bts b{color:#161A2E}
+.btx{width:100%;background:#EFE8D8;border-radius:18px;padding:12px 18px;font-size:24px;line-height:1.45;opacity:0;transform:translateY(10px);transition:all .5s}.btx.show{opacity:1;transform:none}
+.btvs{width:200px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
+.btvs b{font:400 64px var(--pixel);color:#E5484D}.btvs small{font-size:22px;color:#4A4F63;opacity:0;transition:opacity .5s}.btvs small.show{opacity:1}
+.btres{position:absolute;left:0;right:0;bottom:44px;text-align:center;opacity:0;transform:scale(.9);transition:all .5s}.btres.show{opacity:1;transform:none}
+.btres span{display:inline-block;background:#161A2E;color:#F2C94C;font-family:var(--display);font-size:40px;padding:14px 40px;border-radius:999px}
+.btroll{position:absolute;left:60px;top:80px;font:700 24px var(--body);background:#FFFDF8;border:2px solid #E4DCCB;border-radius:999px;padding:10px 22px;cursor:pointer;color:#22263A}
+.rcbig{display:block;width:100%;height:42vh;border:0;border-radius:28px;background:var(--gold);color:#161A2E;font:400 44px var(--display);box-shadow:0 8px 0 #B7860B;margin-top:6px}
+.rcbig:active,.rcback:active{transform:translateY(4px);box-shadow:none}
+.rcback{display:block;width:100%;height:16vh;border:2px solid var(--line);border-radius:24px;background:var(--night2);color:var(--cream);font:400 30px var(--display);margin-top:14px}
+.rcmini{position:fixed;left:10px;right:10px;bottom:10px;z-index:30;display:flex;align-items:center;gap:10px;background:rgba(22,26,46,.94);border:2px solid var(--gold);border-radius:20px;padding:8px}
+.rcmini button{width:64px;height:52px;border:0;border-radius:14px;background:var(--gold);color:#161A2E;font-size:24px;flex:none}.rcmini span{flex:1;min-width:0;text-align:center;font-size:13px;color:var(--mist);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body:has(.rcmini) .col{padding-bottom:90px}
 .oakimg.sm{right:90px;top:170px;width:400px;height:400px}
 .gpanel{position:absolute;left:60px;top:36px;width:1390px;height:620px;background:#F8F8F8;color:#202830;border:8px solid #303840;border-radius:20px;box-shadow:inset 0 0 0 6px #F8F8F8,inset 0 0 0 11px #6890B0,0 8px 0 rgba(0,0,0,.2);padding:26px 40px}
 .gph{display:flex;align-items:baseline;gap:18px;margin-bottom:6px}.gph b{font:400 22px var(--pixel);color:#C0392B;direction:ltr}.gph span{font-size:24px;color:#5A6070;font-weight:500}
@@ -595,6 +620,9 @@ async function boot(){
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};q.docs.forEach(d=>{const g=d.data()?.gender;if(g)S.joinedG[d.id]=g});changed()},()=>{});
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
+  // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
+  S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
+  S.db.doc('stage/deck').onSnapshot(sn=>{S.deck=sn.exists?sn.data():null;if(!isScreen())deckLabels()},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
@@ -625,9 +653,20 @@ function render(){
   if(isScreen()){startScreen();return}
   const app=$('#app');app.hidden=false;
   S.remoteMode=(location.hash||'').replace('#','')==='remote';
-  app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;bindPhone();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
+  app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
+  if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><button data-act="ctlnext">◀</button></div>`);
+  bindPhone();deckLabels();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
   if(!S.dex)fetch('dex151.json').then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
+// ----- presenter remote -----
+function presenterName(){const v=S.state?.presenter;return v==null?'אייל':v}
+function isPresenter(me){return !!me&&!me.remote&&presenterName()!==''&&String(me.name||'').trim()===presenterName()}
+function sendCtl(d){try{navigator.vibrate?.(25)}catch(e){}S.db.doc('stage/ctl').set({n:Date.now(),d,by:S.me||''}).catch(()=>toast('לא הצלחתי לשלוח למסך'))}
+function deckLabels(){const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n)}
+function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}</p><h1 style="margin:0">שלט המצגת</h1>
+  <div class="card" style="text-align:center;padding:16px"><p class="muted" style="margin:0;font-size:13px">על המסך עכשיו <span class="rcn"></span></p><p class="rcl" style="margin:6px 0 0;font-weight:700;font-size:19px;min-height:1.4em"></p></div>
+  <button class="rcbig" data-act="ctlnext">◀ הבא</button><button class="rcback" data-act="ctlprev">חזרה ▶</button>
+  <p class="muted" style="font-size:13px;text-align:center">כשנפתח סבב שאלות, השאלון יופיע כאן במקום השלט.</p>`}
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
 function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
@@ -639,9 +678,14 @@ function phoneView(){
   if(me.role!=='self'&&(S.intro?.live||(S.joinedLoaded&&!S.joinedG?.[me.id])))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
   if(me.role==='self'&&S.view==='photos')return photosView();
-  if(S.state.revealed&&S.state.result)return resultCard();
   const open=S.state.open||0,P=planFor(me.id),ans=myDoc().answers;
   const all=P.rounds.flat(),done=answeredIn(all,ans);
+  if(isPresenter(me)&&S.view!=='review'&&!S.holdUnit){
+    let need=false;for(let r=0;r<open;r++)P.rounds[r].forEach(u=>{if(u.ids.some(id=>!(id in ans)))need=true});
+    if(done>=150&&S.state.mew?.status==='ready'&&!myDoc().mew)need=true;
+    if(!need)return remoteCtlView(me);
+  }
+  if(S.state.revealed&&S.state.result)return resultCard();
   if(done>=150)return mewView(me);
   if(!open)return `<p class="eyebrow">TRAINER · ${esc(me.name)}</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">שלום ${esc(me.name)}</h1></div>
     <div class="card center"><h3>סבב השאלות הבא עוד לא נפתח</h3><p class="muted">השאלות יופיעו כאן לבד כשהמצגת תגיע לסבב. התשובות אנונימיות: על המסך רואים רק "${esc(subj)}" מול "הקבוצה".</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),1,{labelCol:'#F6F1E7'})}</div></div>
@@ -873,6 +917,7 @@ function bindPhone(){
   app.onclick=e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);S.view='';S.joinSent=false;render();return}
+    if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
     if(b.dataset.addr){const r=S.remote?.[b.dataset.addr];if(r){draft().push({id:b.dataset.addr,name:r.name,role:r.relation||'family',weight:0,remote:true});S.setupErr=null;render()}return}
@@ -964,6 +1009,11 @@ function applyBuilds(){
   });
   return orders.length;
 }
+const HOF_HE={intro:'פתיחה',board:'הלוח',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
+function deckPub(){clearTimeout(S.deckT);S.deckT=setTimeout(()=>{const it=cur();if(!it||!S.db)return;let label='';
+  if(it.id==='d-battle')label='הכי מתמטי: מי מנצח בקרב?';else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
+  else if(it.kind==='live')label='מצב הסבב';else label='היכל התהילה · '+(HOF_HE[HOF_STEPS[HOF]]||'');
+  S.db.doc('stage/deck').set({label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString()}).catch(()=>{})},250)}
 function show(fresh,atEnd){
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   const cv=$('#cv');
@@ -973,9 +1023,10 @@ function show(fresh,atEnd){
     const qr=cv.querySelector('img[alt="QR"]');if(qr)qr.parentElement.outerHTML='<div id="dialbox" style="width:800px;height:800px;margin-inline-start:-40px;flex:none;position:relative;display:flex;align-items:center;justify-content:center"></div>';
     const n=buildOrders().length;BUILD=atEnd?n:0;applyBuilds();
     onEnterSlide(it.id);
+    if(it.id==='d-battle')battleNew();
   } else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
-  screenOverlay();
+  screenOverlay();deckPub();
 }
 function go(d){
   if($('#photoov.show')){S.photoHidden=(S.stage?.photo||'')+':'+(S.stage?.at||'');stagePhoto();return}
@@ -986,6 +1037,7 @@ function go(d){
     if(d<0&&BUILD>0){BUILD--;applyBuilds();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
+  if(it.id==='d-battle'&&d>0&&S.bt&&!S.bt.done){battleRun();return}
   if(d>0&&it.kind==='slide'&&!S.gateOk){const m=it.id.match(/^x-round-(\d)$/);if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
   S.gateOk=false;
   const np=POS+d;if(np<0||np>=SEQ.length)return;
@@ -1124,6 +1176,56 @@ function liveHTML(k){
    <p style="position:absolute;bottom:60px;right:110px;left:110px;font-size:24px;color:var(--mist);text-align:right">${total} תשובות עד עכשיו, מ-${pr.raters.length} משתתפים.</p></div>`;
 }
 
+
+// ---------- "the most mathematical": a battle between two random Pokémon, decided by the game's own numbers ----------
+const CHART={normal:{rock:.5,steel:.5,ghost:0},fire:{grass:2,ice:2,bug:2,steel:2,fire:.5,water:.5,rock:.5,dragon:.5},water:{fire:2,ground:2,rock:2,water:.5,grass:.5,dragon:.5},
+ electric:{water:2,flying:2,electric:.5,grass:.5,dragon:.5,ground:0},grass:{water:2,ground:2,rock:2,fire:.5,grass:.5,poison:.5,flying:.5,bug:.5,dragon:.5,steel:.5},
+ ice:{grass:2,ground:2,flying:2,dragon:2,fire:.5,water:.5,ice:.5,steel:.5},fighting:{normal:2,ice:2,rock:2,dark:2,steel:2,poison:.5,flying:.5,psychic:.5,bug:.5,fairy:.5,ghost:0},
+ poison:{grass:2,fairy:2,poison:.5,ground:.5,rock:.5,ghost:.5,steel:0},ground:{fire:2,electric:2,poison:2,rock:2,steel:2,grass:.5,bug:.5,flying:0},
+ flying:{grass:2,fighting:2,bug:2,electric:.5,rock:.5,steel:.5},psychic:{fighting:2,poison:2,psychic:.5,steel:.5,dark:0},
+ bug:{grass:2,psychic:2,dark:2,fire:.5,fighting:.5,poison:.5,flying:.5,ghost:.5,steel:.5,fairy:.5},rock:{fire:2,ice:2,flying:2,bug:2,fighting:.5,ground:.5,steel:.5},
+ ghost:{psychic:2,ghost:2,dark:.5,normal:0},dragon:{dragon:2,steel:.5,fairy:0},dark:{psychic:2,ghost:2,fighting:.5,dark:.5,fairy:.5},
+ steel:{ice:2,rock:2,fairy:2,fire:.5,water:.5,electric:.5,steel:.5},fairy:{fighting:2,dragon:2,dark:2,fire:.5,poison:.5,steel:.5}};
+const MULT_HE=m=>m>=4?'×4 סופר־סופר אפקטיבי!':m>=2?'×2 סופר אפקטיבי!':m===1?'×1 רגיל':m===0?'×0 אין השפעה בכלל':m<=.25?'×¼ כמעט לא מרגיש':'×½ לא כל כך יעיל';
+function btSide(l){const b=S.engine.base[l.id],t=l.stage_types.at(-1);return {l,t,hp:b[0]+60,atk:b[1]+5,def:b[2]+5,spa:b[3]+5,spd:b[4]+5,spe:b[5]+5,b}}
+function btAttack(A,D){let best=null;A.t.forEach(t=>{const m=D.t.reduce((x,d)=>x*(CHART[t][d]??1),1);if(!best||m>best.m)best={type:t,m}});
+  const phys=A.atk>=A.spa,At=phys?A.atk:A.spa,Df=phys?D.def:D.spd;
+  const dmg=best.m?Math.max(1,Math.floor((Math.floor(22*80*At/Df)/50+2)*1.5*best.m*.925)):0;
+  return {...best,phys,dmg,hits:dmg?Math.ceil(D.hp/dmg):Infinity,pct:dmg?Math.min(100,dmg/D.hp*100):0}}
+function battleNew(){
+  const pool=S.engine.lines.filter(l=>!l.legendary&&S.engine.base?.[l.id]&&!['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023'].includes(l.id));
+  const pick=()=>pool[Math.floor(Math.random()*pool.length)];let a=pick(),b=pick();while(b.id===a.id)b=pick();
+  const A=btSide(a),B=btSide(b),xa=btAttack(A,B),xb=btAttack(B,A);
+  let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity)win=A.spe===B.spe?'a':A.spe>B.spe?'a':'b';
+  S.bt={A,B,xa,xb,win,done:false};$('#cv').innerHTML=battleHTML();
+}
+function btCard(X,x,k){const l=X.l,phys=x.phys;
+  return `<div class="btc" id="bt-${k}"><img ${artAttr(l)} alt="" class="bti"><p class="btn2">${esc(finalName(l))}</p><div class="btt">${X.t.map(plateH).join('')}</div>
+   <div class="bthp"><span>HP</span><div><i id="hp-${k}"></i></div><b id="hpv-${k}">${X.hp}</b></div>
+   <div class="bts"><span>${phys?'Attack':'Sp. Atk'} <b>${X.b[phys?1:3]}</b></span><span>Defense <b>${X.b[2]}</b></span><span>Sp. Def <b>${X.b[4]}</b></span><span>Speed <b>${X.b[5]}</b></span></div>
+   <div class="btx" id="btx-${k}"><p>תוקף ב<b style="color:${TYPE_COL[x.type]}">${TYPE_HE[x.type]}</b>: <b>${MULT_HE(x.m)}</b></p><p>${x.dmg?`כל מכה מורידה <b>${Math.round(x.pct)}%</b> מהחיים, כך ש<b>${x.hits===1?'מכה אחת':x.hits+' מכות'}</b> מספיקות לניצחון`:'לא יכול לפגוע בכלל'}</p></div></div>`}
+function battleHTML(){const {A,B,xa,xb}=S.bt,first=A.spe>=B.spe?A:B;
+  return `<div class="st battle"><p class="bteb">IT'S A BATTLE! · DAMAGE FORMULA</p><h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>
+   <p class="btsub">סוג מול סוג (×2, ×½, ×0), כוח מול הגנה, ומי מהיר יותר. לחיצה, והקרב מתחיל.</p>
+   <div class="btrow">${btCard(A,xa,'a')}<div class="btvs"><b>VS</b><small id="btfirst"><bdi>${esc(finalName(first.l))}</bdi> מהיר יותר ותוקף ראשון</small></div>${btCard(B,xb,'b')}</div>
+   <div class="btres" id="btres"></div><button class="btroll" id="btroll" onclick="battleNew()">🎲 קרב חדש</button></div>`}
+function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
+  document.querySelectorAll('.btx').forEach(e=>e.classList.add('show'));$('#btfirst')?.classList.add('show');
+  const order=T.A.spe>=T.B.spe?['a','b']:['b','a'],hp={a:T.A.hp,b:T.B.hp},max={a:T.A.hp,b:T.B.hp},x={a:T.xa,b:T.xb};let turn=0;
+  const step=()=>{const k=order[turn%2],o=k==='a'?'b':'a';
+    if(x.a.dmg===0&&x.b.dmg===0||turn>40){finish();return}
+    if(x[k].dmg){hp[o]=Math.max(0,hp[o]-x[k].dmg);const bar=$('#hp-'+o),v=$('#hpv-'+o);if(bar){bar.style.width=(hp[o]/max[o]*100)+'%';bar.style.background=hp[o]/max[o]<.25?'#E4483F':hp[o]/max[o]<.5?'#F2C94C':'#5BC48A'}if(v)v.textContent=hp[o];
+      const c=$('#bt-'+o);if(c){c.classList.remove('hit');void c.offsetWidth;c.classList.add('hit')}}
+    turn++;if(hp[o]<=0){setTimeout(finish,500);return}setTimeout(step,matchMedia('(prefers-reduced-motion:reduce)').matches?80:650)};
+  const finish=()=>{T.done=true;T.running=false;const r=$('#btres');if(!r)return;
+    if(!T.win){r.innerHTML=`<span>תיקו: אף אחד מהם לא יכול לפגוע בשני.</span>`}
+    else{const W=T.win==='a'?T.A:T.B,L=T.win==='a'?T.B:T.A,xw=T.win==='a'?T.xa:T.xb,xl=T.win==='a'?T.xb:T.xa;$('#bt-'+T.win)?.classList.add('win');
+      const why=xw.hits<xl.hits?(xw.m>xl.m?'בזכות יתרון הסוג':'בזכות כוח מול הגנה'):'כי הוא מהיר יותר ומכה ראשון';
+      r.innerHTML=`<span>🏆 <bdi>${esc(finalName(W.l))}</bdi> מנצח, ${why}.</span>`}
+    r.classList.add('show')};
+  step();
+}
+
 // ---------- Hall of Fame ----------
 function hofStep(d){
   const step=HOF_STEPS[HOF];
@@ -1210,7 +1312,7 @@ function renderHof(){
     oakPrep('oak:'+l.id,()=>oakPages(R).map(x=>[x,-1]));
     h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="oakmon" ${artAttr(l)} alt="">${oakBox()}</div>`;
   }
-  cv.innerHTML=h;
+  cv.innerHTML=h;deckPub();
   if(step==='types')layoutTypes(false);
   if(OAK_STEPS.includes(step)&&S.oakPages)oakGo();
 }
@@ -1563,6 +1665,7 @@ function renderPanel(){
   <p class="muted" style="font-size:13px">רק כמויות. מה כל אחד ענה לא מוצג בשום מקום.</p>
   <div class="row"><span class="muted">סבב פתוח: ${open||'אין'}</span>${[1,2,3,4].map(k=>`<button class="btn ghost small" data-pa="open" data-k="${k}">פתיחת ${k}</button>`).join('')}</div>
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
+  <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
   <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
   ${S.confirmReset?`<div class="row"><span class="grow">למחוק את כל התשובות, המשתתפים ושאלת מיו?</span><button class="btn red small" data-pa="reset2">כן, למחוק</button><button class="btn ghost small" data-pa="reset0">ביטול</button></div>`:''}`;
@@ -1578,7 +1681,7 @@ function renderPanel(){
     if(a==='reset0'){S.confirmReset=false;renderPanel()}
     if(a==='reset2'){S.confirmReset=false;await resetAll()}
   };
-  p.onchange=e=>{if(e.target.id==='jump'){POS=+e.target.value;show(true)}};
+  p.onchange=e=>{if(e.target.id==='jump'){POS=+e.target.value;show(true)}if(e.target.id==='presenter'){setState({presenter:e.target.value});toast(e.target.value?'המרצה: '+e.target.value:'בלי שלט')}};
 }
 async function demoFill(){
   let ros=inRoom();
