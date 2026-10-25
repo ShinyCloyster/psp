@@ -235,6 +235,49 @@ table.prog th{color:var(--mist);font-weight:500}
 .ph{padding:0;border:3px solid transparent;border-radius:10px;overflow:hidden;background:var(--night3);aspect-ratio:1}
 .ph img{width:100%;height:100%;object-fit:cover;display:block}.ph.on{border-color:var(--gold)}
 .gear:hover{opacity:1}
+.board{background:radial-gradient(circle at 50% 40%,#262C58 0%,#12152A 75%)}
+.bd-head{position:absolute;top:26px;right:40px;left:40px;height:104px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.bd-eb{font-family:var(--pixel);font-size:16px;color:var(--gold)}.bd-title{font-family:var(--display);font-size:52px;line-height:1.1}
+.bd-chips{display:flex;gap:10px;flex-wrap:wrap;direction:rtl;justify-content:flex-start;max-width:900px}
+.bd-chip{min-width:46px;height:46px;padding:0 14px;border-radius:23px;display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--line);color:var(--mist);font:700 20px var(--body);transition:all .4s}
+.bd-chip.done{background:rgba(242,201,76,.18);border-color:rgba(242,201,76,.5);color:var(--cream)}.bd-chip.on{background:var(--gold);border-color:var(--gold);color:#161A2E;transform:scale(1.15)}
+.bd-chip.mew{border-color:#E879F9}
+.bd-p{position:absolute;width:600px;height:450px;background:rgba(32,37,63,.85);border:2px solid var(--line);border-radius:26px;padding:22px 26px}
+.bd-h{font-family:var(--display);font-size:32px;color:var(--cream);margin-bottom:12px}
+.tbars{display:flex;gap:2px;height:350px;align-items:flex-end;direction:ltr}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%}
+.tbt{flex:1;width:100%;display:flex;align-items:flex-end;border-radius:6px;background:rgba(255,255,255,.05)}
+.tbf{width:100%;height:0;border-radius:6px;transition:height .9s cubic-bezier(.2,.8,.2,1);opacity:.55}
+.tb .tbt.hot .tbf{opacity:1;box-shadow:0 0 18px rgba(242,201,76,.6)}
+.ebars{display:flex;flex-direction:column;gap:26px;margin-top:20px}
+.ebr{display:grid;grid-template-columns:200px 1fr 70px;gap:14px;align-items:center;font-size:24px;color:var(--mist);transition:color .4s}
+.ebr b{font-family:var(--pixel);font-size:18px;color:var(--cream);direction:ltr;text-align:left}
+.etr{height:22px;border-radius:11px;background:rgba(255,255,255,.08);overflow:hidden}
+.ebf{height:100%;width:0;border-radius:11px;background:var(--sky);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.ebr.hot{color:var(--gold)}.ebr.hot .ebf{background:var(--gold)}
+.xrows{position:relative;height:360px}
+.kr{position:absolute;right:0;left:0;display:flex;align-items:center;gap:14px;transition:top .8s cubic-bezier(.2,.8,.2,1),opacity .5s,transform .5s,height .6s}
+.xn{width:110px;font-size:24px;font-weight:700}.kr .etr{flex:1}
+.bd-c{position:absolute;left:680px;width:560px;top:150px;height:920px;background:rgba(22,26,46,.92);border:3px solid var(--gold);border-radius:30px;padding:20px 22px;box-shadow:0 0 60px rgba(242,201,76,.15)}
+.bd-c .bd-h{font-family:var(--pixel);font-size:24px;color:var(--gold);text-align:center}
+.rows{position:relative;height:840px}
+.kr .rk{width:44px;font-family:var(--pixel);font-size:20px;color:var(--mist);text-align:center;flex:none}
+.kr img{object-fit:contain;flex:none}.kr .nm{flex:1;min-width:0;font-family:var(--display);line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kr .pc{font-family:var(--pixel);color:var(--cream);direction:ltr;flex:none}
+.dl{font-style:normal;font:700 15px var(--body);padding:2px 8px;border-radius:999px;flex:none}.dl.up{background:rgba(110,231,160,.18);color:#6EE7A0}.dl.dn{background:rgba(228,72,63,.2);color:#FF8A80}.dl.nw{background:rgba(242,201,76,.2);color:var(--gold)}.dl.mw{background:rgba(232,121,249,.2);color:#F0ABFC}
+.kr.win{background:rgba(242,201,76,.16);border-radius:16px;box-shadow:0 0 0 3px var(--gold),0 0 40px rgba(242,201,76,.45)}
+.bd-mew{position:absolute;right:22px;left:22px;bottom:84px;display:grid;grid-template-columns:1fr 1fr;gap:10px;opacity:0;transition:opacity .6s}.bd-mew.show{opacity:1}
+.mc{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.05);border:2px solid var(--line);border-radius:16px;padding:8px 10px;transition:all .4s}
+.mc img{width:54px;height:54px;object-fit:contain;flex:none}.mc .mt{font-size:15px;line-height:1.3;color:var(--cream);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.mc>div{min-width:0}.mc{min-height:118px}.mc .mv{font-size:13px;color:var(--gold);margin-top:4px}
+.mc.hit{border-color:#E879F9;box-shadow:0 0 24px rgba(232,121,249,.5);transform:scale(1.04)}
+.bd-step{position:absolute;bottom:30px;left:680px;width:560px;text-align:center;pointer-events:none}
+.bd-step span{display:inline-block;background:var(--gold);color:#161A2E;font:700 22px var(--body);padding:8px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:bdpop .5s}
+@keyframes bdpop{from{transform:translateY(20px);opacity:0}}
+.bd-oak{position:absolute;left:0;right:0;bottom:0;height:360px;display:flex;align-items:flex-end;justify-content:center;gap:20px;padding:0 120px 40px;opacity:0;transform:translateY(60px);transition:all .6s;pointer-events:none}
+.bd-oak.show{opacity:1;transform:none}
+.bd-oak img{height:300px;image-rendering:pixelated}
+.bd-bub{position:relative;flex:1;max-width:1300px;background:#F8F8F8;color:#1E2238;border:8px solid #303840;border-radius:20px;box-shadow:inset 0 0 0 6px #F8F8F8,inset 0 0 0 11px #6890B0;padding:34px 46px;font-size:38px;line-height:1.45;min-height:200px}
+.bd-bub .gbtri{position:absolute;left:24px;bottom:12px}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -284,6 +327,7 @@ const PSP = (() => {
   }
 
   function raterWeights(raters) {
+    if (raters.length && raters.every(r => r.absW != null)) return raters.map(r => r.absW); // fixed final weights (Hall of Fame build-up)
     const others = raters.filter(r => r.role !== "self");
     const hasSelf = raters.some(r => r.role === "self");
     let raw;
@@ -390,6 +434,7 @@ const PSP = (() => {
     res.sort((a, b) => b.rank - a.rank);
     return {
       main: res.filter(r => !r.line.legendary).slice(0, 8),
+      top: res.filter(r => !r.line.legendary).slice(0, 20),
       legends: res.filter(r => r.line.legendary).slice(0, 3),
       gaps: blindSpots(profile.raters, { types: ax.types, stats: ax.stats, evo: ax.evo }, floor),
       agg, axes, floor, weights: raterWeights(profile.raters),
@@ -836,7 +881,7 @@ function bindPhone(){
 // SCREEN: deck + live snapshots + Hall of Fame
 // =====================================================================
 let SEQ=[],POS=+(store.get('psp-pos')||0),BUILD=0,SUB=0,HOF=0;
-const HOF_STEPS=['intro','types','stats','evo','gaps','mewvotes','ball','reveal','oak','runners','legend','mewmap','map'];
+const HOF_STEPS=['intro','board','ball','reveal','oak','gaps','legend','map'];
 async function startScreen(){
   const app=$('#app');
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
@@ -969,9 +1014,10 @@ function profile(){
 }
 function sprite(line,species){const pid=S.engine.spr[line.id+':'+species]||String(species);return S.sprites[pid]||S.sprites[String(species)]||''}
 const spriteURL=b=>b?`data:image/png;base64,${b}`:'';
-const finalName=line=>line.name.split(' → ').pop();
+const BREED={'10250':'Combat','10251':'Blaze','10252':'Aqua'};
+const finalName=line=>line.name.split(' → ').pop()+(BREED[line.id]?` (${BREED[line.id]})`:'');
 function artAttr(l){const sp=l.species.at(-1),pid=S.engine.spr[l.id+':'+sp]||String(sp),a=S.art&&S.art[pid];return a?`src="data:image/webp;base64,${a}"`:`class="pix" src="${spriteURL(sprite(l,sp))}"`}
-function loadArt(){if(S.artLoading)return;S.artLoading=true;S.art={};for(let i=0;i<6;i++)fetch('art'+i+'.json').then(r=>r.json()).then(b=>{Object.assign(S.art,b);if(cur()?.kind==='hof'&&['reveal','runners','legend','mewmap','map'].includes(HOF_STEPS[HOF]))renderHof()}).catch(()=>{})}
+function loadArt(){if(S.artLoading)return;S.artLoading=true;S.art={};for(let i=0;i<6;i++)fetch('art'+i+'.json').then(r=>r.json()).then(b=>{Object.assign(S.art,b);if(cur()?.kind==='hof'&&['reveal','legend','map'].includes(HOF_STEPS[HOF]))renderHof()}).catch(()=>{})}
 function computeResult(){
   const pr=profile();
   if(!pr.raters.length){S.R=null;return}
@@ -990,7 +1036,7 @@ async function maybeMew(){
   const m=S.state.mew,stale=m?.status==='working'&&!S.mewBusy&&(!m.at||Date.now()-Date.parse(m.at)>30000);
   if(m&&m.status!=='none'&&!stale)return;
   // everyone still in the game (anyone who has started answering) must have finished all 150
-  const act=stats().filter(x=>x.all>0);if(!act.length||act.some(x=>x.all<150))return;
+  const act=stats();if(!act.length||act.some(x=>x.all<150))return;
   if(S.mewBusy)return;buildMew();
 }
 async function buildMew(){
@@ -1040,6 +1086,7 @@ function liveHTML(k){
 // ---------- Hall of Fame ----------
 function hofStep(d){
   const step=HOF_STEPS[HOF];
+  if(step==='board'&&boardStep(d))return true;
   if(d>0){
     if(step==='types'&&SUB===0){SUB=1;animateTypes();return true}
     if(step==='types'&&SUB===1&&S.typesBusy)return true;
@@ -1061,7 +1108,7 @@ function renderHof(){
   if(!R){cv.innerHTML=hofShell('POKÉMON LEAGUE · HALL OF FAME','היכל התהילה','',`<div class="center"><p class="lead">עוד אין תשובות.</p></div>`);return}
   let h='';
   if(step==='intro'){
-    h=`<div class="st"><div style="position:absolute;left:150px;bottom:110px">${avFull(subjP(),560)}</div><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">POKÉMON LEAGUE · HALL OF FAME</p><div class="big">היכל התהילה של ${n}</div><div class="ball wobble" style="--s:220px"></div><p class="lead" style="max-width:1000px">לפני שפותחים את הפוקבול: הסוגים, הסטטים, הדרך להתפתח, ומה ${n} לא רואה בעצמו.</p></div></div>`;
+    h=`<div class="st"><div style="position:absolute;left:150px;bottom:110px">${avFull(subjP(),560)}</div><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">POKÉMON LEAGUE · HALL OF FAME</p><div class="big">היכל התהילה של ${n}</div><div class="ball wobble" style="--s:220px"></div><p class="lead" style="max-width:1000px">לפני שפותחים את הפוקבול: נראה איך כל התשובות שלכם, אחת אחרי השנייה, בונות את הפוקימון של ${n}.</p></div></div>`;
   }
   else if(step==='types'){
     h=hofShell('TYPES · 1/3',`הסוגים של ${n}`,'18 הסוגים. לחיצה אחת, והם מסתדרים מהכי רחוק להכי קרוב.',`<div id="tstage" style="position:absolute;left:0;top:0;width:1920px;height:1080px"></div>`);
@@ -1082,6 +1129,7 @@ function renderHof(){
     h=hofShell('#151 · MEW BONUS','מה בחרתם במבחן של מיו?',`ארבעה היגדים, כל אחד נבנה מערך פוקדקס של אחד מארבעת הפוקימונים הקרובים ביותר ל${n}. בלי שמות.`,
       `<div style="position:absolute;top:300px;bottom:50px;right:110px;left:110px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:22px">${m?.status==='ready'?m.statements.map(s=>`<div class="card2" style="padding:20px 28px;justify-content:space-between"><p style="font-size:28px;line-height:1.4">${esc(s.text)}</p><div style="display:flex;align-items:center;gap:18px"><div style="flex:1;height:22px;border-radius:11px;background:rgba(255,255,255,.1);overflow:hidden"><div style="height:100%;width:${votes.total?(votes[s.id]||0)/votes.total*100:0}%;background:var(--gold)"></div></div><b style="font-family:var(--pixel);font-size:24px;color:var(--gold)">${votes[s.id]||0}</b></div>${voterChips(s.id,24)}</div>`).join(''):'<p class="lead">שאלת מיו עוד לא נשלחה.</p>'}</div>`);
   }
+  else if(step==='board'){boardStart();if(S.bd?.plan)return}
   else if(step==='ball'){
     h=`<div class="st"><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">600 LINES · 1 POKÉ BALL</p><div class="big">מי מסתתר בפוקבול של ${n}?</div><div class="ball wobble" id="bigball" style="--s:300px"></div></div></div>`;
   }
@@ -1091,7 +1139,7 @@ function renderHof(){
     h=`<div class="st"><div class="center" style="gap:18px"><p class="lead">${n} ${gs('הוא','היא')}…</p><img ${artAttr(l)} alt="${esc(finalName(l))}" style="width:320px;height:320px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))">
     <div class="big">${esc(finalName(l))}</div><div style="display:flex;gap:16px;justify-content:center">${types.map(plateH).join('')}</div>
     ${l.species.length>1?`<div style="display:flex;gap:26px;align-items:flex-end;direction:ltr">${l.species.map((s,i)=>`${i?'<span style="color:var(--gold);font-size:40px;padding-bottom:40px">→</span>':''}<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><img class="pix" src="${spriteURL(sprite(l,s))}" alt="" style="width:96px;height:96px"><span style="font-size:20px;color:var(--mist)">${esc(l.name.split(' → ')[i])}</span></div>`).join('')}</div>`:''}
-    <p class="pct">${(t.total*100).toFixed(1)}% MATCH</p>
+    <p class="pct">${(t.rank*100).toFixed(1)}% MATCH</p>
     ${ent.en?`<div class="dexbox"><span class="dexlab">POKÉDEX</span><p dir="ltr" lang="en">${esc(ent.en)}</p>${ent.he?`<p class="he">${esc(ent.he)}</p>`:''}</div>`:''}</div></div>`;
   }
   else if(step==='runners'){
@@ -1119,6 +1167,123 @@ function renderHof(){
   if(step==='types')layoutTypes(false);
   if(step==='oak')oakType();
 }
+// ---------- Hall of Fame dashboard: 4 layer panels + live top list, built up rater by rater ----------
+function boardPlan(){
+  const full=profile().raters;if(!full.length)return null;
+  const w=PSP.raterWeights(full);
+  const self=full.map((r,i)=>({r,w:w[i]})).filter(x=>x.r.role==='self');
+  const others=full.map((r,i)=>({r,w:w[i]})).filter(x=>x.r.role!=='self').sort((a,b)=>b.w-a.w);
+  const order=[...self,...others],n=others.length,hasSelf=self.length>0;
+  const ph=[{k:'zero'},{k:'oak'}];
+  order.forEach((o,j)=>{const isSelf=o.r.role==='self',num=hasSelf?j:j+1;
+    ph.push({k:isSelf?'self':'p',num,upto:j+1,w:o.w,top:isSelf?20:(num===1&&n>2?15:(num>=n-1?5:10))})});
+  const ms=S.state?.mew?.statements||[];
+  if(ms.length){ph.push({k:'mew',upto:order.length,top:5});
+    order.forEach((o,j)=>{const v=S.answers[o.r.pid]?.mew;if(v&&ms.find(s=>s.id===v))ph.push({k:'vote',upto:order.length,top:5,voter:j,sid:v})})}
+  ph.push({k:'final',upto:order.length,top:5});
+  return {order,ph,n,hasSelf,ms};
+}
+function boardCompute(B,i){
+  const p=B.ph[i];if(!p.upto)return null;
+  const raters=B.order.slice(0,p.upto).map(o=>({...o.r,absW:o.w}));
+  let dex=null;
+  if(p.k==='vote'||p.k==='final'){dex={};const line={};B.ms.forEach(s=>line[s.id]=s.lineId);
+    B.ph.slice(0,i+1).forEach(q=>{if(q.k==='vote'){const l=line[q.sid];dex[l]=(dex[l]||0)+B.order[q.voter].w}})}
+  return PSP.run({raters},S.engine,dex);
+}
+function boardVotesUpTo(B,i){const v={};B.ph.slice(0,i+1).forEach(q=>{if(q.k==='vote')(v[q.sid]=v[q.sid]||[]).push(q.voter)});return v}
+function boardWho(B,j){const o=B.order[j];return o.r.role==='self'?esc(subjectName()):`משתתף ${B.hasSelf?j:j+1}`}
+function boardFrame(B){
+  const ax=S.engine.axes,n=esc(subjectName());
+  const chips=B.ph.map((p,i)=>p.k==='self'?`<span class="bd-chip" data-i="${i}">${n}</span>`:p.k==='p'?`<span class="bd-chip" data-i="${i}">${p.num}</span>`:p.k==='mew'?`<span class="bd-chip mew" data-i="${i}">מיו</span>`:'').join('');
+  const tb=ax.types.map(t=>`<div class="tb"><div class="tbt"><div class="tbf" id="tbf-${t}" style="background:${TYPE_COL[t]}"></div></div><div class="tic" style="position:relative;width:28px;height:28px;background:${TYPE_COL[t]}"><svg viewBox="0 0 512 512">${TICON[t]}</svg></div></div>`).join('');
+  const N=6,cx=200,cy=190,R0=140,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/N;return [cx+Math.cos(a)*R0*r,cy+Math.sin(a)*R0*r]};
+  const grid=[.25,.5,.75,1].map(r=>`<polygon points="${[0,1,2,3,4,5].map(i=>pt(i,r).join(',')).join(' ')}" fill="none" stroke="#3A4170" stroke-width="2"/>`).join('')+[0,1,2,3,4,5].map(i=>`<line x1="${cx}" y1="${cy}" x2="${pt(i,1)[0]}" y2="${pt(i,1)[1]}" stroke="#3A4170" stroke-width="2"/>`).join('');
+  const labs=ax.stats.map((s,i)=>{const [x,y]=pt(i,1.25);return `<text x="${x}" y="${y+7}" text-anchor="middle" font-size="20" font-weight="700" fill="#B9BDD6">${STAT_SHORT[s]}</text>`}).join('');
+  const ev=ax.evo.map(k=>`<div class="ebr"><span>${EVO_HE[k]}</span><div class="etr"><div class="ebf" id="ebf-${k}"></div></div><b id="ebv-${k}">0%</b></div>`).join('');
+  return `<div class="st board">
+   <div class="bd-head"><div><p class="bd-eb">POKÉMON LEAGUE · HALL OF FAME</p><p class="bd-title">היכל התהילה של ${n}</p></div><div class="bd-chips">${chips}</div></div>
+   <div class="bd-p" style="right:40px;top:150px"><p class="bd-h">סוגים</p><div class="tbars">${tb}</div></div>
+   <div class="bd-p" style="left:40px;top:150px"><p class="bd-h">סטטים</p><svg viewBox="0 0 400 380" width="440" height="400" style="display:block;margin:-6px auto 0">${grid}<polygon id="radpoly" points="" fill="rgba(242,201,76,.32)" stroke="#F2C94C" stroke-width="4"/>${labs}</svg></div>
+   <div class="bd-p" style="right:40px;top:620px"><p class="bd-h">צורת התפתחות</p><div class="ebars">${ev}</div></div>
+   <div class="bd-p" style="left:40px;top:620px"><p class="bd-h">הסוג הנוסף</p><div class="xrows" id="bdX"></div></div>
+   <div class="bd-c"><p class="bd-h" id="bdTop">TOP 20</p><div class="rows" id="bdRows"></div><div id="bdMew" class="bd-mew"></div></div>
+   <div class="bd-step" id="bdStep"></div>
+   <div class="bd-oak" id="bdOak"><img src="img/tr-oak.webp" alt="פרופסור אוק"><div class="bd-bub"><p id="bdOakT"></p><span class="gbtri">▼</span></div></div>
+  </div>`;
+}
+function boardOakPages(){const n=subjectName();return [
+  `ברוכים הבאים להיכל התהילה! מה שאתם רואים עכשיו הוא בדיוק מה שהמנוע רואה.`,
+  `בארבע הפינות: ארבע השכבות של ההתאמה. סוגים, סטטים, צורת ההתפתחות והסוג הנוסף. באמצע: הליינים הכי קרובים ל${n}.`,
+  `נתחיל ממה ש${n} ${gs('ענה','ענתה')} על ${gs('עצמו','עצמה')}, 45% מהמשקל. אחר כך נוסיף אתכם, אחד אחד ובלי שמות. הרשימה תצטמצם, ובסוף מיו יכריע.`]}
+function tweenRadar(to){
+  const el=$('#radpoly');if(!el)return;const from=S.bd.rad||[0,0,0,0,0,0];S.bd.rad=to.slice();
+  const N=6,cx=200,cy=190,R0=140,pts=v=>v.map((r,i)=>{const a=-Math.PI/2+i*2*Math.PI/N;return [cx+Math.cos(a)*R0*r,cy+Math.sin(a)*R0*r].join(',')}).join(' ');
+  const t0=performance.now(),D=800;cancelAnimationFrame(S.bd.raf);
+  const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);el.setAttribute('points',pts(from.map((f,i)=>f+(to[i]-f)*e)));if(k<1)S.bd.raf=requestAnimationFrame(step)};
+  S.bd.raf=requestAnimationFrame(step);
+}
+function countUp(el,from,to){const t0=performance.now(),D=700;const st=t=>{const k=Math.min(1,(t-t0)/D),v=from+(to-from)*(1-Math.pow(1-k,3));el.textContent=v.toFixed(1)+'%';if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)}
+function boardUpdate(){
+  const B=S.bd.plan,i=S.bd.i,p=B.ph[i],R=boardCompute(B,i),ax=S.engine.axes,n=esc(subjectName());
+  document.querySelectorAll('.bd-chip').forEach(c=>{const ci=+c.dataset.i;c.classList.toggle('on',ci===i||(p.k==='vote'&&B.ph[ci].k==='mew'));c.classList.toggle('done',ci<i)});
+  // step banner
+  let banner='';
+  if(p.k==='zero')banner=`כל הליינים מתחילים מ־0%`;
+  if(p.k==='self')banner=`${n} על ${gs('עצמו','עצמה')} · ${Math.round(p.w*100)}% מהמשקל`;
+  if(p.k==='p')banner=`נוספו התשובות של משתתף ${p.num} · ${Math.round(p.w*100)}% מהמשקל`;
+  if(p.k==='mew')banner=`שאלת הבונוס של מיו · כל בחירה מוסיפה עד 2% להיגד שנבחר`;
+  if(p.k==='vote'){const s=B.ms.find(x=>x.id===p.sid),who=B.order[p.voter].r;banner=`${esc(who.name)} ${genderOf(person(who.pid))==='f'?'בחרה':'בחר'} ב־${esc(s?.name||'')}`}
+  if(p.k==='final')banner=`זהו. ${gs('הפוקימון של','הפוקימון של')} ${n} נבחר.`;
+  $('#bdStep').innerHTML=banner?`<span>${banner}</span>`:'';
+  // oak bubble
+  const oak=$('#bdOak');oak.classList.toggle('show',p.k==='oak');
+  if(p.k==='oak'){const pg=boardOakPages();$('#bdOakT').textContent=pg[S.bd.oak]}
+  // panels
+  const agg=R?R.agg:null;
+  const types=agg?agg.types:ax.types.map(()=>1),top2=agg?types.map((v,j)=>j).sort((a,b)=>types[b]-types[a]).slice(0,2):[];
+  ax.types.forEach((t,j)=>{const el=$('#tbf-'+t);if(el){el.style.height=(pct(types[j])*100)+'%';el.parentElement.classList.toggle('hot',top2.includes(j))}});
+  const st=agg?agg.stats:[1,1,1,1,1,1];tweenRadar(st.map(v=>Math.max(.04,pct(v))));
+  ax.evo.forEach((k,j)=>{const v=agg?agg.evo[j]:1,f=$('#ebf-'+k),b=$('#ebv-'+k);if(f)f.style.width=(pct(v)*100)+'%';if(b)b.textContent=Math.round(pct(v)*100)+'%'});
+  const best=agg?ax.evo.map((k,j)=>j).sort((a,b)=>agg.evo[b]-agg.evo[a])[0]:-1;
+  document.querySelectorAll('.ebr').forEach((r,j)=>r.classList.toggle('hot',j===best));
+  // extra type: top 5 pulls besides the two main types
+  const ex=agg?.extra_types||[];const xs=agg?ax.types.map((t,j)=>({t,v:ex[j]})).filter((x,j)=>!top2.includes(j)).sort((a,b)=>b.v-a.v).slice(0,5):[];
+  keyedRows($('#bdX'),xs.map((x,j)=>({key:'x-'+x.t,h:62,html:`<div class="tic" style="position:relative;width:44px;height:44px;flex:none;background:${TYPE_COL[x.t]}"><svg viewBox="0 0 512 512">${TICON[x.t]}</svg></div><span class="xn">${TYPE_HE[x.t]}</span><div class="etr"><div class="ebf" style="width:${pct(x.v)*100}%;background:${TYPE_COL[x.t]}"></div></div>`})),j=>j*72);
+  // center list
+  const N=p.top||20;$('#bdTop').textContent=`TOP ${N}`;
+  const mewPhase=['mew','vote','final'].includes(p.k),rowH=mewPhase?78:Math.min(150,Math.floor(790/N)),list=R?R.top.slice(0,N):[];
+  const prev=S.bd.ranks||{},next={};list.forEach((t,j)=>next[t.line.id]=j);
+  const votes=boardVotesUpTo(B,i),mewLine={};B.ms.forEach(s=>mewLine[s.lineId]=s);
+  keyedRows($('#bdRows'),list.map((t,j)=>{const l=t.line,id=l.id,d=prev[id]==null?null:prev[id]-j,img=Math.round(Math.min(104,rowH*.86));
+    const delta=!R||!S.bd.ranks?'':d==null?'<i class="dl nw">NEW</i>':d>0?`<i class="dl up">▲${d}</i>`:d<0?`<i class="dl dn">▼${-d}</i>`:'';
+    const mw=mewPhase&&mewLine[id]?`<i class="dl mw">✦ מיו</i>`:'';
+    return {key:'r-'+id,h:rowH,cls:(p.k==='final'&&j===0)?'win':'',html:`<b class="rk">${j+1}</b><img ${artAttr(l)} alt="" style="width:${img}px;height:${img}px"><span class="nm" style="font-size:${Math.max(18,Math.min(32,rowH*.32))}px">${esc(finalName(l))}</span>${mw}${delta}<b class="pc" data-v="${(t.rank*100).toFixed(2)}" style="font-size:${Math.max(16,Math.min(28,rowH*.26))}px">${(t.rank*100).toFixed(1)}%</b>`}}),j=>j*rowH);
+  document.querySelectorAll('#bdRows .pc').forEach(el=>{const id=el.parentElement.dataset.key,v=+el.dataset.v,o=S.bd.pcts?.[id];if(o!=null&&Math.abs(o-v)>.05)countUp(el,o,v)});
+  S.bd.pcts={};document.querySelectorAll('#bdRows .pc').forEach(el=>S.bd.pcts[el.parentElement.dataset.key]=+el.dataset.v);
+  S.bd.ranks=R?next:null;
+  // Mew cards
+  const mc=$('#bdMew');
+  if(mewPhase){mc.innerHTML=B.ms.map(s=>{const l=S.engine.lines.find(x=>x.id===s.lineId),vs=(votes[s.id]||[]).map(j=>B.order[j].r);
+    return `<div class="mc${p.k==='vote'&&p.sid===s.id?' hit':''}">${l?`<img ${artAttr(l)} alt="">`:''}<div><p class="mt">״${esc(s.text)}״</p><p class="mv">${vs.length?vs.map(r=>esc(r.name)).join(' · '):'<span style="opacity:.5">עוד אף אחד</span>'}</p></div></div>`}).join('');mc.classList.add('show')}
+  else{mc.classList.remove('show');mc.innerHTML=''}
+}
+function keyedRows(box,items,topOf){
+  if(!box)return;const have={};[...box.children].forEach(el=>have[el.dataset.key]=el);const keep=new Set();
+  items.forEach((it,j)=>{let el=have[it.key];const fresh=!el;
+    if(fresh){el=document.createElement('div');el.className='kr';el.dataset.key=it.key;el.style.top=topOf(j)+'px';el.style.opacity=0;box.append(el)}
+    el.className='kr '+(it.cls||'');el.innerHTML=it.html;el.style.height=it.h+'px';keep.add(it.key);
+    requestAnimationFrame(()=>{el.style.top=topOf(j)+'px';el.style.opacity=1});
+  });
+  Object.entries(have).forEach(([k,el])=>{if(!keep.has(k)){el.style.opacity=0;el.style.transform='translateX(-40px)';setTimeout(()=>el.remove(),600)}});
+}
+function boardStart(){S.bd={plan:boardPlan(),i:0,oak:0};if(!S.bd.plan)return;$('#cv').innerHTML=boardFrame(S.bd.plan);requestAnimationFrame(boardUpdate)}
+function boardStep(d){
+  const B=S.bd?.plan;if(!B)return false;const p=B.ph[S.bd.i];
+  if(p.k==='oak'){const L=boardOakPages().length;if(d>0&&S.bd.oak<L-1){S.bd.oak++;boardUpdate();return true}if(d<0&&S.bd.oak>0){S.bd.oak--;boardUpdate();return true}}
+  const ni=S.bd.i+d;if(ni<0||ni>=B.ph.length)return false;S.bd.i=ni;if(B.ph[ni].k==='oak')S.bd.oak=d>0?0:boardOakPages().length-1;boardUpdate();return true;
+}
+
 function plateH(t){return `<span class="tplate" style="background:${TYPE_COL[t]}"><span class="mini"><svg viewBox="0 0 512 512">${TICON[t]}</svg></span>${TYPE_HE[t]}</span>`}
 function gbar(col,v,label){return `<div style="display:grid;grid-template-columns:250px 1fr 90px;gap:16px;align-items:center;font-size:26px;color:var(--mist)"><span style="display:flex;align-items:center;gap:10px">${label}</span><div style="height:26px;border-radius:13px;background:rgba(255,255,255,.1);overflow:hidden"><div style="height:100%;width:${pct(v)*100}%;background:${col}"></div></div><b style="font-family:var(--pixel);font-size:22px;color:var(--cream);direction:ltr">${v.toFixed(1)}</b></div>`}
 function othersStack(sz){const o=roster().filter(p=>p.role!=='self');return `<span style="display:inline-flex">${o.map((p,i)=>`<span style="margin-inline-start:${i?-sz*0.4:0}px">${avHead(p,sz,'#161A2E')}</span>`).join('')}</span>`}
@@ -1202,7 +1367,7 @@ function openBall(){
 async function publishResult(){
   if(S.previewRemote)return;
   const top=S.R.main[0],l=top.line;
-  await setState({revealed:true,result:{lineId:l.id,lineName:l.name,finalName:finalName(l),types:l.stage_types.at(-1),pct:Math.round(top.total*1000)/10,legend:S.R.legends[0]?finalName(S.R.legends[0].line):'',spriteData:sprite(l,l.species.at(-1))}});
+  await setState({revealed:true,result:{lineId:l.id,lineName:l.name,finalName:finalName(l),types:l.stage_types.at(-1),pct:Math.round(top.rank*1000)/10,legend:S.R.legends[0]?finalName(S.R.legends[0].line):'',spriteData:sprite(l,l.species.at(-1))}});
 }
 // ---------- Professor Oak ----------
 // regional forms share species lore in the source data; lineFlavor holds the form's own entry
