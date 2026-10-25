@@ -210,7 +210,7 @@ table.prog th{color:var(--mist);font-weight:500}
 .gbtri{position:absolute;left:46px;bottom:26px;font-size:40px;color:#E04848;animation:gbbl .8s steps(2) infinite}
 .gbpage{position:absolute;right:46px;bottom:22px;font-family:var(--pixel);font-size:18px;color:#8890A0}
 @keyframes gbbl{50%{opacity:0}}
-.gbname{position:absolute;right:120px;bottom:378px;background:#303840;color:#F8F8F8;font-family:var(--pixel);font-size:24px;padding:10px 24px;border-radius:12px 12px 0 0;direction:rtl}
+.gbname{position:absolute;right:120px;bottom:398px;z-index:3;background:#303840;color:#F8F8F8;font-family:var(--display);font-size:32px;line-height:1.2;padding:8px 30px 10px;border-radius:14px 14px 0 0;direction:rtl}
 .dial{position:relative;flex:none}
 .dial svg{position:absolute;inset:0;overflow:visible}
 .dial .arc{transition:stroke-dasharray 1s cubic-bezier(.3,.8,.3,1)}
@@ -1073,6 +1073,8 @@ function dexVotes(raters){
 async function maybeMew(){
   if(!S.engine||!S.state||S.previewRemote)return;
   const m=S.state.mew,stale=m?.status==='working'&&!S.mewBusy&&(!m.at||Date.now()-Date.parse(m.at)>30000);
+  if(m?.status==='ready'&&!S.mewBusy&&!Object.values(S.answers).some(a=>a.mew)&&Date.now()-(S.mewChk||0)>5000){S.mewChk=Date.now();
+    try{computeResult();const now=S.R.main.slice(0,4).map(t=>t.line.id).sort().join(),had=m.statements.map(x=>x.lineId).sort().join();if(now!==had){buildMew();return}}catch(e){}}
   if(m&&m.status!=='none'&&!stale)return;
   // everyone still in the game (anyone who has started answering) must have finished all 150
   const act=stats();if(!act.length||act.some(x=>x.all<150))return;
@@ -1463,7 +1465,18 @@ function oakPages(R){
     :ranks.map((x,j)=>`${j?'ו':''}${TYPE_HE[x.t]} אצלך ${place(x.t)}`).join(', ')+'.';
   P.push(ranks[0].r<=2?`נתחיל בסוגים. הסוגים הכי חזקים שלך היו ${TYPE_HE[tt[0]]} ו${TYPE_HE[tt[1]]}. ל־${name} יש ${ltHe}: ${where} ${TYPE_HE[bestT]} ב־PSP זה ${meaning(bestT)}. שכבת הסוגים לבד התאימה ב־${pct(t.sims.types)}.`
     :`נתחיל בסוגים. הסוגים הכי חזקים שלך היו ${TYPE_HE[tt[0]]} ו${TYPE_HE[tt[1]]}. ל־${name} יש ${ltHe}: ${where} הם לא בראש הרשימה שלך, אבל קרובים מספיק. וזה המקום להזכיר: הפוקימון נבחר מכל השכבות יחד, לא רק מהסוגים.`);
-  P.push(`עכשיו הסטטים. הסטט הכי בולט שלך הוא ${sn(sStat[0])}, ${sh(sStat[0])}, ואחריו ${sn(sStat[1])}, ${sh(sStat[1])}.${bTop.length?` אצל ${name} הסטטים הכי גבוהים הם ${bTop.map(sn).join(' ו־')}.`:''} צורת הסטטים שלכם התאימה ב־${pct(t.sims.stats)}, וזה אחד הדברים שהכי קירבו בינך לבין ${name}.`);
+  {const uTop=sStat.slice(0,2),bLow=base.length?ax.stats[ord(base).at(-1)]:null,common=uTop.filter(k=>bTop.includes(k));
+   const st=R.agg.stats,flat=Math.max(...st)-Math.min(...st)<0.35;
+   // which layers actually pulled this line up: weighted contribution of each layer
+   const W={types:.40,stats:.30,evo:.18,extra_types:.07},contrib=Object.keys(W).map(k=>[k,W[k]*(t.sims[k]||0)]).sort((a,b)=>b[1]-a[1]),statsLead=contrib[0][0]==='stats'||t.sims.stats>=t.sims.types;
+   let txt=flat?`עכשיו הסטטים. הפרופיל שלך די מאוזן, בלי סטט אחד שבולט בהרבה. הכי גבוהים יצאו ${sn(uTop[0])}, ${sh(uTop[0])}, ו־${sn(uTop[1])}, ${sh(uTop[1])}.`
+     :`עכשיו הסטטים. אצלך הכי גבוהים יצאו ${sn(uTop[0])}, ${sh(uTop[0])}, ו־${sn(uTop[1])}, ${sh(uTop[1])}.`;
+   if(bTop.length){txt+=` אצל ${name} הכי גבוהים הם ${bTop.map(sn).join(' ו־')}`;
+     txt+=common.length===2?', בדיוק אותם שניים!':common.length===1?`, כך ש־${sn(common[0])} נמצא בראש אצל שניכם.`:'. לא אותם סטטים, אבל הצורה הכללית קרובה.';
+     const clash=uTop.find(k=>k===bLow);if(clash)txt+=` רק ש־${sn(clash)}, שאצלך גבוה, הוא דווקא הנקודה החלשה של ${name}.`}
+   txt+=statsLead?` צורת הסטטים שלכם התאימה ב־${pct(t.sims.stats)}, וזה אחד הדברים שהכי קירבו בינך לבין ${name}.`
+     :` צורת הסטטים שלכם התאימה ב־${pct(t.sims.stats)}. לא ההתאמה הכי חזקה, אבל מספיק טובה כדי לא להרחיק אתכם.`;
+   P.push(txt)}
   const lev=l.evo.some(x=>x)?ax.evo[ord(l.evo)[0]]:null;
   P.push(lev?`ואיך ${gs('אתה','את')} ${gs('מתפתח','מתפתחת')}? אצלך הדרך המובילה היא ${EVO_META[eord[0]][0]}, ${EVO_HE[eord[0]]}. ${name} מתפתח דרך ${EVO_META[lev][0]}${lev===eord[0]?', בדיוק כמוך':''}. ${BANK.constructs.evo[lev]}.`
     :`ואיך ${gs('אתה','את')} ${gs('מתפתח','מתפתחת')}? ${name} בכלל לא מתפתח: מה שרואים מההתחלה הוא מה שיש, שלם כבר מהיום הראשון. המנוע לא מעניש ולא מתגמל על זה, אבל זה בהחלט מוסיף לו אופי.`);
@@ -1570,12 +1583,18 @@ function renderPanel(){
 async function demoFill(){
   let ros=inRoom();
   if(!S.setup){ros=[{id:'subj',name:subjectName(),role:'self',weight:45},{id:'pdemo1',name:'רון',role:'partner',relation:'בן/בת זוג',weight:20},{id:'pdemo2',name:'אייל',role:'friend',relation:'חבר/ה',weight:12},{id:'pdemo3',name:'דולב',role:'friend',relation:'חבר/ה',weight:12},{id:'pdemo4',name:'דורון',role:'friend',relation:'חבר/ה',weight:11}];await S.db.doc('setup/main').set({roster:ros,demo:true})}
+  // answers first, without Mew votes, so the Mew question is built from the complete data
+  await setState({mew:{status:'none'}});
   for(const p of ros){
     const cur=S.answers[p.id]?.answers||{},a={...cur},r=rng('demo-'+p.id+Date.now()),bias={};
     BANK.items.forEach(it=>{if(it.kind==='bonus'||it.id in a)return;bias[it.dim]??=1+r()*4;a[it.id]=Math.max(1,Math.min(5,Math.round(bias[it.dim]+(r()-.5)*2)))});
-    const ms=S.state?.mew?.statements;await S.db.doc('answers/'+p.id).set({answers:a,mew:S.answers[p.id]?.mew||(ms?ms[Math.floor(r()*ms.length)].id:''),demo:true,at:new Date().toISOString()});
+    await S.db.doc('answers/'+p.id).set({answers:a,mew:'',demo:true,at:new Date().toISOString()});
   }
-  toast('מולא לבדיקה. שאלת מיו תיבנה עכשיו.');
+  toast('מולא לבדיקה. בונה את שאלת מיו…');
+  for(let k=0;k<60&&S.state?.mew?.status!=='ready';k++)await new Promise(r=>setTimeout(r,500));
+  const ms=S.state?.mew?.statements;if(!ms){toast('שאלת מיו לא נבנתה');return}
+  for(const p of ros){const r=rng('vote-'+p.id+Date.now());await S.db.doc('answers/'+p.id).set({mew:ms[Math.floor(r()*ms.length)].id},{merge:true})}
+  toast('מולא לבדיקה, כולל הצבעות מיו.');
 }
 // a snapshot of everything, kept in Firestore (the reset never touches 'archive') and downloaded as a file
 async function saveResults(){
