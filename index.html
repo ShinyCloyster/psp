@@ -227,6 +227,13 @@ table.prog th{color:var(--mist);font-weight:500}
 .gbp-menu>button.gbp-ok{justify-content:center;display:flex;width:100%;margin-top:12px;background:#E4483F;color:#fff;border:0;border-radius:8px;padding:12px;font-family:var(--display);font-size:22px}
 .btn.on{outline:3px solid var(--gold);outline-offset:2px}
 .ravail .btn{width:auto;display:inline-block;margin:4px 0 0 6px}
+#photoov{position:fixed;inset:0;z-index:40;background:rgba(10,12,24,.96);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .45s}
+#photoov.show{opacity:1;pointer-events:auto}
+#photoov img{max-width:92vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:scale(.96);transition:transform .45s}
+#photoov.show img{transform:scale(1)}
+.phgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.ph{padding:0;border:3px solid transparent;border-radius:10px;overflow:hidden;background:var(--night3);aspect-ratio:1}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}.ph.on{border-color:var(--gold)}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -503,6 +510,7 @@ async function boot(){
   S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};q.docs.forEach(d=>{const g=d.data()?.gender;if(g)S.joinedG[d.id]=g});changed()},()=>{});
+  S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
@@ -546,20 +554,21 @@ function phoneView(){
   if(me.role==='self'&&(S.intro?.live||(!S.setup&&S.view!=='setup')))return introView();
   if(me.role!=='self'&&(S.intro?.live||(S.joinedLoaded&&!S.joinedG?.[me.id])))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
+  if(me.role==='self'&&S.view==='photos')return photosView();
   if(S.state.revealed&&S.state.result)return resultCard();
   const open=S.state.open||0,P=planFor(me.id),ans=myDoc().answers;
   const all=P.rounds.flat(),done=answeredIn(all,ans);
   if(done>=150)return mewView(me);
   if(!open)return `<p class="eyebrow">TRAINER · ${esc(me.name)}</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">שלום ${esc(me.name)}</h1></div>
     <div class="card center"><h3>סבב השאלות הבא עוד לא נפתח</h3><p class="muted">השאלות יופיעו כאן לבד כשהמצגת תגיע לסבב. התשובות אנונימיות: על המסך רואים רק "${esc(subj)}" מול "הקבוצה".</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),1,{labelCol:'#F6F1E7'})}</div></div>
-    ${progressCard(P,ans)}${me.role==='self'?`<button class="btn ghost small" data-act="editsetup">עריכת המשתתפים והאחוזים</button>`:''}${switchLink(me)}`;
+    ${progressCard(P,ans)}${me.role==='self'?photosBtn():''}${me.role==='self'?`<button class="btn ghost small" data-act="editsetup">עריכת המשתתפים והאחוזים</button>`:''}${switchLink(me)}`;
   const pending=[];for(let r=0;r<open;r++)P.rounds[r].forEach(u=>{if(u.ids.some(id=>!(id in ans)))pending.push(u)});
   const avail=P.rounds.slice(0,open).flat(),total=countIds(avail),dn=answeredIn(avail,ans);
   if(S.view==='review'&&S.reviewUnit)return unitView(S.reviewUnit,me,dn,total,true);
   if(S.holdUnit)return unitView(S.holdUnit,me,dn,total,false);
   if(pending.length)return unitView(pending[0],me,dn,total,false);
   return `<p class="eyebrow">ROUND ${open}/4 · CLEAR</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">סבב ${open} הושלם</h1></div>
-  <div class="card center"><p>ענית על כל השאלות של הסבב. אפשר לנוח עד הסבב הבא. ככה כולם מתקדמים:</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),open,{labelCol:'#F6F1E7'})}</div></div>${progressCard(P,ans)}${switchLink(me)}`;
+  <div class="card center"><p>ענית על כל השאלות של הסבב. אפשר לנוח עד הסבב הבא. ככה כולם מתקדמים:</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),open,{labelCol:'#F6F1E7'})}</div></div>${progressCard(P,ans)}${me.role==='self'?photosBtn():''}${switchLink(me)}`;
 }
 
 // ----- remote questionnaire (#remote): for people who won't be at the evening. One flow, no rounds, no Mew, no results. -----
@@ -584,6 +593,22 @@ function remoteView(){
   if(S.view==='review'&&S.reviewUnit)return unitView(S.reviewUnit,me,done,total,true);
   if(S.holdUnit)return unitView(S.holdUnit,me,done,total,false);
   return unitView(pending[0],me,done,total,false);
+}
+
+// ----- Eri's photos: he picks one on his phone, the big screen shows it full-screen -----
+const PHOTOS=Array.from({length:11},(_,i)=>String(i+1).padStart(2,'0'));
+function photosBtn(){return `<button class="btn ghost" data-act="photos">📷 התמונות שלי למסך</button>`}
+function photosView(){
+  const cur=S.stage?.photo||null;
+  return `<p class="eyebrow">PSP · PHOTOS</p><h1>התמונות שלך</h1><p class="muted">לחיצה על תמונה מציגה אותה על המסך הגדול. לחיצה נוספת על אותה תמונה, או על "הסתרה", מחזירה למצגת.</p>
+  <div class="phgrid">${PHOTOS.map(id=>`<button class="ph${cur===id?' on':''}" data-photo="${id}"><img src="img/eri/t${id}.webp" alt="תמונה ${+id}"></button>`).join('')}</div>
+  <div class="row"><button class="btn red small" data-photo="" ${cur?'':'disabled'}>הסתרה מהמסך</button><button class="btn ghost small" data-act="photosback">חזרה</button></div>`;
+}
+function stagePhoto(){
+  const id=S.stage?.photo||null;let ov=$('#photoov');
+  if(!id||S.photoHidden===id+':'+(S.stage?.at||'')){ov?.classList.remove('show');return}
+  if(!ov){ov=document.createElement('div');ov.id='photoov';ov.onclick=()=>go(1);document.body.append(ov)}
+  ov.innerHTML=`<img src="img/eri/p${id}.webp" alt="">`;requestAnimationFrame(()=>ov.classList.add('show'));
 }
 function phoneDialSize(){return Math.max(220,Math.min(320,innerWidth-130))}
 function switchLink(me){return `<button class="btn ghost small" data-act="switch">לא ${esc(me.name)}? החלפת שם</button>`}
@@ -768,6 +793,7 @@ function bindPhone(){
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
     if(b.dataset.addr){const r=S.remote?.[b.dataset.addr];if(r){draft().push({id:b.dataset.addr,name:r.name,role:r.relation||'family',weight:0,remote:true});S.setupErr=null;render()}return}
     if(b.dataset.mew){S.mewPick=b.dataset.mew;render();return}
+    if(b.dataset.photo!==undefined){const id=b.dataset.photo,next=(id&&S.stage?.photo!==id)?id:null;S.stage={photo:next,at:new Date().toISOString()};render();S.db.doc('stage/main').set(S.stage).catch(()=>toast('לא הצלחתי לשלוח למסך'));return}
     if(b.dataset.rg){S.rdoc=S.rdoc||{answers:{}};S.rdoc.name=$('#r-name')?.value||S.rdoc.name||'';S.rdoc.relation=$('#r-rel')?.value||S.rdoc.relation;S.rdoc.gender=b.dataset.rg;render();return}
     if(b.dataset.ig){S.intro.g=b.dataset.ig;render();setTimeout(introNext,350);return}
     if(b.dataset.in){if(b.dataset.in==='def'){S.intro.name=S.state?.subject||'ערי';introNext()}else{S.intro.naming=true;render();setTimeout(()=>$('#gbp-name')?.focus(),50)}return}
@@ -782,6 +808,8 @@ function bindPhone(){
     const act=b.dataset.act;
     if(act==='switch'){S.me=null;store.set('psp-me','');S.intro=null;render()}
     if(act==='ia'){introAdvance();return}
+    if(act==='photos'){S.view='photos';render();return}
+    if(act==='photosback'){S.view='';render();return}
     if(act==='rstart'){const n=($('#r-name')?.value||'').trim();if(!n){toast('צריך שם');return}const d=S.rdoc=S.rdoc||{answers:{}};d.name=n;d.relation=$('#r-rel')?.value||'family';d.gender=d.gender||'m';d.answers=d.answers||{};d.started=true;S.view='';saveMine();render();return}
     if(act==='inameok'){const v=($('#gbp-name')?.value||'').trim();if(!v){toast('צריך שם');return}S.intro.name=v;S.intro.naming=false;introNext();return}
     if(act==='introsave'){
@@ -865,6 +893,7 @@ function show(fresh,atEnd){
   screenOverlay();
 }
 function go(d){
+  if($('#photoov.show')){S.photoHidden=(S.stage?.photo||'')+':'+(S.stage?.at||'');stagePhoto();return}
   const it=cur();if(!it)return;
   if(it.kind==='slide'){
     const n=buildOrders().length;
