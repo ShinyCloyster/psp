@@ -248,7 +248,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qpn{font-family:var(--display);font-size:40px}.qps.first .qpn{font-size:56px;color:var(--gold)}.qpp{font:400 26px var(--pixel);color:var(--gold)}
 .qpb{display:flex;gap:12px;font:700 22px var(--body)}.qpb img{width:34px;height:34px;image-rendering:pixelated;vertical-align:middle}
 .mewself{display:flex;align-items:center;gap:14px;background:rgba(232,121,249,.12);border:2px solid rgba(232,121,249,.5);border-radius:18px;padding:10px 20px;max-width:1100px;text-align:right}
-.mewself.hit{border-color:#E879F9;box-shadow:0 0 30px rgba(232,121,249,.45)}.mewself img{width:64px;height:64px;image-rendering:pixelated}.mewself b{font:400 13px var(--pixel);color:#F0ABFC}.mewself p{font-size:26px;margin:6px 0 0}
+.mewself.hit{border-color:#E879F9;box-shadow:0 0 30px rgba(232,121,249,.45)}.mewself img{width:64px;height:64px;image-rendering:pixelated}.mewself b{font:700 18px var(--body);color:#F0ABFC}.mewself p{font-size:26px;margin:6px 0 0}
 .eritime{text-align:center;padding:16px;display:flex;flex-direction:column;align-items:center;gap:6px;border:2px solid var(--line)}.eritime .etn{font-size:16px;color:var(--mist)}.eritime .etl{font:400 44px var(--pixel)}.eritime .rtbar{width:100%}
 .eritime .etm{margin:4px 0 0;font-size:17px;font-weight:700;min-height:1.3em}.eritime.warn{border-color:var(--gold)}
 .saybtn{position:fixed;left:14px;bottom:84px;z-index:31;width:58px;height:58px;border-radius:50%;border:0;background:var(--gold);font-size:28px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
@@ -375,7 +375,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .mvo small{font-size:11px;font-weight:700;color:var(--cream);max-width:46px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2}
 .board.mewph .bd-c{border-color:#E879F9;box-shadow:0 0 60px rgba(232,121,249,.22)}.board.mewph .bd-c .bd-h{color:#F0ABFC}
 .mc{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:2px solid var(--line);border-radius:16px;padding:8px 10px 66px;transition:border-color .4s,box-shadow .4s,transform .4s}
-.mc img{width:54px;height:54px;object-fit:contain;flex:none}.mc .mt{font-size:16px;line-height:1.3;color:var(--cream);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.mc .mt{flex:1;min-width:0}.mc{min-height:160px}.mc .mv{font-size:13px;color:var(--gold);margin-top:4px}
+.mc img{width:42px;height:42px;object-fit:contain;flex:none}.mc .mt{font-size:14.5px;line-height:1.28;color:var(--cream);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}.mc .mt{flex:1;min-width:0}.mc{min-height:160px}.mc .mv{font-size:13px;color:var(--gold);margin-top:4px}
 .mc.hit{border-color:#E879F9;box-shadow:0 0 24px rgba(232,121,249,.5);transform:scale(1.04)}
 .bd-step{position:absolute;bottom:30px;left:680px;width:560px;text-align:center;pointer-events:none}
 .bd-step span{display:inline-block;background:var(--gold);color:#161A2E;font:700 22px var(--body);padding:8px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:bdpop .5s}
@@ -596,7 +596,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793038748';
+const BUILDV='1793039331';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1379,9 +1379,9 @@ function computeResult(){
 }
 function mewSelfNote(win){const ms=S.state?.mew?.statements,self=roster().find(p=>p.role==='self'),v=self&&S.answers[self.id]?.mew,st=ms?.find(x=>x.id===v);if(!st)return '';
   const n=esc(subjectName()),mine=st.lineId===win.id;let alt='';
-  if(mine){try{const pr=profile(),d=dexVotes(pr.raters.filter(r=>r.role!=='self')),R2=PSP.run(pr,S.engine,d);if(R2.main[0].line.id!==win.id)alt=` בלי ההצבעה הזו, ${esc(finalName(R2.main[0].line))} היה מנצח.`}catch(e){}}
+  if(mine){try{const pr=profile(),d=dexVotes(pr.raters.filter(r=>r.role!=='self')),R2=PSP.run(pr,S.engine,d);if(R2.main[0].line.id!==win.id)alt=` בלי ההצבעה הזו, <bdi>${esc(finalName(R2.main[0].line))}</bdi> היה מנצח.`}catch(e){}}
   const l=S.engine.lines.find(x=>x.id===st.lineId);
-  return `<div class="mewself ${mine?'hit':''}"><img src="${spriteURL(sprite(S.engine.lines.find(x=>x.id==='151'),151))}" alt=""><div><b>#151 · ההצבעה של ${n}</b><p>${mine?`${n} ${gs('בחר','בחרה')} במבחן של מיו בדיוק בהיגד של ${esc(finalName(win))}!${alt}`:`${n} ${gs('בחר','בחרה')} במבחן של מיו בהיגד של ${esc(l?finalName(l):st.name)}.`}</p></div></div>`}
+  return `<div class="mewself ${mine?'hit':''}"><img src="${spriteURL(sprite(S.engine.lines.find(x=>x.id==='151'),151))}" alt=""><div><b>#151 · ההצבעה של ${n}</b><p>${mine?`${n} ${gs('בחר','בחרה')} במבחן של מיו בדיוק בהיגד של <bdi>${esc(finalName(win))}</bdi>!${alt}`:`${n} ${gs('בחר','בחרה')} במבחן של מיו בהיגד של <bdi>${esc(l?finalName(l):st.name)}</bdi>.`}</p></div></div>`}
 function dexVotes(raters){
   const ms=S.state?.mew?.statements;if(!ms||!ms.length)return null;
   const w=PSP.raterWeights(raters),line={};ms.forEach(s=>line[s.id]=s.lineId);
@@ -1551,7 +1551,7 @@ function renderHof(){
   else if(step==='reveal'){
     const t=R.main[0],l=t.line,last=l.species.length-1,types=l.stage_types[last];
     const ent=dexEntry(l);
-    h=`<div class="st"><div class="center" style="gap:18px"><p class="lead">${n} ${gs('הוא','היא')}…</p><img ${artAttr(l)} alt="${esc(finalName(l))}" style="width:320px;height:320px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))">
+    h=`<div class="st"><div class="center" style="gap:10px;padding:30px 0"><p class="lead" style="margin:0">${n} ${gs('הוא','היא')}…</p><img ${artAttr(l)} alt="${esc(finalName(l))}" style="width:240px;height:240px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))">
     <div class="big">${esc(finalName(l))}</div><div style="display:flex;gap:16px;justify-content:center">${types.map(plateH).join('')}</div>
     ${l.species.length>1?`<div style="display:flex;gap:26px;align-items:flex-end;direction:ltr">${l.species.map((s,i)=>`${i?'<span style="color:var(--gold);font-size:40px;padding-bottom:40px">→</span>':''}<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><img class="pix" src="${spriteURL(sprite(l,s))}" alt="" style="width:96px;height:96px"><span style="font-size:20px;color:var(--mist)">${esc(l.name.split(' → ')[i])}</span></div>`).join('')}</div>`:''}
     <p class="pct">${(t.rank*100).toFixed(1)}% MATCH</p>${mewSelfNote(l)}
@@ -1822,11 +1822,12 @@ function flavorOf(l){const sp=l.species.at(-1),pid=S.engine.spr[l.id+':'+sp]||St
 function dexEntry(l){const he=S.mewlib?.[l.id]?.[1]||'';return {en:flavorOf(l),he}}
 function loadOak(){if(!S.oak)fetch('oak.json?v='+BUILDV).then(r=>r.json()).then(o=>{S.oak=o;if(HOF_STEPS[HOF]==='oak'&&cur()?.kind==='hof'){S.oakFor=null;renderHof()}}).catch(()=>{});if(!S.mewlib)fetch('mew.json?v='+BUILDV).then(r=>r.json()).then(m=>S.mewlib=m).catch(()=>{})}
 function splitPages(txt,max){const out=[];txt.split('\n\n').forEach(par=>{const ss=par.match(/(?:[^.!?…]|\.(?=\d))+[.!?…]+["״]?\s*|(?:[^.!?…]|\.(?=\d))+$/g)||[par];let cur='';ss.forEach(x=>{x=x.trim();if(!x)return;if((cur+' '+x).trim().length>max&&cur){out.push(cur.trim());cur=x}else cur=(cur+' '+x).trim()});if(cur)out.push(cur)});return out}
+const ISO=x=>'\u2068'+x+'\u2069';
 function oakPages(R){
-  const n=subjectName(),t=R.main[0],l=t.line,ax=S.engine.axes,name=finalName(l),lt=l.stage_types.at(-1);
+  const n=subjectName(),t=R.main[0],l=t.line,ax=S.engine.axes,name=ISO(finalName(l)),lt=l.stage_types.at(-1);
   const ord=a=>a.map((v,i)=>i).sort((x,y)=>a[y]-a[x]);
   const tt=ord(R.agg.types).map(i=>ax.types[i]),sStat=ord(R.agg.stats).map(i=>ax.stats[i]),eord=ord(R.agg.evo).map(i=>ax.evo[i]);
-  const sh=k=>STAT_HE[k].split(' · ')[1],sn=k=>STAT_HE[k].split(' · ')[0];
+  const sh=k=>STAT_HE[k].split(' · ')[1],sn=k=>ISO(STAT_HE[k].split(' · ')[0]);
   const base=S.engine.base?.[l.id]||[],bTop=base.length?ord(base).slice(0,2).map(i=>ax.stats[i]):[];
   const meaning=k=>shortMeaning(BANK.constructs.types[k]);
   const pct=x=>Math.round(x*100)+'%';
@@ -1891,12 +1892,12 @@ function gapPages(R,G){const n=subjectName();
   G.forEach((g,j)=>{const I=gapInfo(g);L.push([`${I.name}: `+(g.self>g.others?`${n} רואה את זה ${gs('בעצמו','בעצמה')} הרבה יותר מכם.`:`אתם רואים את זה ב${n} הרבה יותר ממה ש${gs('הוא רואה בעצמו','היא רואה בעצמה')}.`),j])});
   L.push([`אף צד לא בהכרח צודק. שווה לשאול את ${n} על זה בהמשך הערב.`,-1]);
   return paged(L)}
-function legendPages(R){const n=subjectName(),t=R.legends[0],l=t.line,name=finalName(l),types=l.stage_types.at(-1).map(x=>TYPE_HE[x]).join(' ו'),o=S.oak?.[l.id];
+function legendPages(R){const n=subjectName(),t=R.legends[0],l=t.line,name=ISO(finalName(l)),types=l.stage_types.at(-1).map(x=>TYPE_HE[x]).join(' ו'),o=S.oak?.[l.id];
   const L=[[`מעבר ל־600 הליינים יש 92 פוקימונים אגדיים. הם לא נכנסים לבחירה הרגילה, אבל המנוע בודק גם אותם.`,-1],
     [`הלג׳נדרי הקרוב ביותר ל${n} הוא ${name}, ${types}, עם ${(t.total*100).toFixed(1)}% התאמה: גרסת השיא, מי ${n} ${gs('יכול','יכולה')} להיות ברגעים הכי גדולים ${gs('שלו','שלה')}.`,-1]];
   if(o)L.push([o[0],-1]);
   return paged(L)}
-function mapPages(R){const n=subjectName(),name=finalName(R.main[0].line);
+function mapPages(R){const n=subjectName(),name=ISO(finalName(R.main[0].line));
   return paged([[`${n}, ${name} הוא לא ${gs('אתה','את')}. הוא המפה הכי טובה שיש לנו ${gs('אליך','אלייך')}: איזה כוח ${gs('אתה מביא','את מביאה')}, על מי ${gs('אתה משפיע','את משפיעה')}, ואיך ${gs('אתה משתנה','את משתנה')}.`,-1],
     [`המפה עכשיו ${gs('אצלך','אצלך')}. תודה לכולם שעניתם, ושיהיה המשך ערב נפלא!`,-1]])}
 function oakType(){
