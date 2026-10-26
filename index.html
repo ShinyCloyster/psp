@@ -235,7 +235,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qnow{display:flex;align-items:center;gap:12px;padding:12px 14px;font-size:15px}
 .qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .qt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:2px solid var(--line);background:var(--night2);color:var(--cream);font:700 14px var(--body)}
-.qt.on{border-color:var(--gold);background:rgba(242,201,76,.16);box-shadow:0 0 0 2px var(--gold)}.qt:disabled{opacity:.45}
+.qt.on:disabled{opacity:1}.qt.on{border-color:var(--gold);background:rgba(242,201,76,.16);box-shadow:0 0 0 2px var(--gold)}.qt:disabled{opacity:.45}
 .qres.ok{border:2px solid var(--ok)}.qres.no{border:2px solid var(--line)}
 .qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
 .qbh{grid-column:1/-1;font:400 14px var(--pixel);color:var(--gold);text-align:center;margin-bottom:2px}
@@ -583,12 +583,12 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793027149';
+const BUILDV='1793036615';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
 function music(name,o={}){
-  if(name&&BGM.cur===name)return;
+  if(name&&BGM.cur===name){if(BGM.a&&o.vol!=null)fadeAudio(BGM.a,o.vol,700);return}
   const old=BGM.a;if(old)fadeAudio(old,0,900,()=>old.pause());BGM.cur=name||null;BGM.a=null;clearTimeout(BGM.t);if(!name)return;
   BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+'.mp3?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{});fadeAudio(a,o.vol??.35,1200);
     if(o.then)a.onended=()=>{if(BGM.a===a){BGM.cur=null;music(o.then,{vol:o.vol})}}},o.delay||0)}
@@ -666,7 +666,8 @@ async function boot(){
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0;S.deck=d;if(!had&&d?.t0)render();else deckLabels()},()=>{});
-  S.db.doc('stage/quiz').onSnapshot(sn=>{S.quiz=sn.exists?sn.data():null;if(!isScreen())render()},()=>{});
+  S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
+    if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
   S.db.collection('stage').onSnapshot(q=>{S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data())});if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
@@ -731,8 +732,8 @@ function quizView(me){const Q=S.quiz,mine=(S.myQ||{})[Q.type],score=Q.scores?.[m
     return head+`<div class="card center qres ${ok?'ok':'no'}">${qIcon(Q.type,96)}<h2 style="margin:10px 0 4px">${TYPE_HE[Q.type]}</h2>${ok?`<img src="img/${b[0]}.webp" alt="" style="width:72px;height:72px;image-rendering:pixelated"><p style="font-size:20px;margin:6px 0 0"><b>צדקת! ${b[1]}, ${b[2]} נק׳</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?`ניחשת ${TYPE_HE[mine.g]}. בפעם הבאה!`:'לא ניחשת הפעם.'}</p>`}</div><p class="muted center">הסוג הבא מגיע בשקף הבא.</p>`}
   const b=QBALL[Q.n];
   return head+`<div class="card qnow">${Q.n?`<img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span>על המסך ${Q.n===1?'דמות אחת':Q.n+' דמויות'}. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b></span>`:'<span>מחכים לדמות הראשונה…</span>'}</div>
-  <div class="qgrid">${Q.open.map(t=>`<button class="qt${mine?.g===t?' on':''}" data-qt="${t}" ${Q.n?'':'disabled'}>${qIcon(t,40)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
-  ${mine?`<p class="muted center" style="font-size:14px">ניחשת <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> ב${QBALL[mine.n][1]}. אפשר לשנות, אבל הניחוש החדש שווה לפי מה שעל המסך עכשיו.</p>`:''}`}
+  <div class="qgrid">${Q.open.map(t=>`<button class="qt${mine?.g===t?' on':''}" data-qt="${t}" ${Q.n&&!mine?'':'disabled'}>${qIcon(t,40)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
+  ${mine?`<p class="muted center" style="font-size:14px">הכדור נזרק: <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> ב${QBALL[mine.n][1]}. מחכים לחשיפה…</p>`:''}`}
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
 function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
@@ -985,7 +986,7 @@ function bindPhone(){
   app.onclick=e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);S.view='';S.joinSent=false;render();return}
-    if(b.dataset.qt){const Q=S.quiz;if(!Q?.type||Q.revealed||!Q.n)return;const g={g:b.dataset.qt,n:Q.n,at:Date.now()};S.myQ={...(S.myQ||{}),[Q.type]:g};try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/q-'+S.me).set({[Q.type]:g},{merge:true}).catch(()=>toast('הניחוש לא נשלח, נסו שוב'));return}
+    if(b.dataset.qt){const Q=S.quiz;if(!Q?.type||Q.revealed||!Q.n||(S.myQ||{})[Q.type])return;sfx('sfx-ball-toss');const g={g:b.dataset.qt,n:Q.n,at:Date.now()};S.myQ={...(S.myQ||{}),[Q.type]:g};try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/q-'+S.me).set({[Q.type]:g},{merge:true}).catch(()=>toast('הניחוש לא נשלח, נסו שוב'));return}
     if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
@@ -1139,7 +1140,9 @@ function slideMusic(id){
   if(/^x-round-/.test(id))return music('mus-newbark',{vol:.25});
   if(/^x-break-/.test(id))return music('mus-healed',{loop:false,vol:.35,then:'mus-center'});
   if(/^x-part-/.test(id))return music('mus-badge',{loop:false,vol:.4});
-  if(id==='h-divider'||/^ev-/.test(id)||id==='h-noevo')return music('mus-evolution',{loop:false,vol:.3});
+  if(id==='h-divider')return music('mus-evolution',{loop:false,vol:.3});
+  if(/^ev-/.test(id)||id==='h-noevo')return music('mus-evolution',{loop:false,vol:.12});
+  if(id==='x-finale')return music('mus-enter-hall',{vol:.35});
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
 function quizTypes(){return SEQ.filter(x=>/^q-/.test(x.id)).map(x=>x.id.slice(2))}
@@ -1433,7 +1436,7 @@ function renderHof(){
     h=hofShell('#151 · MEW BONUS','מה בחרתם במבחן של מיו?',`ארבעה היגדים, כל אחד נבנה מערך פוקדקס של אחד מארבעת הפוקימונים הקרובים ביותר ל${n}. בלי שמות.`,
       `<div style="position:absolute;top:300px;bottom:50px;right:110px;left:110px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:22px">${m?.status==='ready'?m.statements.map(s=>`<div class="card2" style="padding:20px 28px;justify-content:space-between"><p style="font-size:28px;line-height:1.4">${esc(s.text)}</p><div style="display:flex;align-items:center;gap:18px"><div style="flex:1;height:22px;border-radius:11px;background:rgba(255,255,255,.1);overflow:hidden"><div style="height:100%;width:${votes.total?(votes[s.id]||0)/votes.total*100:0}%;background:var(--gold)"></div></div><b style="font-family:var(--pixel);font-size:24px;color:var(--gold)">${votes[s.id]||0}</b></div>${voterChips(s.id,24)}</div>`).join(''):'<p class="lead">שאלת מיו עוד לא נשלחה.</p>'}</div>`);
   }
-  else if(step==='board'){music(null);boardStart();if(S.bd?.plan)return}
+  else if(step==='board'){music('mus-enter-hall',{vol:.18});boardStart();if(S.bd?.plan)return}
   else if(step==='ball'){
     h=`<div class="st"><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">600 LINES · 1 POKÉ BALL</p><div class="big">מי מסתתר בפוקבול של ${n}?</div><div class="ball wobble" id="bigball" style="--s:300px"></div></div></div>`;
   }
@@ -1470,7 +1473,7 @@ function renderHof(){
     h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="oakmon" ${artAttr(l)} alt="">${oakBox()}</div>`;
   }
   cv.innerHTML=h;deckPub();
-  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music(null);else music('mus-hof',{vol:.28,delay:step==='reveal'?2600:0});
+  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music('mus-enter-hall',{vol:.15});else music('mus-hof',{vol:.28,delay:step==='reveal'?2600:0});
   if(step==='types')layoutTypes(false);
   if(OAK_STEPS.includes(step)&&S.oakPages)oakGo();
 }
