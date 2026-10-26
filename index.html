@@ -230,6 +230,22 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .cg{image-rendering:pixelated;object-fit:contain;filter:drop-shadow(0 8px 0 rgba(0,0,0,.18))}.cg.mon{margin-bottom:-20px}
 .crow .avf{filter:drop-shadow(0 8px 0 rgba(0,0,0,.18));margin:0 0 0 -30px;max-width:none}.cgap{width:0}
 .chero{display:flex;align-items:flex-end;gap:0;margin:0 10px;position:relative;z-index:2}.cg.win{filter:drop-shadow(0 0 24px rgba(242,201,76,.95)) drop-shadow(0 8px 0 rgba(0,0,0,.2));margin-right:-70px}
+.qic{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex:none}.qic svg{width:62%;height:62%;fill:#fff}
+.qsc{font:400 18px var(--pixel);color:var(--gold)}
+.qnow{display:flex;align-items:center;gap:12px;padding:12px 14px;font-size:15px}
+.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:2px solid var(--line);background:var(--night2);color:var(--cream);font:700 14px var(--body)}
+.qt.on{border-color:var(--gold);background:rgba(242,201,76,.16);box-shadow:0 0 0 2px var(--gold)}.qt:disabled{opacity:.45}
+.qres.ok{border:2px solid var(--ok)}.qres.no{border:2px solid var(--line)}
+.qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
+.qbh{grid-column:1/-1;font:400 14px var(--pixel);color:var(--gold);text-align:center;margin-bottom:2px}
+.qr{display:flex;align-items:center;gap:8px;font-size:22px;color:var(--cream)}.qr .qn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.qr b{font:400 18px var(--pixel);color:var(--gold);min-width:30px;text-align:left}.qst{width:30px;display:flex;justify-content:center}.qst img{width:28px;height:28px;image-rendering:pixelated}
+.qv{font-style:normal;color:var(--ok);font-weight:700}.qx{font-style:normal;color:#FF8A80;font-weight:700}
+.qwin{background:radial-gradient(circle at 50% 40%,#3A3270 0%,var(--night) 75%)}
+.qps .avf{max-width:none}.qpod{display:flex;align-items:flex-end;gap:60px;direction:ltr;margin-top:20px}.qps{display:flex;flex-direction:column;align-items:center;gap:6px}
+.qpn{font-family:var(--display);font-size:40px}.qps.first .qpn{font-size:56px;color:var(--gold)}.qpp{font:400 26px var(--pixel);color:var(--gold)}
+.qpb{display:flex;gap:12px;font:700 22px var(--body)}.qpb img{width:34px;height:34px;image-rendering:pixelated;vertical-align:middle}
 .oakimg.sm{right:90px;top:170px;width:400px;height:400px}
 .gpanel{position:absolute;left:60px;top:36px;width:1390px;height:620px;background:#F8F8F8;color:#202830;border:8px solid #303840;border-radius:20px;box-shadow:inset 0 0 0 6px #F8F8F8,inset 0 0 0 11px #6890B0,0 8px 0 rgba(0,0,0,.2);padding:26px 40px}
 .gph{display:flex;align-items:baseline;gap:18px;margin-bottom:6px}.gph b{font:400 22px var(--pixel);color:#C0392B;direction:ltr}.gph span{font-size:24px;color:#5A6070;font-weight:500}
@@ -567,7 +583,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793025946';
+const BUILDV='1793027149';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -650,6 +666,8 @@ async function boot(){
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0;S.deck=d;if(!had&&d?.t0)render();else deckLabels()},()=>{});
+  S.db.doc('stage/quiz').onSnapshot(sn=>{S.quiz=sn.exists?sn.data():null;if(!isScreen())render()},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data())});if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
@@ -704,6 +722,17 @@ function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}<
   <div class="card rctime" style="padding:14px 16px"><div class="row" style="justify-content:space-between;align-items:baseline"><b class="rtn"></b><span class="rtl" style="font:400 26px var(--pixel)"></span></div><div class="rtbar"><i></i></div><p class="rts muted" style="margin:8px 0 0;font-size:14px"></p></div>
   <button class="rcbig" data-act="ctlnext">◀ הבא</button><button class="rcback" data-act="ctlprev">חזרה ▶</button>
   <p class="muted" style="font-size:13px;text-align:center">כשנפתח סבב שאלות, השאלון יופיע כאן במקום השלט.</p>`}
+// ----- type-guessing game during the 18 types -----
+const QBALL=[null,['it-ultra-ball','אולטרה בול',3],['it-great-ball','גרייט בול',2],['it-poke-ball','פוקה בול',1]];
+const qIcon=(t,sz)=>`<span class="qic" style="width:${sz}px;height:${sz}px;background:${TYPE_COL[t]}"><svg viewBox="0 0 512 512">${TICON[t]}</svg></span>`;
+function quizView(me){const Q=S.quiz,mine=(S.myQ||{})[Q.type],score=Q.scores?.[me.id]||0;
+  const head=`<p class="eyebrow">WHO'S THAT TYPE? · ${esc(me.name)}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0">איזה סוג זה?</h1><b class="qsc">${score} נק׳</b></div>`;
+  if(Q.revealed){const ok=mine&&mine.g===Q.type,b=ok?QBALL[mine.n]:null;
+    return head+`<div class="card center qres ${ok?'ok':'no'}">${qIcon(Q.type,96)}<h2 style="margin:10px 0 4px">${TYPE_HE[Q.type]}</h2>${ok?`<img src="img/${b[0]}.webp" alt="" style="width:72px;height:72px;image-rendering:pixelated"><p style="font-size:20px;margin:6px 0 0"><b>צדקת! ${b[1]}, ${b[2]} נק׳</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?`ניחשת ${TYPE_HE[mine.g]}. בפעם הבאה!`:'לא ניחשת הפעם.'}</p>`}</div><p class="muted center">הסוג הבא מגיע בשקף הבא.</p>`}
+  const b=QBALL[Q.n];
+  return head+`<div class="card qnow">${Q.n?`<img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span>על המסך ${Q.n===1?'דמות אחת':Q.n+' דמויות'}. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b></span>`:'<span>מחכים לדמות הראשונה…</span>'}</div>
+  <div class="qgrid">${Q.open.map(t=>`<button class="qt${mine?.g===t?' on':''}" data-qt="${t}" ${Q.n?'':'disabled'}>${qIcon(t,40)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
+  ${mine?`<p class="muted center" style="font-size:14px">ניחשת <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> ב${QBALL[mine.n][1]}. אפשר לשנות, אבל הניחוש החדש שווה לפי מה שעל המסך עכשיו.</p>`:''}`}
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
 function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
@@ -715,6 +744,7 @@ function phoneView(){
   if(me.role!=='self'&&(S.intro?.live||(S.joinedLoaded&&!S.joinedG?.[me.id])))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
   if(me.role==='self'&&S.view==='photos')return photosView();
+  if(S.quiz?.type&&!isPresenter(me)&&!me.remote)return quizView(me);
   const open=S.state.open||0,P=planFor(me.id),ans=myDoc().answers;
   const all=P.rounds.flat(),done=answeredIn(all,ans);
   if(isPresenter(me)&&S.view!=='review'&&!S.holdUnit){
@@ -955,6 +985,7 @@ function bindPhone(){
   app.onclick=e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);S.view='';S.joinSent=false;render();return}
+    if(b.dataset.qt){const Q=S.quiz;if(!Q?.type||Q.revealed||!Q.n)return;const g={g:b.dataset.qt,n:Q.n,at:Date.now()};S.myQ={...(S.myQ||{}),[Q.type]:g};try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/q-'+S.me).set({[Q.type]:g},{merge:true}).catch(()=>toast('הניחוש לא נשלח, נסו שוב'));return}
     if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
@@ -1015,7 +1046,7 @@ async function startScreen(){
   $('#cv').innerHTML=`<div class="st"><div class="center"><div class="ball wobble" style="--s:180px"></div><p class="lead">טוען את המצגת…</p></div></div>`;
   const [sl,en,sp]=await Promise.all([fetch('slides.json?v='+BUILDV).then(r=>r.json()),fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}))]);
   S.slides=sl;S.engine=en;S.sprites=sp;
-  SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'})});
+  SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});
   if(POS>=SEQ.length)POS=0;
   setTimeout(maybeMew,0);
   if(!S.state)await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
@@ -1064,7 +1095,7 @@ const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour
 const HOF_HE={intro:'פתיחה',board:'הלוח',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function deckPub(){clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
   if(it.id==='d-battle')label='הכי מתמטי: מי מנצח בקרב?';else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
-  else if(it.kind==='live')label='מצב הסבב';else label='היכל התהילה · '+(HOF_HE[HOF_STEPS[HOF]]||'');
+  else if(it.kind==='live')label='מצב הסבב';else if(it.kind==='quizwin')label='מנצח משחק הניחושים';else label='היכל התהילה · '+(HOF_HE[HOF_STEPS[HOF]]||'');
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null;if(!t0&&POS>0)t0=now;
   const sa=D.seg===seg&&D.segAt?D.segAt:now;
   const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0};S.deck={...D,...doc};
@@ -1111,6 +1142,24 @@ function slideMusic(id){
   if(id==='h-divider'||/^ev-/.test(id)||id==='h-noevo')return music('mus-evolution',{loop:false,vol:.3});
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
+function quizTypes(){return SEQ.filter(x=>/^q-/.test(x.id)).map(x=>x.id.slice(2))}
+function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ.findIndex(x=>x.id==='q-'+T[0]);
+  const passed=t=>{const j=SEQ.findIndex(x=>x.id==='q-'+t);return j<POS||(j===POS&&BUILD>=buildOrders().length)};
+  const rev=T.filter(passed),pl=inRoom().filter(p=>!isPresenter(p)),G=S.guesses||{};
+  const score={},balls={};pl.forEach(p=>{score[p.id]=0;balls[p.id]=[0,0,0,0];rev.forEach(t=>{const g=G[p.id]?.[t];if(g&&g.g===t){score[p.id]+=4-g.n;balls[p.id][g.n]++}})});
+  const q=it.kind==='slide'&&/^q-/.test(it.id)?it.id.slice(2):null;
+  return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>!rev.includes(t)||t===q):[],scores:score,balls,players:pl,rev}}
+function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;
+  const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores};const k=JSON.stringify(doc);
+  if(k!==S.quizKey){S.quizKey=k;S.db.doc('stage/quiz').set(doc).catch(()=>{})}
+  if(Q.type){if(!$('#qboard'))$('#cv').insertAdjacentHTML('beforeend','<div id="qboard" class="qboard"></div>');quizBoardUpdate()}}
+function quizBoardUpdate(){const el=$('#qboard');if(!el)return;const Q=quizState();if(!Q?.type)return;const G=S.guesses||{};
+  const rows=Q.players.map(p=>({p,sc:Q.scores[p.id],g:G[p.id]?.[Q.type]})).sort((a,b)=>b.sc-a.sc);
+  el.innerHTML=`<p class="qbh">SCOREBOARD</p>`+rows.map(r=>{let st='';if(Q.revealed)st=r.g&&r.g.g===Q.type?`<img src="img/${QBALL[r.g.n][0]}.webp" alt="">`:'<i class="qx">✗</i>';else if(r.g)st='<i class="qv">✓</i>';
+    return `<div class="qr">${avHead(r.p,46)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${st}</span><b>${r.sc}</b></div>`}).join('')}
+function quizWinHTML(){const Q=quizState(),rows=Q.players.map(p=>({p,sc:Q.scores[p.id],b:Q.balls[p.id]})).sort((a,b)=>b.sc-a.sc||b.b[1]-a.b[1]||b.b[2]-a.b[2]),top=rows.slice(0,3),ord=[top[1],top[0],top[2]].filter(Boolean);
+  return `<div class="st qwin"><div class="center" style="gap:14px"><p style="font:400 24px var(--pixel);color:var(--gold)">WHO'S THAT TYPE? · CHAMPION</p>
+   <div class="qpod">${ord.map(r=>{const first=r===top[0];return `<div class="qps ${first?'first':''}">${avFull(r.p,first?460:340)}<p class="qpn">${esc(r.p.name)}</p><p class="qpp">${r.sc} נק׳</p><div class="qpb">${[1,2,3].map(n=>r.b[n]?`<span><img src="img/${QBALL[n][0]}.webp" alt="">×${r.b[n]}</span>`:'').join('')}</div></div>`}).join('')}</div></div></div>`}
 function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur();if(!it)return;const seg=segAt(POS);if(!/^[rb]\d$/.test(seg)||it.kind==='hof')return;
   $('#cv').insertAdjacentHTML('beforeend','<div id="segclock" class="segclock"><b></b><span></span></div>');
   const tick=()=>{const el=$('#segclock');if(!el||!S.deck?.segAt)return;const p=planOf(seg),left=p[2]-(Date.now()-S.deck.segAt)/60000;
@@ -1129,8 +1178,10 @@ function show(fresh,atEnd){
     if(it.id==='d-battle')battleNew();
     breakFacts(it.id);
     slideMusic(it.id);
+    quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
-  } else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
+  } else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
+  else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
   screenOverlay();deckPub();
 }
@@ -1139,8 +1190,8 @@ function go(d){
   const it=cur();if(!it)return;
   if(it.kind==='slide'){
     const n=buildOrders().length;
-    if(d>0&&BUILD<n){BUILD++;applyBuilds();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
-    if(d<0&&BUILD>0){BUILD--;applyBuilds();return}
+    if(d>0&&BUILD<n){BUILD++;applyBuilds();quizSync();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
+    if(d<0&&BUILD>0){BUILD--;applyBuilds();quizSync();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.bt&&!S.bt.done){battleRun();return}
@@ -1824,6 +1875,7 @@ function previewBadge(){let b=$('#prevbadge');if(!S.previewRemote){b?.remove();r
 async function resetAll(){
   for(const id of Object.keys(S.answers))await S.db.doc('answers/'+id).delete().catch(()=>{});
   await S.db.doc('setup/main').delete().catch(()=>{});
+  for(const id of Object.keys(S.guesses||{}))await S.db.doc('stage/q-'+id).delete().catch(()=>{});await S.db.doc('stage/quiz').set({type:null}).catch(()=>{});
   for(const id of [...(S.joined||[])])await S.db.doc('joined/'+id).delete().catch(()=>{});S.lobbyShown=new Set();
   await setState({open:0,closed:[],result:null,revealed:false,mew:{status:'none'}});
   S.answers={};S.ai='';S.tgrid=null;toast('הערב אופס');renderPanel();
