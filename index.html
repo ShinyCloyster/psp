@@ -567,7 +567,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793020866';
+const BUILDV='1793022397';
 const SFX={};function sfx(n){try{let a=SFX[n];if(!a){a=SFX[n]=new Audio(n+'.mp3?v='+BUILDV);a.preload='auto'}a.currentTime=0;a.volume=.7;a.play().catch(()=>{})}catch(e){}}
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
@@ -1112,6 +1112,7 @@ function show(fresh,atEnd){
     onEnterSlide(it.id);
     if(it.id==='d-battle')battleNew();
     breakFacts(it.id);
+    if(fresh&&!atEnd){const SND={'x-break':'sfx-healing-machine','x-part':'sfx-get-key-item','x-round':'sfx-start-menu'},k=Object.keys(SND).find(x=>it.id.startsWith(x+'-'));if(k)sfx(SND[k]);if(it.id==='closing')sfx('sfx-level-up')}
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
   } else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
@@ -1122,7 +1123,7 @@ function go(d){
   const it=cur();if(!it)return;
   if(it.kind==='slide'){
     const n=buildOrders().length;
-    if(d>0&&BUILD<n){BUILD++;applyBuilds();return}
+    if(d>0&&BUILD<n){BUILD++;applyBuilds();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
     if(d<0&&BUILD>0){BUILD--;applyBuilds();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
@@ -1137,7 +1138,7 @@ function gateMissing(k){
   return st.filter(x=>x.rounds[k-1][0]<x.rounds[k-1][1]||(k===4&&m2?.status==='ready'&&!x.mew)).map(x=>({p:x.p,left:Math.max(0,x.rounds[k-1][1]-x.rounds[k-1][0]),mew:k===4&&x.rounds[3][0]>=x.rounds[3][1]&&!x.mew}));
 }
 function gateModal(k,miss){
-  $('#gate')?.remove();
+  $('#gate')?.remove();sfx('sfx-denied');
   document.body.insertAdjacentHTML('beforeend',`<div id="gate" style="position:fixed;inset:0;background:rgba(10,12,24,.72);z-index:50;display:flex;align-items:center;justify-content:center;direction:rtl">
    <div class="card" style="max-width:560px;width:calc(100% - 40px);display:flex;flex-direction:column;gap:14px;padding:26px">
     <h2 style="margin:0">עוד לא כולם סיימו את סבב ${k}</h2>
@@ -1306,7 +1307,7 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
     if(x[k].dmg){hp[o]=Math.max(0,hp[o]-x[k].dmg);const bar=$('#hp-'+o),v=$('#hpv-'+o);if(bar){bar.style.width=(hp[o]/max[o]*100)+'%';bar.style.background=hp[o]/max[o]<.25?'#E4483F':hp[o]/max[o]<.5?'#F2C94C':'#5BC48A'}if(v)v.textContent=hp[o];
       const c=$('#bt-'+o);if(c){c.classList.remove('hit');void c.offsetWidth;c.classList.add('hit')}}
     turn++;if(hp[o]<=0){setTimeout(finish,500);return}setTimeout(step,matchMedia('(prefers-reduced-motion:reduce)').matches?80:650)};
-  const finish=()=>{T.done=true;T.running=false;const r=$('#btres');if(!r)return;
+  const finish=()=>{T.done=true;T.running=false;if(T.win)sfx('sfx-faint-fall');const r=$('#btres');if(!r)return;
     if(!T.win){r.innerHTML=`<span>תיקו: אף אחד מהם לא יכול לפגוע בשני.</span>`}
     else{const W=T.win==='a'?T.A:T.B,L=T.win==='a'?T.B:T.A,xw=T.win==='a'?T.xa:T.xb,xl=T.win==='a'?T.xb:T.xa;$('#bt-'+T.win)?.classList.add('win');
       const why=xw.hits<xl.hits?(xw.m>xl.m?'בזכות יתרון הסוג':'בזכות כוח מול הגנה'):'כי הוא מהיר יותר ומכה ראשון';
@@ -1473,6 +1474,7 @@ function boardUpdate(){
     if(on&&!c.classList.contains('on')){c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop')}
     if(!on)c.classList.remove('pop');
     c.classList.toggle('on',on);c.classList.toggle('done',done)});
+  if(S.bd.lastK!==i){S.bd.lastK=i;if(p.k==='mew')sfx('sfx-shooting-star');if(p.k==='vote')sfx('sfx-tink')}
   // step banner
   let banner='';
   if(p.k==='zero')banner=`כל הליינים מתחילים מ־0%`;
@@ -1625,8 +1627,8 @@ function statSide(R){
 }
 function revealEvo(){const el=$('#ev'+(SUB-1));if(el)el.classList.remove('off');if(SUB===5){const m=$('#evmean');if(m)m.style.opacity=1}}
 function openBall(){
-  const ball=$('#bigball');if(!ball||S.opening)return;S.opening=true;ball.className='ball shake';
-  setTimeout(()=>{const f=document.createElement('div');f.className='flash';document.body.append(f);setTimeout(()=>f.remove(),1000);
+  const ball=$('#bigball');if(!ball||S.opening)return;S.opening=true;ball.className='ball shake';sfx('sfx-ball-toss');
+  setTimeout(()=>{sfx('sfx-ball-poof');setTimeout(()=>sfx('sfx-caught-mon'),550);const f=document.createElement('div');f.className='flash';document.body.append(f);setTimeout(()=>f.remove(),1000);
     S.opening=false;HOF=HOF_STEPS.indexOf('reveal');renderHof();publishResult();
   },matchMedia('(prefers-reduced-motion:reduce)').matches?50:3300);
 }
