@@ -214,6 +214,9 @@ table.prog th{color:var(--mist);font-weight:500}
 .rcmini{position:fixed;left:10px;right:10px;bottom:10px;z-index:30;display:flex;align-items:center;gap:10px;background:rgba(22,26,46,.94);border:2px solid var(--gold);border-radius:20px;padding:8px}
 .rcmini button{width:64px;height:52px;border:0;border-radius:14px;background:var(--gold);color:#161A2E;font-size:24px;flex:none}.rcmini span{flex:1;min-width:0;text-align:center;font-size:13px;color:var(--mist);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body:has(.rcmini) .col{padding-bottom:90px}
+.segclock{position:absolute;right:128px;bottom:96px;flex-direction:row!important;gap:20px!important;z-index:5;background:rgba(22,26,46,.92);border:4px solid var(--gold);border-radius:28px;padding:16px 30px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--cream)}
+.segclock b{font:400 52px var(--pixel);color:var(--gold)}.segclock span{font-size:24px}.segclock.over{border-color:#E4483F}.segclock.over b{color:#FF6B6B}
+.rtbar{height:10px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:10px}.rtbar i{display:block;height:100%;width:0;transition:width .8s}
 .oakimg.sm{right:90px;top:170px;width:400px;height:400px}
 .gpanel{position:absolute;left:60px;top:36px;width:1390px;height:620px;background:#F8F8F8;color:#202830;border:8px solid #303840;border-radius:20px;box-shadow:inset 0 0 0 6px #F8F8F8,inset 0 0 0 11px #6890B0,0 8px 0 rgba(0,0,0,.2);padding:26px 40px}
 .gph{display:flex;align-items:baseline;gap:18px;margin-bottom:6px}.gph b{font:400 22px var(--pixel);color:#C0392B;direction:ltr}.gph span{font-size:24px;color:#5A6070;font-weight:500}
@@ -551,7 +554,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793010666';
+const BUILDV='1793011461';
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
@@ -623,7 +626,7 @@ async function boot(){
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
-  S.db.doc('stage/deck').onSnapshot(sn=>{S.deck=sn.exists?sn.data():null;if(!isScreen())deckLabels()},()=>{});
+  S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}S.deck=d;deckLabels()},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
@@ -655,17 +658,24 @@ function render(){
   const app=$('#app');app.hidden=false;
   S.remoteMode=(location.hash||'').replace('#','')==='remote';
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
-  if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><button data-act="ctlnext">◀</button></div>`);
-  bindPhone();deckLabels();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
+  if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><b class="rmt" style="font:400 13px var(--pixel)"></b><button data-act="ctlnext">◀</button></div>`);
+  bindPhone();deckLabels();clearInterval(S.rcT);if(app.querySelector('.rctime,.rcmini'))S.rcT=setInterval(remoteClock,1000);if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
   if(!S.dex)fetch('dex151.json?v='+BUILDV).then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
 // ----- presenter remote -----
 function presenterName(){const v=S.state?.presenter;return v==null?'אייל':v}
 function isPresenter(me){return !!me&&!me.remote&&presenterName()!==''&&String(me.name||'').trim()===presenterName()}
 function sendCtl(d){try{navigator.vibrate?.(25)}catch(e){}S.db.doc('stage/ctl').set({n:Date.now(),d,by:S.me||''}).catch(()=>toast('לא הצלחתי לשלוח למסך'))}
-function deckLabels(){const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n)}
+function remoteClock(){const I=schedInfo(S.deck,Date.now());
+  document.querySelectorAll('.rctime').forEach(c=>{if(!I){c.querySelector('.rtn').textContent='הלו״ז';c.querySelector('.rtl').textContent='';c.querySelector('.rts').textContent='השעון מתחיל כשעוברים מהשקף הראשון.';return}
+    c.querySelector('.rtn').textContent=I.name+' · '+I.len+' דק׳';const l=c.querySelector('.rtl');l.textContent=mmss(I.left);l.style.color=I.left<0?'#FF6B6B':I.left<1?'var(--gold)':'var(--ok)';
+    const b=c.querySelector('.rtbar i');b.style.width=Math.min(100,I.el/I.len*100)+'%';b.style.background=I.left<0?'#E4483F':'var(--gold)';
+    const lt=Math.round(I.late);c.querySelector('.rts').innerHTML=(lt>0?`<b style="color:#FF8A80">מאחרים ${lt} דק׳</b>`:lt<0?`<b style="color:#6EE7A0">מקדימים ${-lt} דק׳</b>`:'<b style="color:var(--ok)">בדיוק בזמן</b>')+` · סיום צפוי ${hhmm(I.end)}`});
+  document.querySelectorAll('.rcmini .rmt').forEach(e=>{e.textContent=I?mmss(I.left):'';e.style.color=I&&I.left<0?'#FF6B6B':'var(--gold)'})}
+function deckLabels(){remoteClock();const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n)}
 function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}</p><h1 style="margin:0">שלט המצגת</h1>
   <div class="card" style="text-align:center;padding:16px"><p class="muted" style="margin:0;font-size:13px">על המסך עכשיו <span class="rcn"></span></p><p class="rcl" style="margin:6px 0 0;font-weight:700;font-size:19px;min-height:1.4em"></p></div>
+  <div class="card rctime" style="padding:14px 16px"><div class="row" style="justify-content:space-between;align-items:baseline"><b class="rtn"></b><span class="rtl" style="font:400 26px var(--pixel)"></span></div><div class="rtbar"><i></i></div><p class="rts muted" style="margin:8px 0 0;font-size:14px"></p></div>
   <button class="rcbig" data-act="ctlnext">◀ הבא</button><button class="rcback" data-act="ctlprev">חזרה ▶</button>
   <p class="muted" style="font-size:13px;text-align:center">כשנפתח סבב שאלות, השאלון יופיע כאן במקום השלט.</p>`}
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
@@ -1010,11 +1020,35 @@ function applyBuilds(){
   });
   return orders.length;
 }
+// ---------- schedule (3 hours) ----------
+const PLAN=[['open','פתיחה',10,'cover'],['c1','קורס 1',12,'x-part-1'],['tr1','המאמן הראשון',7,'x-trainer-1'],['r1','סבב 1',6,'x-round-1'],['b1','הפסקה 1',5,'x-break-1'],
+ ['c2','קורס 2',14,'x-part-2'],['tr2','המאמן השני',7,'x-trainer-2'],['r2','סבב 2',6,'x-round-2'],['b2','הפסקה 2',5,'x-break-2'],
+ ['c3','קורס 3',32,'x-part-3'],['tr3','המאמן השלישי',7,'x-trainer-3'],['r3','סבב 3',6,'x-round-3'],['b3','הפסקה 3',5,'x-break-3'],
+ ['c4','קורס 4',16,'x-part-4'],['tr4','המאמן הרביעי',7,'x-trainer-4'],['r4','סבב 4 ומיו',8,'x-round-4'],['hof','היכל התהילה',25,'x-finale'],['end','סיום',2,'closing']];
+const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
+function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
+const planOf=k=>PLAN.find(x=>x[0]===k);
+// where we are against the plan, from the deck doc the screen keeps up to date
+function schedInfo(D,now){if(!D?.t0||!D.seg)return null;const p=planOf(D.seg);if(!p)return null;
+  const el=(now-D.segAt)/60000,late=(D.segAt-D.t0)/60000-PLAN_START[D.seg]+Math.max(0,el-p[2]);
+  return {name:p[1],len:p[2],el,left:p[2]-el,late,end:new Date(D.t0+(180+late)*60000)}}
+const mmss=m=>{const neg=m<0,t=Math.round(Math.abs(m)*60);return (neg?'-':'')+Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour12:false});
 const HOF_HE={intro:'פתיחה',board:'הלוח',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
-function deckPub(){clearTimeout(S.deckT);S.deckT=setTimeout(()=>{const it=cur();if(!it||!S.db)return;let label='';
+function deckPub(){clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
   if(it.id==='d-battle')label='הכי מתמטי: מי מנצח בקרב?';else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label='מצב הסבב';else label='היכל התהילה · '+(HOF_HE[HOF_STEPS[HOF]]||'');
-  S.db.doc('stage/deck').set({label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString()}).catch(()=>{})},250)}
+  const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null;if(!t0&&POS>0)t0=now;
+  const sa=D.seg===seg&&D.segAt?D.segAt:now;
+  const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0};S.deck={...D,...doc};
+  S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer()},250)}
+// big countdown on the screen during question rounds and breaks
+function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur();if(!it)return;const seg=segAt(POS);if(!/^[rb]\d$/.test(seg)||it.kind==='hof')return;
+  $('#cv').insertAdjacentHTML('beforeend','<div id="segclock" class="segclock"><b></b><span></span></div>');
+  const tick=()=>{const el=$('#segclock');if(!el||!S.deck?.segAt)return;const p=planOf(seg),left=p[2]-(Date.now()-S.deck.segAt)/60000;
+    el.querySelector('b').textContent=left>0?mmss(left):'0:00';el.classList.toggle('over',left<=0);
+    el.querySelector('span').textContent=seg[0]==='r'?(left>0?'זמן לסבב':(seg==='r4'?'מחכים לכולם, כולל מיו':'מי שלא סיים, ממשיך בהפסקה')):(left>0?'עד סוף ההפסקה':'חוזרים למקומות')};
+  tick();S.segT=setInterval(tick,1000)}
 function show(fresh,atEnd){
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   const cv=$('#cv');
@@ -1039,7 +1073,7 @@ function go(d){
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.bt&&!S.bt.done){battleRun();return}
-  if(d>0&&it.kind==='slide'&&!S.gateOk){const m=it.id.match(/^x-round-(\d)$/);if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
+  if(d>0&&!S.gateOk){const m=it.kind==='live'?[0,it.k]:it.id.match(/^x-round-(4)$/);if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
   S.gateOk=false;
   const np=POS+d;if(np<0||np>=SEQ.length)return;
   POS=np;show(true,d<0);
@@ -1068,7 +1102,7 @@ function onEnterSlide(id){
   if(m&&S.state){const k=+m[1];if((S.state.open||0)<k)setState({open:k,closed:[...new Set([...(S.state.closed||[]),...[1,2,3].filter(x=>x<k)])]})}
 }
 async function setState(patch){try{await S.db.doc('state/main').update(patch)}catch(e){toast('לא נשמר: '+(e.code||'שגיאה'))}}
-function screenData(){ if(!S.screenOn)return; screenOverlay(); renderPanel(); maybeMew(); const it=cur(); if(it&&it.kind==='live'&&!S.liveFrozen)$('#cv').innerHTML=liveHTML(it.k); }
+function screenData(){ if(!S.screenOn)return; screenOverlay(); renderPanel(); maybeMew(); const it=cur(); if(it&&it.kind==='live'&&!S.liveFrozen){$('#cv').innerHTML=liveHTML(it.k);segTimer()} }
 function stats(){
   return inRoom().map(p=>{const P=planFor(p.id),a=S.answers[p.id]?.answers||{};return {p,rounds:P.rounds.map(u=>[answeredIn(u,a),countIds(u)]),all:answeredIn(P.rounds.flat(),a),mew:!!S.answers[p.id]?.mew}});
 }
@@ -1667,6 +1701,7 @@ function renderPanel(){
   <div class="row"><span class="muted">סבב פתוח: ${open||'אין'}</span>${[1,2,3,4].map(k=>`<button class="btn ghost small" data-pa="open" data-k="${k}">פתיחת ${k}</button>`).join('')}</div>
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
   <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
+  <div class="row"><span class="muted grow">שעון הערב: ${S.deck?.t0?'התחיל ב־'+hhmm(new Date(S.deck.t0)):'יתחיל במעבר מהשקף הראשון'}</span><button class="btn ghost small" data-pa="clock">התחלה מעכשיו</button></div>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
   <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
   ${S.confirmReset?`<div class="row"><span class="grow">למחוק את כל התשובות, המשתתפים ושאלת מיו?</span><button class="btn red small" data-pa="reset2">כן, למחוק</button><button class="btn ghost small" data-pa="reset0">ביטול</button></div>`:''}`;
@@ -1676,6 +1711,7 @@ function renderPanel(){
     if(a==='open'){const k=+b.dataset.k;setState({open:k})}
     if(a==='mew'){await setState({mew:{status:'none'}});S.mewBusy=false;buildMew()}
     if(a==='demo')demoFill();
+    if(a==='clock'){const now=Date.now();S.deck={...(S.deck||{}),t0:now,segAt:now};deckPub();toast('השעון התחיל');setTimeout(renderPanel,400)}
     if(a==='save')saveResults();
     if(a==='prevremote'||a==='prevoff'){S.previewRemote=a==='prevremote';S.oakFor=null;computeResult();const i=SEQ.findIndex(x=>x.id==='hof');if(S.previewRemote&&i>=0){POS=i;HOF=0;SUB=0;show(true)}else if(cur()?.kind==='hof')renderHof();previewBadge();renderPanel()}
     if(a==='reset'){S.confirmReset=true;renderPanel()}
