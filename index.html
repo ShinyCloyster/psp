@@ -596,7 +596,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793037823';
+const BUILDV='1793038400';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -747,7 +747,7 @@ function quizView(me){const Q=S.quiz,mine=(S.myQ||{})[Q.type],score=Q.scores?.[m
     return head+`<div class="card center qres ${ok?'ok':'no'}">${qIcon(Q.type,96)}<h2 style="margin:10px 0 4px">${TYPE_HE[Q.type]}</h2>${ok?`<img src="img/${b[0]}.webp" alt="" style="width:72px;height:72px;image-rendering:pixelated"><p style="font-size:20px;margin:6px 0 0"><b>צדקת! ${b[1]}, ${b[2]} נק׳</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?`ניחשת ${TYPE_HE[mine.g]}. בפעם הבאה!`:'לא ניחשת הפעם.'}</p>`}</div><p class="muted center">הסוג הבא מגיע בשקף הבא.</p>`}
   const b=QBALL[Q.n];
   return head+`<div class="card qnow">${Q.n?`<img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span>על המסך ${Q.n===1?'דמות אחת':Q.n+' דמויות'}. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b></span>`:'<span>מחכים לדמות הראשונה…</span>'}</div>
-  <div class="qgrid">${Q.open.map(t=>`<button class="qt${mine?.g===t?' on':''}" data-qt="${t}" ${Q.n&&!mine?'':'disabled'}>${qIcon(t,40)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
+  <div class="qgrid">${[...Q.open].sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')).map(t=>`<button class="qt${mine?.g===t?' on':''}" data-qt="${t}" ${Q.n&&!mine?'':'disabled'}>${qIcon(t,40)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
   ${mine?`<p class="muted center" style="font-size:14px">הכדור נזרק: <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> ב${QBALL[mine.n][1]}. מחכים לחשיפה…</p>`:''}`}
 const SAYMAX=70;
 function sayOpen(){$('#sayov')?.remove();$('#app').insertAdjacentHTML('beforeend',`<div id="sayov" class="sayov"><div class="card"><p class="eyebrow">💬 על המסך הגדול</p><p class="muted" style="margin:0 0 8px">הדמות שלך תופיע על המסך ותגיד את זה.</p>
@@ -1187,7 +1187,7 @@ function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ
   const rev=T.filter(passed),pl=inRoom().filter(p=>!isPresenter(p)),G=S.guesses||{};
   const score={},balls={};pl.forEach(p=>{score[p.id]=0;balls[p.id]=[0,0,0,0];rev.forEach(t=>{const g=G[p.id]?.[t];if(g&&g.g===t){score[p.id]+=4-g.n;balls[p.id][g.n]++}})});
   const q=it.kind==='slide'&&/^q-/.test(it.id)?it.id.slice(2):null;
-  return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>!rev.includes(t)||t===q):[],scores:score,balls,players:pl,rev}}
+  return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>!rev.includes(t)||t===q).sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')):[],scores:score,balls,players:pl,rev}}
 function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;
   const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores};const k=JSON.stringify(doc);
   if(k!==S.quizKey){S.quizKey=k;S.db.doc('stage/quiz').set(doc).catch(()=>{})}
