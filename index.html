@@ -596,7 +596,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793038400';
+const BUILDV='1793038748';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -753,6 +753,66 @@ const SAYMAX=70;
 function sayOpen(){$('#sayov')?.remove();$('#app').insertAdjacentHTML('beforeend',`<div id="sayov" class="sayov"><div class="card"><p class="eyebrow">💬 על המסך הגדול</p><p class="muted" style="margin:0 0 8px">הדמות שלך תופיע על המסך ותגיד את זה.</p>
   <textarea id="saytxt" maxlength="${SAYMAX}" rows="2" placeholder="מה להגיד?"></textarea><div class="row" style="justify-content:space-between;align-items:center"><span class="muted" id="saycnt">0/${SAYMAX}</span><span class="row" style="gap:8px"><button class="btn ghost small" data-act="sayclose">ביטול</button><button class="btn small" data-act="saysend">שליחה</button></span></div></div></div>`);
   const ta=$('#saytxt');ta.focus();ta.oninput=()=>{$('#saycnt').textContent=ta.value.length+'/'+SAYMAX}}
+// ----- personal take-home card (closing slide): your answers vs the subject's own -----
+function cardView(me){
+  if(!S.engine||!S.sprites){if(!S.cardLoad){S.cardLoad=true;Promise.all([fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json())]).then(([e,sp])=>{S.engine=e;S.sprites=sp;render()}).catch(()=>{S.cardLoad=false})}
+    return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מכינים את הכרטיס שלך…</h1>`}
+  if(!S.cardImg||S.cardFor!==me.id){S.cardFor=me.id;S.cardImg=null;drawCard(me).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
+  const n=esc(subjectName());
+  return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">הכרטיס האישי שלך</h1><p class="muted">איך התשובות שלך על ${n} נראות מול התשובות של ${n} על ${gs('עצמו','עצמה')}. לא חובה, רק אם בא לך.</p>
+  ${S.cardImg&&S.cardImg!=='err'?`<img src="${S.cardImg}" alt="הכרטיס שלך" style="width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><a class="btn" href="${S.cardImg}" download="PSP-${esc(me.name)}.png" style="text-align:center;text-decoration:none">⬇ הורדה</a><p class="muted center" style="font-size:13px">באייפון: לחיצה ארוכה על התמונה ← שמירה בתמונות</p>`:S.cardImg==='err'?'<p class="muted">לא הצלחתי ליצור את הכרטיס.</p>':'<div class="card center"><div class="ball wobble" style="--s:90px"></div></div>'}`}
+async function drawCard(me){
+  await document.fonts?.ready;const E=S.engine,ax=E.axes,n=subjectName(),pr=profile(),isSelf=me.role==='self';
+  const mine=pr.raters.find(r=>r.pid===me.id),selfR=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');
+  // A = this person's view, B = the subject's own view (for the subject: the group's view)
+  const avg=(rs,layer,dims)=>dims.map(d=>{const v=rs.map(r=>r.scores[layer]?.[d]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null});
+  const vec=(r,layer,dims)=>dims.map(d=>r?.scores?.[layer]?.[d]??null);
+  const A=L=>vec(mine,L,ax[L]),B=L=>isSelf?avg(others,L,ax[L]):vec(selfR,L,ax[L]);
+  const nameA=isSelf?'את/ה':me.name,nameB=isSelf?'הקבוצה':n;
+  const single=r=>{try{return PSP.run({raters:[{...r,role:'friend',weight:1}]},E,null).main[0].line}catch(e){return null}};
+  const lineA=single(mine),lineB=isSelf?null:single(selfR),finalName_=S.state?.result?.finalName||'';
+  let diffs=[],tot=0,cnt=0;['types','stats','evo'].forEach(L=>{const a=A(L),b=B(L);a.forEach((x,i)=>{if(x!=null&&b[i]!=null){tot+=Math.abs(x-b[i]);cnt++;diffs.push({L,d:ax[L][i],a:x,b:b[i],g:Math.abs(x-b[i])})}})});
+  const agree=cnt?Math.max(0,Math.round(100-tot/cnt/2.5*100)):0;diffs.sort((x,y)=>y.g-x.g);
+  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.direction='rtl';
+  const bg=g.createRadialGradient(W/2,500,50,W/2,800,1300);bg.addColorStop(0,'#2D3468');bg.addColorStop(1,'#161A2E');g.fillStyle=bg;g.fillRect(0,0,W,H);
+  const T=(t,x,y,f,col,al='right')=>{g.font=f;g.fillStyle=col;g.textAlign=al;g.fillText(t,x,y)};
+  const rr=(x,y,w,h,r,fill,stroke)=>{g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.stroke()}};
+  const img=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+  const GOLD='#F2C94C',SKY='#6FC3E8',CREAM='#F6F1E7',MIST='#B9BDD6';
+  T('PSP · PERSONAL CARD',W-70,100,'26px "Press Start 2P"',GOLD);
+  T(isSelf?`${n}: את/ה מול הקבוצה`:`${n}, לפי ${me.name}`,W-70,190,'72px "Secular One"',CREAM);
+  // pokémon
+  rr(60,240,W-120,470,36,'rgba(32,37,63,.9)','#3A4170');
+  T(isSelf?`אם רק ${n} ${gs('היה','הייתה')} ${gs('עונה','עונה')} על ${gs('עצמו','עצמה')}:`:`אם רק ${me.name} היה עונה, ${n} ${gs('היה','הייתה')}:`,W-100,310,'40px Rubik',MIST);
+  if(lineA){const sp=await img(spriteURL(sprite(lineA,lineA.species.at(-1))));if(sp){g.imageSmoothingEnabled=false;g.drawImage(sp,110,330,330,330)}
+    {let fs=86;g.font=fs+'px "Secular One"';while(g.measureText(finalName(lineA)).width>W-560&&fs>40){fs-=4;g.font=fs+'px "Secular One"'}T(finalName(lineA),W-100,420,fs+'px "Secular One"',GOLD)}let x=W-100;for(const t of lineA.stage_types.at(-1)){g.font='bold 36px Rubik';const w=g.measureText(TYPE_HE[t]).width+48;rr(x-w,450,w,62,14,TYPE_COL[t]);T(TYPE_HE[t],x-24,494,'bold 36px Rubik','#fff');x-=w+14}}
+  if(lineB)T(`לפי ${n} ${gs('עצמו','עצמה')}: ${finalName(lineB)}`,W-100,590,'34px Rubik',CREAM);
+  if(finalName_)T(`התוצאה הסופית של כולם: ${finalName_}`,W-100,650,'34px Rubik',CREAM);
+  // agreement
+  T(isSelf?'כמה הקבוצה רואה אותך כמו שאת/ה רואה את עצמך':`כמה ${me.name} ו${n} מסכימים`,W-70,790,'40px Rubik',CREAM);
+  rr(70,820,W-140,44,22,'rgba(255,255,255,.1)');rr(W-70-(W-140)*agree/100,820,(W-140)*agree/100,44,22,GOLD);T(agree+'%',W/2,858,'34px "Press Start 2P"',agree>12?'#161A2E':CREAM,'center');
+  // stats radar
+  T('סטטים',W-70,950,'46px "Secular One"',CREAM);
+  const cx=300,cy=1180,R0=190,pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/3;return [cx+Math.cos(a)*R0*r,cy+Math.sin(a)*R0*r]};
+  g.strokeStyle='#3A4170';g.lineWidth=2;[.5,1].forEach(r=>{g.beginPath();for(let i=0;i<6;i++){const [x,y]=pt(i,r);i?g.lineTo(x,y):g.moveTo(x,y)}g.closePath();g.stroke()});
+  const poly=(v,col)=>{g.beginPath();v.forEach((x,i)=>{const [px,py]=pt(i,Math.max(.05,((x??3)-1)/4));i?g.lineTo(px,py):g.moveTo(px,py)});g.closePath();g.fillStyle=col+'44';g.fill();g.strokeStyle=col;g.lineWidth=5;g.stroke()};
+  poly(B('stats'),SKY);poly(A('stats'),GOLD);
+  ax.stats.forEach((k,i)=>{const [x,y]=pt(i,1.22);T(STAT_SHORT[k],x,y+10,'bold 26px Rubik',MIST,'center')});
+  T('■ '+nameA,W-80,1060,'36px Rubik',GOLD);T('■ '+nameB,W-80,1110,'36px Rubik',SKY);
+  const ord=v=>v.map((x,i)=>[x??0,i]).sort((a,b)=>b[0]-a[0]);
+  const sA=ord(A('stats'))[0][1],sB=ord(B('stats'))[0][1];
+  T('הכי גבוה אצל '+nameA+':',W-80,1200,'30px Rubik',MIST);T(STAT_HE[ax.stats[sA]],W-80,1245,'bold 32px Rubik',GOLD);
+  T('הכי גבוה אצל '+nameB+':',W-80,1300,'30px Rubik',MIST);T(STAT_HE[ax.stats[sB]],W-80,1345,'bold 32px Rubik',SKY);
+  // types: top 3 each
+  T('3 הסוגים הבולטים',W-70,1460,'46px "Secular One"',CREAM);
+  const top3=v=>ord(v).slice(0,3).map(x=>ax.types[x[1]]);
+  [[nameA,A('types'),GOLD,1530],[nameB,B('types'),SKY,1610]].forEach(([nm,v,col,y])=>{T(nm,W-80,y+42,'bold 34px Rubik',col);let x=W-330;for(const t of top3(v)){g.font='bold 32px Rubik';const w=g.measureText(TYPE_HE[t]).width+44;rr(x-w,y,w,58,14,TYPE_COL[t]);T(TYPE_HE[t],x-22,y+42,'bold 32px Rubik','#fff');x-=w+12}});
+  // evolution + biggest gap
+  const eA=ax.evo[ord(A('evo'))[0][1]],eB=ax.evo[ord(B('evo'))[0][1]];
+  T(`התפתחות: ${nameA} ${EVO_META[eA][0]} · ${nameB} ${EVO_META[eB][0]}`,W-70,1745,'32px Rubik',CREAM);
+  const gp=diffs[0];if(gp){const nm=gp.L==='types'?TYPE_HE[gp.d]:gp.L==='stats'?STAT_SHORT[gp.d]:EVO_META[gp.d][0];T(`הפער הכי גדול: ${nm} (${nameA} ${gp.a.toFixed(1)}, ${nameB} ${gp.b.toFixed(1)})`,W-70,1800,'32px Rubik',MIST)}
+  T("GOTTA UNDERSTAND 'EM ALL",W/2,1880,'22px "Press Start 2P"',GOLD,'center');
+  return c.toDataURL('image/png')}
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
 function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
@@ -765,6 +825,7 @@ function phoneView(){
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
   const trSeg=/^tr\d$/.test(S.deck?.seg||'')?S.deck.seg:null;
   if(me.role==='self'&&(S.view==='photos'||(trSeg&&S.view!=='nophotos-'+trSeg)))return (trSeg?eriTimer():'')+photosView();
+  if(S.deck?.seg==='end'&&answersOf(me.id)&&Object.keys(answersOf(me.id)).length)return cardView(me);
   if(S.quiz?.type&&!isPresenter(me)&&!me.remote)return quizView(me);
   const open=S.state.open||0,P=planFor(me.id),ans=myDoc().answers;
   const all=P.rounds.flat(),done=answeredIn(all,ans);
