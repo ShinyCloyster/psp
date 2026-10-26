@@ -567,7 +567,15 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793022397';
+const BUILDV='1793025946';
+// background music: one track at a time, crossfaded
+const BGM={cur:null,a:null};
+function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
+function music(name,o={}){
+  if(name&&BGM.cur===name)return;
+  const old=BGM.a;if(old)fadeAudio(old,0,900,()=>old.pause());BGM.cur=name||null;BGM.a=null;clearTimeout(BGM.t);if(!name)return;
+  BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+'.mp3?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{});fadeAudio(a,o.vol??.35,1200);
+    if(o.then)a.onended=()=>{if(BGM.a===a){BGM.cur=null;music(o.then,{vol:o.vol})}}},o.delay||0)}
 const SFX={};function sfx(n){try{let a=SFX[n];if(!a){a=SFX[n]=new Audio(n+'.mp3?v='+BUILDV);a.preload='auto'}a.currentTime=0;a.volume=.7;a.play().catch(()=>{})}catch(e){}}
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
@@ -1085,7 +1093,7 @@ function closingHTML(){
   const n=esc(subjectName()),R=S.R,top=R?.main?.slice(0,5)||[],win=top[0]?.line;
   const im=(src,h,cls='')=>`<img class="cg ${cls}" src="img/${src}.webp" alt="" style="height:${h}px">`;
   const lect=['tr-bill','tr-cynthia','tr-sabrina','tr-giovanni'].map(x=>im(x,190)).join('')+im('tr-oak',195,'oak');
-  const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,175)).join('');
+  const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,205)).join('');
   const tr=['dwarf','bneiakiva','family','sport'].map(k=>im('tr-eri-'+k,k==='family'?200:k==='sport'?180:215)).join('');
   const ppl=inRoom().filter(p=>p.role!=='self').map(p=>avFull(p,225)).join('');
   const spr=(l,w)=>`<img class="cg mon" src="${spriteURL(sprite(l,l.species.at(-1)))}" alt="" style="width:${w}px;height:${w}px">`,runners=top.slice(1).map(t=>spr(t.line,230));
@@ -1095,6 +1103,14 @@ function closingHTML(){
    <div class="crow mid">${tr}<span class="cgap"></span>${ppl}</div>
    <div class="crow front">${runners.slice(0,2).join('')}<div class="chero">${win?spr(win,360).replace('cg mon','cg mon win'):''}${avFull(subjP(),380)}</div>${runners.slice(2).join('')}</div>
   </div>`}
+function slideMusic(id){
+  if(id==='cover')return music('mus-adventure',{vol:.3});
+  if(/^x-round-/.test(id))return music('mus-newbark',{vol:.25});
+  if(/^x-break-/.test(id))return music('mus-healed',{loop:false,vol:.35,then:'mus-center'});
+  if(/^x-part-/.test(id))return music('mus-badge',{loop:false,vol:.4});
+  if(id==='h-divider'||/^ev-/.test(id)||id==='h-noevo')return music('mus-evolution',{loop:false,vol:.3});
+  if(id==='closing')return music('mus-ending',{vol:.35});
+  music(null)}
 function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur();if(!it)return;const seg=segAt(POS);if(!/^[rb]\d$/.test(seg)||it.kind==='hof')return;
   $('#cv').insertAdjacentHTML('beforeend','<div id="segclock" class="segclock"><b></b><span></span></div>');
   const tick=()=>{const el=$('#segclock');if(!el||!S.deck?.segAt)return;const p=planOf(seg),left=p[2]-(Date.now()-S.deck.segAt)/60000;
@@ -1112,7 +1128,7 @@ function show(fresh,atEnd){
     onEnterSlide(it.id);
     if(it.id==='d-battle')battleNew();
     breakFacts(it.id);
-    if(fresh&&!atEnd){const SND={'x-break':'sfx-healing-machine','x-part':'sfx-get-key-item','x-round':'sfx-start-menu'},k=Object.keys(SND).find(x=>it.id.startsWith(x+'-'));if(k)sfx(SND[k]);if(it.id==='closing')sfx('sfx-level-up')}
+    slideMusic(it.id);
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
   } else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
@@ -1282,7 +1298,7 @@ function btAttack(A,D){let best=null;A.t.forEach(t=>{const m=D.t.reduce((x,d)=>x
   const phys=A.atk>=A.spa,At=phys?A.atk:A.spa,Df=phys?D.def:D.spd;
   const dmg=best.m?Math.max(1,Math.floor((Math.floor(22*80*At/Df)/50+2)*1.5*best.m*.925)):0;
   return {...best,phys,dmg,hits:dmg?Math.ceil(D.hp/dmg):Infinity,pct:dmg?Math.min(100,dmg/D.hp*100):0}}
-function battleNew(){
+function battleNew(){music(null);
   const pool=S.engine.lines.filter(l=>!l.legendary&&S.engine.base?.[l.id]&&!['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023'].includes(l.id));
   const pick=()=>pool[Math.floor(Math.random()*pool.length)];let a=pick(),b=pick();while(b.id===a.id)b=pick();
   const A=btSide(a),B=btSide(b),xa=btAttack(A,B),xb=btAttack(B,A);
@@ -1307,7 +1323,7 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
     if(x[k].dmg){hp[o]=Math.max(0,hp[o]-x[k].dmg);const bar=$('#hp-'+o),v=$('#hpv-'+o);if(bar){bar.style.width=(hp[o]/max[o]*100)+'%';bar.style.background=hp[o]/max[o]<.25?'#E4483F':hp[o]/max[o]<.5?'#F2C94C':'#5BC48A'}if(v)v.textContent=hp[o];
       const c=$('#bt-'+o);if(c){c.classList.remove('hit');void c.offsetWidth;c.classList.add('hit')}}
     turn++;if(hp[o]<=0){setTimeout(finish,500);return}setTimeout(step,matchMedia('(prefers-reduced-motion:reduce)').matches?80:650)};
-  const finish=()=>{T.done=true;T.running=false;if(T.win)sfx('sfx-faint-fall');const r=$('#btres');if(!r)return;
+  const finish=()=>{T.done=true;T.running=false;if(T.win){sfx('sfx-faint-fall');music('mus-victory',{loop:false,vol:.35,delay:700})}const r=$('#btres');if(!r)return;
     if(!T.win){r.innerHTML=`<span>תיקו: אף אחד מהם לא יכול לפגוע בשני.</span>`}
     else{const W=T.win==='a'?T.A:T.B,L=T.win==='a'?T.B:T.A,xw=T.win==='a'?T.xa:T.xb,xl=T.win==='a'?T.xb:T.xa;$('#bt-'+T.win)?.classList.add('win');
       const why=xw.hits<xl.hits?(xw.m>xl.m?'בזכות יתרון הסוג':'בזכות כוח מול הגנה'):'כי הוא מהיר יותר ומכה ראשון';
@@ -1366,7 +1382,7 @@ function renderHof(){
     h=hofShell('#151 · MEW BONUS','מה בחרתם במבחן של מיו?',`ארבעה היגדים, כל אחד נבנה מערך פוקדקס של אחד מארבעת הפוקימונים הקרובים ביותר ל${n}. בלי שמות.`,
       `<div style="position:absolute;top:300px;bottom:50px;right:110px;left:110px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:22px">${m?.status==='ready'?m.statements.map(s=>`<div class="card2" style="padding:20px 28px;justify-content:space-between"><p style="font-size:28px;line-height:1.4">${esc(s.text)}</p><div style="display:flex;align-items:center;gap:18px"><div style="flex:1;height:22px;border-radius:11px;background:rgba(255,255,255,.1);overflow:hidden"><div style="height:100%;width:${votes.total?(votes[s.id]||0)/votes.total*100:0}%;background:var(--gold)"></div></div><b style="font-family:var(--pixel);font-size:24px;color:var(--gold)">${votes[s.id]||0}</b></div>${voterChips(s.id,24)}</div>`).join(''):'<p class="lead">שאלת מיו עוד לא נשלחה.</p>'}</div>`);
   }
-  else if(step==='board'){boardStart();if(S.bd?.plan)return}
+  else if(step==='board'){music(null);boardStart();if(S.bd?.plan)return}
   else if(step==='ball'){
     h=`<div class="st"><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">600 LINES · 1 POKÉ BALL</p><div class="big">מי מסתתר בפוקבול של ${n}?</div><div class="ball wobble" id="bigball" style="--s:300px"></div></div></div>`;
   }
@@ -1403,6 +1419,7 @@ function renderHof(){
     h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="oakmon" ${artAttr(l)} alt="">${oakBox()}</div>`;
   }
   cv.innerHTML=h;deckPub();
+  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music(null);else music('mus-hof',{vol:.28,delay:step==='reveal'?2600:0});
   if(step==='types')layoutTypes(false);
   if(OAK_STEPS.includes(step)&&S.oakPages)oakGo();
 }
@@ -1421,8 +1438,8 @@ function boardPlan(){
   if(ms.length){ph.push({k:'mew',upto:order.length,top:4});
     const vs=[];order.forEach((o,j)=>{const v=S.answers[o.r.pid]?.mew;if(v&&ms.find(s=>s.id===v))vs.push({j,v,self:o.r.role==='self'})});
     // order: everyone else, then the subject, then one more held back for the ball (so the subject is the last vote seen on the board)
-    const oth=vs.filter(x=>!x.self),me=vs.filter(x=>x.self),held=oth.length?[oth.pop()]:[];
-    [...oth,...me,...held].forEach(x=>{voters.push(x.j);ph.push({k:'vote',upto:order.length,top:4,voter:x.j,sid:x.v})});
+    const oth=vs.filter(x=>!x.self),me=vs.filter(x=>x.self),held=me.length?me:(oth.length?[oth.pop()]:[]);
+    [...oth,...held].forEach(x=>{voters.push(x.j);ph.push({k:'vote',upto:order.length,top:4,voter:x.j,sid:x.v})});
     // keep the last vote for the reveal: the board stops one vote short, so the winner is still a surprise
     if(ph[ph.length-1].k==='vote')ph.pop()}
   return {order,ph,n,hasSelf,ms,voters};
