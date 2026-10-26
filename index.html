@@ -212,11 +212,15 @@ table.prog th{color:var(--mist);font-weight:500}
 .rcbig:active,.rcback:active{transform:translateY(4px);box-shadow:none}
 .rcback{display:block;width:100%;height:16vh;border:2px solid var(--line);border-radius:24px;background:var(--night2);color:var(--cream);font:400 30px var(--display);margin-top:14px}
 .rcmini{position:fixed;left:10px;right:10px;bottom:10px;z-index:30;display:flex;align-items:center;gap:10px;background:rgba(22,26,46,.94);border:2px solid var(--gold);border-radius:20px;padding:8px}
+.rcmini.tonly{gap:12px;padding:10px 16px;border-color:var(--line)}.rcmini.tonly .rmn{font-weight:700;color:var(--cream);font-size:14px}.rcmini.tonly .rml{flex:1;text-align:center;font-size:13px}
 .rcmini button{width:64px;height:52px;border:0;border-radius:14px;background:var(--gold);color:#161A2E;font-size:24px;flex:none}.rcmini span{flex:1;min-width:0;text-align:center;font-size:13px;color:var(--mist);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body:has(.rcmini) .col{padding-bottom:90px}
 .segclock{position:absolute;right:128px;bottom:96px;flex-direction:row!important;gap:20px!important;z-index:5;background:rgba(22,26,46,.92);border:4px solid var(--gold);border-radius:28px;padding:16px 30px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--cream)}
 .segclock b{font:400 52px var(--pixel);color:var(--gold)}.segclock span{font-size:24px}.segclock.over{border-color:#E4483F}.segclock.over b{color:#FF6B6B}
 .rtbar{height:10px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:10px}.rtbar i{display:block;height:100%;width:0;transition:width .8s}
+.facts{position:absolute;left:70px;top:150px;width:620px;min-height:420px;z-index:4;background:#161A2E;color:var(--cream);border:4px solid #F49AB4;border-radius:30px;padding:36px 42px;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.facts b{font:400 18px var(--pixel);color:#F49AB4}.facts .ft{font-size:30px;line-height:1.4}.facts .fq{font-family:var(--display);font-size:36px;line-height:1.3;color:var(--gold)}.facts i{font:400 14px var(--pixel);color:var(--mist);font-style:normal;margin-top:auto}
+.facts.in{animation:factin .6s}@keyframes factin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .oakimg.sm{right:90px;top:170px;width:400px;height:400px}
 .gpanel{position:absolute;left:60px;top:36px;width:1390px;height:620px;background:#F8F8F8;color:#202830;border:8px solid #303840;border-radius:20px;box-shadow:inset 0 0 0 6px #F8F8F8,inset 0 0 0 11px #6890B0,0 8px 0 rgba(0,0,0,.2);padding:26px 40px}
 .gph{display:flex;align-items:baseline;gap:18px;margin-bottom:6px}.gph b{font:400 22px var(--pixel);color:#C0392B;direction:ltr}.gph span{font-size:24px;color:#5A6070;font-weight:500}
@@ -554,7 +558,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793011461';
+const BUILDV='1793015623';
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
@@ -626,7 +630,7 @@ async function boot(){
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
-  S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}S.deck=d;deckLabels()},()=>{});
+  S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0;S.deck=d;if(!had&&d?.t0)render();else deckLabels()},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
@@ -658,6 +662,7 @@ function render(){
   const app=$('#app');app.hidden=false;
   S.remoteMode=(location.hash||'').replace('#','')==='remote';
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
+  if(!S.remoteMode&&S.state&&S.deck?.t0&&!(S.intro?.live)&&!isPresenter(person(S.me))&&person(S.me)?.role==='self')app.insertAdjacentHTML('beforeend',`<div class="rcmini tonly"><span class="rmn"></span><span class="rml"></span><b class="rmt" style="font:400 15px var(--pixel)"></b></div>`);
   if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><b class="rmt" style="font:400 13px var(--pixel)"></b><button data-act="ctlnext">◀</button></div>`);
   bindPhone();deckLabels();clearInterval(S.rcT);if(app.querySelector('.rctime,.rcmini'))S.rcT=setInterval(remoteClock,1000);if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
   if(!S.dex)fetch('dex151.json?v='+BUILDV).then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
@@ -671,6 +676,8 @@ function remoteClock(){const I=schedInfo(S.deck,Date.now());
     c.querySelector('.rtn').textContent=I.name+' · '+I.len+' דק׳';const l=c.querySelector('.rtl');l.textContent=mmss(I.left);l.style.color=I.left<0?'#FF6B6B':I.left<1?'var(--gold)':'var(--ok)';
     const b=c.querySelector('.rtbar i');b.style.width=Math.min(100,I.el/I.len*100)+'%';b.style.background=I.left<0?'#E4483F':'var(--gold)';
     const lt=Math.round(I.late);c.querySelector('.rts').innerHTML=(lt>0?`<b style="color:#FF8A80">מאחרים ${lt} דק׳</b>`:lt<0?`<b style="color:#6EE7A0">מקדימים ${-lt} דק׳</b>`:'<b style="color:var(--ok)">בדיוק בזמן</b>')+` · סיום צפוי ${hhmm(I.end)}`});
+  document.querySelectorAll('.rcmini .rmn').forEach(e=>e.textContent=I?I.name:'');
+  document.querySelectorAll('.rcmini .rml').forEach(e=>{const lt=I?Math.round(I.late):0;e.textContent=!I?'':lt>0?`מאחרים ${lt} דק׳`:lt<0?`מקדימים ${-lt} דק׳`:'בזמן';e.style.color=lt>0?'#FF8A80':'#6EE7A0'});
   document.querySelectorAll('.rcmini .rmt').forEach(e=>{e.textContent=I?mmss(I.left):'';e.style.color=I&&I.left<0?'#FF6B6B':'var(--gold)'})}
 function deckLabels(){remoteClock();const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n)}
 function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}</p><h1 style="margin:0">שלט המצגת</h1>
@@ -976,7 +983,7 @@ function bindPhone(){
 // =====================================================================
 let SEQ=[],POS=+(store.get('psp-pos')||0),BUILD=0,SUB=0,HOF=0;
 const HOF_STEPS=['intro','board','ball','reveal','oak','gaps','legend','map'];
-const OAK_STEPS=['oak','gaps','legend'];
+const OAK_STEPS=['oak','gaps','legend','map'];
 async function startScreen(){
   const app=$('#app');
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
@@ -988,7 +995,7 @@ async function startScreen(){
   $('#cv').innerHTML=`<div class="st"><div class="center"><div class="ball wobble" style="--s:180px"></div><p class="lead">טוען את המצגת…</p></div></div>`;
   const [sl,en,sp]=await Promise.all([fetch('slides.json?v='+BUILDV).then(r=>r.json()),fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}))]);
   S.slides=sl;S.engine=en;S.sprites=sp;
-  SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});const m=s.id.match(/^x-break-(\d)$/);if(m)SEQ.push({kind:'live',k:+m[1],id:'live-'+m[1]});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'})});
+  SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'})});
   if(POS>=SEQ.length)POS=0;
   setTimeout(maybeMew,0);
   if(!S.state)await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
@@ -1043,6 +1050,24 @@ function deckPub(){clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoade
   const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0};S.deck={...D,...doc};
   S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer()},250)}
 // big countdown on the screen during question rounds and breaks
+// anonymous fun facts on the screen during breaks 2 and 3
+function factList(){const n=subjectName(),self=roster().find(p=>p.role==='self')?.id,F=[];
+  const ans=Object.entries(S.answers).filter(([pid])=>pid!==self).map(([pid,a])=>a.answers||{});if(ans.length<2)return F;
+  const items=BANK.items.filter(it=>it.kind!=='bonus'&&it.observer);const dis=[],agree=[],dk=[];
+  items.forEach(it=>{const v=ans.map(a=>a[it.id]).filter(x=>x!=null&&x!=='');const real=v.map(Number).filter(x=>x>=1&&x<=5),nd=v.filter(x=>+x===BANK.dont_know).length;
+    if(real.length>=2){const mx=Math.max(...real),mn=Math.min(...real);if(mx-mn>=3)dis.push({it,mx,mn,d:mx-mn});if(real.length>=3&&mx===mn&&(mx===5||mx===1))agree.push({it,v:mx,c:real.length})}
+    if(nd>=2)dk.push({it,c:nd})});
+  const q=it=>`"${fill(it.observer,n)}"`;
+  dis.sort((a,b)=>b.d-a.d).slice(0,3).forEach(x=>F.push({k:'FACT · DISAGREEMENT',t:`משתתף אחד נתן ${x.mx}, ומשתתף אחר נתן ${x.mn}, על אותו היגד:`,q:q(x.it)}));
+  agree.slice(0,2).forEach(x=>F.push({k:'FACT · FULL AGREEMENT',t:`${x.c} משתתפים, ואותה תשובה בדיוק: כולם נתנו ${x.v}.`,q:q(x.it)}));
+  dk.sort((a,b)=>b.c-a.c).slice(0,1).forEach(x=>F.push({k:'FACT · MYSTERY',t:`${x.c} מכם ענו "לא יודע" על ההיגד הזה. ${n} מסתיר משהו?`,q:q(x.it)}));
+  for(let i=F.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[F[i],F[j]]=[F[j],F[i]]}return F}
+function breakFacts(id){clearInterval(S.factT);const m=id.match(/^x-break-([23])$/);if(!m)return;
+  const F=factList();if(!F.length)return;const cv=$('#cv'),nurse=cv.querySelector('img[src*="tr-nurse"]');if(nurse)nurse.parentElement.style.visibility='hidden';
+  cv.insertAdjacentHTML('beforeend','<div id="facts" class="facts"><b></b><p class="ft"></p><p class="fq"></p><i></i></div>');let k=0;
+  const show=()=>{const el=$('#facts');if(!el){clearInterval(S.factT);return}const f=F[k%F.length];el.classList.remove('in');void el.offsetWidth;
+    el.querySelector('b').textContent=f.k;el.querySelector('.ft').textContent=f.t;el.querySelector('.fq').textContent=f.q;el.querySelector('i').textContent=`${k%F.length+1}/${F.length}`;el.classList.add('in');k++};
+  show();S.factT=setInterval(show,10000)}
 function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur();if(!it)return;const seg=segAt(POS);if(!/^[rb]\d$/.test(seg)||it.kind==='hof')return;
   $('#cv').insertAdjacentHTML('beforeend','<div id="segclock" class="segclock"><b></b><span></span></div>');
   const tick=()=>{const el=$('#segclock');if(!el||!S.deck?.segAt)return;const p=planOf(seg),left=p[2]-(Date.now()-S.deck.segAt)/60000;
@@ -1059,6 +1084,7 @@ function show(fresh,atEnd){
     const n=buildOrders().length;BUILD=atEnd?n:0;applyBuilds();
     onEnterSlide(it.id);
     if(it.id==='d-battle')battleNew();
+    breakFacts(it.id);
   } else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
   screenOverlay();deckPub();
@@ -1073,7 +1099,7 @@ function go(d){
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.bt&&!S.bt.done){battleRun();return}
-  if(d>0&&!S.gateOk){const m=it.kind==='live'?[0,it.k]:it.id.match(/^x-round-(4)$/);if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
+  if(d>0&&!S.gateOk){const m=it.kind==='slide'&&(it.id.match(/^x-break-(\d)$/)||it.id.match(/^x-round-(4)$/));if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
   S.gateOk=false;
   const np=POS+d;if(np<0||np>=SEQ.length)return;
   POS=np;show(true,d<0);
@@ -1339,8 +1365,8 @@ function renderHof(){
     h=hofShell('#151 · MEW BONUS','ומי עמד מאחורי כל היגד?','',`<div style="position:absolute;top:200px;bottom:44px;right:80px;left:80px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:22px">${m?.status==='ready'?m.statements.map(s=>mewCard(s,s.lineId===win,n)).join(''):'<p class="lead">אין נתוני מיו.</p>'}</div>`);
   }
   else if(step==='map'){
-    const l=R.main[0].line;
-    h=`<div class="st"><div class="center"><img ${artAttr(l)} alt="" style="width:260px;height:260px"><div class="big" style="max-width:1500px">הפוקימון של ${n} הוא לא ${n}.</div><p style="font-family:var(--display);font-size:72px;color:var(--gold)">הוא המפה הכי טובה שיש לנו ${gs('אליו','אליה')}.</p></div></div>`;
+    const l=R.main[0].line;oakPrep('map:'+l.id,()=>mapPages(R));
+    h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="oakmon" ${artAttr(l)} alt="">${oakBox()}</div>`;
   }
   else if(step==='oak'){
     const l=R.main[0].line;
@@ -1392,7 +1418,7 @@ function boardFrame(B){
    <div class="bd-p" style="right:40px;top:150px;height:540px"><p class="bd-h">סוגים <span class="bd-w">40%</span></p><div class="tbars" id="bdT">${tb}</div></div>
    <div class="bd-p" style="left:40px;top:150px;height:600px"><p class="bd-h">סטטים <span class="bd-w">30%</span></p><svg viewBox="0 0 400 380" width="500" height="475" style="display:block;margin:0 auto">${grid}<polygon id="radpoly" points="" fill="rgba(242,201,76,.32)" stroke="#F2C94C" stroke-width="4"/>${labs}</svg></div>
    <div class="bd-p" style="right:40px;top:710px;height:360px"><p class="bd-h">צורת התפתחות <span class="bd-w">18%</span></p><div class="ebars">${ev}</div></div>
-   <div class="bd-p" style="left:40px;top:770px;height:300px"><p class="bd-h">הסוג הנוסף <span class="bd-w">7%</span></p><div class="xrows" id="bdX"></div></div>
+   <div class="bd-p" style="left:40px;top:770px;height:300px"><p class="bd-h">אפיון נוסף <span class="bd-w">7%</span></p><div class="xrows" id="bdX"></div></div>
    <div class="bd-c"><p class="bd-h" id="bdTop">TOP 20</p><div class="rows" id="bdRows"></div><div id="bdMew" class="bd-mew"></div></div>
    <div class="bd-step" id="bdStep"></div>
    <div class="bd-oak" id="bdOak"><img src="img/tr-oak.webp" alt="פרופסור אוק"><div class="bd-bub"><p id="bdOakT"></p><span class="gbtri">▼</span></div></div>
@@ -1400,7 +1426,7 @@ function boardFrame(B){
 }
 function boardOakPages(){const n=subjectName();return [
   `ברוכים הבאים להיכל התהילה! מה שאתם רואים עכשיו הוא בדיוק מה שהמנוע רואה.`,
-  `בארבע הפינות: ארבע השכבות של ההתאמה. סוגים, סטטים, צורת ההתפתחות והסוג הנוסף. באמצע: הליינים הכי קרובים ל${n}.`,
+  `בארבע הפינות: ארבע השכבות של ההתאמה. סוגים, סטטים, צורת ההתפתחות והאפיון הנוסף. באמצע: הליינים הכי קרובים ל${n}.`,
   `נתחיל ממה ש${n} ${gs('ענה','ענתה')} על ${gs('עצמו','עצמה')}, 45% מהמשקל. אחר כך נוסיף אתכם, אחד אחד ובלי שמות. הרשימה תצטמצם, ובסוף מיו יכריע.`]}
 function tweenRadar(to){
   const el=$('#radpoly');if(!el)return;const from=S.bd.rad||[0,0,0,0,0,0];S.bd.rad=to.slice();
@@ -1619,12 +1645,12 @@ function oakPages(R){
     :`ואיך ${gs('אתה','את')} ${gs('מתפתח','מתפתחת')}? ${name} בכלל לא מתפתח: מה שרואים מההתחלה הוא מה שיש, שלם כבר מהיום הראשון. המנוע לא מעניש ולא מתגמל על זה, אבל זה בהחלט מוסיף לו אופי.`);
   const ex=R.agg.extra_types||[];const lx=l.extra_types||[];
   if(ex.length&&lx.some(x=>x>0)){const pe=ax.types[ord(ex).filter(i=>!tt.slice(0,2).includes(ax.types[i]))[0]],le=ax.types[ord(lx)[0]];
-    P.push(`ויש עוד משהו: הסוג הנוסף, מה שמבצבץ מעבר לסוגים הראשיים. אצלך זה ${TYPE_HE[pe]}, ואצל ${name} זה ${TYPE_HE[le]}, דרך ההתקפות שהוא לומד ומה שהפוקדקס מספר עליו.${pe===le?' אותה משיכה בדיוק!':''}`)}
+    P.push(`האפיון הנוסף, מה שמבצבץ מעבר לסוגים הראשיים: אצלך זה ${TYPE_HE[pe]}, ואצל ${name} זה ${TYPE_HE[le]}, דרך ההתקפות שהוא לומד ומה שהפוקדקס מספר עליו.${pe===le?' אותה משיכה בדיוק!':''}`)}
   const m=S.state?.mew;const ms=m?.statements?.find(s=>s.lineId===l.id);
   if(ms){const v=voterNames(ms.id);P.push(v.length?`וזוכרים את שאלת מיו? ההיגד "${ms.text}" נכתב בדיוק על ${name}. ${(a=>a.length>1?a.slice(0,-1).join(', ')+' ו'+a[a.length-1]:a[0])(v.map(x=>x.name))} ${v.length>1?'בחרו':'בחר'} בו, וזה נתן לו עוד דחיפה קטנה.`:`וזוכרים את שאלת מיו? ההיגד "${ms.text}" נכתב בדיוק על ${name}. הפעם אף אחד לא בחר בו, אבל עכשיו אתם יודעים.`)}
   const o=S.oak?.[l.id];
   if(o){P.push(o[0]);P.push(gs(o[1],o[2]||o[1]))}
-  P.push(`זה הכול ממני, ${n}. ${name} הוא שותף נהדר, ואני בטוח שתעשו דברים גדולים ביחד. ועכשיו… יש לי עוד כמה הפתעות בשבילך!`);
+  P.push(`${name} הוא שותף נהדר, ${n}, ואני בטוח שתעשו דברים גדולים ביחד.`);
   return splitPages(P.join('\n\n'),190);
 }
 // Oak dialog shared by the oak / gaps / legend scenes: pages are [text, highlight-index]
@@ -1648,19 +1674,19 @@ function gapRow(g,j,G){const I=gapInfo(g),[w0,w1]=gapWin(G),pos=v=>((v-w0)/(w1-w
     <span class="gmk me" style="right:${pos(g.self)}%">${avHead(subjP(),50,'#F2C94C')}</span><span class="gmk us" style="right:${pos(g.others)}%">${othersStack(40)}</span></div>
    <b class="gd ${d>0?'up':'dn'}">${d>0?'+':'−'}${Math.abs(d).toFixed(1)}</b></div>`}
 function gapPages(R,G){const n=subjectName();
-  if(!G.length)return [[`כדי לראות נקודות עיוורות צריך תשובות גם מ${n} וגם מאחרים.`,-1]];
-  const L=[[`רגע לפני שנפרדים, ${gs('בוא','בואי')} נדבר על נקודות עיוורות: המקומות שבהם ${n} רואה את ${gs('עצמו','עצמה')} אחרת ממה שכולכם רואים ${gs('אותו','אותה')}.\n\nעל כל סרגל, מ־1 עד 5: ${n} בעיגול הזהוב, וכל השאר ביחד. ככל שהפער ארוך יותר, הנקודה עיוורת יותר.`,-1]];
-  G.forEach((g,j)=>{const I=gapInfo(g),a=g.self.toFixed(1),b=g.others.toFixed(1);
-    L.push([`${j===0?'הפער הכי גדול':j===1?'הפער השני':j===2?'הפער השלישי':'ועוד אחד'}: ${I.what}. ${n} ${gs('נתן','נתנה')} ${gs('לעצמו','לעצמה')} ${a} מתוך 5, ואתם נתתם ${b}. `+
-      (g.self>g.others?`כלומר ${n} ${gs('מרגיש','מרגישה')} שיש ${gs('בו','בה')} הרבה יותר מזה ממה שאתם רואים מבחוץ.`:`כלומר אתם רואים ב${n} הרבה יותר מזה ממה ש${gs('הוא רואה בעצמו','היא רואה בעצמה')}.`),j])});
-  L.push([`אף צד לא בהכרח צודק פה. לפעמים אנחנו יודעים על עצמנו דברים שלא רואים מבחוץ, ולפעמים החברים רואים בנו את מה שאנחנו מפספסים. שווה לשאול את ${n} על זה בהמשך הערב.\n\nונשארה לי עוד הפתעה אחת…`,-1]);
+  if(!G.length)return [[`כדי לראות נקודות עיוורון צריך תשובות גם מ${n} וגם מאחרים.`,-1]];
+  const L=[[`נקודות עיוורון: איפה ${n} רואה את ${gs('עצמו','עצמה')} אחרת ממה שאתם רואים ${gs('אותו','אותה')}.`,-1]];
+  G.forEach((g,j)=>{const I=gapInfo(g);L.push([`${I.name}: `+(g.self>g.others?`${n} רואה את זה ${gs('בעצמו','בעצמה')} הרבה יותר מכם.`:`אתם רואים את זה ב${n} הרבה יותר ממה ש${gs('הוא רואה בעצמו','היא רואה בעצמה')}.`),j])});
+  L.push([`אף צד לא בהכרח צודק. שווה לשאול את ${n} על זה בהמשך הערב.`,-1]);
   return paged(L)}
 function legendPages(R){const n=subjectName(),t=R.legends[0],l=t.line,name=finalName(l),types=l.stage_types.at(-1).map(x=>TYPE_HE[x]).join(' ו'),o=S.oak?.[l.id];
-  const L=[[`חשבתם שסיימנו? יש עוד שכבה אחת. מעבר ל־600 הליינים יש 92 פוקימונים אגדיים, הלג׳נדריים. הם לא נכנסים לבחירה הרגילה, כי הם נדירים מדי. אבל המנוע בודק גם אותם, בנפרד.`,-1],
-    [`הלג׳נדרי הכי קרוב ל${n} הוא ${name}, ${types}, עם ${(t.total*100).toFixed(1)}% התאמה. ${gs('תחשוב','תחשבי')} עליו כמו על גרסת השיא: מי ${n} ${gs('יכול','יכולה')} להיות ברגעים הכי גדולים ${gs('שלו','שלה')}.`,-1]];
+  const L=[[`מעבר ל־600 הליינים יש 92 פוקימונים אגדיים. הם לא נכנסים לבחירה הרגילה, אבל המנוע בודק גם אותם.`,-1],
+    [`הלג׳נדרי הקרוב ביותר ל${n} הוא ${name}, ${types}, עם ${(t.total*100).toFixed(1)}% התאמה: גרסת השיא, מי ${n} ${gs('יכול','יכולה')} להיות ברגעים הכי גדולים ${gs('שלו','שלה')}.`,-1]];
   if(o)L.push([o[0],-1]);
-  L.push([`וזהו, ${n}. זה כל מה שיש לי. רק עוד מילה אחת לסיום…`,-1]);
   return paged(L)}
+function mapPages(R){const n=subjectName(),name=finalName(R.main[0].line);
+  return paged([[`${n}, ${name} הוא לא ${gs('אתה','את')}. הוא המפה הכי טובה שיש לנו ${gs('אליך','אלייך')}: איזה כוח ${gs('אתה מביא','את מביאה')}, על מי ${gs('אתה משפיע','את משפיעה')}, ואיך ${gs('אתה משתנה','את משתנה')}.`,-1],
+    [`המפה עכשיו ${gs('אצלך','אצלך')}. תודה לכולם שעניתם, ושיהיה המשך ערב נפלא!`,-1]])}
 function oakType(){
   const el=$('#gbtext');if(!el)return;const txt=S.oakPages[S.oakPage]||'';let i=0;clearInterval(S.oakT);S.oakTyping=true;el.textContent='';$('.gbtri').style.visibility='hidden';
   S.oakT=setInterval(()=>{i+=2;el.textContent=txt.slice(0,i);if(i>=txt.length)oakFinish()},26);
