@@ -551,7 +551,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793008070';
+const BUILDV='1793008919';
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
