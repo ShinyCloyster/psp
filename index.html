@@ -567,7 +567,8 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793018378';
+const BUILDV='1793020866';
+const SFX={};function sfx(n){try{let a=SFX[n];if(!a){a=SFX[n]=new Audio(n+'.mp3?v='+BUILDV);a.preload='auto'}a.currentTime=0;a.volume=.7;a.play().catch(()=>{})}catch(e){}}
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
@@ -585,7 +586,8 @@ function avColor(p,i){const k=avKey(p);return k?AVCOL[k]:XCOL[(i||0)%XCOL.length
 const avG=(p,g)=>(g||genderOf(p))==='f'?'-g':'';
 function avHead(p,size,ring){const k=avKey(p),sh=ring?`;box-shadow:0 0 0 ${Math.max(2,Math.round(size/14))}px ${ring}`:'';
   return `<span class="avh" style="width:${size}px;height:${size}px${sh}">${k?`<img src="img/av-h-${k}${avG(p)}.webp" alt="${esc(p.name)}">`:`<img src="img/it-poke-ball.webp" alt="" style="object-fit:contain;padding:14%">`}</span>`}
-function avFull(p,h,g){const k=avKey(p);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="img/it-poke-ball.webp" alt="" style="height:${Math.round(h*.5)}px;margin:${Math.round(h*.25)}px auto">`}
+const AVSCALE={doron:1.18};
+function avFull(p,h,g){const k=avKey(p);if(k&&AVSCALE[k])h=Math.round(h*AVSCALE[k]);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="img/it-poke-ball.webp" alt="" style="height:${Math.round(h*.5)}px;margin:${Math.round(h*.25)}px auto">`}
 function subjP(){return roster().find(p=>p.role==='self')||{name:subjectName(),role:'self'}}
 
 // ---------- progress dial ----------
@@ -868,6 +870,7 @@ function introType(){
   const el=$('#gbp-text'),I=S.intro;if(!el||!I)return;clearInterval(S.introT);
   const sc=introScript()[I.step],txt=sayText(sc.say[I.page]),key=I.step+':'+I.page;
   if(I.typed===key){el.textContent=txt;return}
+  sfx('sfx-a');
   let i=I.ci||0;el.textContent=txt.slice(0,i);
   S.introT=setInterval(()=>{i+=1;I.ci=i;el.textContent=txt.slice(0,i);if(i>=txt.length){clearInterval(S.introT);I.typed=key;I.ci=0;render()}},28);
 }
@@ -1081,9 +1084,9 @@ function breakFacts(id){clearInterval(S.factT);const m=id.match(/^x-break-([23])
 function closingHTML(){
   const n=esc(subjectName()),R=S.R,top=R?.main?.slice(0,5)||[],win=top[0]?.line;
   const im=(src,h,cls='')=>`<img class="cg ${cls}" src="img/${src}.webp" alt="" style="height:${h}px">`;
-  const lect=['tr-bill','tr-cynthia','tr-sabrina','tr-giovanni'].map(x=>im(x,190)).join('')+im('tr-oak',230,'oak');
+  const lect=['tr-bill','tr-cynthia','tr-sabrina','tr-giovanni'].map(x=>im(x,190)).join('')+im('tr-oak',195,'oak');
   const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,175)).join('');
-  const tr=['dwarf','bneiakiva','family','sport'].map(k=>im('tr-eri-'+k,k==='family'?200:215)).join('');
+  const tr=['dwarf','bneiakiva','family','sport'].map(k=>im('tr-eri-'+k,k==='family'?200:k==='sport'?180:215)).join('');
   const ppl=inRoom().filter(p=>p.role!=='self').map(p=>avFull(p,225)).join('');
   const spr=(l,w)=>`<img class="cg mon" src="${spriteURL(sprite(l,l.species.at(-1)))}" alt="" style="width:${w}px;height:${w}px">`,runners=top.slice(1).map(t=>spr(t.line,230));
   return `<div class="st closing">
@@ -1415,7 +1418,10 @@ function boardPlan(){
   const ms=S.state?.mew?.statements||[];
   const voters=[];
   if(ms.length){ph.push({k:'mew',upto:order.length,top:4});
-    order.forEach((o,j)=>{const v=S.answers[o.r.pid]?.mew;if(v&&ms.find(s=>s.id===v)){voters.push(j);ph.push({k:'vote',upto:order.length,top:4,voter:j,sid:v})}});
+    const vs=[];order.forEach((o,j)=>{const v=S.answers[o.r.pid]?.mew;if(v&&ms.find(s=>s.id===v))vs.push({j,v,self:o.r.role==='self'})});
+    // order: everyone else, then the subject, then one more held back for the ball (so the subject is the last vote seen on the board)
+    const oth=vs.filter(x=>!x.self),me=vs.filter(x=>x.self),held=oth.length?[oth.pop()]:[];
+    [...oth,...me,...held].forEach(x=>{voters.push(x.j);ph.push({k:'vote',upto:order.length,top:4,voter:x.j,sid:x.v})});
     // keep the last vote for the reveal: the board stops one vote short, so the winner is still a surprise
     if(ph[ph.length-1].k==='vote')ph.pop()}
   return {order,ph,n,hasSelf,ms,voters};
@@ -1478,7 +1484,7 @@ function boardUpdate(){
   $('#bdStep').innerHTML=banner?`<span>${banner}</span>`:'';
   // oak bubble
   const oak=$('#bdOak');oak.classList.toggle('show',p.k==='oak');
-  if(p.k==='oak'){const pg=boardOakPages();$('#bdOakT').textContent=pg[S.bd.oak]}
+  if(p.k==='oak'){const pg=boardOakPages(),t=pg[S.bd.oak];if($('#bdOakT').textContent!==t)sfx('sfx-a');$('#bdOakT').textContent=t}
   // panels
   const agg=R?R.agg:null;
   const types=agg?agg.types:ax.types.map(()=>1),top2=agg?types.map((v,j)=>j).sort((a,b)=>types[b]-types[a]).slice(0,2):[];
@@ -1713,6 +1719,7 @@ function mapPages(R){const n=subjectName(),name=finalName(R.main[0].line);
   return paged([[`${n}, ${name} הוא לא ${gs('אתה','את')}. הוא המפה הכי טובה שיש לנו ${gs('אליך','אלייך')}: איזה כוח ${gs('אתה מביא','את מביאה')}, על מי ${gs('אתה משפיע','את משפיעה')}, ואיך ${gs('אתה משתנה','את משתנה')}.`,-1],
     [`המפה עכשיו ${gs('אצלך','אצלך')}. תודה לכולם שעניתם, ושיהיה המשך ערב נפלא!`,-1]])}
 function oakType(){
+  sfx('sfx-a');
   const el=$('#gbtext');if(!el)return;const txt=S.oakPages[S.oakPage]||'';let i=0;clearInterval(S.oakT);S.oakTyping=true;el.textContent='';$('.gbtri').style.visibility='hidden';
   S.oakT=setInterval(()=>{i+=2;el.textContent=txt.slice(0,i);if(i>=txt.length)oakFinish()},26);
 }
