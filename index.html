@@ -551,6 +551,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
+const BUILDV='1793008070';
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
@@ -656,7 +657,7 @@ function render(){
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
   if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><button data-act="ctlnext">◀</button></div>`);
   bindPhone();deckLabels();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
-  if(!S.dex)fetch('dex151.json').then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
+  if(!S.dex)fetch('dex151.json?v='+BUILDV).then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
 // ----- presenter remote -----
 function presenterName(){const v=S.state?.presenter;return v==null?'אייל':v}
@@ -975,7 +976,7 @@ async function startScreen(){
   document.body.insertAdjacentHTML('beforeend',`<div class="screen" id="scr"><div class="canvas" id="cv"></div></div><button class="gear" id="gear" aria-label="פאנל מארח">⚙</button><div class="panel card" id="panel" hidden></div>`);
   fit();window.addEventListener('resize',fit);
   $('#cv').innerHTML=`<div class="st"><div class="center"><div class="ball wobble" style="--s:180px"></div><p class="lead">טוען את המצגת…</p></div></div>`;
-  const [sl,en,sp]=await Promise.all([fetch('slides.json').then(r=>r.json()),fetch('engine.json').then(r=>r.json()),fetch('sprites.json').then(r=>r.json()).catch(()=>({}))]);
+  const [sl,en,sp]=await Promise.all([fetch('slides.json?v='+BUILDV).then(r=>r.json()),fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}))]);
   S.slides=sl;S.engine=en;S.sprites=sp;
   SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});const m=s.id.match(/^x-break-(\d)$/);if(m)SEQ.push({kind:'live',k:+m[1],id:'live-'+m[1]});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'})});
   if(POS>=SEQ.length)POS=0;
@@ -1138,7 +1139,7 @@ async function buildMew(){
   const top=S.R.main.slice(0,4).map(t=>({lineId:t.line.id,name:finalName(t.line),entry:flavorOf(t.line)}));
   let texts=null;
   // precomputed library first (all 508 non-legendary lines); the model is only a fallback
-  if(!S.mewlib)S.mewlib=await fetch('mew.json').then(r=>r.json()).catch(()=>null);
+  if(!S.mewlib)S.mewlib=await fetch('mew.json?v='+BUILDV).then(r=>r.json()).catch(()=>null);
   if(S.mewlib&&top.every(t=>S.mewlib[t.lineId]))texts=top.map(t=>({statement:S.mewlib[t.lineId][0],entry_he:S.mewlib[t.lineId][1]}));
   if(!texts&&S.sample){
     const prompt=`Below are 4 Pokédex entries (English). For each one return an object with two Hebrew fields:
@@ -1547,7 +1548,7 @@ async function publishResult(){
 // regional forms share species lore in the source data; lineFlavor holds the form's own entry
 function flavorOf(l){const sp=l.species.at(-1),pid=S.engine.spr[l.id+':'+sp]||String(sp);return S.engine.lineFlavor?.[l.id]||S.engine.flavor[pid]||S.engine.flavor[String(sp)]||''}
 function dexEntry(l){const he=S.mewlib?.[l.id]?.[1]||'';return {en:flavorOf(l),he}}
-function loadOak(){if(!S.oak)fetch('oak.json').then(r=>r.json()).then(o=>{S.oak=o;if(HOF_STEPS[HOF]==='oak'&&cur()?.kind==='hof'){S.oakFor=null;renderHof()}}).catch(()=>{});if(!S.mewlib)fetch('mew.json').then(r=>r.json()).then(m=>S.mewlib=m).catch(()=>{})}
+function loadOak(){if(!S.oak)fetch('oak.json?v='+BUILDV).then(r=>r.json()).then(o=>{S.oak=o;if(HOF_STEPS[HOF]==='oak'&&cur()?.kind==='hof'){S.oakFor=null;renderHof()}}).catch(()=>{});if(!S.mewlib)fetch('mew.json?v='+BUILDV).then(r=>r.json()).then(m=>S.mewlib=m).catch(()=>{})}
 function splitPages(txt,max){const out=[];txt.split('\n\n').forEach(par=>{const ss=par.match(/(?:[^.!?…]|\.(?=\d))+[.!?…]+["״]?\s*|(?:[^.!?…]|\.(?=\d))+$/g)||[par];let cur='';ss.forEach(x=>{x=x.trim();if(!x)return;if((cur+' '+x).trim().length>max&&cur){out.push(cur.trim());cur=x}else cur=(cur+' '+x).trim()});if(cur)out.push(cur)});return out}
 function oakPages(R){
   const n=subjectName(),t=R.main[0],l=t.line,ax=S.engine.axes,name=finalName(l),lt=l.stage_types.at(-1);
