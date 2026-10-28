@@ -244,6 +244,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .apod{display:flex;gap:14px;align-items:flex-end;justify-content:center;margin:10px 0}.apod>div{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.05);border-radius:16px;padding:12px 18px;min-width:140px}.apod>div.win{background:rgba(242,201,76,.16);border:2px solid var(--gold)}
 .chipx{display:inline-block;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 8px;margin:2px;font-size:13px}.agrid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:12px}
 @media (max-width:700px){.atab{font-size:13px}.atab th,.atab td{padding:5px 4px}}
+.tbar{position:relative;height:22px}.tbar i{position:absolute;right:0;height:9px;border-radius:5px}.tbar i.pl{top:0;background:rgba(255,255,255,.25)}.tbar i.ac{top:12px;background:var(--gold)}.tbar i.ac.over{background:#FF8A80}
+.tkey{display:inline-block;width:14px;height:8px;border-radius:4px;vertical-align:middle}.tkey.pl{background:rgba(255,255,255,.25)}.tkey.ac{background:var(--gold)}
 .agrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aslot{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;background:rgba(255,255,255,.04);border-radius:14px;padding:10px}
 .aprev{width:100%;height:120px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(0,0,0,.18);overflow:hidden}.aprev img{max-width:100%;max-height:120px;object-fit:contain;image-rendering:pixelated}
 .linkbtn{background:none;border:0;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
@@ -628,7 +630,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793227913';
+const BUILDV='1793230960';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -734,7 +736,8 @@ function globalSubs(){
 }
 function joinView(){
   const L=myRooms();
-  return `<p class="eyebrow">PSP · JOIN</p><h1>כניסה לחדר</h1><p class="muted">מקלידים את הקוד שמופיע על המסך הגדול, או שמקבלים אותו מהמארח.</p>
+  const crew=['eri','ron','dolev','nir','doron','eyal'].map(k=>`<img src="img/av-f-${k}.webp" alt="" style="height:86px;image-rendering:pixelated;margin-inline-start:-10px">`).join('');
+  return `<div style="display:flex;justify-content:center;align-items:flex-end;margin:6px 0 2px;padding-inline-start:10px">${crew}</div><p class="eyebrow">PSP · JOIN</p><h1>כניסה לחדר</h1><p class="muted">מקלידים את הקוד שמופיע על המסך הגדול, או שמקבלים אותו מהמארח.</p>
   <div class="card"><input id="roomcode" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters" style="text-align:center;font:400 30px var(--pixel);letter-spacing:10px;direction:ltr;text-transform:uppercase"><button class="btn" data-act="joinroom" style="margin-top:10px">כניסה</button></div>
   ${L.length?`<div class="card"><p style="margin:0 0 8px;font-weight:700">החדרים שלך</p>${L.map(x=>`<a class="btn ghost small" href="#r=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject||'')} · <span style="direction:ltr;font-family:var(--pixel)">${esc(x.code)}</span></a>`).join('')}</div>`:''}
   ${pastCardsHTML()}`}
@@ -769,6 +772,14 @@ function assetsView(){
   if(!S.db||!S.userReady)return `<p class="eyebrow">PSP · IMAGES</p><h1>מתחבר…</h1>`;
   if(!S.canEdit)return `<p class="eyebrow">PSP · IMAGES</p><h1>תמונות לערב</h1><p class="muted">רק המארח מעלה תמונות. התחברו עם Google במסך הגדול.</p><a class="btn" href="#screen" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">למסך הגדול</a>`;
   if(!S.stateLoaded||!S.assetsLoaded)return `<p class="eyebrow">PSP · IMAGES</p><h1>טוען…</h1>`;
+  if(ROOM.legacy){const g=(src,lab)=>`<div class="aslot"><div class="aprev"><img src="${src}" alt=""></div><b>${lab}</b><a class="btn ghost small" href="${src}" download target="_blank" style="text-decoration:none">הורדה</a></div>`;
+    const ppl=Object.entries(AV);
+    return `<p class="eyebrow">PSP · FILES · ERI1</p><h1>תמונות וקבצים: הערב של ערי</h1>
+    <div class="card"><h3>ספרייטים של המשתתפים</h3><div class="agrid4">${ppl.map(([nm,k])=>g(`img/av-f-${k}.webp`,nm)+g(`img/av-h-${k}.webp`,nm+' · ראש')).join('')}</div></div>
+    <div class="card"><h3>המאמנים של ערי</h3><div class="agrid4">${TR_KEYS.map((k,i)=>g(`img/tr-eri-${k}.webp`,'מאמן '+(i+1))).join('')}</div></div>
+    <div class="card"><h3>התמונות שערי הציג</h3><div class="agrid4">${PHOTOS0.map(id=>g(`img/eri/p${id}.webp`,'תמונה '+(+id))).join('')}</div></div>
+    <div class="card"><h3>מדריך השדה</h3><div class="agrid4">${g('img/guide-he.jpg','מדריך השדה של PSP')}</div></div>
+    <a class="btn" href="#admin=ERI1" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">לניהול הערב</a>`}
   const A=S.assets||{},n=subjectName();
   const people=[...new Set([...Object.values(A).filter(x=>x.person).map(x=>x.person),...(S.setup?.roster||[]).filter(r=>r.role!=='self').map(r=>r.name),...(S.newPeople||[])])].filter(Boolean);
   const photos=Object.keys(A).filter(k=>k.startsWith('ph-')).sort();
@@ -815,20 +826,20 @@ function adminView(){
     <div class="row" style="gap:8px;margin-top:14px"><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),30)">למסך הגדול</a></div>`)}
   if(!S.stateLoaded||!needEngine())return box(`<p class="eyebrow">PSP · ADMIN · ${esc(ROOM.code)}</p><h1>טוען…</h1>`);
   if(!S.state)return box(`<h1>החדר ${esc(ROOM.code)} לא נמצא</h1><a class="btn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">כל הערבים</a>`);
-  const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','קבצים'],['whatif','מה אם']];
+  const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','קבצים'],['whatif','מה אם'],['time','לוח זמנים']];
   const n=subjectName(),closed=S.state.status==='closed';
   const head=`<div class="row" style="flex-wrap:wrap;gap:8px;align-items:center"><a class="linkbtn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">← כל הערבים</a></div>
    <div class="row" style="align-items:baseline;gap:14px;flex-wrap:wrap"><h1 style="margin:6px 0">${esc(n)}</h1><span class="mono" style="color:var(--gold);font-size:20px">${esc(ROOM.code)}</span><span class="muted">${closed?'נסגר · תוצאות פתוחות לכולם':'פתוח'}</span></div>
    <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
     <a class="btn ghost small" href="#screen=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">פתיחה במסך</a>
-    ${ROOM.legacy?'':`<a class="btn ghost small" href="#assets=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">תמונות לערב</a>`}
+    <a class="btn ghost small" href="#assets=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">תמונות וקבצים</a>
     <button class="btn ghost small" data-adm="${closed?'reopen':'close'}">${closed?'פתיחה מחדש':'סגירה לתוצאות'}</button>
     <button class="btn ghost small" data-adm="backup">הורדת גיבוי (JSON)</button>
     <button class="btn ghost small" data-adm="copylinks">העתקת קישורים לכולם</button></div>
    ${S.admConfirm?admConfirmHTML():''}
    <div class="atabs">${T.map(([k,v])=>`<button class="${k===tab?'on':''}" data-tab="${k}">${v}</button>`).join('')}</div>`;
   let body='';
-  try{body=tab==='people'?admPeople():tab==='files'?admFiles():tab==='whatif'?admWhatIf():admResults()}catch(e){console.error(e);body=`<p class="muted">שגיאה בחישוב: ${esc(e.message||e)}</p>`}
+  try{body=tab==='time'?admTime():tab==='people'?admPeople():tab==='files'?admFiles():tab==='whatif'?admWhatIf():admResults()}catch(e){console.error(e);body=`<p class="muted">שגיאה בחישוב: ${esc(e.message||e)}</p>`}
   return box(head+body)}
 function admConfirmHTML(){const c=S.admConfirm;
   if(c.k==='close'){const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done);return `<div class="card"><b>${unf.length?`${unf.length} משיבים מרחוק לא סיימו, התשובות שלהם יימחקו:`:'כולם סיימו.'}</b> ${unf.map(([id,r])=>esc(r.name||'ללא שם')).join(', ')}<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-adm="close2">${unf.length?'למחוק ולסגור':'סגירה'}</button><button class="btn ghost small" data-adm="cancel">ביטול</button></div></div>`}
@@ -865,6 +876,18 @@ function admFiles(){
   return `<p class="muted">הכרטיסים האישיים בדיוק כמו שהמשתתפים מורידים, ועמוד העומק על הפוקימון.</p>
   <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn small" data-adm="mkcards">${Object.keys(cards).length?'יצירה מחדש של כל הכרטיסים':'יצירת כל הכרטיסים'}</button>${Object.keys(cards).length?'<button class="btn ghost small" data-adm="dlall">הורדת כל הכרטיסים</button>':''}<button class="btn ghost small" data-act="deep">עמוד העומק</button></div>
   <div class="agrid4">${ppl.map(p=>`<div class="aslot"><b>${esc(p.name)}</b>${cards[p.id]?`<a href="${cards[p.id]}" download="PSP-${esc(p.name)}.png"><img src="${cards[p.id]}" alt="" style="width:100%;border-radius:10px"></a>`:'<div class="aprev"><span class="muted">לא נוצר עדיין</span></div>'}${cardCodeFor(p.id)?`<a class="mono" href="${cardLink(cardCodeFor(p.id))}" target="_blank">${cardCodeFor(p.id).toUpperCase()}</a>`:''}</div>`).join('')}</div>`}
+function admTime(){
+  const D=S.deck;if(!D?.t0||!D.log)return `<p class="muted">אין מדידת זמנים לערב הזה. השעון מתחיל במעבר מהשקף הראשון במסך הגדול.</p>`;
+  const log={...D.log};if(D.seg&&D.segAt&&D.seg!=='end'&&!log[D.seg]&&D.updated)log[D.seg]=(D.updated-D.segAt)/60000;
+  const segs=PLAN.filter(p=>log[p[0]]!=null);const order=PLAN.map(p=>p[0]);
+  const tP=PLAN.reduce((a,p)=>a+p[2],0),tA=segs.reduce((a,p)=>a+log[p[0]],0),mx=Math.max(...segs.map(p=>Math.max(p[2],log[p[0]])),1);
+  const t0=new Date(D.t0);let cum=0,cumP=0;
+  const rows=PLAN.map(p=>{const a=log[p[0]];const st=new Date(D.t0+cum*60000);if(a!=null)cum+=a;cumP+=p[2];const d=a!=null?a-p[2]:null;
+    return `<tr><td><b>${esc(p[1])}</b></td><td>${a!=null?hhmm(st):'—'}</td><td>${p[2]}</td><td>${a!=null?Math.round(a):'—'}</td><td style="color:${d==null?'inherit':d>2?'#FF8A80':d<-2?'#7FD8C4':'inherit'}">${d==null?'':(d>0?'+':'')+Math.round(d)}</td>
+     <td style="width:40%"><div class="tbar"><i class="pl" style="width:${p[2]/mx*100}%"></i>${a!=null?`<i class="ac${a>p[2]+2?' over':''}" style="width:${a/mx*100}%"></i>`:''}</div></td></tr>`}).join('');
+  return `<div class="row" style="gap:24px;flex-wrap:wrap;margin-bottom:10px"><div><span class="muted">התחלה</span><br><b style="font-size:22px">${hhmm(t0)}</b></div><div><span class="muted">מתוכנן</span><br><b style="font-size:22px">${Math.floor(tP/60)}:${String(tP%60).padStart(2,'0')}</b></div><div><span class="muted">בפועל (חלקים שנמדדו)</span><br><b style="font-size:22px">${Math.floor(tA/60)}:${String(Math.round(tA%60)).padStart(2,'0')}</b></div><div><span class="muted">סיום משוער</span><br><b style="font-size:22px">${hhmm(new Date(D.t0+tA*60000))}</b></div></div>
+  <table class="atab"><tr><th>חלק</th><th>שעה</th><th>תוכנן (דק׳)</th><th>בפועל</th><th>הפרש</th><th><span class="tkey pl"></span> תכנון <span class="tkey ac"></span> בפועל</th></tr>${rows}</table>
+  <p class="muted" style="font-size:13px">הזמנים נמדדים לפי המעבר בין חלקי המצגת במסך הגדול. חלק שלא עברו בו לא נמדד.</p>`}
 function admWhatIf(){
   const pr=profile();if(!pr.raters.length)return `<p class="muted">אין עדיין תשובות.</p>`;
   const wi=S.wi||(S.wi={mew:true,excl:new Set()});const base=admRun(),alt=admRun({mew:wi.mew,excl:wi.excl});
@@ -989,9 +1012,10 @@ function archCardView(code){
   if(S.cardFor!=='c:'+code){S.cardFor='c:'+code;S.cardImg=null;rememberCard(d);drawCard(d).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
   const gsd=(m,f)=>d.gender==='f'?f:m;
   return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">${esc(d.subject)}, לפי ${d.role==='self'?gsd('עצמו','עצמה'):esc(d.name)}</h1><p class="muted">הכרטיס האישי שלך מהערב של ${esc(d.subject)}.</p>${cardImgHTML(d.name)}${codeBox(code)}<a class="btn ghost" href="#" style="text-align:center;text-decoration:none">חזרה</a>`}
-function pastCardsHTML(){const L=myCards();return `<div class="card" style="margin-top:18px"><p style="margin:0 0 8px;font-weight:700">${L.length?'הכרטיסים שלך מערבים קודמים':'יש לך קוד של כרטיס מערב קודם?'}</p>${L.map(x=>`<a class="btn ghost small" href="#c=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject)} · ${esc(x.name)}</a>`).join('')}<div class="row" style="gap:8px"><input id="cardcode" placeholder="קוד אישי (6 תווים)" style="flex:1;direction:ltr;text-align:center" maxlength="6"><button class="btn small" data-act="opencard">פתיחה</button></div></div>`}
+function pastCardsHTML(){const L=myCards();if(!L.length)return '';return `<div class="card" style="margin-top:18px"><p style="margin:0 0 8px;font-weight:700">${L.length?'הכרטיסים שלך מערבים קודמים':'יש לך קוד של כרטיס מערב קודם?'}</p>${L.map(x=>`<a class="btn ghost small" href="#c=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject)} · ${esc(x.name)}</a>`).join('')}</div>`}
 const STAT_HL={hp:['תקופה ארוכה של לחץ לא שוחקת','צריך זמן להתאושש מיום קשה'],attack:['ניגש ישר לעשייה','משאיר לאחרים את הביצוע'],defense:['לא מתקפל מול דרישות','קשה להגיד "לא"'],'special-attack':['משכנע ברעיונות ובמילים','מעדיף שהידיים ידברו'],'special-defense':['אווירה רעה לא נדבקת','סופג את מצב הרוח של החדר'],speed:['קולט ומחליט מהר','חושב הרבה לפני כל צעד']};
-function deepBtn(){return `<button class="btn ghost" data-act="deep" style="margin-top:12px">⬇ עמוד העומק: הפוקימון של ${esc(subjectName())}</button>`}
+function deepBtn(){return `<button class="btn ghost" data-act="deep" style="margin-top:12px">⬇ עמוד העומק: הפוקימון של ${esc(subjectName())}</button>${guideBtn()}`}
+function guideBtn(){return `<a class="btn ghost" href="img/guide-he.jpg?v=${BUILDV}" download="PSP-מדריך-השדה.jpg" target="_blank" style="margin-top:8px;text-align:center;text-decoration:none">⬇ מדריך השדה של PSP: מה כל סוג, סטט והתפתחות אומרים</a>`}
 async function makeDeep(){if(!needEngine()){toast('רגע, טוען…');return}if(S.deepBusy)return;S.deepBusy=true;toast('מכין את עמוד העומק…');
   try{const u=await drawDeep();const a=document.createElement('a');a.href=u;a.download=`PSP-${subjectName()}.png`;document.body.append(a);a.click();a.remove();
     S.deepImg=u;const w=window.open();if(w){w.document.write(`<title>PSP</title><body style="margin:0;background:#161A2E"><img src="${u}" style="width:100%"></body>`)}}catch(e){console.error(e);toast('לא הצלחתי ליצור את העמוד')}S.deepBusy=false}
@@ -1076,7 +1100,7 @@ function cardView(me){
   const code=cardCodeFor(me.id);if(code){const d=S.cardDocs[code];if(S.remembered!==code){S.remembered=code;rememberCard(d)}}else if(S.cardsLoaded&&!S.cardSaving){S.cardSaving=true;saveCard(me).then(()=>{S.cardSaving=false;render()}).catch(()=>{S.cardSaving=false})}
   const n=esc(subjectName());
   return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">הכרטיס האישי שלך</h1><p class="muted">איך התשובות שלך על ${n} נראות מול התשובות של ${n} על ${gs('עצמו','עצמה')}. לא חובה, רק אם בא לך.</p>
-  ${cardImgHTML(me.name)}${codeBox(cardCodeFor(me.id))}${deepBtn()}${roomFoot()}`}
+  ${cardImgHTML(me.name)}${deepBtn()}${roomFoot()}`}
 const TYPE_KEY={normal:['שייכות','פשוט, נגיש לכולם, הדבק שמחזיק קבוצות'],fire:['להט','תשוקה שסוחפת אחרים, וכעס שעולה מהר'],water:['איזון','יציב רגשית, מעוגן ב"ביחד"'],electric:['ניצוץ','קולט ברגע ומדליק את מי שסביבו'],grass:['שורשים','מטפח לאט, זוכר מאיפה צמח'],ice:['עולם פנימי','קור רוח, שביר מבפנים, שומר מרחק'],fighting:['ישירות','אומר בפנים, עומד במילה'],poison:['חתרנות','ביקורת שמערערת על המובן מאליו'],ground:['קרקוע','מעשי ואמין, מעשים לפני חלומות'],flying:['חופש','צריך מרחב ומבט מלמעלה'],psychic:['תודעה','חי בתוך הראש, קורא אנשים'],bug:['התמדה','חרוץ, מתחיל קטן ומשתנה הרבה'],rock:['עמידות','עקרוני, קשה להזיז'],ghost:['מסתורין','עומק נסתר, קשה לקרוא'],dragon:['שאפתנות','נוכחות שממלאת חדר'],dark:['אי־ציות','עצמאי, חוקים משלו'],steel:['סדר','מדויק, בונה מערכות'],fairy:['חמלה','חם, ומתייצב מול כוח שמדכא']};
 function avgScores(rs){const ax=S.engine.axes,o={};['types','stats','evo'].forEach(L=>{o[L]={};ax[L].forEach(d=>{const v=rs.map(r=>r.scores?.[L]?.[d]).filter(x=>x!=null);if(v.length)o[L][d]=Math.round(v.reduce((a,b)=>a+b,0)/v.length*1000)/1000})});return o}
 function ctxFor(me){const pr=profile(),mine=pr.raters.find(r=>r.pid===me.id),selfR=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');if(!mine)return null;
@@ -2361,7 +2385,7 @@ async function demoFill(){
 async function saveResults(){
   await ensureCards().catch(()=>{});
   let R=null;try{computeResult();R=S.R?{main:S.R.main.map(t=>({line:t.line.id,name:t.line.name,total:t.total,sims:t.sims})),legends:S.R.legends.map(t=>({line:t.line.id,name:t.line.name,total:t.total})),gaps:S.R.gaps}:null}catch(e){}
-  const snap=clone({at:new Date().toISOString(),subject:subjectName(),state:S.state,setup:S.setup,answers:S.answers,remote:S.remote||{},result:R});
+  const snap=clone({at:new Date().toISOString(),room:ROOM.code||'',subject:subjectName(),state:S.state,setup:S.setup,answers:S.answers,remote:S.remote||{},deck:S.deck||null,result:R});
   try{await S.db.doc('archive/'+snap.at.replace(/[:.]/g,'-')).set(snap);toast('התוצאות נשמרו')}catch(e){toast('השמירה בענן נכשלה, הקובץ יורד בכל זאת')}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(snap,null,1)],{type:'application/json'}));a.download=`psp-${snap.at.slice(0,16).replace(/[:T]/g,'-')}.json`;document.body.appendChild(a);a.click();a.remove();
 }
