@@ -599,7 +599,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793200543';
+const BUILDV='1793206526';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -828,7 +828,7 @@ function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
   if(!S.state)return `<p class="eyebrow">PSP · WAITING</p><h1>הערב עוד לא נפתח</h1><p class="muted">העמוד יתעדכן לבד כשהמארח יפתח את הערב.</p>`;
   const subj=subjectName(),me=person(S.me);
-  const eve=String(S.state.eve||'');if(S.me&&store.get('psp-eve')!==eve){S.me=null;store.set('psp-me','');S.intro=null}
+  const eve=String(S.state.eve||'');if(S.me&&eve&&store.get('psp-eve')!==eve){S.me=null;store.set('psp-me','');S.intro=null}
   if(!me||!S.me)return pickView();
   if(S.joinedLoaded&&S.joinedDev?.[me.id]&&S.joinedDev[me.id]!==DEV&&S.sameOk!==me.id)return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>${esc(me.name)} כבר ${genderOf(me)==='f'?'נכנסה':'נכנס'} מטלפון אחר</h1><p class="muted">זה באמת ${esc(me.name)}, או שבחרת בטעות?</p>
     <button class="btn" data-act="sameok">כן, זה אני</button><button class="btn ghost" data-act="switch">לא, לבחור שם אחר</button>`;
