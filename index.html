@@ -630,7 +630,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793230960';
+const BUILDV='1793231327';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -778,7 +778,7 @@ function assetsView(){
     <div class="card"><h3>ספרייטים של המשתתפים</h3><div class="agrid4">${ppl.map(([nm,k])=>g(`img/av-f-${k}.webp`,nm)+g(`img/av-h-${k}.webp`,nm+' · ראש')).join('')}</div></div>
     <div class="card"><h3>המאמנים של ערי</h3><div class="agrid4">${TR_KEYS.map((k,i)=>g(`img/tr-eri-${k}.webp`,'מאמן '+(i+1))).join('')}</div></div>
     <div class="card"><h3>התמונות שערי הציג</h3><div class="agrid4">${PHOTOS0.map(id=>g(`img/eri/p${id}.webp`,'תמונה '+(+id))).join('')}</div></div>
-    <div class="card"><h3>מדריך השדה</h3><div class="agrid4">${g('img/guide-he.jpg','מדריך השדה של PSP')}</div></div>
+    <div class="card"><h3>PSP Pokédex</h3><div class="agrid4">${g('img/guide-he.jpg','PSP Pokédex')}</div></div>
     <a class="btn" href="#admin=ERI1" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">לניהול הערב</a>`}
   const A=S.assets||{},n=subjectName();
   const people=[...new Set([...Object.values(A).filter(x=>x.person).map(x=>x.person),...(S.setup?.roster||[]).filter(r=>r.role!=='self').map(r=>r.name),...(S.newPeople||[])])].filter(Boolean);
@@ -1015,7 +1015,7 @@ function archCardView(code){
 function pastCardsHTML(){const L=myCards();if(!L.length)return '';return `<div class="card" style="margin-top:18px"><p style="margin:0 0 8px;font-weight:700">${L.length?'הכרטיסים שלך מערבים קודמים':'יש לך קוד של כרטיס מערב קודם?'}</p>${L.map(x=>`<a class="btn ghost small" href="#c=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject)} · ${esc(x.name)}</a>`).join('')}</div>`}
 const STAT_HL={hp:['תקופה ארוכה של לחץ לא שוחקת','צריך זמן להתאושש מיום קשה'],attack:['ניגש ישר לעשייה','משאיר לאחרים את הביצוע'],defense:['לא מתקפל מול דרישות','קשה להגיד "לא"'],'special-attack':['משכנע ברעיונות ובמילים','מעדיף שהידיים ידברו'],'special-defense':['אווירה רעה לא נדבקת','סופג את מצב הרוח של החדר'],speed:['קולט ומחליט מהר','חושב הרבה לפני כל צעד']};
 function deepBtn(){return `<button class="btn ghost" data-act="deep" style="margin-top:12px">⬇ עמוד העומק: הפוקימון של ${esc(subjectName())}</button>${guideBtn()}`}
-function guideBtn(){return `<a class="btn ghost" href="img/guide-he.jpg?v=${BUILDV}" download="PSP-מדריך-השדה.jpg" target="_blank" style="margin-top:8px;text-align:center;text-decoration:none">⬇ מדריך השדה של PSP: מה כל סוג, סטט והתפתחות אומרים</a>`}
+function guideBtn(){return `<a class="btn ghost" href="img/guide-he.jpg?v=${BUILDV}" download="PSP-Pokedex.jpg" target="_blank" style="margin-top:8px;text-align:center;text-decoration:none">⬇ PSP Pokédex: מה כל סוג, סטט והתפתחות אומרים</a>`}
 async function makeDeep(){if(!needEngine()){toast('רגע, טוען…');return}if(S.deepBusy)return;S.deepBusy=true;toast('מכין את עמוד העומק…');
   try{const u=await drawDeep();const a=document.createElement('a');a.href=u;a.download=`PSP-${subjectName()}.png`;document.body.append(a);a.click();a.remove();
     S.deepImg=u;const w=window.open();if(w){w.document.write(`<title>PSP</title><body style="margin:0;background:#161A2E"><img src="${u}" style="width:100%"></body>`)}}catch(e){console.error(e);toast('לא הצלחתי ליצור את העמוד')}S.deepBusy=false}
