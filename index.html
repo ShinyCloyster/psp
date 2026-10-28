@@ -238,6 +238,9 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:2px solid var(--line);background:var(--night2);color:var(--cream);font:700 14px var(--body)}
 .qt.on:disabled{opacity:1}.qt.on{border-color:var(--gold);background:rgba(242,201,76,.16);box-shadow:0 0 0 2px var(--gold)}.qt:disabled{opacity:.45}
 .qres.ok{border:2px solid var(--ok)}.qres.no{border:2px solid var(--line)}
+.qclock{position:absolute;left:128px;top:220px;z-index:6;width:150px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.qclock svg{position:absolute;inset:0;transform:rotate(-90deg)}.qcb{fill:rgba(22,26,46,.92);stroke:#3A4170;stroke-width:8}.qcf{fill:none;stroke:var(--gold);stroke-width:8;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .2s linear}
+.qclock b{position:relative;font:400 44px var(--pixel);color:var(--gold)}.qclock span{position:relative;font-size:16px;color:var(--cream);margin-top:4px}.qnext{font-size:13px;color:var(--gold)}
 .qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
 .qbh{grid-column:1/-1;font:400 14px var(--pixel);color:var(--gold);text-align:center;margin-bottom:2px}
 .qr{display:flex;align-items:center;gap:8px;font-size:22px;color:var(--cream)}.qr .qn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
@@ -596,7 +599,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793039331';
+const BUILDV='1793200543';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -606,6 +609,7 @@ function music(name,o={}){
   BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+'.mp3?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{});fadeAudio(a,o.vol??.35,1200);
     if(o.then)a.onended=()=>{if(BGM.a===a){BGM.cur=null;music(o.then,{vol:o.vol})}}},o.delay||0)}
 const SFX={};function sfx(n){try{let a=SFX[n];if(!a){a=SFX[n]=new Audio(n+'.mp3?v='+BUILDV);a.preload='auto'}a.currentTime=0;a.volume=.7;a.play().catch(()=>{})}catch(e){}}
+const DEV=(()=>{let d=null;try{d=localStorage.getItem('psp-dev');if(!d){d='d'+Math.random().toString(36).slice(2,10);localStorage.setItem('psp-dev',d)}}catch(e){d='d'+Math.random().toString(36).slice(2,10)}return d})();
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
 const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
@@ -674,7 +678,7 @@ async function boot(){
   render();
   S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;changed()},()=>{});
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;changed()},()=>{});
-  S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};q.docs.forEach(d=>{const g=d.data()?.gender;if(g)S.joinedG[d.id]=g});changed()},()=>{});
+  S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};S.joinedDev={};q.docs.forEach(d=>{const x=d.data()||{};if(x.gender)S.joinedG[d.id]=x.gender;if(x.dev)S.joinedDev[d.id]=x.dev});changed()},()=>{});
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
@@ -713,10 +717,12 @@ function render(){
   const app=$('#app');app.hidden=false;
   S.remoteMode=(location.hash||'').replace('#','')==='remote';
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
+  if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">לא ${esc(person(S.me).name)}? החלפת שם</button>`);
   if(!S.remoteMode&&S.state&&person(S.me)&&!person(S.me).remote&&!(S.intro?.live)&&/^(tr|b|r)\d$/.test(S.deck?.seg||''))app.insertAdjacentHTML('beforeend',`<button class="saybtn" data-act="say">💬</button>`);
   if(!S.remoteMode&&S.state&&S.deck?.t0&&!(S.intro?.live)&&!isPresenter(person(S.me))&&person(S.me)?.role==='self')app.insertAdjacentHTML('beforeend',`<div class="rcmini tonly"><span class="rmn"></span><span class="rml"></span><b class="rmt" style="font:400 15px var(--pixel)"></b></div>`);
   if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><b class="rmt" style="font:400 13px var(--pixel)"></b><button data-act="ctlnext">◀</button></div>`);
-  bindPhone();deckLabels();clearInterval(S.rcT);if(app.querySelector('.rctime,.rcmini,.eritime'))S.rcT=setInterval(()=>{remoteClock();eriClock()},1000);eriClock();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
+  bindPhone();deckLabels();clearInterval(S.qnT);if(app.querySelector('.qnext')){const t=()=>app.querySelectorAll('.qnext').forEach(e=>{const l=Math.max(0,Math.ceil((+e.dataset.next-Date.now())/1000));e.textContent=(S.quiz?.n>=3?'חשיפה':'הדמות הבאה')+' בעוד '+l+' שניות'});t();S.qnT=setInterval(t,500)}
+  clearInterval(S.rcT);if(app.querySelector('.rctime,.rcmini,.eritime'))S.rcT=setInterval(()=>{remoteClock();eriClock()},1000);eriClock();if($('#gbp-text'))introType();dialMount(app.querySelector('.dial'));
   if(!S.dex)fetch('dex151.json?v='+BUILDV).then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
 // ----- presenter remote -----
@@ -746,13 +752,17 @@ function quizView(me){const Q=S.quiz,mine=(S.myQ||{})[Q.type],score=Q.scores?.[m
   if(Q.revealed){const ok=mine&&mine.g===Q.type,b=ok?QBALL[mine.n]:null;
     return head+`<div class="card center qres ${ok?'ok':'no'}">${qIcon(Q.type,96)}<h2 style="margin:10px 0 4px">${TYPE_HE[Q.type]}</h2>${ok?`<img src="img/${b[0]}.webp" alt="" style="width:72px;height:72px;image-rendering:pixelated"><p style="font-size:20px;margin:6px 0 0"><b>צדקת! ${b[1]}, ${b[2]} נק׳</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?`ניחשת ${TYPE_HE[mine.g]}. בפעם הבאה!`:'לא ניחשת הפעם.'}</p>`}</div><p class="muted center">הסוג הבא מגיע בשקף הבא.</p>`}
   const b=QBALL[Q.n];
-  return head+`<div class="card qnow">${Q.n?`<img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span>על המסך ${Q.n===1?'דמות אחת':Q.n+' דמויות'}. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b></span>`:'<span>מחכים לדמות הראשונה…</span>'}</div>
+  return head+`<div class="card qnow">${Q.n?`<img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span>על המסך ${Q.n===1?'דמות אחת':Q.n+' דמויות'}. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b>${Q.next?`<br><span class="qnext" data-next="${Q.next}"></span>`:''}</span>`:'<span>מחכים לדמות הראשונה…</span>'}</div>
   <div class="qgrid">${[...Q.open].sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')).map(t=>`<button class="qt${mine?.g===t?' on':''}" data-qt="${t}" ${Q.n&&!mine?'':'disabled'}>${qIcon(t,40)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
   ${mine?`<p class="muted center" style="font-size:14px">הכדור נזרק: <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> ב${QBALL[mine.n][1]}. מחכים לחשיפה…</p>`:''}`}
 const SAYMAX=70;
-function sayOpen(){$('#sayov')?.remove();$('#app').insertAdjacentHTML('beforeend',`<div id="sayov" class="sayov"><div class="card"><p class="eyebrow">💬 על המסך הגדול</p><p class="muted" style="margin:0 0 8px">הדמות שלך תופיע על המסך ותגיד את זה.</p>
+// lives on <body>, outside #app, so live re-renders (deck/quiz/answers updates) never close it or drop the keyboard
+function sayOpen(){$('#sayov')?.remove();document.body.insertAdjacentHTML('beforeend',`<div id="sayov" class="sayov"><div class="card"><p class="eyebrow">💬 על המסך הגדול</p><p class="muted" style="margin:0 0 8px">הדמות שלך תופיע על המסך ותגיד את זה.</p>
   <textarea id="saytxt" maxlength="${SAYMAX}" rows="2" placeholder="מה להגיד?"></textarea><div class="row" style="justify-content:space-between;align-items:center"><span class="muted" id="saycnt">0/${SAYMAX}</span><span class="row" style="gap:8px"><button class="btn ghost small" data-act="sayclose">ביטול</button><button class="btn small" data-act="saysend">שליחה</button></span></div></div></div>`);
-  const ta=$('#saytxt');ta.focus();ta.oninput=()=>{$('#saycnt').textContent=ta.value.length+'/'+SAYMAX}}
+  const ov=$('#sayov'),ta=$('#saytxt');ta.focus();ta.oninput=()=>{$('#saycnt').textContent=ta.value.length+'/'+SAYMAX};
+  ov.onclick=e=>{const b=e.target.closest('button');if(e.target===ov||b?.dataset.act==='sayclose'){ov.remove();return}if(b?.dataset.act==='saysend')saySend()}}
+function saySend(){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date.now()-(S.saidAt||0)<12000){toast('רגע, אפשר שוב בעוד כמה שניות');return}S.saidAt=Date.now();$('#sayov')?.remove();sfx('sfx-a');
+  S.db.doc('stage/say-'+S.me).set({t:t.slice(0,SAYMAX),at:Date.now()}).then(()=>toast('נשלח למסך!')).catch(()=>toast('לא נשלח'))}
 // ----- personal take-home card (closing slide): your answers vs the subject's own -----
 function cardView(me){
   if(!S.engine||!S.sprites){if(!S.cardLoad){S.cardLoad=true;Promise.all([fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json())]).then(([e,sp])=>{S.engine=e;S.sprites=sp;render()}).catch(()=>{S.cardLoad=false})}
@@ -818,8 +828,11 @@ function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
   if(!S.state)return `<p class="eyebrow">PSP · WAITING</p><h1>הערב עוד לא נפתח</h1><p class="muted">העמוד יתעדכן לבד כשהמארח יפתח את הערב.</p>`;
   const subj=subjectName(),me=person(S.me);
-  if(!me)return pickView();
-  if(!S.joinSent&&S.db){S.joinSent=true;S.db.doc('joined/'+me.id).set({at:new Date().toISOString()},{merge:true}).catch(()=>{S.joinSent=false})}
+  const eve=String(S.state.eve||'');if(S.me&&store.get('psp-eve')!==eve){S.me=null;store.set('psp-me','');S.intro=null}
+  if(!me||!S.me)return pickView();
+  if(S.joinedLoaded&&S.joinedDev?.[me.id]&&S.joinedDev[me.id]!==DEV&&S.sameOk!==me.id)return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>${esc(me.name)} כבר ${genderOf(me)==='f'?'נכנסה':'נכנס'} מטלפון אחר</h1><p class="muted">זה באמת ${esc(me.name)}, או שבחרת בטעות?</p>
+    <button class="btn" data-act="sameok">כן, זה אני</button><button class="btn ghost" data-act="switch">לא, לבחור שם אחר</button>`;
+  if(!S.joinSent&&S.db){S.joinSent=true;S.db.doc('joined/'+me.id).set({at:new Date().toISOString(),...(S.joinedDev?.[me.id]?{}:{dev:DEV})},{merge:true}).catch(()=>{S.joinSent=false})}
   if(me.role==='self'&&(S.intro?.live||(!S.setup&&S.view!=='setup')))return introView();
   if(me.role!=='self'&&(S.intro?.live||(S.joinedLoaded&&!S.joinedG?.[me.id])))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
@@ -902,10 +915,9 @@ function progressCard(P,ans){
 }
 function pickView(){
   const subj=subjectName();
-  if(!S.setup)return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1>
-  <p class="muted">${esc(subj)}, הכול מתחיל אצלך: פרופסור אוק מחכה לך.</p>
-  <div class="names"><button class="name" data-pick="subj">${esc(subj)}<small>${gs('הנבדק','הנבדקת')}</small></button></div>
-  <p class="muted">כל השאר: העמוד יתעדכן לבד ברגע שההיכרות עם אוק תסתיים.</p>`;
+  if(!S.setup)return `<p class="eyebrow">PSP · WAITING FOR ${esc(subj)}</p><h1>רגע, מחכים ל${esc(subj)}</h1>
+  <div class="card center"><div class="ball wobble" style="--s:90px"></div><p style="margin:16px 0 0">${esc(subj)} ${gs('מגדיר','מגדירה')} עכשיו את המשתתפים והאחוזים.<br>ברגע ${gs('שהוא יסיים','שהיא תסיים')}, השם שלך יופיע כאן לבד ופרופסור אוק יתחיל.</p></div>
+  ${S.joined?.has('subj')?'':`<p class="muted center" style="margin-top:30px">רק ${esc(subj)}:</p><div class="names"><button class="name" data-pick="subj">אני ${esc(subj)}<small>${gs('הנבדק','הנבדקת')}</small></button></div>`}`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1><p class="muted">בוחרים את השם שלך פעם אחת. הטלפון יזכור.</p>
   <div class="names">${[...inRoom()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
 }
@@ -1073,12 +1085,9 @@ function bindPhone(){
   app.onchange=e=>{const el=e.target;if(el.dataset.f==='role'){draft()[+el.dataset.i].role=el.value}};
   app.onclick=e=>{
     const b=e.target.closest('button');if(!b)return;
-    if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);S.view='';S.joinSent=false;render();return}
+    if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);store.set('psp-eve',String(S.state?.eve||''));S.view='';S.joinSent=false;render();return}
     if(b.dataset.qt){const Q=S.quiz;if(!Q?.type||Q.revealed||!Q.n||(S.myQ||{})[Q.type])return;sfx('sfx-ball-toss');const g={g:b.dataset.qt,n:Q.n,at:Date.now()};S.myQ={...(S.myQ||{}),[Q.type]:g};try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/q-'+S.me).set({[Q.type]:g},{merge:true}).catch(()=>toast('הניחוש לא נשלח, נסו שוב'));return}
     if(b.dataset.act==='say'){sayOpen();return}
-    if(b.dataset.act==='saysend'){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date.now()-(S.saidAt||0)<12000){toast('רגע, אפשר שוב בעוד כמה שניות');return}S.saidAt=Date.now();$('#sayov')?.remove();sfx('sfx-a');
-      S.db.doc('stage/say-'+S.me).set({t:t.slice(0,SAYMAX),at:Date.now()}).then(()=>toast('נשלח למסך!')).catch(()=>toast('לא נשלח'));return}
-    if(b.dataset.act==='sayclose'){$('#sayov')?.remove();return}
     if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
@@ -1097,7 +1106,8 @@ function bindPhone(){
       return;
     }
     const act=b.dataset.act;
-    if(act==='switch'){S.me=null;store.set('psp-me','');S.intro=null;render()}
+    if(act==='switch'){S.me=null;store.set('psp-me','');S.intro=null;S.sameOk=null;render()}
+    if(act==='sameok'){S.sameOk=S.me;S.db.doc('joined/'+S.me).set({dev:DEV},{merge:true}).catch(()=>{});render()}
     if(act==='ia'){introAdvance();return}
     if(act==='photos'){S.view='photos';render();return}
     if(act==='photosback'){S.view=/^tr\d$/.test(S.deck?.seg||'')?'nophotos-'+S.deck.seg:'';render();return}
@@ -1174,7 +1184,7 @@ function applyBuilds(){
 // ---------- schedule (3 hours) ----------
 const PLAN=[['open','פתיחה',10,'cover'],['c1','קורס 1',12,'x-part-1'],['tr1','המאמן הראשון',7,'x-trainer-1'],['r1','סבב 1',6,'x-round-1'],['b1','הפסקה 1',5,'x-break-1'],
  ['c2','קורס 2',14,'x-part-2'],['tr2','המאמן השני',7,'x-trainer-2'],['r2','סבב 2',6,'x-round-2'],['b2','הפסקה 2',5,'x-break-2'],
- ['c3','קורס 3',32,'x-part-3'],['tr3','המאמן השלישי',7,'x-trainer-3'],['r3','סבב 3',6,'x-round-3'],['b3','הפסקה 3',5,'x-break-3'],
+ ['c3','קורס 3',32,'x-part-3'],['b3','הפסקה 3',5,'x-break-3'],['tr3','המאמן השלישי',7,'x-trainer-3'],['r3','סבב 3',6,'x-round-3'],
  ['c4','קורס 4',16,'x-part-4'],['tr4','המאמן הרביעי',7,'x-trainer-4'],['r4','סבב 4 ומיו',8,'x-round-4'],['hof','היכל התהילה',25,'x-finale'],['end','סיום',2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
@@ -1242,6 +1252,14 @@ function slideMusic(id){
   if(id==='x-finale')return music('mus-enter-hall',{vol:.35});
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
+const QSTEP=12;
+function qAutoStop(){clearInterval(S.qT);S.qAuto=null;$('#qclock')?.remove()}
+function qAutoStart(){qAutoStop();S.qAuto={pos:POS,next:Date.now()+QSTEP*1000};
+  $('#cv').insertAdjacentHTML('beforeend','<div id="qclock" class="qclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>');
+  S.qT=setInterval(()=>{const it=cur(),n=buildOrders().length;if(!S.qAuto||POS!==S.qAuto.pos||!/^q-/.test(it?.id||'')){qAutoStop();return}
+    const left=(S.qAuto.next-Date.now())/1000,el=$('#qclock');
+    if(el){el.querySelector('b').textContent=Math.max(0,Math.ceil(left));el.querySelector('.qcf').style.strokeDashoffset=100-Math.max(0,left)/QSTEP*100;el.querySelector('span').textContent=BUILD<3?'הדמות הבאה':'חשיפה'}
+    if(left<=0){if(BUILD<3){BUILD++;applyBuilds();S.qAuto.next=Date.now()+QSTEP*1000;quizSync()}else{BUILD=n;applyBuilds();qAutoStop();sfx('sfx-dex-page-added');quizSync()}}},200)}
 function quizTypes(){return SEQ.filter(x=>/^q-/.test(x.id)).map(x=>x.id.slice(2))}
 function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ.findIndex(x=>x.id==='q-'+T[0]);
   const passed=t=>{const j=SEQ.findIndex(x=>x.id==='q-'+t);return j<POS||(j===POS&&BUILD>=buildOrders().length)};
@@ -1250,7 +1268,7 @@ function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ
   const q=it.kind==='slide'&&/^q-/.test(it.id)?it.id.slice(2):null;
   return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>!rev.includes(t)||t===q).sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')):[],scores:score,balls,players:pl,rev}}
 function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;
-  const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores};const k=JSON.stringify(doc);
+  const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores,next:S.qAuto&&!Q.revealed?S.qAuto.next:null};const k=JSON.stringify(doc);
   if(k!==S.quizKey){S.quizKey=k;S.db.doc('stage/quiz').set(doc).catch(()=>{})}
   if(Q.type){if(!$('#qboard'))$('#cv').insertAdjacentHTML('beforeend','<div id="qboard" class="qboard"></div>');quizBoardUpdate()}}
 function quizBoardUpdate(){const el=$('#qboard');if(!el)return;const Q=quizState();if(!Q?.type)return;const G=S.guesses||{};
@@ -1282,7 +1300,7 @@ function show(fresh,atEnd){
     const n=buildOrders().length;BUILD=atEnd?n:0;applyBuilds();
     onEnterSlide(it.id);
     if(it.id==='d-battle')battleNew();
-    breakFacts(it.id);
+    breakFacts(it.id);qAutoStop();
     slideMusic(it.id);
     quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
@@ -1296,12 +1314,14 @@ function go(d){
   const it=cur();if(!it)return;
   if(it.kind==='slide'){
     const n=buildOrders().length;
-    if(d>0&&BUILD<n){BUILD++;applyBuilds();quizSync();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
-    if(d<0&&BUILD>0){BUILD--;applyBuilds();quizSync();return}
+    if(/^q-/.test(it.id)&&S.qAuto&&d>0&&BUILD<n){toast('הדמויות עולות לבד');return}
+    if(d>0&&BUILD<n){BUILD++;applyBuilds();if(/^q-/.test(it.id)&&BUILD===1)qAutoStart();quizSync();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
+    if(d<0&&BUILD>0){qAutoStop();BUILD--;applyBuilds();quizSync();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.bt&&!S.bt.done){battleRun();return}
-  if(d>0&&!S.gateOk){const m=it.kind==='slide'&&(it.id.match(/^x-break-(\d)$/)||it.id.match(/^x-round-(4)$/));if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
+  if(d>0&&!S.gateOk){const ix=id=>SEQ.findIndex(x=>x.id===id),bm=it.kind==='slide'&&it.id.match(/^x-break-(\d)$/),rm=it.kind==='slide'&&it.id.match(/^x-round-(\d)$/);
+    const m=bm&&ix('x-round-'+bm[1])>=0&&ix('x-round-'+bm[1])<POS?bm:rm&&SEQ[POS+1]?.id!=='x-break-'+rm[1]?rm:null;if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
   S.gateOk=false;
   const np=POS+d;if(np<0||np>=SEQ.length)return;
   POS=np;show(true,d<0);
@@ -1989,7 +2009,7 @@ async function resetAll(){
   await S.db.doc('setup/main').delete().catch(()=>{});
   for(const id of Object.keys(S.guesses||{}))await S.db.doc('stage/q-'+id).delete().catch(()=>{});for(const p of roster())await S.db.doc('stage/say-'+p.id).delete().catch(()=>{});await S.db.doc('stage/quiz').set({type:null}).catch(()=>{});
   for(const id of [...(S.joined||[])])await S.db.doc('joined/'+id).delete().catch(()=>{});S.lobbyShown=new Set();
-  await setState({open:0,closed:[],result:null,revealed:false,mew:{status:'none'}});
+  await setState({open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now()});
   S.answers={};S.ai='';S.tgrid=null;toast('הערב אופס');renderPanel();
 }
 boot();
