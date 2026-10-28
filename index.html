@@ -238,6 +238,12 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:2px solid var(--line);background:var(--night2);color:var(--cream);font:700 14px var(--body)}
 .qt.on:disabled{opacity:1}.qt.on{border-color:var(--gold);background:rgba(242,201,76,.16);box-shadow:0 0 0 2px var(--gold)}.qt:disabled{opacity:.45}
 .qres.ok{border:2px solid var(--ok)}.qres.no{border:2px solid var(--line)}
+.adm{max-width:1200px;margin:0 auto;padding:24px 20px 60px}.adm h3{margin:26px 0 10px}.mono{font-family:var(--pixel);direction:ltr;letter-spacing:2px}
+.atab{width:100%;border-collapse:collapse;font-size:15px}.atab th,.atab td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:right;vertical-align:middle}.atab th{color:var(--gold);font-weight:600}.atab td.hit{background:rgba(242,201,76,.18)}.atab.small{font-size:13px}.atab.mat td{text-align:center;min-width:56px}
+.atabs{display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.15);margin:10px 0 16px;flex-wrap:wrap}.atabs button{background:none;border:0;color:var(--cream);font:600 16px var(--body);padding:10px 16px;border-bottom:3px solid transparent;cursor:pointer}.atabs button.on{border-color:var(--gold);color:var(--gold)}
+.apod{display:flex;gap:14px;align-items:flex-end;justify-content:center;margin:10px 0}.apod>div{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.05);border-radius:16px;padding:12px 18px;min-width:140px}.apod>div.win{background:rgba(242,201,76,.16);border:2px solid var(--gold)}
+.chipx{display:inline-block;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 8px;margin:2px;font-size:13px}.agrid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:12px}
+@media (max-width:700px){.atab{font-size:13px}.atab th,.atab td{padding:5px 4px}}
 .agrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aslot{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;background:rgba(255,255,255,.04);border-radius:14px;padding:10px}
 .aprev{width:100%;height:120px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(0,0,0,.18);overflow:hidden}.aprev img{max-width:100%;max-height:120px;object-fit:contain;image-rendering:pixelated}
 .linkbtn{background:none;border:0;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
@@ -574,7 +580,7 @@ const ITEMS={}; BANK.items.forEach(i=>ITEMS[i.id]=i);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LEGACY_ROOM='ERI1',ROOM_ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets)(?:=([A-Za-z0-9]{4}))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase()};return {mode:/^c=/.test(h)?'card':'',code:''}}
+function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets|admin)(?:=([A-Za-z0-9]{4}))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase()};return {mode:/^c=/.test(h)?'card':'',code:''}}
 const RAWSTORE={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const ROOM=(()=>{const hp=hashParts();let code=hp.code;if(!code&&(hp.mode===''||hp.mode==='r'||hp.mode==='remote'))code=(RAWSTORE.get('psp-room')||'').toUpperCase();return {code,legacy:code===LEGACY_ROOM,mode:hp.mode}})();
 const SCOPED=['psp-me','psp-eve','psp-remote-id','psp-pos'];
@@ -622,7 +628,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793218934';
+const BUILDV='1793227913';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -724,7 +730,7 @@ async function boot(){
 function globalSubs(){
   const raw=S.db.raw,FP=firebase.firestore.FieldPath.documentId();
   raw.collection('stage').orderBy(FP).startAt('card-').endAt('card-\uf8ff').onSnapshot(q=>{S.cardDocs={};q.docs.forEach(d=>{S.cardDocs[d.id.slice(5)]=clone(d.data())});const was=S.cardsLoaded;S.cardsLoaded=true;if(!isScreen()&&(!was||hashParts().mode==='card'))render();else if(isScreen())renderPanel()},()=>{});
-  if(isScreen()&&!ROOM.code)raw.collection('state').onSnapshot(q=>{S.roomList=q.docs.filter(d=>d.id!=='rooms').map(d=>({code:d.id==='main'?LEGACY_ROOM:d.id,...clone(d.data())}));render()},()=>{});
+  if((isScreen()||hashParts().mode==='admin')&&!ROOM.code)raw.collection('state').onSnapshot(q=>{S.roomList=q.docs.filter(d=>d.id!=='rooms').map(d=>({code:d.id==='main'?LEGACY_ROOM:d.id,...clone(d.data())}));render()},()=>{});
 }
 function joinView(){
   const L=myRooms();
@@ -732,7 +738,8 @@ function joinView(){
   <div class="card"><input id="roomcode" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters" style="text-align:center;font:400 30px var(--pixel);letter-spacing:10px;direction:ltr;text-transform:uppercase"><button class="btn" data-act="joinroom" style="margin-top:10px">כניסה</button></div>
   ${L.length?`<div class="card"><p style="margin:0 0 8px;font-weight:700">החדרים שלך</p>${L.map(x=>`<a class="btn ghost small" href="#r=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject||'')} · <span style="direction:ltr;font-family:var(--pixel)">${esc(x.code)}</span></a>`).join('')}</div>`:''}
   ${pastCardsHTML()}`}
-function tryJoin(v){v=(v||'').trim().toUpperCase();if(!/^[A-Z0-9]{4}$/.test(v)){toast('הקוד הוא 4 תווים');return}
+const ADMIN_CODE='CLOY';
+function tryJoin(v){v=(v||'').trim().toUpperCase();if(v===ADMIN_CODE){location.hash='admin';location.reload();return}if(!/^[A-Z0-9]{4}$/.test(v)){toast('הקוד הוא 4 תווים');return}
   const ref=S.db.raw.doc(v===LEGACY_ROOM?'state/main':'state/'+v);let done=false;
   const un=ref.onSnapshot(sn=>{if(done)return;done=true;try{un&&un()}catch(e){}if(sn.exists){RAWSTORE.set('psp-room',v);location.hash='r='+v;location.reload()}else toast('לא מצאתי חדר עם הקוד הזה')},()=>toast('לא הצלחתי לבדוק את הקוד'))}
 function leaveRoom(){RAWSTORE.set('psp-room','');location.hash='';location.reload()}
@@ -787,6 +794,104 @@ function bindAssets(){const app=$('#app');
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.del){await S.db.doc('setup/asset-'+b.dataset.del).delete();toast('נמחק')}
     if(b.dataset.act==='addperson'){const v=($('#np-name')?.value||'').trim();if(v){S.newPeople=[...(S.newPeople||[]),v];render()}}}}
+// ---------- admin (#admin, #admin=CODE): everything about every evening, host only ----------
+const AITEMS=Object.fromEntries(BANK.items.map(i=>[i.id,i]));
+const LAYER_HE={types:'סוגים',stats:'סטטים',evo:'התפתחות'};
+function admRoomName(r){return r.code===LEGACY_ROOM?'ערי':(r.subject||'')}
+function admSpr(l,s=48){return `<img src="${spriteURL(sprite(l,l.species.at(-1)))}" alt="" style="width:${s}px;height:${s}px;object-fit:contain;image-rendering:pixelated">`}
+const apct=x=>Math.round(x*100)+'%';
+function admAgree(a,b){const ax=S.engine.axes;let t=0,c=0;['types','stats','evo'].forEach(L=>ax[L].forEach(d=>{const x=a.scores?.[L]?.[d],y=b.scores?.[L]?.[d];if(x!=null&&y!=null){t+=Math.abs(x-y);c++}}));return c?Math.max(0,Math.round(100-t/c/2.5*100)):null}
+function admName(r){return r.role==='self'?subjectName():(person(r.pid)?.name||r.name||r.pid)}
+function adminView(){
+  const box=x=>`<div class="adm">${x}</div>`;
+  if(!S.db||!S.userReady)return box(`<p class="eyebrow">PSP · ADMIN</p><h1>מתחבר…</h1>`);
+  if(!S.canEdit)return box(`<p class="eyebrow">PSP · ADMIN</p><h1>ניהול</h1><p class="muted">הניהול פתוח רק למארח. התחברו עם חשבון ה־Google של המארח.</p>${typeof hostLogin==='function'?'<button class="btn" onclick="hostLogin()">התחברות עם Google</button>':''}`);
+  if(!ROOM.code){
+    const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
+    const st=r=>r.status==='closed'?'נסגר':r.revealed?'אחרי חשיפה':r.open?'פעיל':'טרם התחיל';
+    return box(`<p class="eyebrow">PSP · ADMIN</p><h1>כל הערבים</h1><p class="muted">בוחרים ערב כדי לראות משתתפים, תוצאות וקבצים. חדר חדש פותחים מהמסך הגדול.</p>
+    <table class="atab"><tr><th>נבדק/ת</th><th>קוד</th><th>תאריך</th><th>מצב</th><th>תוצאה</th><th></th></tr>
+    ${L.map(r=>`<tr><td><b>${esc(admRoomName(r))}</b></td><td class="mono">${esc(r.code)}</td><td>${r.eve?new Date(r.eve).toLocaleDateString('he-IL'):'—'}</td><td>${st(r)}</td><td>${esc(r.result?.finalName||'')}</td><td><a class="btn small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)">ניהול</a></td></tr>`).join('')}</table>
+    <div class="row" style="gap:8px;margin-top:14px"><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),30)">למסך הגדול</a></div>`)}
+  if(!S.stateLoaded||!needEngine())return box(`<p class="eyebrow">PSP · ADMIN · ${esc(ROOM.code)}</p><h1>טוען…</h1>`);
+  if(!S.state)return box(`<h1>החדר ${esc(ROOM.code)} לא נמצא</h1><a class="btn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">כל הערבים</a>`);
+  const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','קבצים'],['whatif','מה אם']];
+  const n=subjectName(),closed=S.state.status==='closed';
+  const head=`<div class="row" style="flex-wrap:wrap;gap:8px;align-items:center"><a class="linkbtn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">← כל הערבים</a></div>
+   <div class="row" style="align-items:baseline;gap:14px;flex-wrap:wrap"><h1 style="margin:6px 0">${esc(n)}</h1><span class="mono" style="color:var(--gold);font-size:20px">${esc(ROOM.code)}</span><span class="muted">${closed?'נסגר · תוצאות פתוחות לכולם':'פתוח'}</span></div>
+   <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
+    <a class="btn ghost small" href="#screen=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">פתיחה במסך</a>
+    ${ROOM.legacy?'':`<a class="btn ghost small" href="#assets=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">תמונות לערב</a>`}
+    <button class="btn ghost small" data-adm="${closed?'reopen':'close'}">${closed?'פתיחה מחדש':'סגירה לתוצאות'}</button>
+    <button class="btn ghost small" data-adm="backup">הורדת גיבוי (JSON)</button>
+    <button class="btn ghost small" data-adm="copylinks">העתקת קישורים לכולם</button></div>
+   ${S.admConfirm?admConfirmHTML():''}
+   <div class="atabs">${T.map(([k,v])=>`<button class="${k===tab?'on':''}" data-tab="${k}">${v}</button>`).join('')}</div>`;
+  let body='';
+  try{body=tab==='people'?admPeople():tab==='files'?admFiles():tab==='whatif'?admWhatIf():admResults()}catch(e){console.error(e);body=`<p class="muted">שגיאה בחישוב: ${esc(e.message||e)}</p>`}
+  return box(head+body)}
+function admConfirmHTML(){const c=S.admConfirm;
+  if(c.k==='close'){const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done);return `<div class="card"><b>${unf.length?`${unf.length} משיבים מרחוק לא סיימו, התשובות שלהם יימחקו:`:'כולם סיימו.'}</b> ${unf.map(([id,r])=>esc(r.name||'ללא שם')).join(', ')}<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-adm="close2">${unf.length?'למחוק ולסגור':'סגירה'}</button><button class="btn ghost small" data-adm="cancel">ביטול</button></div></div>`}
+  if(c.k==='del'){return `<div class="card"><b>למחוק את כל התשובות של ${esc(c.name)}?</b> אי אפשר לבטל.<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-adm="del2">מחיקה</button><button class="btn ghost small" data-adm="cancel">ביטול</button></div></div>`}
+  return ''}
+function admRun(opts={}){const pr=profile();let raters=pr.raters;if(opts.excl)raters=raters.filter(r=>!opts.excl.has(r.pid));if(!raters.length)return null;
+  return {raters,R:PSP.run({raters},S.engine,opts.mew===false?null:dexVotes(raters))}}
+function admResults(){
+  const x=admRun();if(!x)return `<p class="muted">אין עדיין תשובות בחדר הזה.</p>`;const {raters,R}=x,top=R.main.slice(0,3);
+  const ms=S.state?.mew?.statements||[];
+  const pod=`<div class="apod">${[1,0,2].map(i=>top[i]?`<div class="${i===0?'win':''}"><span class="mono">#${i+1}</span>${admSpr(top[i].line,i===0?110:80)}<b>${esc(finalName(top[i].line))}</b><span class="muted">${apct(top[i].total)}</span></div>`:'').join('')}</div>`;
+  const t20=`<h3>20 המובילים</h3><table class="atab"><tr><th>#</th><th></th><th>ליין</th><th>סה"כ</th><th>סוגים</th><th>סטטים</th><th>התפתחות</th><th>נוסף</th><th>מיו</th></tr>${R.top.slice(0,20).map((t,i)=>`<tr><td>${i+1}</td><td>${admSpr(t.line,36)}</td><td>${esc(t.line.name)}</td><td><b>${apct(t.total)}</b></td>${['types','stats','evo','extra_types','dex'].map(k=>`<td>${apct(t.sims[k]||0)}</td>`).join('')}</tr>`).join('')}</table>`;
+  const leg=`<h3>הלג'נדרי הקרוב</h3><p>${R.legends.map(l=>`${esc(finalName(l.line))} (${apct(l.total)})`).join(' · ')}</p>`;
+  const mew=ms.length?`<h3>שאלת מיו</h3><table class="atab"><tr><th>ליין</th><th>ההיגד</th><th>מי בחר</th></tr>${ms.map(m=>{const who=raters.filter(r=>S.answers[r.pid]?.mew===m.id).map(admName);return `<tr><td>${esc(m.name)}</td><td style="max-width:420px">${esc(m.text)}</td><td>${who.map(esc).join(', ')||'—'}</td></tr>`}).join('')}</table>`:'';
+  const gaps=(R.gaps||[]).length?`<h3>נקודות עיוורות</h3><table class="atab"><tr><th>מה</th><th>${esc(subjectName())} על עצמו</th><th>האחרים</th><th>פער</th></tr>${R.gaps.map(g=>`<tr><td>${g.layer==='types'?TYPE_HE[g.dim]:g.layer==='stats'?STAT_SHORT[g.dim]:EVO_META[g.dim][2]}</td><td>${(+g.self).toFixed(2)}</td><td>${(+g.others).toFixed(2)}</td><td>${(+g.gap).toFixed(2)}</td></tr>`).join('')}</table>`:'';
+  const ind=`<h3>כל משיב לבד (בלי מיו)</h3><table class="atab"><tr><th>משיב</th><th>1</th><th>2</th><th>3</th></tr>${raters.map(r=>{const T3=PSP.run({raters:[{scores:r.scores,role:'friend',weight:1}]},S.engine,null).main.slice(0,3);return `<tr><td><b>${esc(admName(r))}</b></td>${T3.map(t=>`<td${t.line.id===top[0].line.id?' class="hit"':''}>${admSpr(t.line,32)} ${esc(finalName(t.line))}</td>`).join('')}</tr>`}).join('')}</table>`;
+  return pod+t20+leg+mew+gaps+ind}
+function admPeople(){
+  const pr=profile(),W=PSP.raterWeights(pr.raters),wOf={};pr.raters.forEach((r,i)=>wOf[r.pid]=W[i]);
+  const total=BANK.items.filter(i=>i.kind!=='bonus').length;
+  const ros=roster(),extra=Object.entries(S.remote||{}).filter(([id])=>!ros.some(p=>p.id===id)).map(([id,d])=>({id,name:d.name,role:d.relation||'family',remote:true,outside:true}));
+  const rows=[...ros,...extra].map(p=>{const a=answersOf(p.id)||{},cnt=Object.keys(a).filter(k=>AITEMS[k]&&AITEMS[k].kind!=='bonus').length,rd=S.remote?.[p.id],c=cardCodeFor(p.id);
+    return `<tr><td><b>${esc(p.name)}</b>${p.outside?' <span class="muted">(לא ברשימה)</span>':''}</td><td>${p.role==='self'?'הנבדק/ת':esc(ROLES[p.role]||p.role)}${p.remote?' · מרחוק':''}</td><td>${wOf[p.id]!=null?Math.round(wOf[p.id]*100)+'%':'—'}</td><td>${cnt}/${total}${rd?(rd.done?' ✓':' · לא סיים'):''}</td><td>${S.answers[p.id]?.mew?esc((S.state?.mew?.statements||[]).find(m=>m.id===S.answers[p.id].mew)?.name||''):''}</td><td>${c?`<a href="${cardLink(c)}" target="_blank" class="mono">${c.toUpperCase()}</a>`:''}</td>
+     <td><button class="btn ghost small" data-adm="ans" data-id="${esc(p.id)}">${S.admAns===p.id?'סגירה':'תשובות'}</button> ${cnt?`<button class="btn ghost small" data-adm="del" data-id="${esc(p.id)}" data-name="${esc(p.name)}">מחיקה</button>`:''}</td></tr>
+     ${S.admAns===p.id?`<tr><td colspan="7">${admAnswers(p)}</td></tr>`:''}`}).join('');
+  return `<table class="atab"><tr><th>שם</th><th>תפקיד</th><th>משקל</th><th>ענה</th><th>מיו</th><th>כרטיס</th><th></th></tr>${rows}</table>`}
+function admAnswers(p){const a=answersOf(p.id)||{},sc=PSP.scoreRater(a,BANK),n=subjectName(),self=p.role==='self';
+  const ax=S.engine.axes,dims=['types','stats','evo'].map(L=>`<div><b>${LAYER_HE[L]}</b> ${ax[L].map(d=>sc[L]?.[d]!=null?`<span class="chipx">${L==='types'?TYPE_HE[d]:L==='stats'?STAT_SHORT[d]:EVO_META[d][2]} ${sc[L][d].toFixed(1)}</span>`:'').join('')}</div>`).join('');
+  const items=BANK.items.filter(i=>i.kind!=='bonus'&&i.id in a).map(i=>{const v=a[i.id],t=(self?i.self:i.observer||i.self||'').split('{n}').join(n);return `<tr><td class="muted">${esc(i.id)}</td><td>${i.scenario?`<span class="muted">${esc(i.scenario)}</span> `:''}${esc(t)}</td><td>${v===BANK.dont_know?'לא יודע':v}${i.key<0?' <span class="muted">(הפוך)</span>':''}</td></tr>`}).join('');
+  return `<div class="card" style="margin:6px 0">${dims}<details style="margin-top:8px"><summary>כל ${Object.keys(a).length} התשובות</summary><table class="atab small">${items}</table></details></div>`}
+function admFiles(){
+  const pr=profile(),ppl=pr.raters.map(r=>person(r.pid)||{id:r.pid,name:r.name,role:r.role});
+  const cards=S.admCards||{};
+  return `<p class="muted">הכרטיסים האישיים בדיוק כמו שהמשתתפים מורידים, ועמוד העומק על הפוקימון.</p>
+  <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn small" data-adm="mkcards">${Object.keys(cards).length?'יצירה מחדש של כל הכרטיסים':'יצירת כל הכרטיסים'}</button>${Object.keys(cards).length?'<button class="btn ghost small" data-adm="dlall">הורדת כל הכרטיסים</button>':''}<button class="btn ghost small" data-act="deep">עמוד העומק</button></div>
+  <div class="agrid4">${ppl.map(p=>`<div class="aslot"><b>${esc(p.name)}</b>${cards[p.id]?`<a href="${cards[p.id]}" download="PSP-${esc(p.name)}.png"><img src="${cards[p.id]}" alt="" style="width:100%;border-radius:10px"></a>`:'<div class="aprev"><span class="muted">לא נוצר עדיין</span></div>'}${cardCodeFor(p.id)?`<a class="mono" href="${cardLink(cardCodeFor(p.id))}" target="_blank">${cardCodeFor(p.id).toUpperCase()}</a>`:''}</div>`).join('')}</div>`}
+function admWhatIf(){
+  const pr=profile();if(!pr.raters.length)return `<p class="muted">אין עדיין תשובות.</p>`;
+  const wi=S.wi||(S.wi={mew:true,excl:new Set()});const base=admRun(),alt=admRun({mew:wi.mew,excl:wi.excl});
+  const rank=new Map(base.R.top.map((t,i)=>[t.line.id,i+1]));
+  const res=alt?`<table class="atab"><tr><th>#</th><th></th><th>ליין</th><th>סה"כ</th><th>במקור</th></tr>${alt.R.top.slice(0,8).map((t,i)=>`<tr><td>${i+1}</td><td>${admSpr(t.line,32)}</td><td>${esc(finalName(t.line))}</td><td>${apct(t.total)}</td><td class="muted">${rank.get(t.line.id)?'מקום '+rank.get(t.line.id):'—'}</td></tr>`).join('')}</table>`:'<p class="muted">לא נשאר אף משיב.</p>';
+  const rs=pr.raters,mat=`<h3>טבלת הסכמה: מי מסכים עם מי על ${esc(subjectName())}</h3><div style="overflow-x:auto"><table class="atab mat"><tr><th></th>${rs.map(r=>`<th>${esc(admName(r))}</th>`).join('')}</tr>${rs.map(a=>`<tr><th>${esc(admName(a))}</th>${rs.map(b=>{if(a===b)return '<td class="muted">—</td>';const v=admAgree(a,b);return `<td style="background:rgba(242,201,76,${v==null?0:Math.max(0,(v-55)/40).toFixed(2)});color:${v>80?'#161A2E':'inherit'}">${v??''}</td>`}).join('')}</tr>`).join('')}</table></div>`;
+  return `<div class="card"><label class="row" style="gap:8px"><input type="checkbox" data-wi="mew" ${wi.mew?'checked':''}> כולל שאלת מיו</label>
+   <p style="margin:10px 0 6px"><b>מי נכנס לחישוב:</b></p><div class="row" style="gap:12px;flex-wrap:wrap">${rs.map(r=>`<label class="row" style="gap:6px"><input type="checkbox" data-wi="r" data-id="${esc(r.pid)}" ${wi.excl.has(r.pid)?'':'checked'}> ${esc(admName(r))}</label>`).join('')}</div></div>${res}${mat}`}
+function bindAdmin(){const app=$('#app');
+  app.onchange=e=>{const el=e.target;if(!el.dataset.wi)return;const wi=S.wi;if(el.dataset.wi==='mew')wi.mew=el.checked;else{el.checked?wi.excl.delete(el.dataset.id):wi.excl.add(el.dataset.id)}render()};
+  app.onclick=async e=>{const t=e.target.closest('[data-tab]');if(t){S.admTab=t.dataset.tab;render();return}
+    const d=e.target.closest('[data-act="deep"]');if(d){makeDeep();return}
+    const b=e.target.closest('[data-adm]');if(!b)return;const k=b.dataset.adm;
+    if(k==='ans'){S.admAns=S.admAns===b.dataset.id?null:b.dataset.id;render()}
+    if(k==='del'){S.admConfirm={k:'del',id:b.dataset.id,name:b.dataset.name};render();scrollTo(0,0)}
+    if(k==='cancel'){S.admConfirm=null;render()}
+    if(k==='del2'){const id=S.admConfirm.id;S.admConfirm=null;await S.db.doc('answers/'+id).delete().catch(()=>{});await S.db.doc('remote/'+id).delete().catch(()=>{});await S.db.doc('joined/'+id).delete().catch(()=>{});
+      if(S.remote?.[id]&&S.setup?.roster?.some(r=>r.id===id))await S.db.doc('setup/main').set({...S.setup,roster:S.setup.roster.filter(r=>r.id!==id)}).catch(()=>{});delete S.answers[id];toast('נמחק');render()}
+    if(k==='close'){S.admConfirm={k:'close'};render()}
+    if(k==='close2'){S.admConfirm=null;const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done).map(([id])=>id);for(const id of unf)await S.db.doc('remote/'+id).delete().catch(()=>{});
+      if(unf.length&&S.setup?.roster?.some(r=>unf.includes(r.id)))await S.db.doc('setup/main').set({...S.setup,roster:S.setup.roster.filter(r=>!unf.includes(r.id))}).catch(()=>{});
+      await ensureCards().catch(()=>{});await setState({status:'closed'});toast('החדר נסגר');render()}
+    if(k==='reopen'){await setState({status:'open'});render()}
+    if(k==='backup')saveResults();
+    if(k==='copylinks'){await ensureCards();const t=roster().map(r=>{const c=cardCodeFor(r.id);return c?`${r.name}: ${cardLink(c)}`:null}).filter(Boolean).join('\n');(navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast('הועתק')).catch(()=>prompt('הקישורים:',t))}
+    if(k==='mkcards'){b.disabled=true;toast('יוצר כרטיסים…');S.admCards={};for(const r of profile().raters){const p=person(r.pid)||{id:r.pid,name:r.name,role:r.role};const cx=ctxFor(p);if(cx)S.admCards[p.id]=await drawCard(cx)}render()}
+    if(k==='dlall'){for(const [id,u] of Object.entries(S.admCards||{})){const a=document.createElement('a');a.href=u;a.download=`PSP-${person(id)?.name||id}.png`;document.body.append(a);a.click();a.remove();await new Promise(r=>setTimeout(r,400))}}}}
 function clone(o){try{return JSON.parse(JSON.stringify(o))}catch(e){return o}}
 function changed(){ if(isScreen()) screenData(); else render(); }
 window.addEventListener('hashchange',()=>{const hp=hashParts();if(hp.mode!=='card'&&hp.code&&hp.code!==ROOM.code){location.reload();return}if(isScreen()){if(ROOM.code)startScreen();else render()}else render()});
@@ -810,6 +915,7 @@ function render(){
   if(isScreen()){if(ROOM.code)startScreen();else roomsView();return}
   const app=$('#app');app.hidden=false;
   S.remoteMode=hashParts().mode==='remote';
+  if(hashParts().mode==='admin'){app.innerHTML=adminView();bindAdmin();return}
   if(hashParts().mode==='assets'){app.innerHTML=`<div class="col">${assetsView()}</div>`;bindAssets();return}
   if(!ROOM.code&&hashParts().mode!=='card'){app.innerHTML=`<div class="col">${joinView()}</div>`;bindPhone();return}
   rememberRoom();
@@ -1069,7 +1175,7 @@ function phoneView(){
   if(S.state.revealed&&S.state.result)return resultCard();
   if(done>=150)return mewView(me);
   if(!open)return `<p class="eyebrow">TRAINER · ${esc(me.name)}</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">שלום ${esc(me.name)}</h1></div>
-    <div class="card center"><h3>סבב השאלות הבא עוד לא נפתח</h3><p class="muted">השאלות יופיעו כאן לבד כשהמצגת תגיע לסבב. התשובות אנונימיות: על המסך רואים רק "${esc(subj)}" מול "הקבוצה".</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),1,{labelCol:'#F6F1E7'})}</div></div>
+    <div class="card center"><h3>סבב השאלות הבא עוד לא נפתח</h3><p class="muted">השאלות יופיעו כאן לבד כשהמצגת תגיע לסבב. התשובות פרטיות: על המסך רואים רק "${esc(subj)}" מול "הקבוצה", ורק המארח רואה תשובות אישיות.</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),1,{labelCol:'#F6F1E7'})}</div></div>
     ${progressCard(P,ans)}${me.role==='self'?photosBtn():''}${me.role==='self'?`<button class="btn ghost small" data-act="editsetup">עריכת המשתתפים והאחוזים</button>`:''}${switchLink(me)}`;
   const pending=[];for(let r=0;r<open;r++)P.rounds[r].forEach(u=>{if(u.ids.some(id=>!(id in ans)))pending.push(u)});
   const avail=P.rounds.slice(0,open).flat(),total=countIds(avail),dn=answeredIn(avail,ans);
@@ -1091,7 +1197,7 @@ function remoteView(){
     return `<p class="eyebrow">PSP · REMOTE TRAINER</p><h1>שאלון PSP על ${esc(subj)}</h1>
     <div class="card"><p>${esc(subj)} רוצה לשמוע גם ממך. השאלון מורכב מ־150 משפטים קצרים, ועל כל אחד עונים עד כמה הוא נכון לגבי ${esc(subj)}, מ־1 עד 5. לוקח בערך 20 דקות, ואפשר לעצור ולחזור לאותו קישור מאותו טלפון. התשובות נשמרות לבד.</p>
     <p class="muted">חשוב: אם השאלון לא יושלם עד שהתוצאות של ${esc(subj)} נסגרות, התשובות החלקיות יימחקו ולא ייכנסו לחישוב.</p>
-    <p class="muted">התשובות אנונימיות: אף אחד לא רואה מה ענית, רק את השקלול של כולם יחד.</p></div>
+    <p class="muted">התשובות פרטיות: שאר המשתתפים רואים רק את השקלול של כולם יחד. רק המארח רואה תשובות אישיות.</p></div>
     <div class="card"><label class="muted" for="r-name">השם שלך</label><input type="text" id="r-name" value="${esc(d?.name||'')}" placeholder="השם שלך">
      <label class="muted" for="r-rel">מה הקשר שלך ל${esc(subj)}?</label><select id="r-rel">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${(d?.relation||'family')===k?'selected':''}>${v}</option>`).join('')}</select>
      <label class="muted">בן או בת? (רק בשביל הניסוח)</label><div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost small ${g==='m'?'on':''}" data-rg="m">בן</button><button class="btn ghost small ${g==='f'?'on':''}" data-rg="f">בת</button></div></div>
@@ -1202,7 +1308,7 @@ function introScript(){
     {say:open,ask:'gender'},
     {say:[gx('אה, בן! מצוין.','אה, בת! מצוין.'),`אז ${gx('אתה','את')} ${nm}! שמעתי עליך הרבה.`,`הערב ${subj} ${gs('מחפש','מחפשת')} את הפוקימון ${gs('שלו','שלה')}, ו${gx('אתה','את')} כאן כדי לעזור לי לגלות אותו.`,
       {t:`הנה ${subj}.`,subj:1},{t:`${gx('אתה מכיר','את מכירה')} ${gs('אותו','אותה')} מזווית שאף אחד אחר לא רואה, וזה בדיוק מה שאני צריך.`,subj:1},
-      {t:'התשובות שלך אנונימיות: על המסך יופיע רק מה שהקבוצה חושבת ביחד.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'},
+      {t:'התשובות שלך פרטיות: על המסך יופיע רק מה שהקבוצה חושבת ביחד, ורק המארח רואה תשובות אישיות.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'},
   ];
 }
 const sayText=x=>typeof x==='string'?x:x.t;
