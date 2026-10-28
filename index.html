@@ -599,7 +599,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793207153';
+const BUILDV='1793212467';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -685,7 +685,7 @@ async function boot(){
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0,os=S.deck?.seg;S.deck=d;if((!had&&d?.t0)||os!==d?.seg)render();else deckLabels()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data())});S.sayInit=true;if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.guesses={};S.cardDocs={};q.docs.forEach(d=>{if(d.id.startsWith('card-'))S.cardDocs[d.id.slice(5)]=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data())});S.sayInit=true;const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
@@ -716,6 +716,8 @@ function render(){
   if(isScreen()){startScreen();return}
   const app=$('#app');app.hidden=false;
   S.remoteMode=(location.hash||'').replace('#','')==='remote';
+  const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
+  if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
   if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">לא ${esc(person(S.me).name)}? החלפת שם</button>`);
   if(!S.remoteMode&&S.state&&person(S.me)&&!person(S.me).remote&&!(S.intro?.live)&&/^(tr|b|r)\d$/.test(S.deck?.seg||''))app.insertAdjacentHTML('beforeend',`<button class="saybtn" data-act="say">💬</button>`);
@@ -764,24 +766,46 @@ function sayOpen(){$('#sayov')?.remove();document.body.insertAdjacentHTML('befor
 function saySend(){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date.now()-(S.saidAt||0)<12000){toast('רגע, אפשר שוב בעוד כמה שניות');return}S.saidAt=Date.now();$('#sayov')?.remove();sfx('sfx-a');
   S.db.doc('stage/say-'+S.me).set({t:t.slice(0,SAYMAX),at:Date.now()}).then(()=>toast('נשלח למסך!')).catch(()=>toast('לא נשלח'))}
 // ----- personal take-home card (closing slide): your answers vs the subject's own -----
+const CODE_ABC='abcdefghjkmnpqrstuvwxyz23456789';
+const eveKey=()=>String(S.state?.eve||('s'+(S.setup?.at||'')));
+const cardLink=c=>location.origin+location.pathname+'#c='+c;
+function cardCodeFor(pid){const e=eveKey();return Object.keys(S.cardDocs||{}).find(c=>S.cardDocs[c].eve===e&&S.cardDocs[c].pid===pid)||null}
+async function saveCard(p){let c=cardCodeFor(p.id);if(c)return c;const ctx=ctxFor(p);if(!ctx)return null;
+  c=Array.from({length:6},()=>CODE_ABC[Math.floor(Math.random()*CODE_ABC.length)]).join('');
+  const d={v:1,code:c,eve:eveKey(),at:new Date().toISOString(),...ctx};(S.cardDocs||(S.cardDocs={}))[c]=d;await S.db.doc('stage/card-'+c).set(d);return c}
+async function ensureCards(){if(!S.engine)return;for(const p of roster()){const a=answersOf(p.id);if(a&&Object.keys(a).length)await saveCard(p).catch(()=>{})}}
+function myCards(){try{return JSON.parse(store.get('psp-cards')||'[]')}catch(e){return []}}
+function rememberCard(d){const L=myCards().filter(x=>x.code!==d.code);L.unshift({code:d.code,name:d.name,subject:d.subject,at:d.at});store.set('psp-cards',JSON.stringify(L.slice(0,20)))}
+function needEngine(){if(S.engine&&S.sprites)return true;if(!S.cardLoad){S.cardLoad=true;Promise.all([fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json())]).then(([e,sp])=>{S.engine=e;S.sprites=sp;render()}).catch(()=>{S.cardLoad=false})}return false}
+function cardImgHTML(fname){return S.cardImg&&S.cardImg!=='err'?`<img src="${S.cardImg}" alt="הכרטיס שלך" style="width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><a class="btn" href="${S.cardImg}" download="PSP-${esc(fname)}.png" style="text-align:center;text-decoration:none">⬇ הורדה</a><p class="muted center" style="font-size:13px">באייפון: לחיצה ארוכה על התמונה ← שמירה בתמונות</p>`:S.cardImg==='err'?'<p class="muted">לא הצלחתי ליצור את הכרטיס.</p>':'<div class="card center"><div class="ball wobble" style="--s:90px"></div></div>'}
+function codeBox(c){return c?`<div class="card" style="text-align:center"><p class="muted" style="margin:0 0 6px">הקוד האישי שלך, כדי לחזור לכרטיס גם אחרי שהערב מתאפס:</p><p style="font:400 22px var(--pixel);letter-spacing:4px;color:var(--gold);margin:0 0 8px;direction:ltr">${esc(c.toUpperCase())}</p><button class="btn ghost small" data-act="copylink" data-code="${esc(c)}">העתקת הקישור האישי</button></div>`:''}
+function archCardView(code){
+  if(!S.db||!S.stageLoaded||!needEngine())return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מחפשים את הכרטיס…</h1>`;
+  const d=S.cardDocs?.[code];
+  if(!d)return `<p class="eyebrow">PSP · YOUR CARD</p><h1>לא מצאנו כרטיס כזה</h1><p class="muted">בדקו שהקוד נכון (6 תווים).</p><a class="btn ghost" href="#" style="text-align:center;text-decoration:none">חזרה</a>`;
+  if(S.cardFor!=='c:'+code){S.cardFor='c:'+code;S.cardImg=null;rememberCard(d);drawCard(d).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
+  const gsd=(m,f)=>d.gender==='f'?f:m;
+  return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">${esc(d.subject)}, לפי ${d.role==='self'?gsd('עצמו','עצמה'):esc(d.name)}</h1><p class="muted">הכרטיס האישי שלך מהערב של ${esc(d.subject)}.</p>${cardImgHTML(d.name)}${codeBox(code)}<a class="btn ghost" href="#" style="text-align:center;text-decoration:none">חזרה</a>`}
+function pastCardsHTML(){const L=myCards();return `<div class="card" style="margin-top:18px"><p style="margin:0 0 8px;font-weight:700">${L.length?'הכרטיסים שלך מערבים קודמים':'יש לך קוד של כרטיס מערב קודם?'}</p>${L.map(x=>`<a class="btn ghost small" href="#c=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject)} · ${esc(x.name)}</a>`).join('')}<div class="row" style="gap:8px"><input id="cardcode" placeholder="קוד אישי (6 תווים)" style="flex:1;direction:ltr;text-align:center" maxlength="6"><button class="btn small" data-act="opencard">פתיחה</button></div></div>`}
 function cardView(me){
-  if(!S.engine||!S.sprites){if(!S.cardLoad){S.cardLoad=true;Promise.all([fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json())]).then(([e,sp])=>{S.engine=e;S.sprites=sp;render()}).catch(()=>{S.cardLoad=false})}
-    return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מכינים את הכרטיס שלך…</h1>`}
-  if(!S.cardImg||S.cardFor!==me.id){S.cardFor=me.id;S.cardImg=null;drawCard(me).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
+  if(!needEngine())return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מכינים את הכרטיס שלך…</h1>`;
+  if(!S.cardImg||S.cardFor!==me.id){S.cardFor=me.id;S.cardImg=null;const cx=ctxFor(me);(cx?drawCard(cx):Promise.reject('no answers')).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
+  const code=cardCodeFor(me.id);if(code){const d=S.cardDocs[code];if(S.remembered!==code){S.remembered=code;rememberCard(d)}}else if(S.stageLoaded&&!S.cardSaving){S.cardSaving=true;saveCard(me).then(()=>{S.cardSaving=false;render()}).catch(()=>{S.cardSaving=false})}
   const n=esc(subjectName());
   return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">הכרטיס האישי שלך</h1><p class="muted">איך התשובות שלך על ${n} נראות מול התשובות של ${n} על ${gs('עצמו','עצמה')}. לא חובה, רק אם בא לך.</p>
-  ${S.cardImg&&S.cardImg!=='err'?`<img src="${S.cardImg}" alt="הכרטיס שלך" style="width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><a class="btn" href="${S.cardImg}" download="PSP-${esc(me.name)}.png" style="text-align:center;text-decoration:none">⬇ הורדה</a><p class="muted center" style="font-size:13px">באייפון: לחיצה ארוכה על התמונה ← שמירה בתמונות</p>`:S.cardImg==='err'?'<p class="muted">לא הצלחתי ליצור את הכרטיס.</p>':'<div class="card center"><div class="ball wobble" style="--s:90px"></div></div>'}`}
+  ${cardImgHTML(me.name)}${codeBox(cardCodeFor(me.id))}`}
 const TYPE_KEY={normal:['שייכות','פשוט, נגיש לכולם, הדבק שמחזיק קבוצות'],fire:['להט','תשוקה שסוחפת אחרים, וכעס שעולה מהר'],water:['איזון','יציב רגשית, מעוגן ב"ביחד"'],electric:['ניצוץ','קולט ברגע ומדליק את מי שסביבו'],grass:['שורשים','מטפח לאט, זוכר מאיפה צמח'],ice:['עולם פנימי','קור רוח, שביר מבפנים, שומר מרחק'],fighting:['ישירות','אומר בפנים, עומד במילה'],poison:['חתרנות','ביקורת שמערערת על המובן מאליו'],ground:['קרקוע','מעשי ואמין, מעשים לפני חלומות'],flying:['חופש','צריך מרחב ומבט מלמעלה'],psychic:['תודעה','חי בתוך הראש, קורא אנשים'],bug:['התמדה','חרוץ, מתחיל קטן ומשתנה הרבה'],rock:['עמידות','עקרוני, קשה להזיז'],ghost:['מסתורין','עומק נסתר, קשה לקרוא'],dragon:['שאפתנות','נוכחות שממלאת חדר'],dark:['אי־ציות','עצמאי, חוקים משלו'],steel:['סדר','מדויק, בונה מערכות'],fairy:['חמלה','חם, ומתייצב מול כוח שמדכא']};
-async function drawCard(me){
-  await document.fonts?.ready;const E=S.engine,ax=E.axes,n=subjectName(),pr=profile(),isSelf=me.role==='self';
-  const mine=pr.raters.find(r=>r.pid===me.id),selfR=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');
-  const avg=(rs,layer,dims)=>dims.map(d=>{const v=rs.map(r=>r.scores[layer]?.[d]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null});
-  const vec=(r,layer,dims)=>dims.map(d=>r?.scores?.[layer]?.[d]??null);
-  const A=L=>vec(mine,L,ax[L]),B=L=>isSelf?avg(others,L,ax[L]):vec(selfR,L,ax[L]);
-  const nameA=isSelf?'את/ה':me.name,nameB=isSelf?'הקבוצה':n;
+function avgScores(rs){const ax=S.engine.axes,o={};['types','stats','evo'].forEach(L=>{o[L]={};ax[L].forEach(d=>{const v=rs.map(r=>r.scores?.[L]?.[d]).filter(x=>x!=null);if(v.length)o[L][d]=Math.round(v.reduce((a,b)=>a+b,0)/v.length*1000)/1000})});return o}
+function ctxFor(me){const pr=profile(),mine=pr.raters.find(r=>r.pid===me.id),selfR=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');if(!mine)return null;
+  let fin=S.state?.result?.finalName||'';if(!fin){try{fin=finalName(PSP.run(pr,S.engine,dexVotes(pr.raters)).main[0].line)}catch(e){}}
+  return {pid:me.id,name:me.name,role:me.role,subject:subjectName(),gender:S.setup?.gender||'m',mine:mine.scores,B:me.role==='self'?avgScores(others):(selfR?.scores||{}),finalName:fin}}
+async function drawCard(ctx){
+  await document.fonts?.ready;const E=S.engine,ax=E.axes,n=ctx.subject,isSelf=ctx.role==='self',gs=(m,f)=>ctx.gender==='f'?f:m,me={name:ctx.name};
+  const A=L=>ax[L].map(d=>ctx.mine?.[L]?.[d]??null),B=L=>ax[L].map(d=>ctx.B?.[L]?.[d]??null);
+  const nameA=isSelf?'את/ה':ctx.name,nameB=isSelf?'הקבוצה':n;
   // this person's answers alone, without the Mew question (dex = null)
-  const top3=r=>{try{return PSP.run({raters:[{...r,role:'friend',weight:1}]},E,null).main.slice(0,3).map(x=>x.line)}catch(e){return []}};
-  const T3=top3(mine),lineA=T3[0],lineB=isSelf||!selfR?null:top3(selfR)[0],finalName_=S.state?.result?.finalName||(()=>{try{return finalName(PSP.run(pr,E,dexVotes(pr.raters)).main[0].line)}catch(e){return ''}})();
+  const top3=sc=>{try{return PSP.run({raters:[{scores:sc,role:'friend',weight:1}]},E,null).main.slice(0,3).map(x=>x.line)}catch(e){return []}};
+  const T3=top3(ctx.mine),lineA=T3[0],lineB=isSelf||!ctx.B||!Object.keys(ctx.B).length?null:top3(ctx.B)[0],finalName_=ctx.finalName||'';
   let diffs=[],tot=0,cnt=0;['types','stats','evo'].forEach(L=>{const a=A(L),b=B(L);a.forEach((x,i)=>{if(x!=null&&b[i]!=null){tot+=Math.abs(x-b[i]);cnt++;diffs.push({L,d:ax[L][i],a:x,b:b[i],g:Math.abs(x-b[i])})}})});
   const agree=cnt?Math.max(0,Math.round(100-tot/cnt/2.5*100)):0;diffs.sort((x,y)=>y.g-x.g);
   const W=1080,H=2600,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.direction='rtl';
@@ -929,7 +953,8 @@ function progressCard(P,ans){
   return `<div class="card"><h3>ההתקדמות שלך</h3>${P.rounds.map((u,i)=>{const t=countIds(u),d=answeredIn(u,ans);
     return `<div class="row"><span style="min-width:56px">סבב ${i+1}</span><div class="bar grow"><i style="width:${t?d/t*100:0}%"></i></div><span class="muted" style="font-variant-numeric:tabular-nums">${d}/${t}</span></div>`}).join('')}</div>`;
 }
-function pickView(){
+function pickView(){return pickView0()+pastCardsHTML()}
+function pickView0(){
   const subj=subjectName();
   if(!S.setup)return `<p class="eyebrow">PSP · WAITING FOR ${esc(subj)}</p><h1>רגע, מחכים ל${esc(subj)}</h1>
   <div class="card center"><div class="ball wobble" style="--s:90px"></div><p style="margin:16px 0 0">${esc(subj)} ${gs('מגדיר','מגדירה')} עכשיו את המשתתפים והאחוזים.<br>ברגע ${gs('שהוא יסיים','שהיא תסיים')}, השם שלך יופיע כאן לבד ופרופסור אוק יתחיל.</p></div>
@@ -1099,6 +1124,9 @@ function bindPhone(){
   const app=$('#app');
   app.oninput=e=>{const el=e.target;if(el.id==='gbp-name'&&S.intro){S.intro.draftName=el.value;return}if(el.dataset.f){const d=draft();d[+el.dataset.i][el.dataset.f]=el.value;S.setupErr=null;if(el.dataset.f==='name'){const a=$('#av-'+el.dataset.i);if(a)a.innerHTML=avHead({name:el.value},38)}}};
   app.onchange=e=>{const el=e.target;if(el.dataset.f==='role'){draft()[+el.dataset.i].role=el.value}};
+  app.addEventListener('click',e=>{const b=e.target.closest('[data-act="opencard"],[data-act="copylink"]');if(!b)return;e.stopPropagation();
+    if(b.dataset.act==='opencard'){const v=($('#cardcode')?.value||'').trim().toLowerCase();if(/^[a-z0-9]{6}$/.test(v))location.hash='c='+v;else toast('הקוד הוא 6 תווים')}
+    else{const u=cardLink(b.dataset.code);(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור האישי:',u))}},true);
   app.onclick=e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);store.set('psp-eve',String(S.state?.eve||''));S.view='';S.joinSent=false;render();return}
@@ -1979,7 +2007,8 @@ function renderPanel(){
   <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
   <div class="row"><span class="muted grow" style="font-size:13px">שעון הערב: ${S.deck?.t0?'רץ':'יתחיל במעבר מהשקף הראשון'} (מתאפס בשקף הראשון)</span><button class="btn ghost small" data-pa="clock">איפוס השעון</button></div>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
-  <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
+  <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn ghost small" data-pa="cards">קישורים אישיים</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
+  ${S.showCards?`<div class="card" style="margin:8px 0"><div class="row"><b class="grow">קישורים אישיים לכרטיסים (נשמרים גם אחרי איפוס)</b><button class="btn ghost small" data-pa="copyall">העתקת הכול</button></div>${roster().map(r=>{const c=cardCodeFor(r.id);return c?`<div class="row" style="font-size:14px"><span class="grow">${esc(r.name)}</span><code style="direction:ltr">${c.toUpperCase()}</code><a href="${cardLink(c)}" target="_blank" style="color:var(--gold)">פתיחה</a></div>`:''}).join('')}</div>`:''}
   ${S.confirmReset?`<div class="row"><span class="grow">למחוק את כל התשובות, המשתתפים ושאלת מיו?</span><button class="btn red small" data-pa="reset2">כן, למחוק</button><button class="btn ghost small" data-pa="reset0">ביטול</button></div>`:''}`;
   p.onclick=async e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;const a=b.dataset.pa;
     if(a==='close'){p.hidden=true}
@@ -1989,6 +2018,8 @@ function renderPanel(){
     if(a==='demo')demoFill();
     if(a==='clock'){const now=Date.now();S.deck={...(S.deck||{}),t0:now,segAt:now,log:{}};deckPub();toast('השעון התחיל');setTimeout(renderPanel,400)}
     if(a==='save')saveResults();
+    if(a==='cards'){await ensureCards();S.showCards=!S.showCards;renderPanel()}
+    if(a==='copyall'){const t=roster().map(r=>{const c=cardCodeFor(r.id);return c?`${r.name}: ${cardLink(c)}`:null}).filter(Boolean).join('\n');(navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast('הועתק')).catch(()=>prompt('הקישורים:',t))}
     if(a==='prevremote'||a==='prevoff'){S.previewRemote=a==='prevremote';S.oakFor=null;computeResult();const i=SEQ.findIndex(x=>x.id==='hof');if(S.previewRemote&&i>=0){POS=i;HOF=0;SUB=0;show(true)}else if(cur()?.kind==='hof')renderHof();previewBadge();renderPanel()}
     if(a==='reset'){S.confirmReset=true;renderPanel()}
     if(a==='reset0'){S.confirmReset=false;renderPanel()}
@@ -2014,6 +2045,7 @@ async function demoFill(){
 }
 // a snapshot of everything, kept in Firestore (the reset never touches 'archive') and downloaded as a file
 async function saveResults(){
+  await ensureCards().catch(()=>{});
   let R=null;try{computeResult();R=S.R?{main:S.R.main.map(t=>({line:t.line.id,name:t.line.name,total:t.total,sims:t.sims})),legends:S.R.legends.map(t=>({line:t.line.id,name:t.line.name,total:t.total})),gaps:S.R.gaps}:null}catch(e){}
   const snap=clone({at:new Date().toISOString(),subject:subjectName(),state:S.state,setup:S.setup,answers:S.answers,remote:S.remote||{},result:R});
   try{await S.db.doc('archive/'+snap.at.replace(/[:.]/g,'-')).set(snap);toast('התוצאות נשמרו')}catch(e){toast('השמירה בענן נכשלה, הקובץ יורד בכל זאת')}
@@ -2021,6 +2053,7 @@ async function saveResults(){
 }
 function previewBadge(){let b=$('#prevbadge');if(!S.previewRemote){b?.remove();return}if(!b){b=document.createElement('div');b.id='prevbadge';b.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:50;background:#E4483F;color:#fff;font:600 15px var(--body);padding:6px 14px;border-radius:999px';document.body.append(b)}b.textContent='תצוגה מקדימה: רק המשיבים מרחוק · לא נשלח לטלפונים'}
 async function resetAll(){
+  await ensureCards().catch(()=>{});
   for(const id of Object.keys(S.answers))await S.db.doc('answers/'+id).delete().catch(()=>{});
   await S.db.doc('setup/main').delete().catch(()=>{});
   for(const id of Object.keys(S.guesses||{}))await S.db.doc('stage/q-'+id).delete().catch(()=>{});for(const p of roster())await S.db.doc('stage/say-'+p.id).delete().catch(()=>{});await S.db.doc('stage/quiz').set({type:null}).catch(()=>{});
