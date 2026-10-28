@@ -238,6 +238,9 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:2px solid var(--line);background:var(--night2);color:var(--cream);font:700 14px var(--body)}
 .qt.on:disabled{opacity:1}.qt.on{border-color:var(--gold);background:rgba(242,201,76,.16);box-shadow:0 0 0 2px var(--gold)}.qt:disabled{opacity:.45}
 .qres.ok{border:2px solid var(--ok)}.qres.no{border:2px solid var(--line)}
+.agrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aslot{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;background:rgba(255,255,255,.04);border-radius:14px;padding:10px}
+.aprev{width:100%;height:120px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(0,0,0,.18);overflow:hidden}.aprev img{max-width:100%;max-height:120px;object-fit:contain;image-rendering:pixelated}
+.linkbtn{background:none;border:0;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
 .qclock{position:absolute;left:128px;top:220px;z-index:6;width:150px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .qclock svg{position:absolute;inset:0;transform:rotate(-90deg)}.qcb{fill:rgba(22,26,46,.92);stroke:#3A4170;stroke-width:8}.qcf{fill:none;stroke:var(--gold);stroke-width:8;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .2s linear}
 .qclock b{position:relative;font:400 44px var(--pixel);color:var(--gold)}.qclock span{position:relative;font-size:16px;color:var(--cream);margin-top:4px}.qnext{font-size:13px;color:var(--gold)}
@@ -570,7 +573,27 @@ const ROUND_SIZE=[38,38,37,37];
 const ITEMS={}; BANK.items.forEach(i=>ITEMS[i.id]=i);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const LEGACY_ROOM='ERI1',ROOM_ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets)(?:=([A-Za-z0-9]{4}))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase()};return {mode:/^c=/.test(h)?'card':'',code:''}}
+const RAWSTORE={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const ROOM=(()=>{const hp=hashParts();let code=hp.code;if(!code&&(hp.mode===''||hp.mode==='r'||hp.mode==='remote'))code=(RAWSTORE.get('psp-room')||'').toUpperCase();return {code,legacy:code===LEGACY_ROOM,mode:hp.mode}})();
+const SCOPED=['psp-me','psp-eve','psp-remote-id','psp-pos'];
+const skey=k=>ROOM.code&&!ROOM.legacy&&SCOPED.includes(k)?k+':'+ROOM.code:k;
+const store={get(k){return RAWSTORE.get(skey(k))},set(k,v){RAWSTORE.set(skey(k),v)}};
+// every document of a room lives next to the others with the room code in its id; Eri's evening (ERI1) keeps the original paths
+function rp(p){if(!ROOM.code||ROOM.legacy)return p;const i=p.indexOf('/'),c=p.slice(0,i),id=p.slice(i+1);
+  if(c==='archive'||(c==='stage'&&id.startsWith('card-')))return p;
+  if(c==='state'||(c==='setup'&&id==='main'))return c+'/'+ROOM.code;
+  return c+'/'+ROOM.code+'~'+id}
+function roomDb(raw){
+  const FP=()=>firebase.firestore.FieldPath.documentId();
+  const lo=ROOM.legacy?'a':ROOM.code+'~',hi=ROOM.legacy?'z':ROOM.code+'~';
+  const strip=id=>ROOM.legacy?id:id.slice(ROOM.code.length+1);
+  const wrap=q=>{const m=d=>({id:strip(d.id),exists:true,data:()=>d.data()});return {docs:q.docs.map(m),docChanges:()=>q.docChanges().map(c=>({type:c.type,doc:m(c.doc)}))}};
+  return {raw,doc:p=>raw.doc(rp(p)),collection:c=>({onSnapshot:(f,e)=>raw.collection(c).orderBy(FP()).startAt(lo).endAt(hi).onSnapshot(q=>f(wrap(q)),e)})}}
+function rememberRoom(){if(!ROOM.code||!S.state)return;let L=[];try{L=JSON.parse(RAWSTORE.get('psp-rooms')||'[]')}catch(e){}const sb=subjectName();if(L[0]?.code===ROOM.code&&L[0]?.subject===sb)return;L=L.filter(x=>x.code!==ROOM.code);L.unshift({code:ROOM.code,subject:sb});RAWSTORE.set('psp-rooms',JSON.stringify(L.slice(0,12)))}
+function myRooms(){try{return JSON.parse(RAWSTORE.get('psp-rooms')||'[]')}catch(e){return []}}
+function roomLink(c,mode){return location.origin+location.pathname+'#'+(mode||'r')+'='+c}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),2600)}
 const pct=v=>Math.max(0,Math.min(1,(v-1)/4));
 const shortMeaning=s=>String(s||'').split(':')[0];
@@ -599,7 +622,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793212467';
+const BUILDV='1793218934';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -611,10 +634,10 @@ function music(name,o={}){
 const SFX={};function sfx(n){try{let a=SFX[n];if(!a){a=SFX[n]=new Audio(n+'.mp3?v='+BUILDV);a.preload='auto'}a.currentTime=0;a.volume=.7;a.play().catch(()=>{})}catch(e){}}
 const DEV=(()=>{let d=null;try{d=localStorage.getItem('psp-dev');if(!d){d='d'+Math.random().toString(36).slice(2,10);localStorage.setItem('psp-dev',d)}}catch(e){d='d'+Math.random().toString(36).slice(2,10)}return d})();
 const S={db:null,sample:null,canEdit:false,userReady:false,state:null,setup:null,answers:{},me:store.get('psp-me'),view:'',dex:null,engine:null,sprites:null,slides:null};
-const isScreen=()=>['screen','host'].includes((location.hash||'').replace('#',''));
+const isScreen=()=>['screen','host'].includes(hashParts().mode);
 const subjectName=()=>S.setup?.name||S.state?.subject||'ערי';
 // subject's grammatical gender, chosen in Oak's intro ('m' | 'f'); default masculine
-const gs=(m,f)=>S.setup?.gender==='f'?f:m;
+const gs=(m,f)=>(S.setup?.gender||S.state?.gender)==='f'?f:m;
 // the person holding this phone, during Oak's intro
 const gx=(m,f)=>(S.intro?.g||(S.remoteMode?S.rdoc?.gender:null)||genderOf(person(S.me)))==='f'?f:m;
 function genderOf(p){if(!p)return null;if(S.intro&&p.id===S.me&&S.intro.g)return S.intro.g;return p.role==='self'?(S.setup?.gender||null):(S.joinedG?.[p.id]||null)}
@@ -622,13 +645,14 @@ function genderOf(p){if(!p)return null;if(S.intro&&p.id===S.me&&S.intro.g)return
 const AV={'ערי':'eri','דולב':'dolev','רון':'ron','דורון':'doron','ניר':'nir','אייל':'eyal'};
 const AVCOL={eri:'#FF7AB6',dolev:'#4FA3FF',ron:'#F4EBD0',doron:'#B57BFF',nir:'#6EE7A0',eyal:'#FFB547'};
 const XCOL=['#FF8A65','#4DD0E1','#DCE775','#FF6B6B','#AED581','#CE93D8'];
-function avKey(p){return p?AV[String(p.name||'').trim()]||null:null}
+function avKey(p){return p&&ROOM.legacy?AV[String(p.name||'').trim()]||null:null}
+function roomAv(p,kind){if(ROOM.legacy||!p)return null;if(p.role==='self'||p.id==='subj')return S.assets?.['av-subj-'+kind]?.data||null;return S.assetPeople?.[String(p.name||'').trim()]?.[kind]||null}
 function avColor(p,i){const k=avKey(p);return k?AVCOL[k]:XCOL[(i||0)%XCOL.length]}
 const avG=(p,g)=>(g||genderOf(p))==='f'?'-g':'';
-function avHead(p,size,ring){const k=avKey(p),sh=ring?`;box-shadow:0 0 0 ${Math.max(2,Math.round(size/14))}px ${ring}`:'';
+function avHead(p,size,ring){const k=avKey(p),sh=ring?`;box-shadow:0 0 0 ${Math.max(2,Math.round(size/14))}px ${ring}`:'';const ra=roomAv(p,'h');if(ra)return `<span class="avh" style="width:${size}px;height:${size}px${sh}"><img src="${ra}" alt="${esc(p.name)}"></span>`;
   return `<span class="avh" style="width:${size}px;height:${size}px${sh}">${k?`<img src="img/av-h-${k}${avG(p)}.webp" alt="${esc(p.name)}">`:`<img src="img/it-poke-ball.webp" alt="" style="object-fit:contain;padding:14%">`}</span>`}
 const AVSCALE={doron:1.18};
-function avFull(p,h,g){const k=avKey(p);if(k&&AVSCALE[k])h=Math.round(h*AVSCALE[k]);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="img/it-poke-ball.webp" alt="" style="height:${Math.round(h*.5)}px;margin:${Math.round(h*.25)}px auto">`}
+function avFull(p,h,g){const ra=roomAv(p,'f');if(ra)return `<img class="avf" src="${ra}" alt="${esc(p.name)}" style="height:${h}px">`;const k=avKey(p);if(k&&AVSCALE[k])h=Math.round(h*AVSCALE[k]);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="img/it-poke-ball.webp" alt="" style="height:${Math.round(h*.5)}px;margin:${Math.round(h*.25)}px auto">`}
 function subjP(){return roster().find(p=>p.role==='self')||{name:subjectName(),role:'self'}}
 
 // ---------- progress dial ----------
@@ -676,7 +700,9 @@ async function boot(){
   S.db=await fbInit();
   if(!S.db){S.dbFail=true;render();return}
   render();
-  S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;changed()},()=>{});
+  S.db=roomDb(S.db);globalSubs();
+  if(!ROOM.code){render();return}
+  S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;S.stateLoaded=true;changed()},()=>{});
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;S.setupLoaded=true;changed()},()=>{});
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};S.joinedDev={};q.docs.forEach(d=>{const x=d.data()||{};if(x.gender)S.joinedG[d.id]=x.gender;if(x.dev)S.joinedDev[d.id]=x.dev});changed()},()=>{});
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
@@ -685,17 +711,85 @@ async function boot(){
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0,os=S.deck?.seg;S.deck=d;if((!had&&d?.t0)||os!==d?.seg)render();else deckLabels()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.guesses={};S.cardDocs={};q.docs.forEach(d=>{if(d.id.startsWith('card-'))S.cardDocs[d.id.slice(5)]=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data())});S.sayInit=true;const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data())});S.sayInit=true;const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
+  S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
     q.docChanges().forEach(c=>{if(c.type==='removed')delete S.answers[c.doc.id]});
     changed();
   },()=>{});
 }
+// rooms list (host) and saved personal cards (everyone): outside any one room
+function globalSubs(){
+  const raw=S.db.raw,FP=firebase.firestore.FieldPath.documentId();
+  raw.collection('stage').orderBy(FP).startAt('card-').endAt('card-\uf8ff').onSnapshot(q=>{S.cardDocs={};q.docs.forEach(d=>{S.cardDocs[d.id.slice(5)]=clone(d.data())});const was=S.cardsLoaded;S.cardsLoaded=true;if(!isScreen()&&(!was||hashParts().mode==='card'))render();else if(isScreen())renderPanel()},()=>{});
+  if(isScreen()&&!ROOM.code)raw.collection('state').onSnapshot(q=>{S.roomList=q.docs.filter(d=>d.id!=='rooms').map(d=>({code:d.id==='main'?LEGACY_ROOM:d.id,...clone(d.data())}));render()},()=>{});
+}
+function joinView(){
+  const L=myRooms();
+  return `<p class="eyebrow">PSP · JOIN</p><h1>כניסה לחדר</h1><p class="muted">מקלידים את הקוד שמופיע על המסך הגדול, או שמקבלים אותו מהמארח.</p>
+  <div class="card"><input id="roomcode" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters" style="text-align:center;font:400 30px var(--pixel);letter-spacing:10px;direction:ltr;text-transform:uppercase"><button class="btn" data-act="joinroom" style="margin-top:10px">כניסה</button></div>
+  ${L.length?`<div class="card"><p style="margin:0 0 8px;font-weight:700">החדרים שלך</p>${L.map(x=>`<a class="btn ghost small" href="#r=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject||'')} · <span style="direction:ltr;font-family:var(--pixel)">${esc(x.code)}</span></a>`).join('')}</div>`:''}
+  ${pastCardsHTML()}`}
+function tryJoin(v){v=(v||'').trim().toUpperCase();if(!/^[A-Z0-9]{4}$/.test(v)){toast('הקוד הוא 4 תווים');return}
+  const ref=S.db.raw.doc(v===LEGACY_ROOM?'state/main':'state/'+v);let done=false;
+  const un=ref.onSnapshot(sn=>{if(done)return;done=true;try{un&&un()}catch(e){}if(sn.exists){RAWSTORE.set('psp-room',v);location.hash='r='+v;location.reload()}else toast('לא מצאתי חדר עם הקוד הזה')},()=>toast('לא הצלחתי לבדוק את הקוד'))}
+function leaveRoom(){RAWSTORE.set('psp-room','');location.hash='';location.reload()}
+function roomsView(){
+  const app=$('#app');app.hidden=false;
+  if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
+  if(!S.canEdit){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>המסך הגדול</h1><p class="muted">את הערב מריץ המארח. התחברו עם חשבון ה־Google של המארח כדי להמשיך. משתתפים: אותו קישור בלי ‎#screen.</p><button class="btn" onclick="hostLogin()">התחברות כמארח עם Google</button></div>`;return}
+  const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
+  const st=r=>r.status==='closed'?'נסגר · תוצאות זמינות':r.revealed?'אחרי החשיפה':r.open?'ערב פעיל':'פתוח, טרם התחיל';
+  app.innerHTML=`<div class="col"><p class="eyebrow">PSP · ROOMS</p><h1>החדרים שלך</h1>
+  <div class="card"><h3 style="margin-top:0">חדר חדש</h3><label class="muted" for="nr-name">על מי הערב?</label><input type="text" id="nr-name" placeholder="שם הנבדק/ת">
+   <label class="muted">בן או בת?</label><div class="row" style="gap:8px;margin:6px 0 10px"><button class="btn ghost small ${S.nrg!=='f'?'on':''}" data-nrg="m">בן</button><button class="btn ghost small ${S.nrg==='f'?'on':''}" data-nrg="f">בת</button></div>
+   <button class="btn" data-act="newroom">יצירת חדר</button></div>
+  ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}</p>
+   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#assets=${esc(r.code)}" style="text-decoration:none">תמונות לערב</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button></div></div>`).join('')}</div>`;
+  app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.nrg){S.nrg=b.dataset.nrg;roomsView();return}
+    if(b.dataset.copy){const u=b.dataset.copy;(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור:',u));return}
+    if(b.dataset.act==='newroom'){const nm=($('#nr-name')?.value||'').trim();if(!nm){toast('מה השם?');return}
+      const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c=Array.from({length:4},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c)||c===LEGACY_ROOM);
+      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open'});
+      location.hash='screen='+c;location.reload()}}}
+const hexName=n=>Array.from(String(n)).map(c=>c.charCodeAt(0).toString(16)).join('');
+function assetSlot(key,label,data,extra,who){return `<div class="aslot"><div class="aprev">${data?`<img src="${data}" alt="">`:'<span class="muted">אין עדיין</span>'}</div><b>${label}</b>${extra||''}
+  <div class="row" style="gap:6px;justify-content:center"><label class="btn ghost small" style="cursor:pointer">${data?'החלפה':'העלאה'}<input type="file" accept="image/*" hidden data-up="${esc(key)}" ${who?`data-person="${esc(who)}"`:''}></label>${data?`<button class="btn ghost small" data-del="${esc(key)}">מחיקה</button>`:''}</div></div>`}
+function assetsView(){
+  if(!S.db||!S.userReady)return `<p class="eyebrow">PSP · IMAGES</p><h1>מתחבר…</h1>`;
+  if(!S.canEdit)return `<p class="eyebrow">PSP · IMAGES</p><h1>תמונות לערב</h1><p class="muted">רק המארח מעלה תמונות. התחברו עם Google במסך הגדול.</p><a class="btn" href="#screen" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">למסך הגדול</a>`;
+  if(!S.stateLoaded||!S.assetsLoaded)return `<p class="eyebrow">PSP · IMAGES</p><h1>טוען…</h1>`;
+  const A=S.assets||{},n=subjectName();
+  const people=[...new Set([...Object.values(A).filter(x=>x.person).map(x=>x.person),...(S.setup?.roster||[]).filter(r=>r.role!=='self').map(r=>r.name),...(S.newPeople||[])])].filter(Boolean);
+  const photos=Object.keys(A).filter(k=>k.startsWith('ph-')).sort();
+  return `<p class="eyebrow">PSP · IMAGES · ${esc(ROOM.code)}</p><h1>תמונות לערב של ${esc(n)}</h1><p class="muted">כל מה שלא מועלה מופיע עם תמונה כללית. ספרייטים על רקע שקוף נראים הכי טוב.</p>
+  <div class="card"><h3>${esc(n)}</h3><div class="agrid">${assetSlot('av-subj-f','ספרייט מלא',A['av-subj-f']?.data)}${assetSlot('av-subj-h','ראש (עיגול)',A['av-subj-h']?.data)}</div></div>
+  <div class="card"><h3>המאמנים של ${esc(n)}</h3><p class="muted" style="font-size:13px">הכותרת מופיעה בשקף המאמן (למשל "ספורט").</p><div class="agrid">${[1,2,3,4].map(i=>assetSlot('tr-'+i,'מאמן '+i,A['tr-'+i]?.data,`<input type="text" data-trl="${i}" value="${esc(A['tr-'+i]?.label||'')}" placeholder="כותרת" style="margin:6px 0">`)).join('')}</div></div>
+  <div class="card"><h3>משתתפים</h3><p class="muted" style="font-size:13px">ההתאמה לפי השם, בדיוק כמו שהוא מופיע ברשימת המשתתפים.</p>
+   ${people.map(nm=>{const h=hexName(nm);return `<p style="margin:12px 0 4px;font-weight:700">${esc(nm)}</p><div class="agrid">${assetSlot('p-'+h+'-f','ספרייט מלא',S.assetPeople?.[nm]?.f,'',nm)}${assetSlot('p-'+h+'-h','ראש',S.assetPeople?.[nm]?.h,'',nm)}</div>`}).join('')}
+   <div class="row" style="gap:8px;margin-top:12px"><input type="text" id="np-name" placeholder="שם משתתף" style="flex:1"><button class="btn ghost small" data-act="addperson">הוספה</button></div></div>
+  <div class="card"><h3>תמונות ש${esc(n)} מציג${gs('','ה')} על המסך</h3><div class="agrid">${photos.map(k=>assetSlot(k,'',A[k].data)).join('')}</div>
+   <label class="btn ghost" style="cursor:pointer;margin-top:10px;text-align:center">הוספת תמונות<input type="file" accept="image/*" multiple hidden data-up="ph-new"></label></div>
+  <a class="btn" href="#screen=${esc(ROOM.code)}" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">למסך של החדר</a>`}
+function shrinkImage(file,max,photo){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const g=c.getContext('2d');if(!photo)g.imageSmoothingEnabled=k<1;g.drawImage(im,0,0,c.width,c.height);
+  let u=c.toDataURL(photo?'image/jpeg':'image/webp',.85);if(!photo&&!u.startsWith('data:image/webp'))u=c.toDataURL('image/png');if(u.length>900000)u=c.toDataURL('image/jpeg',.7);res(u)};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
+function bindAssets(){const app=$('#app');
+  app.onchange=async e=>{const el=e.target;
+    if(el.dataset.trl){const k='tr-'+el.dataset.trl;await S.db.doc('setup/asset-'+k).set({...(S.assets?.[k]||{}),label:el.value.trim()});toast('נשמר');return}
+    const key=el.dataset.up;if(!key||!el.files?.length)return;toast('מעלה…');
+    try{for(const f of el.files){const photo=key.startsWith('ph-');const data=await shrinkImage(f,photo?1280:600,photo);
+      let k=key,extra={};if(key==='ph-new')k='ph-'+String(Date.now()).slice(-9)+Math.floor(Math.random()*10);
+      const m=key.match(/^p-[0-9a-f]+-([fh])$/);if(m)extra={person:el.dataset.person,kind:m[1]};
+      await S.db.doc('setup/asset-'+k).set({...(S.assets?.[k]||{}),...extra,data})}toast('הועלה')}catch(err){console.error(err);toast('ההעלאה נכשלה')}};
+  app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.del){await S.db.doc('setup/asset-'+b.dataset.del).delete();toast('נמחק')}
+    if(b.dataset.act==='addperson'){const v=($('#np-name')?.value||'').trim();if(v){S.newPeople=[...(S.newPeople||[]),v];render()}}}}
 function clone(o){try{return JSON.parse(JSON.stringify(o))}catch(e){return o}}
 function changed(){ if(isScreen()) screenData(); else render(); }
-window.addEventListener('hashchange',()=>{if(isScreen())startScreen();else render()});
+window.addEventListener('hashchange',()=>{const hp=hashParts();if(hp.mode!=='card'&&hp.code&&hp.code!==ROOM.code){location.reload();return}if(isScreen()){if(ROOM.code)startScreen();else render()}else render()});
 
 function myDoc(){if(S.remoteMode)return S.rdoc||(S.rdoc={answers:{}});return S.answers[S.me]||(S.answers[S.me]={answers:{},mew:''})}
 function saveMine(){
@@ -713,9 +807,12 @@ function saveMine(){
 // PHONE
 // =====================================================================
 function render(){
-  if(isScreen()){startScreen();return}
+  if(isScreen()){if(ROOM.code)startScreen();else roomsView();return}
   const app=$('#app');app.hidden=false;
-  S.remoteMode=(location.hash||'').replace('#','')==='remote';
+  S.remoteMode=hashParts().mode==='remote';
+  if(hashParts().mode==='assets'){app.innerHTML=`<div class="col">${assetsView()}</div>`;bindAssets();return}
+  if(!ROOM.code&&hashParts().mode!=='card'){app.innerHTML=`<div class="col">${joinView()}</div>`;bindPhone();return}
+  rememberRoom();
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
@@ -767,7 +864,7 @@ function saySend(){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date
   S.db.doc('stage/say-'+S.me).set({t:t.slice(0,SAYMAX),at:Date.now()}).then(()=>toast('נשלח למסך!')).catch(()=>toast('לא נשלח'))}
 // ----- personal take-home card (closing slide): your answers vs the subject's own -----
 const CODE_ABC='abcdefghjkmnpqrstuvwxyz23456789';
-const eveKey=()=>String(S.state?.eve||('s'+(S.setup?.at||'')));
+const eveKey=()=>(ROOM.legacy||!ROOM.code?'':ROOM.code+':')+String(S.state?.eve||('s'+(S.setup?.at||'')));
 const cardLink=c=>location.origin+location.pathname+'#c='+c;
 function cardCodeFor(pid){const e=eveKey();return Object.keys(S.cardDocs||{}).find(c=>S.cardDocs[c].eve===e&&S.cardDocs[c].pid===pid)||null}
 async function saveCard(p){let c=cardCodeFor(p.id);if(c)return c;const ctx=ctxFor(p);if(!ctx)return null;
@@ -780,20 +877,100 @@ function needEngine(){if(S.engine&&S.sprites)return true;if(!S.cardLoad){S.cardL
 function cardImgHTML(fname){return S.cardImg&&S.cardImg!=='err'?`<img src="${S.cardImg}" alt="הכרטיס שלך" style="width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><a class="btn" href="${S.cardImg}" download="PSP-${esc(fname)}.png" style="text-align:center;text-decoration:none">⬇ הורדה</a><p class="muted center" style="font-size:13px">באייפון: לחיצה ארוכה על התמונה ← שמירה בתמונות</p>`:S.cardImg==='err'?'<p class="muted">לא הצלחתי ליצור את הכרטיס.</p>':'<div class="card center"><div class="ball wobble" style="--s:90px"></div></div>'}
 function codeBox(c){return c?`<div class="card" style="text-align:center"><p class="muted" style="margin:0 0 6px">הקוד האישי שלך, כדי לחזור לכרטיס גם אחרי שהערב מתאפס:</p><p style="font:400 22px var(--pixel);letter-spacing:4px;color:var(--gold);margin:0 0 8px;direction:ltr">${esc(c.toUpperCase())}</p><button class="btn ghost small" data-act="copylink" data-code="${esc(c)}">העתקת הקישור האישי</button></div>`:''}
 function archCardView(code){
-  if(!S.db||!S.stageLoaded||!needEngine())return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מחפשים את הכרטיס…</h1>`;
+  if(!S.db||!S.cardsLoaded||!needEngine())return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מחפשים את הכרטיס…</h1>`;
   const d=S.cardDocs?.[code];
   if(!d)return `<p class="eyebrow">PSP · YOUR CARD</p><h1>לא מצאנו כרטיס כזה</h1><p class="muted">בדקו שהקוד נכון (6 תווים).</p><a class="btn ghost" href="#" style="text-align:center;text-decoration:none">חזרה</a>`;
   if(S.cardFor!=='c:'+code){S.cardFor='c:'+code;S.cardImg=null;rememberCard(d);drawCard(d).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
   const gsd=(m,f)=>d.gender==='f'?f:m;
   return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">${esc(d.subject)}, לפי ${d.role==='self'?gsd('עצמו','עצמה'):esc(d.name)}</h1><p class="muted">הכרטיס האישי שלך מהערב של ${esc(d.subject)}.</p>${cardImgHTML(d.name)}${codeBox(code)}<a class="btn ghost" href="#" style="text-align:center;text-decoration:none">חזרה</a>`}
 function pastCardsHTML(){const L=myCards();return `<div class="card" style="margin-top:18px"><p style="margin:0 0 8px;font-weight:700">${L.length?'הכרטיסים שלך מערבים קודמים':'יש לך קוד של כרטיס מערב קודם?'}</p>${L.map(x=>`<a class="btn ghost small" href="#c=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject)} · ${esc(x.name)}</a>`).join('')}<div class="row" style="gap:8px"><input id="cardcode" placeholder="קוד אישי (6 תווים)" style="flex:1;direction:ltr;text-align:center" maxlength="6"><button class="btn small" data-act="opencard">פתיחה</button></div></div>`}
+const STAT_HL={hp:['תקופה ארוכה של לחץ לא שוחקת','צריך זמן להתאושש מיום קשה'],attack:['ניגש ישר לעשייה','משאיר לאחרים את הביצוע'],defense:['לא מתקפל מול דרישות','קשה להגיד "לא"'],'special-attack':['משכנע ברעיונות ובמילים','מעדיף שהידיים ידברו'],'special-defense':['אווירה רעה לא נדבקת','סופג את מצב הרוח של החדר'],speed:['קולט ומחליט מהר','חושב הרבה לפני כל צעד']};
+function deepBtn(){return `<button class="btn ghost" data-act="deep" style="margin-top:12px">⬇ עמוד העומק: הפוקימון של ${esc(subjectName())}</button>`}
+async function makeDeep(){if(!needEngine()){toast('רגע, טוען…');return}if(S.deepBusy)return;S.deepBusy=true;toast('מכין את עמוד העומק…');
+  try{const u=await drawDeep();const a=document.createElement('a');a.href=u;a.download=`PSP-${subjectName()}.png`;document.body.append(a);a.click();a.remove();
+    S.deepImg=u;const w=window.open();if(w){w.document.write(`<title>PSP</title><body style="margin:0;background:#161A2E"><img src="${u}" style="width:100%"></body>`)}}catch(e){console.error(e);toast('לא הצלחתי ליצור את העמוד')}S.deepBusy=false}
+async function drawDeep(){
+  await document.fonts?.ready;const E=S.engine,ax=E.axes,n=subjectName(),G=(m,f)=>(S.setup?.gender||S.state?.gender)==='f'?f:m;
+  if(!S.oak)S.oak=await fetch('oak.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}));
+  const pr=profile(),R=PSP.run(pr,E,dexVotes(pr.raters)),top=R.main.slice(0,3),win=top[0].line,self=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');
+  const av=(rs,L,d)=>{const v=rs.map(r=>r.scores?.[L]?.[d]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
+  const agg=(L,d)=>R.agg[L][ax[L].indexOf(d)];
+  const W=1080,c=document.createElement('canvas');c.width=W;c.height=7000;const g=c.getContext('2d');g.direction='rtl';
+  g.fillStyle='#161A2E';g.fillRect(0,0,W,c.height);
+  const GOLD='#F2C94C',CREAM='#F6F1E7',MIST='#B9BDD6',CARD='#20253F',LINE='#3A4170';
+  const T=(t,x,y,f,col,al='right')=>{g.font=f;g.fillStyle=col;g.textAlign=al;g.fillText(t,x,y)};
+  const rr=(x,y,w,h,r,fill,stroke)=>{g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.stroke()}};
+  const wrap=(t,x,y,maxW,lh,f,col,dry)=>{g.font=f;const words=String(t).split(' ');let line='';for(const w of words){const tt=line?line+' '+w:w;if(g.measureText(tt).width>maxW&&line){if(!dry)T(line,x,y,f,col);y+=lh;line=w}else line=tt}if(line){if(!dry)T(line,x,y,f,col);y+=lh}return y};
+  const img=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+  const drawSp=async(l,sp,x,y,s)=>{const im=await img(spriteURL(sprite(l,sp)));if(!im)return;g.imageSmoothingEnabled=false;const k=s/Math.max(im.width,im.height);g.drawImage(im,x+(s-im.width*k)/2,y+(s-im.height*k)/2,im.width*k,im.height*k)};
+  const chip=(t,xr,y,fs,hh)=>{g.font='bold '+fs+'px Rubik';const w=g.measureText(TYPE_HE[t]).width+fs*1.3;rr(xr-w,y,w,hh,12,TYPE_COL[t]);T(TYPE_HE[t],xr-fs*.65,y+hh*.7,'bold '+fs+'px Rubik','#fff');return w+10};
+  const H2=(t,en,y)=>{T(t,W-60,y,'56px "Secular One"',CREAM);T(en,60,y-6,'18px "Press Start 2P"',GOLD,'left');return y+34};
+  let y=100;
+  T('PSP · DEEP DIVE',W-60,y,'24px "Press Start 2P"',GOLD);y+=100;
+  {g.font='84px "Secular One"';const wn=g.measureText(n+' =').width;T(n+' =',W-60,y,'84px "Secular One"',CREAM);T(finalName(win),W-60-wn-24,y,'84px "Secular One"',GOLD)}y+=56;
+  T('מה כל חלק בפוקימון אומר עליך',W-60,y,'32px Rubik',MIST);y+=50;
+  // hero
+  const hy=y;rr(50,hy,W-100,440,36,CARD,LINE);await drawSp(win,win.species.at(-1),80,hy+50,340);
+  T("PROF. OAK SAYS",W-90,hy+70,'20px "Press Start 2P"',GOLD);
+  const ok=S.oak?.[win.id];let ty=wrap(ok?(G(ok[1],ok[2]||ok[1])).replace(/^ובשפה של PSP:\s*/,''):'',W-90,hy+130,560,52,'40px "Secular One"',CREAM);
+  T(`התאמה ${Math.round(top[0].total*100)}% · מ־${pr.raters.length} משיבים`,W-90,Math.max(ty+10,hy+400),'28px Rubik',MIST);y=hy+480;
+  // types
+  y=H2('הסוגים: מי '+G('אתה','את'),'TYPES',y+60)+10;
+  const finalT=win.stage_types.at(-1),earlyT=[...new Set(win.stage_types.flat())].filter(t=>!finalT.includes(t));
+  const rankOf=t=>ax.types.map(x=>agg('types',x)).filter(v=>v>agg('types',t)).length+1;
+  for(const t of [...finalT,...earlyT]){const early=!finalT.includes(t);rr(50,y,W-100,200,28,CARD,early?'#6B5A8A':LINE);
+    chip(t,W-90,y+28,30,52);T(early?`· ${TYPE_KEY[t][0]} (מהשלבים הקודמים)`:`· ${TYPE_KEY[t][0]}`,W-90-g.measureText(TYPE_HE[t]).width-70,y+66,'bold 32px Rubik',CREAM);
+    T(TYPE_KEY[t][1],W-90,y+122,'30px Rubik',MIST);
+    const sv=av([self].filter(Boolean),'types',t),ov=av(others,'types',t);
+    T(`אצלך ${agg('types',t).toFixed(1)} · מקום ${rankOf(t)} מתוך 18${sv!=null&&ov!=null?` · ${G('אתה','את')} ${sv.toFixed(1)} · החברים ${ov.toFixed(1)}`:''}`,W-90,y+170,'28px Rubik',GOLD);y+=220}
+  // stats
+  y=H2('הסטטים: איך '+G('אתה פועל','את פועלת'),'STATS',y+50)+10;
+  const ls=win.stats,mx=Math.max(...ls),ord=ls.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);
+  T('הפס: הליין של '+finalName(win)+' · העיגול: '+G('אתה','את')+' לפי כולם (1 עד 5)',W-60,y+20,'26px Rubik',MIST);y+=50;
+  rr(50,y,W-100,6*110+30,28,CARD,LINE);let sy=y+30;
+  ax.stats.forEach((k,i)=>{const hi=ord.indexOf(i)<2,lo=ord.indexOf(i)>3;
+    T(STAT_SHORT[k],W-90,sy+34,'bold 30px Rubik',CREAM);T(STAT_HE[k].split('·')[1]?.trim()||'',W-90,sy+70,'24px Rubik',MIST);
+    const bx=90,bw=W-90-300-bx;rr(bx,sy+20,bw,18,9,'#2E3458');rr(bx+bw-bw*ls[i]/mx,sy+20,bw*ls[i]/mx,18,9,hi?GOLD:lo?'#8C93B8':'#C9B06A');
+    const a=agg('stats',k),px=bx+bw-bw*((a-1)/4);g.beginPath();g.arc(px,sy+29,16,0,7);g.fillStyle='#F95587';g.fill();g.strokeStyle=CREAM;g.lineWidth=3;g.stroke();
+    T(hi?'▲ '+STAT_HL[k][0]:lo?'▼ '+STAT_HL[k][1]:'באמצע',bx+bw,sy+78,'24px Rubik',hi?'#B5E3A8':lo?'#F2B8A8':MIST);sy+=110});y=sy+40;
+  // evolution
+  y=H2('ההתפתחות: איך '+G('אתה גדל','את גדלה'),'EVOLUTION',y+30)+10;
+  rr(50,y,W-100,300,28,CARD,LINE);const sp=win.species,step=(W-160)/Math.max(1,sp.length);
+  for(let i=0;i<sp.length;i++){const x=W-80-step*(i+1)+(step-170)/2;await drawSp(win,sp[i],x,y+30,170)}
+  const meth=ax.evo.filter((k,i)=>win.evo[i]>0).map(k=>EVO_META[k][2]);
+  T(sp.length>1?('דרך ההתפתחות: '+(meth.join(' + ')||'—')):'בלי התפתחות: מגיע שלם לכל מסגרת',W-90,y+250,'bold 30px Rubik',GOLD);
+  const ge=ax.evo.map(k=>[agg('evo',k),k]).sort((a,b)=>b[0]-a[0])[0][1];
+  y+=330;T(`הדרך החזקה ${G('שלך','שלך')} לפי כולם: ${EVO_META[ge][2]} (${agg('evo',ge).toFixed(1)})`,W-60,y,'30px Rubik',CREAM);y+=40;
+  // pokedex
+  const ms=S.state?.mew?.statements||[],st=ms.find(x=>x.lineId===win.id);
+  if(st){y=H2('הפוקדקס: השאלה של מיו','POKÉDEX',y+60)+10;const votes=pr.raters.filter(r=>S.answers[r.pid]?.mew===st.id).length,tv=pr.raters.filter(r=>S.answers[r.pid]?.mew).length;
+    const y0=y,q='"'+(st.entryHe||st.text)+'"',ps='בשפה של PSP: '+st.text;let yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E',true);yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63',true);const hh=yy+50-y0;
+    rr(50,y0,W-100,hh,28,CREAM);yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E');yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63');
+    T(`${votes} מתוך ${tv} בחרו בתיאור הזה`,W-90,yy+20,'bold 28px Rubik','#7A2E5A');y=y0+hh+20}
+  // podium
+  y=H2('הפודיום','TOP 3',y+60)+20;const pw=(W-100-40)/3;
+  [[1,0],[0,1],[2,2]].forEach(()=>{});
+  for(const [i,slot] of [[1,2],[0,1],[2,0]]){const t=top[i];if(!t)continue;const x=50+slot*(pw+20),hh=i===0?360:310,yy=y+(i===0?0:50);rr(x,yy,pw,hh,26,i===0?'#3A3418':CARD,i===0?GOLD:LINE);
+    await drawSp(t.line,t.line.species.at(-1),x+(pw-(i===0?190:160))/2,yy+50,i===0?190:160);T('#'+(i+1),x+pw/2,yy+40,'22px "Press Start 2P"',i===0?GOLD:MIST,'center');
+    g.font='bold 30px Rubik';T(finalName(t.line),x+pw/2,yy+hh-60,'bold 30px Rubik',CREAM,'center');T(Math.round(t.total*100)+'%',x+pw/2,yy+hh-22,'26px Rubik',MIST,'center')}
+  y+=400;
+  T('ואם רק משיב אחד היה עונה (בלי שאלת מיו):',W-60,y,'28px Rubik',MIST);y+=30;
+  for(const r of pr.raters){const T3=PSP.run({raters:[{scores:r.scores,role:'friend',weight:1}]},E,null).main.slice(0,3).map(x=>x.line);
+    rr(50,y,W-100,96,20,CARD);T(r.role==='self'?n+' ('+G('לבד','לבד')+')':(person(r.pid)?.name||r.name||''),W-80,y+58,'bold 28px Rubik',CREAM);
+    for(let j=0;j<T3.length;j++){const x=W-300-j*240,l=T3[j],isW=l.id===win.id;if(isW){rr(x-170,y+10,226,76,16,'#3A3418',GOLD)}await drawSp(l,l.species.at(-1),x-160,y+14,68);T(finalName(l),x+46,y+58,'22px Rubik',isW?GOLD:CREAM)}
+    y+=108}
+  // blind spots
+  const gp=(R.gaps||[]).slice(0,3);if(gp.length){y=H2('מה החברים רואים אחרת','BLIND SPOTS',y+60)+10;
+    for(const x of gp){const nm=x.layer==='types'?TYPE_HE[x.dim]:x.layer==='stats'?(STAT_HE[x.dim].split('·')[1]||'').trim():EVO_META[x.dim][2];T(`${nm} · ${G('אתה','את')} ${(+x.self).toFixed(1)} · החברים ${(+x.others).toFixed(1)}`,W-60,y+30,'30px Rubik',CREAM);y+=56}}
+  y+=60;T("GOTTA UNDERSTAND 'EM ALL",W/2,y,'22px "Press Start 2P"',GOLD,'center');y+=60;
+  const out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(c,0,0);return out.toDataURL('image/png')}
 function cardView(me){
   if(!needEngine())return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מכינים את הכרטיס שלך…</h1>`;
   if(!S.cardImg||S.cardFor!==me.id){S.cardFor=me.id;S.cardImg=null;const cx=ctxFor(me);(cx?drawCard(cx):Promise.reject('no answers')).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
-  const code=cardCodeFor(me.id);if(code){const d=S.cardDocs[code];if(S.remembered!==code){S.remembered=code;rememberCard(d)}}else if(S.stageLoaded&&!S.cardSaving){S.cardSaving=true;saveCard(me).then(()=>{S.cardSaving=false;render()}).catch(()=>{S.cardSaving=false})}
+  const code=cardCodeFor(me.id);if(code){const d=S.cardDocs[code];if(S.remembered!==code){S.remembered=code;rememberCard(d)}}else if(S.cardsLoaded&&!S.cardSaving){S.cardSaving=true;saveCard(me).then(()=>{S.cardSaving=false;render()}).catch(()=>{S.cardSaving=false})}
   const n=esc(subjectName());
   return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">הכרטיס האישי שלך</h1><p class="muted">איך התשובות שלך על ${n} נראות מול התשובות של ${n} על ${gs('עצמו','עצמה')}. לא חובה, רק אם בא לך.</p>
-  ${cardImgHTML(me.name)}${codeBox(cardCodeFor(me.id))}`}
+  ${cardImgHTML(me.name)}${codeBox(cardCodeFor(me.id))}${deepBtn()}${roomFoot()}`}
 const TYPE_KEY={normal:['שייכות','פשוט, נגיש לכולם, הדבק שמחזיק קבוצות'],fire:['להט','תשוקה שסוחפת אחרים, וכעס שעולה מהר'],water:['איזון','יציב רגשית, מעוגן ב"ביחד"'],electric:['ניצוץ','קולט ברגע ומדליק את מי שסביבו'],grass:['שורשים','מטפח לאט, זוכר מאיפה צמח'],ice:['עולם פנימי','קור רוח, שביר מבפנים, שומר מרחק'],fighting:['ישירות','אומר בפנים, עומד במילה'],poison:['חתרנות','ביקורת שמערערת על המובן מאליו'],ground:['קרקוע','מעשי ואמין, מעשים לפני חלומות'],flying:['חופש','צריך מרחב ומבט מלמעלה'],psychic:['תודעה','חי בתוך הראש, קורא אנשים'],bug:['התמדה','חרוץ, מתחיל קטן ומשתנה הרבה'],rock:['עמידות','עקרוני, קשה להזיז'],ghost:['מסתורין','עומק נסתר, קשה לקרוא'],dragon:['שאפתנות','נוכחות שממלאת חדר'],dark:['אי־ציות','עצמאי, חוקים משלו'],steel:['סדר','מדויק, בונה מערכות'],fairy:['חמלה','חם, ומתייצב מול כוח שמדכא']};
 function avgScores(rs){const ax=S.engine.axes,o={};['types','stats','evo'].forEach(L=>{o[L]={};ax[L].forEach(d=>{const v=rs.map(r=>r.scores?.[L]?.[d]).filter(x=>x!=null);if(v.length)o[L][d]=Math.round(v.reduce((a,b)=>a+b,0)/v.length*1000)/1000})});return o}
 function ctxFor(me){const pr=profile(),mine=pr.raters.find(r=>r.pid===me.id),selfR=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');if(!mine)return null;
@@ -865,6 +1042,7 @@ async function drawCard(ctx){
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
 function phoneView(){
   if(!S.db)return `<p class="eyebrow">PSP · CONNECTING</p><h1>מתחבר לערב…</h1><p class="muted">${S.dbFail?'החיבור נכשל. רעננו את העמוד.':'רגע אחד…'}</p>`;
+  if(!S.state&&S.stateLoaded)return `<p class="eyebrow">PSP · ROOM</p><h1>לא מצאתי את החדר ${esc(ROOM.code)}</h1><p class="muted">אולי הקוד השתנה. אפשר להיכנס עם קוד אחר.</p><button class="btn" data-act="leaveroom">כניסה עם קוד אחר</button>`;
   if(!S.state)return `<p class="eyebrow">PSP · WAITING</p><h1>הערב עוד לא נפתח</h1><p class="muted">העמוד יתעדכן לבד כשהמארח יפתח את הערב.</p>`;
   const subj=subjectName(),me=person(S.me);
   const eve=String(S.state.eve||'');if(S.me&&eve&&store.get('psp-eve')!==eve){S.me=null;store.set('psp-me','');S.intro=null}
@@ -873,6 +1051,7 @@ function phoneView(){
     <button class="btn" data-act="sameok">כן, זה אני</button><button class="btn ghost" data-act="switch">לא, לבחור שם אחר</button>`;
   if(!S.joinSent&&S.db){S.joinSent=true;S.db.doc('joined/'+me.id).set({at:new Date().toISOString(),...(S.joinedDev?.[me.id]?{}:{dev:DEV})},{merge:true}).catch(()=>{S.joinSent=false})}
   if(!S.setupLoaded)return `<p class="eyebrow">PSP · CONNECTING</p><h1>רגע…</h1>`;
+  if(S.state?.status==='closed'){const a=answersOf(me.id);return a&&Object.keys(a).length?cardView(me):`<p class="eyebrow">PSP · RESULTS</p><h1>אין כאן תשובות של ${esc(me.name)}</h1><p class="muted">החדר כבר נסגר.</p>${switchLink(me)}${deepBtn()}`}
   if(me.role==='self'&&(S.intro?.live||(!S.setup&&S.view!=='setup')))return introView();
   if(me.role!=='self'&&(S.intro?.live||(S.joinedLoaded&&!S.joinedG?.[me.id])))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
@@ -910,7 +1089,8 @@ function remoteView(){
   const d=S.rdoc;
   if(!d||!d.name||!d.started){const g=d?.gender||'';
     return `<p class="eyebrow">PSP · REMOTE TRAINER</p><h1>שאלון PSP על ${esc(subj)}</h1>
-    <div class="card"><p>${esc(subj)} רוצה לשמוע גם ממך. השאלון מורכב מ־150 משפטים קצרים, ועל כל אחד עונים עד כמה הוא נכון לגבי ${esc(subj)}, מ־1 עד 5. לוקח בערך 20 דקות, ואפשר לעצור ולחזור לאותו קישור מאותו טלפון.</p>
+    <div class="card"><p>${esc(subj)} רוצה לשמוע גם ממך. השאלון מורכב מ־150 משפטים קצרים, ועל כל אחד עונים עד כמה הוא נכון לגבי ${esc(subj)}, מ־1 עד 5. לוקח בערך 20 דקות, ואפשר לעצור ולחזור לאותו קישור מאותו טלפון. התשובות נשמרות לבד.</p>
+    <p class="muted">חשוב: אם השאלון לא יושלם עד שהתוצאות של ${esc(subj)} נסגרות, התשובות החלקיות יימחקו ולא ייכנסו לחישוב.</p>
     <p class="muted">התשובות אנונימיות: אף אחד לא רואה מה ענית, רק את השקלול של כולם יחד.</p></div>
     <div class="card"><label class="muted" for="r-name">השם שלך</label><input type="text" id="r-name" value="${esc(d?.name||'')}" placeholder="השם שלך">
      <label class="muted" for="r-rel">מה הקשר שלך ל${esc(subj)}?</label><select id="r-rel">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${(d?.relation||'family')===k?'selected':''}>${v}</option>`).join('')}</select>
@@ -918,15 +1098,19 @@ function remoteView(){
     <button class="btn" data-act="rstart">מתחילים</button>`}
   const me={id:S.rid,name:d.name,role:d.relation||'family'},P=planFor(S.rid),units=P.rounds.flat(),ans=d.answers||{};
   const total=countIds(units),done=answeredIn(units,ans);
+  if(done>=total&&(S.state?.status==='closed'||S.deck?.seg==='end')&&person(S.rid))return cardView(person(S.rid));
   if(done>=total)return `<p class="eyebrow">PSP · CLEAR</p><h1>תודה, ${esc(d.name)}!</h1><div class="card center"><div class="ball wobble" style="--s:110px"></div><p>ענית על כל השאלון. התשובות שלך נשמרו ויישקללו בערב של ${esc(subj)}.</p></div>`;
   const pending=units.filter(u=>u.ids.some(id=>!(id in ans)));
   if(S.view==='review'&&S.reviewUnit)return unitView(S.reviewUnit,me,done,total,true);
   if(S.holdUnit)return unitView(S.holdUnit,me,done,total,false);
+  if(S.state?.status==='closed')return `<p class="eyebrow">PSP · CLOSED</p><h1>השאלון נסגר</h1><p class="muted">התוצאות של ${esc(subj)} כבר נסגרו, ולכן אי אפשר להמשיך לענות.</p>`;
   return unitView(pending[0],me,done,total,false);
 }
 
 // ----- Eri's photos: he picks one on his phone, the big screen shows it full-screen -----
-const PHOTOS=Array.from({length:11},(_,i)=>String(i+1).padStart(2,'0'));
+const PHOTOS0=Array.from({length:11},(_,i)=>String(i+1).padStart(2,'0'));
+const photoIds=()=>ROOM.legacy||!ROOM.code?PHOTOS0:Object.keys(S.assets||{}).filter(k=>k.startsWith('ph-')).sort().map(k=>k.slice(3));
+const photoSrc=(id,big)=>ROOM.legacy||!ROOM.code?`img/eri/${big?'p':'t'}${id}.webp`:(S.assets?.['ph-'+id]?.data||'');
 function photosBtn(){return `<button class="btn ghost" data-act="photos">📷 התמונות שלי למסך</button>`}
 function eriTimer(){return `<div class="card eritime"><b class="etn"></b><span class="etl"></span><div class="rtbar"><i></i></div><p class="etm"></p></div>`}
 function eriClock(){const el=$('.eritime');if(!el)return;const I=schedInfo(S.deck,Date.now());if(!I)return;
@@ -938,14 +1122,14 @@ function eriClock(){const el=$('.eritime');if(!el)return;const I=schedInfo(S.dec
 function photosView(){
   const cur=S.stage?.photo||null;
   return `<p class="eyebrow">PSP · PHOTOS</p><h1>התמונות שלך</h1><p class="muted">לחיצה על תמונה מציגה אותה על המסך הגדול. לחיצה נוספת על אותה תמונה, או על "הסתרה", מחזירה למצגת.</p>
-  <div class="phgrid">${PHOTOS.map(id=>`<button class="ph${cur===id?' on':''}" data-photo="${id}"><img src="img/eri/t${id}.webp" alt="תמונה ${+id}"></button>`).join('')}</div>
+  <div class="phgrid">${photoIds().length?photoIds().map(id=>`<button class="ph${cur===id?' on':''}" data-photo="${id}"><img src="${photoSrc(id)}" alt="תמונה ${+id}"></button>`).join(''):'<p class="muted">המארח עוד לא העלה תמונות לערב הזה.</p>'}</div>
   <div class="row"><button class="btn red small" data-photo="" ${cur?'':'disabled'}>הסתרה מהמסך</button><button class="btn ghost small" data-act="photosback">חזרה</button></div>`;
 }
 function stagePhoto(){
   const id=S.stage?.photo||null;let ov=$('#photoov');
   if(!id||S.photoHidden===id+':'+(S.stage?.at||'')){ov?.classList.remove('show');return}
   if(!ov){ov=document.createElement('div');ov.id='photoov';ov.onclick=()=>go(1);document.body.append(ov)}
-  ov.innerHTML=`<img src="img/eri/p${id}.webp" alt="">`;requestAnimationFrame(()=>ov.classList.add('show'));
+  ov.innerHTML=`<img src="${photoSrc(id,true)}" alt="">`;requestAnimationFrame(()=>ov.classList.add('show'));
 }
 function phoneDialSize(){return Math.max(220,Math.min(320,innerWidth-130))}
 function switchLink(me){return `<button class="btn ghost small" data-act="switch">לא ${esc(me.name)}? החלפת שם</button>`}
@@ -953,14 +1137,15 @@ function progressCard(P,ans){
   return `<div class="card"><h3>ההתקדמות שלך</h3>${P.rounds.map((u,i)=>{const t=countIds(u),d=answeredIn(u,ans);
     return `<div class="row"><span style="min-width:56px">סבב ${i+1}</span><div class="bar grow"><i style="width:${t?d/t*100:0}%"></i></div><span class="muted" style="font-variant-numeric:tabular-nums">${d}/${t}</span></div>`}).join('')}</div>`;
 }
-function pickView(){return pickView0()+pastCardsHTML()}
+function pickView(){return pickView0()+(S.state?.status==='closed'?deepBtn():'')+roomFoot()}
+function roomFoot(){return ROOM.code?`<p class="muted center" style="margin-top:22px;font-size:13px">חדר <b style="font-family:var(--pixel);direction:ltr">${esc(ROOM.code)}</b> · <button class="linkbtn" data-act="leaveroom">החלפת חדר</button></p>`:''}
 function pickView0(){
   const subj=subjectName();
   if(!S.setup)return `<p class="eyebrow">PSP · WAITING FOR ${esc(subj)}</p><h1>רגע, מחכים ל${esc(subj)}</h1>
   <div class="card center"><div class="ball wobble" style="--s:90px"></div><p style="margin:16px 0 0">${esc(subj)} ${gs('מגדיר','מגדירה')} עכשיו את המשתתפים והאחוזים.<br>ברגע ${gs('שהוא יסיים','שהיא תסיים')}, השם שלך יופיע כאן לבד ופרופסור אוק יתחיל.</p></div>
   ${S.joined?.has('subj')?'':`<p class="muted center" style="margin-top:30px">רק ${esc(subj)}:</p><div class="names"><button class="name" data-pick="subj">אני ${esc(subj)}<small>${gs('הנבדק','הנבדקת')}</small></button></div>`}`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1><p class="muted">בוחרים את השם שלך פעם אחת. הטלפון יזכור.</p>
-  <div class="names">${[...inRoom()].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
+  <div class="names">${[...(S.state?.status==='closed'?roster().filter(p=>{const a=answersOf(p.id);return a&&Object.keys(a).length}):inRoom())].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
 }
 
 // ----- subject setup -----
@@ -990,9 +1175,15 @@ function setupView(){
 
 // ----- Professor Oak's intro: everyone meets him once. The subject also names themself and splits the weights. -----
 // slides were written for Eri; adapt the subject's name and grammatical gender at render time
+const TR_KEYS=['dwarf','bneiakiva','family','sport'];
 function slideHTML(h){
   if(S.setup?.gender==='f')[['שהנבדק קבע','שהנבדקת קבעה'],['הנבדק עצמו','הנבדקת עצמה'],['הנבדק','הנבדקת'],['ערי מספר ','ערי מספרת '],['כשערי ישלח','כשערי תשלח']].forEach(([x,y])=>{h=h.split(x).join(y)});
   const n=subjectName();if(n&&n!=='ערי')h=h.split('ערי').join(n);
+  if(ROOM.code&&!ROOM.legacy){
+    TR_KEYS.forEach((k,i)=>{if(!h.includes('tr-eri-'+k+'.webp'))return;const a=S.assets?.['tr-'+(i+1)];
+      h=h.replace(new RegExp('img/tr-eri-'+k+'\\.webp','g'),a?.data||'img/tr-silhouette.webp');
+      h=h.replace(/(padding:18px 32px">)([^<]*)(<)/,(m,x,y,z)=>x+'\u202b'+esc(a?.label||('המאמן ה־'+(i+1)))+z)});
+    if(S.qr){h=h.split('img/qr-app.webp').join(S.qr).split('סורקים, בוחרים שם, עונים').join('סורקים, או נכנסים עם הקוד '+ROOM.code)}}
   return h;
 }
 function introScript(){
@@ -1020,12 +1211,12 @@ function introView(){
   const I=S.intro||(S.intro={role:me.role==='self'?'self':'friend',step:0,page:0,g:null,name:me.role==='self'?null:me.name,ci:0,typed:'',live:true});
   const sc=introScript()[I.step],last=I.page>=sc.say.length-1,key=I.step+':'+I.page,typed=I.typed===key,asking=last&&typed&&sc.ask!=='done',cur=sc.say[I.page];
   const who={...me,name:I.name||me.name};
-  const sprite=g=>avKey(who)?`img/av-f-${avKey(who)}${g==='f'?'-g':''}.webp`:`img/gb-${g==='f'?'girl':'boy'}.png`;
+  const sprite=g=>roomAv(who,'f')||(avKey(who)?`img/av-f-${avKey(who)}${g==='f'?'-g':''}.webp`:`img/gb-${g==='f'?'girl':'boy'}.png`);
   let figs=`<img class="gbp-fig" src="img/tr-oak.webp" alt="פרופסור אוק">`;
   if(sc.ask==='gender'&&last)figs=`<img class="gbp-fig${I.g==='m'?' pick':''}" src="${sprite('m')}" alt="בן"><img class="gbp-fig${I.g==='f'?' pick':''}" src="${sprite('f')}" alt="בת">`;
   else if(I.g&&(I.role==='self'?I.step>=2:true)){
     figs+=`<img class="gbp-fig" src="${sprite(I.g)}" alt="${esc(who.name)}">`;
-    if(cur&&cur.subj){const sp=subjP();figs=`<img class="gbp-fig" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="gbp-fig gbp-subj" src="${avKey(sp)?`img/av-f-${avKey(sp)}${avG(sp)}.webp`:'img/gb-'+(S.setup?.gender==='f'?'girl':'boy')+'.png'}" alt="${esc(sp.name)}">`}
+    if(cur&&cur.subj){const sp=subjP();figs=`<img class="gbp-fig" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="gbp-fig gbp-subj" src="${roomAv(sp,'f')||(avKey(sp)?`img/av-f-${avKey(sp)}${avG(sp)}.webp`:'img/gb-'+(S.setup?.gender==='f'?'girl':'boy')+'.png')}" alt="${esc(sp.name)}">`}
   }
   let below='';
   if(asking&&sc.ask==='gender')below=`<div class="gbp-menu"><button data-ig="m">בן</button><button data-ig="f">בת</button></div>`;
@@ -1122,9 +1313,11 @@ function resultCard(){
 }
 function bindPhone(){
   const app=$('#app');
+  app.onkeydown=e=>{if(e.key==='Enter'&&e.target.id==='roomcode')tryJoin(e.target.value)};
   app.oninput=e=>{const el=e.target;if(el.id==='gbp-name'&&S.intro){S.intro.draftName=el.value;return}if(el.dataset.f){const d=draft();d[+el.dataset.i][el.dataset.f]=el.value;S.setupErr=null;if(el.dataset.f==='name'){const a=$('#av-'+el.dataset.i);if(a)a.innerHTML=avHead({name:el.value},38)}}};
   app.onchange=e=>{const el=e.target;if(el.dataset.f==='role'){draft()[+el.dataset.i].role=el.value}};
-  app.addEventListener('click',e=>{const b=e.target.closest('[data-act="opencard"],[data-act="copylink"]');if(!b)return;e.stopPropagation();
+  app.addEventListener('click',e=>{const j=e.target.closest('[data-act="joinroom"],[data-act="leaveroom"],[data-act="deep"]');if(j){e.stopPropagation();if(j.dataset.act==='joinroom')tryJoin($('#roomcode')?.value);else if(j.dataset.act==='leaveroom')leaveRoom();else makeDeep();return}
+    const b=e.target.closest('[data-act="opencard"],[data-act="copylink"]');if(!b)return;e.stopPropagation();
     if(b.dataset.act==='opencard'){const v=($('#cardcode')?.value||'').trim().toLowerCase();if(/^[a-z0-9]{6}$/.test(v))location.hash='c='+v;else toast('הקוד הוא 6 תווים')}
     else{const u=cardLink(b.dataset.code);(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור האישי:',u))}},true);
   app.onclick=e=>{
@@ -1196,13 +1389,18 @@ async function startScreen(){
   SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});
   if(POS>=SEQ.length)POS=0;
   setTimeout(maybeMew,0);
-  if(!S.state)await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
+  if(!S.state&&(!ROOM.code||ROOM.legacy))await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
   $('#scr').onclick=e=>{if(e.target.closest('button'))return;go(1)};
   $('#gear').onclick=()=>{const p=$('#panel');p.hidden=!p.hidden;renderPanel()};
   document.addEventListener('keydown',onKey);
   loadArt();loadOak();
+  if(ROOM.code&&!ROOM.legacy){roomBadge();loadQR()}
   show(true);
 }
+function loadQR(){const mk=()=>{try{const q=qrcode(0,'M');q.addData(roomLink(ROOM.code));q.make();S.qr=q.createDataURL(10,2);roomBadge();if(cur()?.kind==='slide')show(true)}catch(e){}};
+  if(window.qrcode)return mk();const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';sc.onload=mk;document.head.append(sc)}
+function roomBadge(){if(!ROOM.code||ROOM.legacy)return;let b=$('#roombadge');if(!b){b=document.createElement('div');b.id='roombadge';b.style.cssText='position:fixed;top:12px;left:12px;z-index:40;background:rgba(22,26,46,.9);border:2px solid #F2C94C;border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;color:#F6F1E7;font:600 14px var(--body)';document.body.append(b)}
+  b.innerHTML=`${S.qr?`<img src="${S.qr}" alt="" style="width:64px;height:64px;border-radius:6px;background:#fff">`:''}<div style="display:flex;flex-direction:column;gap:4px"><span>נכנסים עם הקוד</span><b style="font:400 20px var(--pixel);color:#F2C94C;direction:ltr;letter-spacing:3px">${ROOM.code}</b></div>`}
 function fit(){const c=$('#cv');if(!c)return;const s=Math.min(innerWidth/1920,innerHeight/1080);c.style.transform=`scale(${s})`;c.style.left=(innerWidth-1920*s)/2+'px';c.style.top=(innerHeight-1080*s)/2+'px'}
 function onKey(e){
   if(e.target.closest&&e.target.closest('input,select,textarea'))return;
@@ -1277,7 +1475,7 @@ function closingHTML(){
   const im=(src,h,cls='')=>`<img class="cg ${cls}" src="img/${src}.webp" alt="" style="height:${h}px">`;
   const lect=['tr-bill','tr-cynthia','tr-sabrina','tr-giovanni'].map(x=>im(x,190)).join('')+im('tr-oak',195,'oak');
   const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,205)).join('');
-  const tr=['dwarf','bneiakiva','family','sport'].map(k=>im('tr-eri-'+k,k==='family'?200:k==='sport'?180:215)).join('');
+  const tr=ROOM.legacy||!ROOM.code?TR_KEYS.map(k=>im('tr-eri-'+k,k==='family'?200:k==='sport'?180:215)).join(''):[1,2,3,4].map(i=>S.assets?.['tr-'+i]?.data).filter(Boolean).map(d=>`<img class="cg" src="${d}" alt="" style="height:200px">`).join('');
   const ppl=inRoom().filter(p=>p.role!=='self').map(p=>avFull(p,225)).join('');
   const spr=(l,w)=>`<img class="cg mon" src="${spriteURL(sprite(l,l.species.at(-1)))}" alt="" style="width:${w}px;height:${w}px">`,runners=top.slice(1).map(t=>spr(t.line,230));
   return `<div class="st closing">
@@ -1993,11 +2191,14 @@ ${JSON.stringify(data)}`;
 function renderPanel(){
   const p=$('#panel');if(!p||p.hidden)return;
   const st=stats(),open=S.state?.open||0,m=S.state?.mew;
-  p.innerHTML=`<div class="row"><h3 class="grow">פאנל מארח</h3><button class="btn ghost small" data-pa="close">סגירה</button></div>
+  const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done);
+  p.innerHTML=`${ROOM.code?`<div class="row" style="margin-bottom:6px"><span class="grow">חדר <b style="font-family:var(--pixel);color:var(--gold)">${esc(ROOM.code)}</b> · ${S.state?.status==='closed'?'נסגר, התוצאות זמינות לכולם':'פתוח'}</span><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),50)" style="text-decoration:none">כל החדרים</a>${S.state?.status==='closed'?'<button class="btn ghost small" data-pa="reopen">פתיחה מחדש</button>':'<button class="btn small" data-pa="closeroom">סגירה לתוצאות</button>'}</div>`:''}
+  ${S.confirmClose?`<div class="card" style="margin:6px 0"><b>${unf.length?`${unf.length} משיבים מרחוק לא סיימו. התשובות שלהם יימחקו:`:'כולם סיימו.'}</b>${unf.map(([id,r])=>`<div class="row" style="font-size:14px"><span class="grow">${esc(r.name||'ללא שם')}</span><span class="muted">${Object.keys(r.answers||{}).length} תשובות</span></div>`).join('')}<p class="muted" style="font-size:13px">אחרי הסגירה כל מי שנכנס עם הקוד מקבל את הכרטיס האישי ואת עמוד העומק.</p><div class="row"><button class="btn red small" data-pa="closeroom2">${unf.length?'למחוק ולסגור':'סגירה'}</button><button class="btn ghost small" data-pa="closeroom0">ביטול</button></div></div>`:''}
+  <div class="row"><h3 class="grow">פאנל מארח</h3><button class="btn ghost small" data-pa="close">סגירה</button></div>
   <p class="muted" style="font-size:13px">מקשים: חצים או רווח למעבר, H לפאנל, F למסך מלא.</p>
   <div class="row"><label class="muted" for="subjname">שם הנבדק</label><input type="text" id="subjname" value="${esc(subjectName())}" style="flex:1"><button class="btn ghost small" data-pa="subj">שמירה</button></div>
   <p class="muted" style="font-size:13px">${S.setup?`המשתתפים הוגדרו: ${roster().map(x=>esc(x.name)+' '+x.weight+'%').join(' · ')}`:'הנבדק עוד לא הגדיר משתתפים בטלפון.'}</p>
-  <p class="muted" style="font-size:13px">שאלון מרחוק (${location.origin+location.pathname}#remote): ${Object.values(S.remote||{}).map(r=>{const v=Object.values(r.answers||{}),dk=v.filter(x=>+x===0).length;return esc(r.name)+' '+v.length+'/150'+(r.done?' ✓':'')+(dk?` (${dk} לא יודע/ת)`:'')}).join(' · ')||'עוד אף אחד'}</p>
+  <p class="muted" style="font-size:13px">שאלון מרחוק (${ROOM.code?roomLink(ROOM.code,'remote'):location.origin+location.pathname+'#remote'}): ${Object.values(S.remote||{}).map(r=>{const v=Object.values(r.answers||{}),dk=v.filter(x=>+x===0).length;return esc(r.name)+' '+v.length+'/150'+(r.done?' ✓':'')+(dk?` (${dk} לא יודע/ת)`:'')}).join(' · ')||'עוד אף אחד'}</p>
   <div class="row">${S.previewRemote?`<span class="grow" style="color:var(--gold)">מוצג עכשיו: רק המשיבים מרחוק</span><button class="btn ghost small" data-pa="prevoff">חזרה לנתוני הערב</button>`:`<button class="btn ghost small" data-pa="prevremote" ${Object.keys(S.remote||{}).length?'':'disabled'}>היכל התהילה רק מהמשיבים מרחוק</button>`}</div>
   <table class="prog"><thead><tr><th>משתתף</th>${[1,2,3,4].map(k=>`<th>ס${k}</th>`).join('')}<th>מיו</th></tr></thead><tbody>
   ${st.map(x=>`<tr><td>${esc(x.p.name)}</td>${x.rounds.map(([d,t])=>`<td style="color:${d>=t?'var(--ok)':d?'var(--cream)':'var(--mist)'}">${d}/${t}</td>`).join('')}<td>${x.mew?'✓':'–'}</td></tr>`).join('')}</tbody></table>
@@ -2012,6 +2213,13 @@ function renderPanel(){
   ${S.confirmReset?`<div class="row"><span class="grow">למחוק את כל התשובות, המשתתפים ושאלת מיו?</span><button class="btn red small" data-pa="reset2">כן, למחוק</button><button class="btn ghost small" data-pa="reset0">ביטול</button></div>`:''}`;
   p.onclick=async e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;const a=b.dataset.pa;
     if(a==='close'){p.hidden=true}
+    if(a==='closeroom'){S.confirmClose=true;renderPanel()}
+    if(a==='closeroom0'){S.confirmClose=false;renderPanel()}
+    if(a==='closeroom2'){S.confirmClose=false;const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done).map(([id])=>id);
+      for(const id of unf)await S.db.doc('remote/'+id).delete().catch(()=>{});
+      if(unf.length&&S.setup?.roster?.some(r=>unf.includes(r.id)))await S.db.doc('setup/main').set({...S.setup,roster:S.setup.roster.filter(r=>!unf.includes(r.id))}).catch(()=>{});
+      await ensureCards().catch(()=>{});await setState({status:'closed'});toast(unf.length?`נמחקו ${unf.length} תשובות חלקיות, החדר נסגר`:'החדר נסגר');renderPanel()}
+    if(a==='reopen'){await setState({status:'open'});renderPanel()}
     if(a==='subj'){await setState({subject:$('#subjname').value.trim()||'ערי'});toast('נשמר')}
     if(a==='open'){const k=+b.dataset.k;setState({open:k})}
     if(a==='mew'){await setState({mew:{status:'none'}});S.mewBusy=false;buildMew()}
@@ -2063,6 +2271,3 @@ async function resetAll(){
 }
 boot();
 </script>
-
-</body>
-</html>
