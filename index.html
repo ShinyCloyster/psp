@@ -525,7 +525,7 @@ const PSP = (() => {
     return u;
   }
 
-  function scoreLine(u, line, prior, dex, evoNeutral) {
+  function scoreLine(u, line, prior, dex, evoNeutral, calib) {
     const s = {};
     s.types = cosine(u.types, line.types);
     s.stats = (pearson(u.stats, line.stats) + 1) / 2;
@@ -539,6 +539,7 @@ const PSP = (() => {
     let rank = total;
     if (prior) { const w = sum(line.types) || 1; rank += LAYER_WEIGHTS.types * sum(prior.map((p, i) => p * line.types[i])) / w; }
     if (PARADOX.has(line.id)) rank -= PARADOX_PENALTY;
+    if (calib) rank += calib[line.id] || 0; // gentle per-line correction (see calibrate.js); Eri's evening runs without it
     return { total, sims: s, rank };
   }
 
@@ -553,14 +554,14 @@ const PSP = (() => {
     }
     const u = buildUser(agg, floor);
     const prior = ax.types.map(t => E.prior[t] ?? 0);
-    const res = E.lines.map(line => ({ line, ...scoreLine(u, line, prior, dex) }));
+    const res = E.lines.map(line => ({ line, ...scoreLine(u, line, prior, dex, undefined, E.calib) }));
     res.sort((a, b) => b.rank - a.rank);
     return {
       main: res.filter(r => !r.line.legendary).slice(0, 8),
       top: res.filter(r => !r.line.legendary).slice(0, 20),
       legends: res.filter(r => r.line.legendary).slice(0, 3),
       gaps: blindSpots(profile.raters, { types: ax.types, stats: ax.stats, evo: ax.evo }, floor),
-      agg, axes, floor, weights: raterWeights(profile.raters),
+      agg, axes, floor, weights: raterWeights(profile.raters), all: res,
     };
   }
 
@@ -633,7 +634,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793282420';
+const BUILDV='1793283712';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -824,7 +825,7 @@ function adminView(){
     <table class="atab"><tr><th>נבדק/ת</th><th>קוד</th><th>תאריך</th><th>מצב</th><th>תוצאה</th><th></th></tr>
     ${L.map(r=>`<tr><td><b>${esc(admRoomName(r))}</b></td><td class="mono">${esc(r.code)}</td><td>${r.eve?new Date(r.eve).toLocaleDateString('he-IL'):'—'}</td><td>${st(r)}</td><td>${esc(r.result?.finalName||'')}</td><td style="white-space:nowrap"><a class="btn small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)">ניהול</a> ${r.code===LEGACY_ROOM?'':`<button class="btn ghost small" data-delroom="${esc(r.code)}">מחיקה</button>`}</td></tr>
      ${S.delRoom===r.code?`<tr><td colspan="6"><div class="card" style="margin:4px 0"><b>למחוק את הערב של ${esc(admRoomName(r))} (${esc(r.code)})?</b> כל התשובות, התמונות והסיכומים של החדר יימחקו, ואי אפשר לבטל.<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-delroom2="${esc(r.code)}">מחיקה לתמיד</button><button class="btn ghost small" data-delroom0="1">ביטול</button></div></div></td></tr>`:''}`).join('')}</table>
-    <div class="row" style="gap:8px;margin-top:14px"><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),30)">למסך הגדול</a></div>`)}
+    <div class="row" style="gap:8px;margin-top:14px;flex-wrap:wrap"><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),30)">למסך הגדול</a>${FRIENDS.some(c=>!L.some(r=>r.code===c))?`<button class="btn ghost small" data-seed="1">יצירת 6 ערבי הדגמה: חברים</button>`:''}</div>`)}
   if(!S.stateLoaded||!needEngine())return box(`<p class="eyebrow">PSP · ADMIN · ${esc(ROOM.code)}</p><h1>טוען…</h1>`);
   if(!S.state)return box(`<h1>החדר ${esc(ROOM.code)} לא נמצא</h1><a class="btn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">כל הערבים</a>`);
   const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','סיכומים'],['images','תמונות וקבצים'],['whatif','מה אם'],['time','לוח זמנים']];
@@ -843,6 +844,17 @@ function adminView(){
   let body='';
   try{body=tab==='images'?assetsView():tab==='time'?admTime():tab==='people'?admPeople():tab==='files'?admFiles():tab==='whatif'?admWhatIf():admResults()}catch(e){console.error(e);body=`<p class="muted">שגיאה בחישוב: ${esc(e.message||e)}</p>`}
   return box(head+body)}
+const FRIENDS=['ROS1','RAC1','PHE1','MON1','CHA1','JOE1'];
+// six simulated evenings on the cast of Friends (generated offline: friends/gen.js), written once from the admin screen
+async function seedFriends(){toast('יוצר את ערבי ההדגמה…');const D=await fetch('friends_rooms.json?v='+BUILDV).then(r=>r.json());const raw=S.db.raw;
+  for(const R of Object.values(D)){const c=R.code;if((S.roomList||[]).some(r=>r.code===c))continue;
+    await raw.doc('setup/'+c).set(R.setup);
+    for(const [id,a] of Object.entries(R.answers))await raw.doc('answers/'+c+'~'+id).set(a);
+    for(const [id,j] of Object.entries(R.joined))await raw.doc('joined/'+c+'~'+id).set(j);
+    await raw.doc('stage/'+c+'~deck').set(R.deck);
+    for(const [k,a] of Object.entries(R.assets))await raw.doc('setup/'+c+'~asset-'+k).set(a);
+    await raw.doc('state/'+c).set(R.state)}
+  toast('נוצרו ערבי ההדגמה')}
 function rawIds(col,lo,hi){return new Promise(res=>{const FP=firebase.firestore.FieldPath.documentId();let un=null,done=false;un=S.db.raw.collection(col).orderBy(FP).startAt(lo).endAt(hi).onSnapshot(q=>{if(done)return;done=true;res(q.docs.map(d=>d.id));setTimeout(()=>{try{un&&un()}catch(e){}},0)},()=>res([]))})}
 async function deleteRoom(code){if(!code||code===LEGACY_ROOM)return;toast('מוחק…');const raw=S.db.raw;
   for(const col of ['answers','joined','remote','stage','setup']){const ids=await rawIds(col,code+'~',code+'~');for(const id of ids)await raw.doc(col+'/'+id).delete().catch(()=>{})}
@@ -910,6 +922,7 @@ function bindAdmin(){const app=$('#app');
   app.onchange=e=>{const el=e.target;if(el.dataset.up||el.dataset.trl){assetsChange(e);return}if(!el.dataset.wi)return;const wi=S.wi;if(el.dataset.wi==='mew')wi.mew=el.checked;else if(el.dataset.wi==='w')wi.w[el.dataset.id]=+el.value;else{el.checked?wi.excl.delete(el.dataset.id):wi.excl.add(el.dataset.id)}const y=scrollY;render();scrollTo(0,y)};
   app.onclick=async e=>{const t=e.target.closest('[data-tab]');if(t){e.preventDefault();S.admTab=t.dataset.tab;render();return}
     if(S.admTab==='images'&&await assetsClick(e))return;
+    if(e.target.closest('[data-seed]')){e.target.closest('[data-seed]').disabled=true;await seedFriends();return}
     const dr=e.target.closest('[data-delroom]');if(dr){S.delRoom=dr.dataset.delroom;render();return}
     const dr2=e.target.closest('[data-delroom2]');if(dr2){await deleteRoom(dr2.dataset.delroom2);S.delRoom=null;render();return}
     if(e.target.closest('[data-delroom0]')){S.delRoom=null;render();return}
@@ -1016,7 +1029,9 @@ async function saveCard(p){let c=cardCodeFor(p.id);if(c)return c;const ctx=ctxFo
 async function ensureCards(){if(!S.engine)return;for(const p of roster()){const a=answersOf(p.id);if(a&&Object.keys(a).length)await saveCard(p).catch(()=>{})}}
 function myCards(){try{return JSON.parse(store.get('psp-cards')||'[]')}catch(e){return []}}
 function rememberCard(d){const L=myCards().filter(x=>x.code!==d.code);L.unshift({code:d.code,name:d.name,subject:d.subject,at:d.at});store.set('psp-cards',JSON.stringify(L.slice(0,20)))}
-function needEngine(){if(S.engine&&S.sprites)return true;if(!S.cardLoad){S.cardLoad=true;Promise.all([fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json())]).then(([e,sp])=>{S.engine=e;S.sprites=sp;render()}).catch(()=>{S.cardLoad=false})}return false}
+// Eri's evening keeps the engine exactly as it was that night (no calibration)
+function engFor(e){if(ROOM.legacy&&e)delete e.calib;return e}
+function needEngine(){if(S.engine&&S.sprites)return true;if(!S.cardLoad){S.cardLoad=true;Promise.all([fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json())]).then(([e,sp])=>{S.engine=engFor(e);S.sprites=sp;render()}).catch(()=>{S.cardLoad=false})}return false}
 function cardImgHTML(fname){return S.cardImg&&S.cardImg!=='err'?`<img src="${S.cardImg}" alt="הכרטיס שלך" style="width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><a class="btn" href="${S.cardImg}" download="PSP-${esc(fname)}.png" style="text-align:center;text-decoration:none">⬇ הורדה</a><p class="muted center" style="font-size:13px">באייפון: לחיצה ארוכה על התמונה ← שמירה בתמונות</p>`:S.cardImg==='err'?'<p class="muted">לא הצלחתי ליצור את הכרטיס.</p>':'<div class="card center"><div class="ball wobble" style="--s:90px"></div></div>'}
 function codeBox(c){return c?`<div class="card" style="text-align:center"><p class="muted" style="margin:0 0 6px">הקוד האישי שלך, כדי לחזור לכרטיס גם אחרי שהערב מתאפס:</p><p style="font:400 22px var(--pixel);letter-spacing:4px;color:var(--gold);margin:0 0 8px;direction:ltr">${esc(c.toUpperCase())}</p><button class="btn ghost small" data-act="copylink" data-code="${esc(c)}">העתקת הקישור האישי</button></div>`:''}
 function archCardView(code){
@@ -1590,7 +1605,7 @@ async function startScreen(){
   fit();window.addEventListener('resize',fit);
   $('#cv').innerHTML=`<div class="st"><div class="center"><div class="ball wobble" style="--s:180px"></div><p class="lead">טוען את המצגת…</p></div></div>`;
   const [sl,en,sp]=await Promise.all([fetch('slides.json?v='+BUILDV).then(r=>r.json()),fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}))]);
-  S.slides=sl;S.engine=en;S.sprites=sp;
+  S.slides=sl;S.engine=engFor(en);S.sprites=sp;
   SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});
   if(POS>=SEQ.length)POS=0;
   setTimeout(maybeMew,0);
