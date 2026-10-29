@@ -246,6 +246,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 @media (max-width:700px){.atab{font-size:13px}.atab th,.atab td{padding:5px 4px}}
 .tbar{position:relative;height:22px}.tbar i{position:absolute;right:0;height:9px;border-radius:5px}.tbar i.pl{top:0;background:rgba(255,255,255,.25)}.tbar i.ac{top:12px;background:var(--gold)}.tbar i.ac.over{background:#FF8A80}
 .tkey{display:inline-block;width:14px;height:8px;border-radius:4px;vertical-align:middle}.tkey.pl{background:rgba(255,255,255,.25)}.tkey.ac{background:var(--gold)}
+.dlrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.dlrow .btn{margin:0;display:flex;flex-direction:column;justify-content:center}
 .agrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aslot{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;background:rgba(255,255,255,.04);border-radius:14px;padding:10px}
 .aprev{width:100%;height:120px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(0,0,0,.18);overflow:hidden}.aprev img{max-width:100%;max-height:120px;object-fit:contain;image-rendering:pixelated}
 .linkbtn{background:none;border:0;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
@@ -599,6 +600,7 @@ function roomDb(raw){
   const strip=id=>ROOM.legacy?id:id.slice(ROOM.code.length+1);
   const wrap=q=>{const m=d=>({id:strip(d.id),exists:true,data:()=>d.data()});return {docs:q.docs.map(m),docChanges:()=>q.docChanges().map(c=>({type:c.type,doc:m(c.doc)}))}};
   return {raw,doc:p=>raw.doc(rp(p)),collection:c=>({onSnapshot:(f,e)=>raw.collection(c).orderBy(FP()).startAt(lo).endAt(hi).onSnapshot(q=>f(wrap(q)),e)})}}
+function roomClosed(st){st=st||S.state;return !!st&&(st.status==='closed'||(ROOM.legacy&&st.status!=='open'))}
 function rememberRoom(){if(!ROOM.code||!S.state)return;let L=[];try{L=JSON.parse(RAWSTORE.get('psp-rooms')||'[]')}catch(e){}const sb=subjectName();if(L[0]?.code===ROOM.code&&L[0]?.subject===sb)return;L=L.filter(x=>x.code!==ROOM.code);L.unshift({code:ROOM.code,subject:sb});RAWSTORE.set('psp-rooms',JSON.stringify(L.slice(0,12)))}
 function myRooms(){try{return JSON.parse(RAWSTORE.get('psp-rooms')||'[]')}catch(e){return []}}
 function roomLink(c,mode){return location.origin+location.pathname+'#'+(mode||'r')+'='+c}
@@ -630,7 +632,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793231327';
+const BUILDV='1793233127';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -736,8 +738,8 @@ function globalSubs(){
 }
 function joinView(){
   const L=myRooms();
-  const crew=['eri','ron','dolev','nir','doron','eyal'].map(k=>`<img src="img/av-f-${k}.webp" alt="" style="height:86px;image-rendering:pixelated;margin-inline-start:-10px">`).join('');
-  return `<div style="display:flex;justify-content:center;align-items:flex-end;margin:6px 0 2px;padding-inline-start:10px">${crew}</div><p class="eyebrow">PSP · JOIN</p><h1>כניסה לחדר</h1><p class="muted">מקלידים את הקוד שמופיע על המסך הגדול, או שמקבלים אותו מהמארח.</p>
+  const balls=['poke-ball','great-ball','ultra-ball','master-ball'].map(k=>`<img src="img/it-${k}.webp" alt="" style="width:44px;height:44px;image-rendering:pixelated">`).join('');
+  return `<div style="display:flex;justify-content:center;align-items:flex-end;gap:6px;margin:4px 0 0"><img src="img/tr-oak.webp" alt="פרופסור אוק" style="height:120px;image-rendering:pixelated">${balls}</div><img src="img/band.webp" alt="" style="width:100%;height:46px;object-fit:cover;image-rendering:pixelated;border-radius:8px;margin:6px 0 4px"><p class="eyebrow">PSP · JOIN</p><h1>כניסה לחדר</h1><p class="muted">מקלידים את הקוד שמופיע על המסך הגדול, או שמקבלים אותו מהמארח.</p>
   <div class="card"><input id="roomcode" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters" style="text-align:center;font:400 30px var(--pixel);letter-spacing:10px;direction:ltr;text-transform:uppercase"><button class="btn" data-act="joinroom" style="margin-top:10px">כניסה</button></div>
   ${L.length?`<div class="card"><p style="margin:0 0 8px;font-weight:700">החדרים שלך</p>${L.map(x=>`<a class="btn ghost small" href="#r=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject||'')} · <span style="direction:ltr;font-family:var(--pixel)">${esc(x.code)}</span></a>`).join('')}</div>`:''}
   ${pastCardsHTML()}`}
@@ -751,7 +753,7 @@ function roomsView(){
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
   if(!S.canEdit){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>המסך הגדול</h1><p class="muted">את הערב מריץ המארח. התחברו עם חשבון ה־Google של המארח כדי להמשיך. משתתפים: אותו קישור בלי ‎#screen.</p><button class="btn" onclick="hostLogin()">התחברות כמארח עם Google</button></div>`;return}
   const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
-  const st=r=>r.status==='closed'?'נסגר · תוצאות זמינות':r.revealed?'אחרי החשיפה':r.open?'ערב פעיל':'פתוח, טרם התחיל';
+  const st=r=>(r.status==='closed'||(r.code===LEGACY_ROOM&&r.status!=='open'))?'נסגר · תוצאות זמינות':r.revealed?'אחרי החשיפה':r.open?'ערב פעיל':'פתוח, טרם התחיל';
   app.innerHTML=`<div class="col"><p class="eyebrow">PSP · ROOMS</p><h1>החדרים שלך</h1>
   <div class="card"><h3 style="margin-top:0">חדר חדש</h3><label class="muted" for="nr-name">על מי הערב?</label><input type="text" id="nr-name" placeholder="שם הנבדק/ת">
    <label class="muted">בן או בת?</label><div class="row" style="gap:8px;margin:6px 0 10px"><button class="btn ghost small ${S.nrg!=='f'?'on':''}" data-nrg="m">בן</button><button class="btn ghost small ${S.nrg==='f'?'on':''}" data-nrg="f">בת</button></div>
@@ -775,7 +777,7 @@ function assetsView(){
   if(ROOM.legacy){const g=(src,lab)=>`<div class="aslot"><div class="aprev"><img src="${src}" alt=""></div><b>${lab}</b><a class="btn ghost small" href="${src}" download target="_blank" style="text-decoration:none">הורדה</a></div>`;
     const ppl=Object.entries(AV);
     return `<p class="eyebrow">PSP · FILES · ERI1</p><h1>תמונות וקבצים: הערב של ערי</h1>
-    <div class="card"><h3>ספרייטים של המשתתפים</h3><div class="agrid4">${ppl.map(([nm,k])=>g(`img/av-f-${k}.webp`,nm)+g(`img/av-h-${k}.webp`,nm+' · ראש')).join('')}</div></div>
+    <div class="card"><h3>ספרייטים של המשתתפים</h3><div class="agrid4">${ppl.map(([nm,k])=>g(`img/av-f-${k}.webp`,nm)+g(`img/av-h-${k}.webp`,nm+' · ראש')+g(`img/av-f-${k}-g.webp`,nm+' · כאישה')+g(`img/av-h-${k}-g.webp`,nm+' · ראש, כאישה')).join('')}</div></div>
     <div class="card"><h3>המאמנים של ערי</h3><div class="agrid4">${TR_KEYS.map((k,i)=>g(`img/tr-eri-${k}.webp`,'מאמן '+(i+1))).join('')}</div></div>
     <div class="card"><h3>התמונות שערי הציג</h3><div class="agrid4">${PHOTOS0.map(id=>g(`img/eri/p${id}.webp`,'תמונה '+(+id))).join('')}</div></div>
     <div class="card"><h3>PSP Pokédex</h3><div class="agrid4">${g('img/guide-he.jpg','PSP Pokédex')}</div></div>
@@ -813,13 +815,14 @@ function admSpr(l,s=48){return `<img src="${spriteURL(sprite(l,l.species.at(-1))
 const apct=x=>Math.round(x*100)+'%';
 function admAgree(a,b){const ax=S.engine.axes;let t=0,c=0;['types','stats','evo'].forEach(L=>ax[L].forEach(d=>{const x=a.scores?.[L]?.[d],y=b.scores?.[L]?.[d];if(x!=null&&y!=null){t+=Math.abs(x-y);c++}}));return c?Math.max(0,Math.round(100-t/c/2.5*100)):null}
 function admName(r){return r.role==='self'?subjectName():(person(r.pid)?.name||r.name||r.pid)}
+function admWho(r){const p=person(r.pid)||{name:admName(r),role:r.role};return `<span class="row" style="gap:8px;align-items:center">${avHead(p,30)}<b>${esc(admName(r))}</b></span>`}
 function adminView(){
   const box=x=>`<div class="adm">${x}</div>`;
   if(!S.db||!S.userReady)return box(`<p class="eyebrow">PSP · ADMIN</p><h1>מתחבר…</h1>`);
   if(!S.canEdit)return box(`<p class="eyebrow">PSP · ADMIN</p><h1>ניהול</h1><p class="muted">הניהול פתוח רק למארח. התחברו עם חשבון ה־Google של המארח.</p>${typeof hostLogin==='function'?'<button class="btn" onclick="hostLogin()">התחברות עם Google</button>':''}`);
   if(!ROOM.code){
     const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
-    const st=r=>r.status==='closed'?'נסגר':r.revealed?'אחרי חשיפה':r.open?'פעיל':'טרם התחיל';
+    const st=r=>(r.status==='closed'||(r.code===LEGACY_ROOM&&r.status!=='open'))?'נסגר':r.revealed?'אחרי חשיפה':r.open?'פעיל':'טרם התחיל';
     return box(`<p class="eyebrow">PSP · ADMIN</p><h1>כל הערבים</h1><p class="muted">בוחרים ערב כדי לראות משתתפים, תוצאות וקבצים. חדר חדש פותחים מהמסך הגדול.</p>
     <table class="atab"><tr><th>נבדק/ת</th><th>קוד</th><th>תאריך</th><th>מצב</th><th>תוצאה</th><th></th></tr>
     ${L.map(r=>`<tr><td><b>${esc(admRoomName(r))}</b></td><td class="mono">${esc(r.code)}</td><td>${r.eve?new Date(r.eve).toLocaleDateString('he-IL'):'—'}</td><td>${st(r)}</td><td>${esc(r.result?.finalName||'')}</td><td><a class="btn small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)">ניהול</a></td></tr>`).join('')}</table>
@@ -827,7 +830,8 @@ function adminView(){
   if(!S.stateLoaded||!needEngine())return box(`<p class="eyebrow">PSP · ADMIN · ${esc(ROOM.code)}</p><h1>טוען…</h1>`);
   if(!S.state)return box(`<h1>החדר ${esc(ROOM.code)} לא נמצא</h1><a class="btn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">כל הערבים</a>`);
   const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','קבצים'],['whatif','מה אם'],['time','לוח זמנים']];
-  const n=subjectName(),closed=S.state.status==='closed';
+  const n=subjectName(),closed=roomClosed();
+  if(ROOM.legacy&&closed&&!S.autoClean&&S.remote){const unf=Object.entries(S.remote).filter(([id,r])=>!r.done).map(([id])=>id);S.autoClean=true;if(unf.length)(async()=>{for(const id of unf)await S.db.doc('remote/'+id).delete().catch(()=>{});await ensureCards().catch(()=>{});toast(`נמחקו ${unf.length} תשובות חלקיות (לא סיימו)`)})()}
   const head=`<div class="row" style="flex-wrap:wrap;gap:8px;align-items:center"><a class="linkbtn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">← כל הערבים</a></div>
    <div class="row" style="align-items:baseline;gap:14px;flex-wrap:wrap"><h1 style="margin:6px 0">${esc(n)}</h1><span class="mono" style="color:var(--gold);font-size:20px">${esc(ROOM.code)}</span><span class="muted">${closed?'נסגר · תוצאות פתוחות לכולם':'פתוח'}</span></div>
    <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
@@ -835,7 +839,8 @@ function adminView(){
     <a class="btn ghost small" href="#assets=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">תמונות וקבצים</a>
     <button class="btn ghost small" data-adm="${closed?'reopen':'close'}">${closed?'פתיחה מחדש':'סגירה לתוצאות'}</button>
     <button class="btn ghost small" data-adm="backup">הורדת גיבוי (JSON)</button>
-    <button class="btn ghost small" data-adm="copylinks">העתקת קישורים לכולם</button></div>
+</div>
+   <div class="row" style="gap:2px;align-items:flex-end;margin:4px 0 6px;flex-wrap:wrap">${roster().map(p=>`<span title="${esc(p.name)}" style="display:flex;flex-direction:column;align-items:center;font-size:12px">${avFull(p,92)}<span class="muted">${esc(p.name)}</span></span>`).join('')}</div>
    ${S.admConfirm?admConfirmHTML():''}
    <div class="atabs">${T.map(([k,v])=>`<button class="${k===tab?'on':''}" data-tab="${k}">${v}</button>`).join('')}</div>`;
   let body='';
@@ -846,6 +851,7 @@ function admConfirmHTML(){const c=S.admConfirm;
   if(c.k==='del'){return `<div class="card"><b>למחוק את כל התשובות של ${esc(c.name)}?</b> אי אפשר לבטל.<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-adm="del2">מחיקה</button><button class="btn ghost small" data-adm="cancel">ביטול</button></div></div>`}
   return ''}
 function admRun(opts={}){const pr=profile();let raters=pr.raters;if(opts.excl)raters=raters.filter(r=>!opts.excl.has(r.pid));if(!raters.length)return null;
+  if(opts.w){const tot=raters.reduce((a,r)=>a+(opts.w[r.pid]??0),0);if(tot>0)raters=raters.map(r=>({...r,absW:(opts.w[r.pid]??0)/tot}))}
   return {raters,R:PSP.run({raters},S.engine,opts.mew===false?null:dexVotes(raters))}}
 function admResults(){
   const x=admRun();if(!x)return `<p class="muted">אין עדיין תשובות בחדר הזה.</p>`;const {raters,R}=x,top=R.main.slice(0,3);
@@ -855,14 +861,14 @@ function admResults(){
   const leg=`<h3>הלג'נדרי הקרוב</h3><p>${R.legends.map(l=>`${esc(finalName(l.line))} (${apct(l.total)})`).join(' · ')}</p>`;
   const mew=ms.length?`<h3>שאלת מיו</h3><table class="atab"><tr><th>ליין</th><th>ההיגד</th><th>מי בחר</th></tr>${ms.map(m=>{const who=raters.filter(r=>S.answers[r.pid]?.mew===m.id).map(admName);return `<tr><td>${esc(m.name)}</td><td style="max-width:420px">${esc(m.text)}</td><td>${who.map(esc).join(', ')||'—'}</td></tr>`}).join('')}</table>`:'';
   const gaps=(R.gaps||[]).length?`<h3>נקודות עיוורות</h3><table class="atab"><tr><th>מה</th><th>${esc(subjectName())} על עצמו</th><th>האחרים</th><th>פער</th></tr>${R.gaps.map(g=>`<tr><td>${g.layer==='types'?TYPE_HE[g.dim]:g.layer==='stats'?STAT_SHORT[g.dim]:EVO_META[g.dim][2]}</td><td>${(+g.self).toFixed(2)}</td><td>${(+g.others).toFixed(2)}</td><td>${(+g.gap).toFixed(2)}</td></tr>`).join('')}</table>`:'';
-  const ind=`<h3>כל משיב לבד (בלי מיו)</h3><table class="atab"><tr><th>משיב</th><th>1</th><th>2</th><th>3</th></tr>${raters.map(r=>{const T3=PSP.run({raters:[{scores:r.scores,role:'friend',weight:1}]},S.engine,null).main.slice(0,3);return `<tr><td><b>${esc(admName(r))}</b></td>${T3.map(t=>`<td${t.line.id===top[0].line.id?' class="hit"':''}>${admSpr(t.line,32)} ${esc(finalName(t.line))}</td>`).join('')}</tr>`}).join('')}</table>`;
+  const ind=`<h3>כל משיב לבד (בלי מיו)</h3><table class="atab"><tr><th>משיב</th><th>1</th><th>2</th><th>3</th></tr>${raters.map(r=>{const T3=PSP.run({raters:[{scores:r.scores,role:'friend',weight:1}]},S.engine,null).main.slice(0,3);return `<tr><td>${admWho(r)}</td>${T3.map(t=>`<td${t.line.id===top[0].line.id?' class="hit"':''}>${admSpr(t.line,32)} ${esc(finalName(t.line))}</td>`).join('')}</tr>`}).join('')}</table>`;
   return pod+t20+leg+mew+gaps+ind}
 function admPeople(){
   const pr=profile(),W=PSP.raterWeights(pr.raters),wOf={};pr.raters.forEach((r,i)=>wOf[r.pid]=W[i]);
   const total=BANK.items.filter(i=>i.kind!=='bonus').length;
   const ros=roster(),extra=Object.entries(S.remote||{}).filter(([id])=>!ros.some(p=>p.id===id)).map(([id,d])=>({id,name:d.name,role:d.relation||'family',remote:true,outside:true}));
   const rows=[...ros,...extra].map(p=>{const a=answersOf(p.id)||{},cnt=Object.keys(a).filter(k=>AITEMS[k]&&AITEMS[k].kind!=='bonus').length,rd=S.remote?.[p.id],c=cardCodeFor(p.id);
-    return `<tr><td><b>${esc(p.name)}</b>${p.outside?' <span class="muted">(לא ברשימה)</span>':''}</td><td>${p.role==='self'?'הנבדק/ת':esc(ROLES[p.role]||p.role)}${p.remote?' · מרחוק':''}</td><td>${wOf[p.id]!=null?Math.round(wOf[p.id]*100)+'%':'—'}</td><td>${cnt}/${total}${rd?(rd.done?' ✓':' · לא סיים'):''}</td><td>${S.answers[p.id]?.mew?esc((S.state?.mew?.statements||[]).find(m=>m.id===S.answers[p.id].mew)?.name||''):''}</td><td>${c?`<a href="${cardLink(c)}" target="_blank" class="mono">${c.toUpperCase()}</a>`:''}</td>
+    return `<tr><td><span class="row" style="gap:8px;align-items:center">${avHead(p,30)}<b>${esc(p.name)}</b></span>${p.outside?' <span class="muted">(לא ברשימה)</span>':''}</td><td>${p.role==='self'?'הנבדק/ת':esc(ROLES[p.role]||p.role)}${p.remote?' · מרחוק':''}</td><td>${wOf[p.id]!=null?Math.round(wOf[p.id]*100)+'%':'—'}</td><td>${cnt}/${total}${rd?(rd.done?' ✓':' · לא סיים'):''}</td><td>${S.answers[p.id]?.mew?esc((S.state?.mew?.statements||[]).find(m=>m.id===S.answers[p.id].mew)?.name||''):''}</td><td>${c?`<a href="${cardLink(c)}" target="_blank" class="mono">${c.toUpperCase()}</a>`:''}</td>
      <td><button class="btn ghost small" data-adm="ans" data-id="${esc(p.id)}">${S.admAns===p.id?'סגירה':'תשובות'}</button> ${cnt?`<button class="btn ghost small" data-adm="del" data-id="${esc(p.id)}" data-name="${esc(p.name)}">מחיקה</button>`:''}</td></tr>
      ${S.admAns===p.id?`<tr><td colspan="7">${admAnswers(p)}</td></tr>`:''}`}).join('');
   return `<table class="atab"><tr><th>שם</th><th>תפקיד</th><th>משקל</th><th>ענה</th><th>מיו</th><th>כרטיס</th><th></th></tr>${rows}</table>`}
@@ -873,9 +879,9 @@ function admAnswers(p){const a=answersOf(p.id)||{},sc=PSP.scoreRater(a,BANK),n=s
 function admFiles(){
   const pr=profile(),ppl=pr.raters.map(r=>person(r.pid)||{id:r.pid,name:r.name,role:r.role});
   const cards=S.admCards||{};
-  return `<p class="muted">הכרטיסים האישיים בדיוק כמו שהמשתתפים מורידים, ועמוד העומק על הפוקימון.</p>
-  <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn small" data-adm="mkcards">${Object.keys(cards).length?'יצירה מחדש של כל הכרטיסים':'יצירת כל הכרטיסים'}</button>${Object.keys(cards).length?'<button class="btn ghost small" data-adm="dlall">הורדת כל הכרטיסים</button>':''}<button class="btn ghost small" data-act="deep">עמוד העומק</button></div>
-  <div class="agrid4">${ppl.map(p=>`<div class="aslot"><b>${esc(p.name)}</b>${cards[p.id]?`<a href="${cards[p.id]}" download="PSP-${esc(p.name)}.png"><img src="${cards[p.id]}" alt="" style="width:100%;border-radius:10px"></a>`:'<div class="aprev"><span class="muted">לא נוצר עדיין</span></div>'}${cardCodeFor(p.id)?`<a class="mono" href="${cardLink(cardCodeFor(p.id))}" target="_blank">${cardCodeFor(p.id).toUpperCase()}</a>`:''}</div>`).join('')}</div>`}
+  return `<p class="muted">הסיכומים האישיים בדיוק כמו שכל משתתף מוריד בסוף הערב, ועוד הפוקימון הכללי וה־PSP Pokédex.</p>
+  <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn small" data-adm="mkcards">${Object.keys(cards).length?'יצירה מחדש של כל הסיכומים':'יצירת כל הסיכומים'}</button>${Object.keys(cards).length?'<button class="btn ghost small" data-adm="dlall">הורדת כל הסיכומים</button>':''}<button class="btn ghost small" data-act="deep">הפוקימון (בלי אישי)</button><a class="btn ghost small" href="img/guide-he.jpg" download="PSP-Pokedex.jpg" target="_blank" style="text-decoration:none">PSP Pokédex</a></div>
+  <div class="agrid4">${ppl.map(p=>`<div class="aslot">${avHead(p,40)}<b>${esc(p.name)}</b>${cards[p.id]?`<a href="${cards[p.id]}" download="PSP-${esc(p.name)}.jpg"><img src="${cards[p.id]}" alt="" style="width:100%;height:260px;object-fit:cover;object-position:top;border-radius:10px"></a>`:'<div class="aprev"><span class="muted">לא נוצר עדיין</span></div>'}${cardCodeFor(p.id)?`<a class="mono" href="${cardLink(cardCodeFor(p.id))}" target="_blank">${cardCodeFor(p.id).toUpperCase()}</a>`:''}</div>`).join('')}</div>`}
 function admTime(){
   const D=S.deck;if(!D?.t0||!D.log)return `<p class="muted">אין מדידת זמנים לערב הזה. השעון מתחיל במעבר מהשקף הראשון במסך הגדול.</p>`;
   const log={...D.log};if(D.seg&&D.segAt&&D.seg!=='end'&&!log[D.seg]&&D.updated)log[D.seg]=(D.updated-D.segAt)/60000;
@@ -890,14 +896,16 @@ function admTime(){
   <p class="muted" style="font-size:13px">הזמנים נמדדים לפי המעבר בין חלקי המצגת במסך הגדול. חלק שלא עברו בו לא נמדד.</p>`}
 function admWhatIf(){
   const pr=profile();if(!pr.raters.length)return `<p class="muted">אין עדיין תשובות.</p>`;
-  const wi=S.wi||(S.wi={mew:true,excl:new Set()});const base=admRun(),alt=admRun({mew:wi.mew,excl:wi.excl});
+  const W0=PSP.raterWeights(pr.raters),wi=S.wi||(S.wi={mew:true,excl:new Set(),w:Object.fromEntries(pr.raters.map((r,i)=>[r.pid,Math.round(W0[i]*100)]))});const base=admRun(),alt=admRun({mew:wi.mew,excl:wi.excl,w:wi.w});
   const rank=new Map(base.R.top.map((t,i)=>[t.line.id,i+1]));
   const res=alt?`<table class="atab"><tr><th>#</th><th></th><th>ליין</th><th>סה"כ</th><th>במקור</th></tr>${alt.R.top.slice(0,8).map((t,i)=>`<tr><td>${i+1}</td><td>${admSpr(t.line,32)}</td><td>${esc(finalName(t.line))}</td><td>${apct(t.total)}</td><td class="muted">${rank.get(t.line.id)?'מקום '+rank.get(t.line.id):'—'}</td></tr>`).join('')}</table>`:'<p class="muted">לא נשאר אף משיב.</p>';
-  const rs=pr.raters,mat=`<h3>טבלת הסכמה: מי מסכים עם מי על ${esc(subjectName())}</h3><div style="overflow-x:auto"><table class="atab mat"><tr><th></th>${rs.map(r=>`<th>${esc(admName(r))}</th>`).join('')}</tr>${rs.map(a=>`<tr><th>${esc(admName(a))}</th>${rs.map(b=>{if(a===b)return '<td class="muted">—</td>';const v=admAgree(a,b);return `<td style="background:rgba(242,201,76,${v==null?0:Math.max(0,(v-55)/40).toFixed(2)});color:${v>80?'#161A2E':'inherit'}">${v??''}</td>`}).join('')}</tr>`).join('')}</table></div>`;
+  const rs=pr.raters,mat=`<h3>טבלת הסכמה: מי מסכים עם מי על ${esc(subjectName())}</h3><div style="overflow-x:auto"><table class="atab mat"><tr><th></th>${rs.map(r=>`<th><span style="display:flex;flex-direction:column;align-items:center;gap:2px">${avHead(person(r.pid)||{name:admName(r),role:r.role},30)}${esc(admName(r))}</span></th>`).join('')}</tr>${rs.map(a=>`<tr><th>${admWho(a)}</th>${rs.map(b=>{if(a===b)return '<td class="muted">—</td>';const v=admAgree(a,b);return `<td style="background:rgba(242,201,76,${v==null?0:Math.max(0,(v-55)/40).toFixed(2)});color:${v>80?'#161A2E':'inherit'}">${v??''}</td>`}).join('')}</tr>`).join('')}</table></div>`;
   return `<div class="card"><label class="row" style="gap:8px"><input type="checkbox" data-wi="mew" ${wi.mew?'checked':''}> כולל שאלת מיו</label>
-   <p style="margin:10px 0 6px"><b>מי נכנס לחישוב:</b></p><div class="row" style="gap:12px;flex-wrap:wrap">${rs.map(r=>`<label class="row" style="gap:6px"><input type="checkbox" data-wi="r" data-id="${esc(r.pid)}" ${wi.excl.has(r.pid)?'':'checked'}> ${esc(admName(r))}</label>`).join('')}</div></div>${res}${mat}`}
+   <div class="row" style="gap:8px;margin:10px 0 6px;align-items:center"><b class="grow">מי נכנס לחישוב, ובאיזה משקל</b><button class="btn ghost small" data-adm="wiall">סימון כולם</button><button class="btn ghost small" data-adm="winone">ניקוי הכול</button><button class="btn ghost small" data-adm="wireset">משקלים מקוריים</button></div>
+   <table class="atab">${rs.map((r,i)=>`<tr><td style="width:36px"><input type="checkbox" data-wi="r" data-id="${esc(r.pid)}" ${wi.excl.has(r.pid)?'':'checked'}></td><td>${admWho(r)}</td><td style="width:45%"><input type="range" min="0" max="60" value="${wi.w[r.pid]??0}" data-wi="w" data-id="${esc(r.pid)}" style="width:100%" ${wi.excl.has(r.pid)?'disabled':''}></td><td style="width:110px">${wi.excl.has(r.pid)?'—':Math.round((wi.w[r.pid]||0)/Math.max(1,rs.filter(x=>!wi.excl.has(x.pid)).reduce((a,x)=>a+(wi.w[x.pid]||0),0))*100)+'%'} <span class="muted">(${Math.round(W0[i]*100)}%)</span></td></tr>`).join('')}</table>
+   <p class="muted" style="font-size:13px">האחוז הוא המשקל אחרי נרמול. בסוגריים: המשקל בערב עצמו.</p></div>${res}${mat}`}
 function bindAdmin(){const app=$('#app');
-  app.onchange=e=>{const el=e.target;if(!el.dataset.wi)return;const wi=S.wi;if(el.dataset.wi==='mew')wi.mew=el.checked;else{el.checked?wi.excl.delete(el.dataset.id):wi.excl.add(el.dataset.id)}render()};
+  app.onchange=e=>{const el=e.target;if(!el.dataset.wi)return;const wi=S.wi;if(el.dataset.wi==='mew')wi.mew=el.checked;else if(el.dataset.wi==='w')wi.w[el.dataset.id]=+el.value;else{el.checked?wi.excl.delete(el.dataset.id):wi.excl.add(el.dataset.id)}const y=scrollY;render();scrollTo(0,y)};
   app.onclick=async e=>{const t=e.target.closest('[data-tab]');if(t){S.admTab=t.dataset.tab;render();return}
     const d=e.target.closest('[data-act="deep"]');if(d){makeDeep();return}
     const b=e.target.closest('[data-adm]');if(!b)return;const k=b.dataset.adm;
@@ -912,9 +920,9 @@ function bindAdmin(){const app=$('#app');
       await ensureCards().catch(()=>{});await setState({status:'closed'});toast('החדר נסגר');render()}
     if(k==='reopen'){await setState({status:'open'});render()}
     if(k==='backup')saveResults();
-    if(k==='copylinks'){await ensureCards();const t=roster().map(r=>{const c=cardCodeFor(r.id);return c?`${r.name}: ${cardLink(c)}`:null}).filter(Boolean).join('\n');(navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>toast('הועתק')).catch(()=>prompt('הקישורים:',t))}
-    if(k==='mkcards'){b.disabled=true;toast('יוצר כרטיסים…');S.admCards={};for(const r of profile().raters){const p=person(r.pid)||{id:r.pid,name:r.name,role:r.role};const cx=ctxFor(p);if(cx)S.admCards[p.id]=await drawCard(cx)}render()}
-    if(k==='dlall'){for(const [id,u] of Object.entries(S.admCards||{})){const a=document.createElement('a');a.href=u;a.download=`PSP-${person(id)?.name||id}.png`;document.body.append(a);a.click();a.remove();await new Promise(r=>setTimeout(r,400))}}}}
+    if(k==='wiall'||k==='winone'||k==='wireset'){const rs=profile().raters;if(k==='wiall')S.wi.excl=new Set();if(k==='winone')S.wi.excl=new Set(rs.map(r=>r.pid));if(k==='wireset'){const W0=PSP.raterWeights(rs);S.wi.w=Object.fromEntries(rs.map((r,i)=>[r.pid,Math.round(W0[i]*100)]));S.wi.excl=new Set();S.wi.mew=true}const y=scrollY;render();scrollTo(0,y)}
+    if(k==='mkcards'){b.disabled=true;toast('יוצר כרטיסים…');S.admCards={};for(const r of profile().raters){const p=person(r.pid)||{id:r.pid,name:r.name,role:r.role};S.admCards[p.id]=await drawDeep(p);render()}}
+    if(k==='dlall'){for(const [id,u] of Object.entries(S.admCards||{})){const a=document.createElement('a');a.href=u;a.download=`PSP-${person(id)?.name||id}.jpg`;document.body.append(a);a.click();a.remove();await new Promise(r=>setTimeout(r,400))}}}}
 function clone(o){try{return JSON.parse(JSON.stringify(o))}catch(e){return o}}
 function changed(){ if(isScreen()) screenData(); else render(); }
 window.addEventListener('hashchange',()=>{const hp=hashParts();if(hp.mode!=='card'&&hp.code&&hp.code!==ROOM.code){location.reload();return}if(isScreen()){if(ROOM.code)startScreen();else render()}else render()});
@@ -1014,20 +1022,22 @@ function archCardView(code){
   return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">${esc(d.subject)}, לפי ${d.role==='self'?gsd('עצמו','עצמה'):esc(d.name)}</h1><p class="muted">הכרטיס האישי שלך מהערב של ${esc(d.subject)}.</p>${cardImgHTML(d.name)}${codeBox(code)}<a class="btn ghost" href="#" style="text-align:center;text-decoration:none">חזרה</a>`}
 function pastCardsHTML(){const L=myCards();if(!L.length)return '';return `<div class="card" style="margin-top:18px"><p style="margin:0 0 8px;font-weight:700">${L.length?'הכרטיסים שלך מערבים קודמים':'יש לך קוד של כרטיס מערב קודם?'}</p>${L.map(x=>`<a class="btn ghost small" href="#c=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject)} · ${esc(x.name)}</a>`).join('')}</div>`}
 const STAT_HL={hp:['תקופה ארוכה של לחץ לא שוחקת','צריך זמן להתאושש מיום קשה'],attack:['ניגש ישר לעשייה','משאיר לאחרים את הביצוע'],defense:['לא מתקפל מול דרישות','קשה להגיד "לא"'],'special-attack':['משכנע ברעיונות ובמילים','מעדיף שהידיים ידברו'],'special-defense':['אווירה רעה לא נדבקת','סופג את מצב הרוח של החדר'],speed:['קולט ומחליט מהר','חושב הרבה לפני כל צעד']};
-function deepBtn(){return `<button class="btn ghost" data-act="deep" style="margin-top:12px">⬇ עמוד העומק: הפוקימון של ${esc(subjectName())}</button>${guideBtn()}`}
-function guideBtn(){return `<a class="btn ghost" href="img/guide-he.jpg?v=${BUILDV}" download="PSP-Pokedex.jpg" target="_blank" style="margin-top:8px;text-align:center;text-decoration:none">⬇ PSP Pokédex: מה כל סוג, סטט והתפתחות אומרים</a>`}
+function deepBtn(){return `<div class="dlrow" style="margin-top:12px"><button class="btn ghost" data-act="deep">⬇ הפוקימון של ${esc(subjectName())}</button>${guideBtn()}</div>`}
+function guideBtn(){return `<a class="btn ghost" href="img/guide-he.jpg?v=${BUILDV}" download="PSP-Pokedex.jpg" target="_blank" style="text-align:center;text-decoration:none">⬇ PSP Pokédex<small style="display:block;font-weight:400;font-size:12px;opacity:.8">מה כל סוג, סטט והתפתחות אומרים</small></a>`}
 async function makeDeep(){if(!needEngine()){toast('רגע, טוען…');return}if(S.deepBusy)return;S.deepBusy=true;toast('מכין את עמוד העומק…');
-  try{const u=await drawDeep();const a=document.createElement('a');a.href=u;a.download=`PSP-${subjectName()}.png`;document.body.append(a);a.click();a.remove();
+  try{const u=await drawDeep();const a=document.createElement('a');a.href=u;a.download=`PSP-${subjectName()}.jpg`;document.body.append(a);a.click();a.remove();
     S.deepImg=u;const w=window.open();if(w){w.document.write(`<title>PSP</title><body style="margin:0;background:#161A2E"><img src="${u}" style="width:100%"></body>`)}}catch(e){console.error(e);toast('לא הצלחתי ליצור את העמוד')}S.deepBusy=false}
-async function drawDeep(){
+async function drawDeep(me){
   await document.fonts?.ready;const E=S.engine,ax=E.axes,n=subjectName(),G=(m,f)=>(S.setup?.gender||S.state?.gender)==='f'?f:m;
   if(!S.oak)S.oak=await fetch('oak.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}));
-  const pr=profile(),R=PSP.run(pr,E,dexVotes(pr.raters)),top=R.main.slice(0,3),win=top[0].line,self=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');
-  const av=(rs,L,d)=>{const v=rs.map(r=>r.scores?.[L]?.[d]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
+  if(!S.xparts)S.xparts=await fetch('extra_parts.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}));
+  const pr=profile(),R=PSP.run(pr,E,dexVotes(pr.raters)),top=R.main.slice(0,3),win=top[0].line,self=pr.raters.find(r=>r.role==='self');
+  const mine=me?pr.raters.find(r=>r.pid===me.id):null,isSelf=me&&me.role==='self';
+  const YOU=mine?(isSelf?G('אתה','את'):me.name):null;
   const agg=(L,d)=>R.agg[L][ax[L].indexOf(d)];
-  const W=1080,c=document.createElement('canvas');c.width=W;c.height=7000;const g=c.getContext('2d');g.direction='rtl';
+  const W=1080,c=document.createElement('canvas');c.width=W;c.height=9000;const g=c.getContext('2d');g.direction='rtl';
   g.fillStyle='#161A2E';g.fillRect(0,0,W,c.height);
-  const GOLD='#F2C94C',CREAM='#F6F1E7',MIST='#B9BDD6',CARD='#20253F',LINE='#3A4170';
+  const GOLD='#F2C94C',CREAM='#F6F1E7',MIST='#B9BDD6',CARD='#20253F',LINE='#3A4170',PINK='#F95587',SKY='#6FC3E8';
   const T=(t,x,y,f,col,al='right')=>{g.font=f;g.fillStyle=col;g.textAlign=al;g.fillText(t,x,y)};
   const rr=(x,y,w,h,r,fill,stroke)=>{g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.stroke()}};
   const wrap=(t,x,y,maxW,lh,f,col,dry)=>{g.font=f;const words=String(t).split(' ');let line='';for(const w of words){const tt=line?line+' '+w:w;if(g.measureText(tt).width>maxW&&line){if(!dry)T(line,x,y,f,col);y+=lh;line=w}else line=tt}if(line){if(!dry)T(line,x,y,f,col);y+=lh}return y};
@@ -1035,72 +1045,100 @@ async function drawDeep(){
   const drawSp=async(l,sp,x,y,s)=>{const im=await img(spriteURL(sprite(l,sp)));if(!im)return;g.imageSmoothingEnabled=false;const k=s/Math.max(im.width,im.height);g.drawImage(im,x+(s-im.width*k)/2,y+(s-im.height*k)/2,im.width*k,im.height*k)};
   const chip=(t,xr,y,fs,hh)=>{g.font='bold '+fs+'px Rubik';const w=g.measureText(TYPE_HE[t]).width+fs*1.3;rr(xr-w,y,w,hh,12,TYPE_COL[t]);T(TYPE_HE[t],xr-fs*.65,y+hh*.7,'bold '+fs+'px Rubik','#fff');return w+10};
   const H2=(t,en,y)=>{T(t,W-60,y,'56px "Secular One"',CREAM);T(en,60,y-6,'18px "Press Start 2P"',GOLD,'left');return y+34};
+  const dot=(x,y,col,r=14)=>{g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=col;g.fill();g.strokeStyle=CREAM;g.lineWidth=3;g.stroke()};
+  // one row: label on the right, a 1-5 bar for everyone, dots for this person and for the subject's own view
+  const BX=90,BW=W-90-330-BX;const pos=v=>BX+BW-BW*((v-1)/4);
+  const barRow=(y,label,sub,v,hi,col,you,subj)=>{T(label,W-90,y+30,'bold 30px Rubik',hi?CREAM:MIST);if(sub)T(sub,W-90,y+64,'24px Rubik',MIST);
+    rr(BX,y+16,BW,20,10,'#2E3458');rr(pos(v),y+16,BX+BW-pos(v),20,10,col||(hi?GOLD:'#5A6290'));
+    if(subj!=null)dot(pos(subj),y+26,SKY,11);if(you!=null)dot(pos(you),y+26,PINK,13)};
+  const legend=(y)=>{let x=W-60;const it=[[GOLD,'כולם יחד'],...(mine&&!isSelf?[[PINK,me.name]]:[]),...(isSelf?[[PINK,G('אתה','את')]]:[]),...(self&&!isSelf?[[SKY,n+' על '+G('עצמו','עצמה')]]:[])];
+    for(const [col,t] of it){dot(x-10,y-9,col,10);g.font='26px Rubik';T(t,x-30,y,'26px Rubik',MIST);x-=g.measureText(t).width+80}return y+30};
+  const sv=(r,L,d)=>r?.scores?.[L]?.[d]??null;
   let y=100;
-  T('PSP · DEEP DIVE',W-60,y,'24px "Press Start 2P"',GOLD);y+=100;
+  T(mine?'PSP · YOUR SUMMARY':'PSP · DEEP DIVE',W-60,y,'24px "Press Start 2P"',GOLD);y+=100;
   {g.font='84px "Secular One"';const wn=g.measureText(n+' =').width;T(n+' =',W-60,y,'84px "Secular One"',CREAM);T(finalName(win),W-60-wn-24,y,'84px "Secular One"',GOLD)}y+=56;
-  T('מה כל חלק בפוקימון אומר עליך',W-60,y,'32px Rubik',MIST);y+=50;
+  T(mine?(isSelf?`הסיכום ${G('שלך','שלך')}: מה כל חלק בפוקימון אומר ${G('עליך','עלייך')}`:`הסיכום של ${me.name}: ${n} בעיני כולם, ובעיניך`):'מה כל חלק בפוקימון אומר',W-60,y,'32px Rubik',MIST);y+=50;
   // hero
   const hy=y;rr(50,hy,W-100,440,36,CARD,LINE);await drawSp(win,win.species.at(-1),80,hy+50,340);
   T("PROF. OAK SAYS",W-90,hy+70,'20px "Press Start 2P"',GOLD);
   const ok=S.oak?.[win.id];let ty=wrap(ok?(G(ok[1],ok[2]||ok[1])).replace(/^ובשפה של PSP:\s*/,''):'',W-90,hy+130,560,52,'40px "Secular One"',CREAM);
-  T(`התאמה ${Math.round(top[0].total*100)}% · מ־${pr.raters.length} משיבים`,W-90,Math.max(ty+10,hy+400),'28px Rubik',MIST);y=hy+480;
-  // types
-  y=H2('הסוגים: מי '+G('אתה','את'),'TYPES',y+60)+10;
-  const finalT=win.stage_types.at(-1),earlyT=[...new Set(win.stage_types.flat())].filter(t=>!finalT.includes(t));
-  const rankOf=t=>ax.types.map(x=>agg('types',x)).filter(v=>v>agg('types',t)).length+1;
-  for(const t of [...finalT,...earlyT]){const early=!finalT.includes(t);rr(50,y,W-100,200,28,CARD,early?'#6B5A8A':LINE);
-    chip(t,W-90,y+28,30,52);T(early?`· ${TYPE_KEY[t][0]} (מהשלבים הקודמים)`:`· ${TYPE_KEY[t][0]}`,W-90-g.measureText(TYPE_HE[t]).width-70,y+66,'bold 32px Rubik',CREAM);
-    T(TYPE_KEY[t][1],W-90,y+122,'30px Rubik',MIST);
-    const sv=av([self].filter(Boolean),'types',t),ov=av(others,'types',t);
-    T(`אצלך ${agg('types',t).toFixed(1)} · מקום ${rankOf(t)} מתוך 18${sv!=null&&ov!=null?` · ${G('אתה','את')} ${sv.toFixed(1)} · החברים ${ov.toFixed(1)}`:''}`,W-90,y+170,'28px Rubik',GOLD);y+=220}
+  T(`התאמה ${Math.round(top[0].total*100)}% · מ־${pr.raters.length} משיבים`,W-90,Math.max(ty+10,hy+400),'28px Rubik',MIST);y=hy+500;
+  y=legend(y)+10;
+  // types: the 8 strongest of the 18 by everyone, the Pokémon's types lit up
+  y=H2('הסוגים: מי '+G('הוא','היא'),'TYPES',y+50)+16;
+  const finalT=win.stage_types.at(-1),allT=[...new Set(win.stage_types.flat())],earlyT=allT.filter(t=>!finalT.includes(t));
+  const tOrd=ax.types.slice().sort((a,b)=>agg('types',b)-agg('types',a));const show=[...new Set([...tOrd.slice(0,6),...allT])];
+  rr(50,y,W-100,show.length*96+30,28,CARD,LINE);let ry=y+22;
+  for(const t of show){const on=finalT.includes(t),early=earlyT.includes(t);barRow(ry,TYPE_HE[t]+(on?' ★':early?' ☆':''),TYPE_KEY[t][0]+' · מקום '+(tOrd.indexOf(t)+1)+' מתוך 18',agg('types',t),on||early,on?TYPE_COL[t]:early?TYPE_COL[t]+'AA':null,sv(mine,'types',t),isSelf?null:sv(self,'types',t));ry+=96}
+  y=ry+20;
+  T(`★ הסוגים של ${finalName(win)}${earlyT.length?' · ☆ סוג מהשלבים הקודמים':''}`,W-60,y+10,'26px Rubik',MIST);y+=46;
+  for(const t of [...finalT,...earlyT]){y=wrap(`${TYPE_HE[t]} · ${TYPE_KEY[t][0]}: ${TYPE_KEY[t][1]}`,W-60,y+6,W-120,40,'28px Rubik',CREAM)}
   // stats
-  y=H2('הסטטים: איך '+G('אתה פועל','את פועלת'),'STATS',y+50)+10;
-  const ls=win.stats,mx=Math.max(...ls),ord=ls.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);
-  T('הפס: הליין של '+finalName(win)+' · העיגול: '+G('אתה','את')+' לפי כולם (1 עד 5)',W-60,y+20,'26px Rubik',MIST);y+=50;
-  rr(50,y,W-100,6*110+30,28,CARD,LINE);let sy=y+30;
+  y=H2('הסטטים: איך '+G('הוא פועל','היא פועלת'),'STATS',y+60)+16;
+  const ls=win.stats,ord=ls.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);
+  rr(50,y,W-100,6*110+30,28,CARD,LINE);let sy=y+22;
   ax.stats.forEach((k,i)=>{const hi=ord.indexOf(i)<2,lo=ord.indexOf(i)>3;
-    T(STAT_SHORT[k],W-90,sy+34,'bold 30px Rubik',CREAM);T(STAT_HE[k].split('·')[1]?.trim()||'',W-90,sy+70,'24px Rubik',MIST);
-    const bx=90,bw=W-90-300-bx;rr(bx,sy+20,bw,18,9,'#2E3458');rr(bx+bw-bw*ls[i]/mx,sy+20,bw*ls[i]/mx,18,9,hi?GOLD:lo?'#8C93B8':'#C9B06A');
-    const a=agg('stats',k),px=bx+bw-bw*((a-1)/4);g.beginPath();g.arc(px,sy+29,16,0,7);g.fillStyle='#F95587';g.fill();g.strokeStyle=CREAM;g.lineWidth=3;g.stroke();
-    T(hi?'▲ '+STAT_HL[k][0]:lo?'▼ '+STAT_HL[k][1]:'באמצע',bx+bw,sy+78,'24px Rubik',hi?'#B5E3A8':lo?'#F2B8A8':MIST);sy+=110});y=sy+40;
+    barRow(sy,STAT_SHORT[k]+' · '+(STAT_HE[k].split('·')[1]||'').trim(),'',agg('stats',k),hi,null,sv(mine,'stats',k),isSelf?null:sv(self,'stats',k));
+    T(`${finalName(win)}: `+(hi?'▲ '+STAT_HL[k][0]:lo?'▼ '+STAT_HL[k][1]:'באמצע'),W-90,sy+70,'24px Rubik',hi?'#B5E3A8':lo?'#F2B8A8':MIST);sy+=110});
+  y=sy+30;T(`הפס: מה כולם ענו (1 עד 5). ▲▼: איפה ${finalName(win)} חזק וחלש יחסית לעצמו.`,W-60,y,'24px Rubik',MIST);y+=20;
   // evolution
-  y=H2('ההתפתחות: איך '+G('אתה גדל','את גדלה'),'EVOLUTION',y+30)+10;
-  rr(50,y,W-100,300,28,CARD,LINE);const sp=win.species,step=(W-160)/Math.max(1,sp.length);
-  for(let i=0;i<sp.length;i++){const x=W-80-step*(i+1)+(step-170)/2;await drawSp(win,sp[i],x,y+30,170)}
-  const meth=ax.evo.filter((k,i)=>win.evo[i]>0).map(k=>EVO_META[k][2]);
-  T(sp.length>1?('דרך ההתפתחות: '+(meth.join(' + ')||'—')):'בלי התפתחות: מגיע שלם לכל מסגרת',W-90,y+250,'bold 30px Rubik',GOLD);
-  const ge=ax.evo.map(k=>[agg('evo',k),k]).sort((a,b)=>b[0]-a[0])[0][1];
-  y+=330;T(`הדרך החזקה ${G('שלך','שלך')} לפי כולם: ${EVO_META[ge][2]} (${agg('evo',ge).toFixed(1)})`,W-60,y,'30px Rubik',CREAM);y+=40;
+  y=H2('ההתפתחות: איך '+G('הוא גדל','היא גדלה'),'EVOLUTION',y+60)+16;
+  rr(50,y,W-100,280,28,CARD,LINE);const sp=win.species,step=(W-160)/Math.max(1,sp.length);
+  for(let i=0;i<sp.length;i++){const x=W-80-step*(i+1)+(step-170)/2;await drawSp(win,sp[i],x,y+20,170)}
+  const meth=ax.evo.filter((k,i)=>win.evo[i]>0);
+  T(sp.length>1?('הדרך של '+finalName(win)+': '+(meth.map(k=>EVO_META[k][2]).join(' + ')||'—')):'בלי התפתחות: מגיע שלם לכל מסגרת',W-90,y+245,'bold 30px Rubik',GOLD);y+=310;
+  rr(50,y,W-100,5*96+30,28,CARD,LINE);let ey=y+22;
+  for(const k of ax.evo){const on=meth.includes(k);barRow(ey,EVO_META[k][2]+(on?' ★':''),'',agg('evo',k),on,null,sv(mine,'evo',k),isSelf?null:sv(self,'evo',k));ey+=96}
+  y=ey+20;
+  // extra trait, with its three sources
+  const xp=S.xparts?.[win.id];if(xp){y=H2('האפיון הנוסף','EXTRA',y+50)+16;
+    const tot={};['m','l','c'].forEach(k=>Object.entries(xp[k]||{}).forEach(([t,v])=>tot[t]=(tot[t]||0)+v));
+    const ord2=Object.entries(tot).sort((a,b)=>b[1]-a[1]),main=ord2[0]?.[0];
+    y=wrap(`סוג שלא מופיע על הכרטיס של ${finalName(win)}, אבל מושך אותו. הוא מחושב משלושה מקורות:`,W-60,y+10,W-120,40,'28px Rubik',MIST)+6;
+    const src=[['m','המתקפות שהליין לומד (48%)',x=>''],['l','הפוקדקס: מילים בתיאורים (32%)',t=>xp.w?.[t]?.length?' ("'+xp.w[t].join('", "')+'")':''],['c','סוג שהיה בשלב מוקדם ונעלם (20%)',t=>'']];
+    for(const [k,lab,extra] of src){const e=Object.entries(xp[k]||{}).sort((a,b)=>b[1]-a[1]);rr(50,y,W-100,56+Math.max(1,e.length)*44,22,CARD,LINE);T(lab,W-80,y+40,'bold 28px Rubik',CREAM);let yy=y+84;
+      if(!e.length){T('אין',W-80,yy,'26px Rubik',MIST);yy+=44}
+      for(const [t,v] of e.slice(0,4)){const sh=Math.round(v/(ord2[0][1]||1)*100);rr(W-80-330,yy-20,330*Math.min(1,v/(ord2[0][1]||1)),18,9,TYPE_COL[t]);T(TYPE_HE[t]+extra(t),W-80-350,yy,'26px Rubik',CREAM);yy+=44}
+      y=yy+16}
+    if(main){T(`בשורה התחתונה: האפיון הנוסף של ${finalName(win)} הוא ${TYPE_HE[main]} · ${TYPE_KEY[main][0]}`,W-60,y+20,'bold 30px Rubik',GOLD);y+=40;
+      const ex=R.agg.extra_types?R.agg.extra_types[ax.types.indexOf(main)]:null;if(ex!=null)T(`ואצל ${n}, לפי כולם: ${TYPE_HE[main]} ${(+ex).toFixed(1)}`,W-60,y+20,'28px Rubik',CREAM),y+=40}}
   // pokedex
   const ms=S.state?.mew?.statements||[],st=ms.find(x=>x.lineId===win.id);
   if(st){y=H2('הפוקדקס: השאלה של מיו','POKÉDEX',y+60)+10;const votes=pr.raters.filter(r=>S.answers[r.pid]?.mew===st.id).length,tv=pr.raters.filter(r=>S.answers[r.pid]?.mew).length;
     const y0=y,q='"'+(st.entryHe||st.text)+'"',ps='בשפה של PSP: '+st.text;let yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E',true);yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63',true);const hh=yy+50-y0;
     rr(50,y0,W-100,hh,28,CREAM);yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E');yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63');
     T(`${votes} מתוך ${tv} בחרו בתיאור הזה`,W-90,yy+20,'bold 28px Rubik','#7A2E5A');y=y0+hh+20}
-  // podium
-  y=H2('הפודיום','TOP 3',y+60)+20;const pw=(W-100-40)/3;
-  [[1,0],[0,1],[2,2]].forEach(()=>{});
+  // through your eyes
+  if(mine){y=H2(isSelf?'ואם רק '+G('אתה','את')+' '+G('היית עונה','היית עונה'):'ובעיניים של '+me.name,'YOUR VIEW',y+60)+20;
+    const T3=PSP.run({raters:[{scores:mine.scores,role:'friend',weight:1}]},E,null).main.slice(0,3);const pw=(W-100-40)/3;
+    for(let i=0;i<T3.length;i++){const t=T3[i],x=W-50-pw-(i)*(pw+20),hit=t.line.id===win.id;rr(x,y,pw,250,24,hit?'#3A3418':CARD,hit?GOLD:LINE);await drawSp(t.line,t.line.species.at(-1),x+(pw-140)/2,y+20,140);T('#'+(i+1),x+pw-20,y+40,'20px "Press Start 2P"',MIST);T(finalName(t.line),x+pw/2,y+210,'bold 28px Rubik',hit?GOLD:CREAM,'center')}
+    y+=290;const other=isSelf?{scores:avgScores(pr.raters.filter(r=>r.role!=='self'))}:self;
+    if(other){const ag=admAgree(mine,other);T(isSelf?`כמה הקבוצה רואה ${G('אותך','אותך')} כמו ש${G('אתה רואה','את רואה')} ${G('את עצמך','את עצמך')}: ${ag}%`:`כמה ${me.name} ו${n} מסכימים: ${ag}%`,W-60,y,'bold 30px Rubik',CREAM);y+=20;rr(60,y,W-120,30,15,'#2E3458');rr(W-60-(W-120)*ag/100,y,(W-120)*ag/100,30,15,PINK);y+=60}}
+  // podium + everyone alone
+  y=H2('הפודיום','TOP 3',y+40)+20;const pw=(W-100-40)/3;
   for(const [i,slot] of [[1,2],[0,1],[2,0]]){const t=top[i];if(!t)continue;const x=50+slot*(pw+20),hh=i===0?360:310,yy=y+(i===0?0:50);rr(x,yy,pw,hh,26,i===0?'#3A3418':CARD,i===0?GOLD:LINE);
     await drawSp(t.line,t.line.species.at(-1),x+(pw-(i===0?190:160))/2,yy+50,i===0?190:160);T('#'+(i+1),x+pw/2,yy+40,'22px "Press Start 2P"',i===0?GOLD:MIST,'center');
-    g.font='bold 30px Rubik';T(finalName(t.line),x+pw/2,yy+hh-60,'bold 30px Rubik',CREAM,'center');T(Math.round(t.total*100)+'%',x+pw/2,yy+hh-22,'26px Rubik',MIST,'center')}
-  y+=400;
-  T('ואם רק משיב אחד היה עונה (בלי שאלת מיו):',W-60,y,'28px Rubik',MIST);y+=30;
+    T(finalName(t.line),x+pw/2,yy+hh-60,'bold 30px Rubik',CREAM,'center');T(Math.round(t.total*100)+'%',x+pw/2,yy+hh-22,'26px Rubik',MIST,'center')}
+  y+=400;T('ואם רק משיב אחד היה עונה (בלי שאלת מיו):',W-60,y,'28px Rubik',MIST);y+=30;
   for(const r of pr.raters){const T3=PSP.run({raters:[{scores:r.scores,role:'friend',weight:1}]},E,null).main.slice(0,3).map(x=>x.line);
-    rr(50,y,W-100,96,20,CARD);T(r.role==='self'?n+' ('+G('לבד','לבד')+')':(person(r.pid)?.name||r.name||''),W-80,y+58,'bold 28px Rubik',CREAM);
-    for(let j=0;j<T3.length;j++){const x=W-300-j*240,l=T3[j],isW=l.id===win.id;if(isW){rr(x-170,y+10,226,76,16,'#3A3418',GOLD)}await drawSp(l,l.species.at(-1),x-160,y+14,68);T(finalName(l),x+46,y+58,'22px Rubik',isW?GOLD:CREAM)}
+    const meRow=mine&&r.pid===mine.pid;rr(50,y,W-100,96,20,meRow?'#3A2440':CARD,meRow?PINK:null);T(r.role==='self'?n:(person(r.pid)?.name||r.name||''),W-80,y+58,'bold 28px Rubik',CREAM);
+    for(let j=0;j<T3.length;j++){const x=W-300-j*240,l=T3[j],isW=l.id===win.id;if(isW)rr(x-170,y+10,226,76,16,'#3A3418',GOLD);await drawSp(l,l.species.at(-1),x-160,y+14,68);T(finalName(l),x+46,y+58,'22px Rubik',isW?GOLD:CREAM)}
     y+=108}
-  // blind spots
   const gp=(R.gaps||[]).slice(0,3);if(gp.length){y=H2('מה החברים רואים אחרת','BLIND SPOTS',y+60)+10;
-    for(const x of gp){const nm=x.layer==='types'?TYPE_HE[x.dim]:x.layer==='stats'?(STAT_HE[x.dim].split('·')[1]||'').trim():EVO_META[x.dim][2];T(`${nm} · ${G('אתה','את')} ${(+x.self).toFixed(1)} · החברים ${(+x.others).toFixed(1)}`,W-60,y+30,'30px Rubik',CREAM);y+=56}}
-  y+=60;T("GOTTA UNDERSTAND 'EM ALL",W/2,y,'22px "Press Start 2P"',GOLD,'center');y+=60;
-  const out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(c,0,0);return out.toDataURL('image/png')}
+    for(const x of gp){const nm=x.layer==='types'?TYPE_HE[x.dim]:x.layer==='stats'?(STAT_HE[x.dim].split('·')[1]||'').trim():EVO_META[x.dim][2];T(`${nm} · ${n} ${(+x.self).toFixed(1)} · החברים ${(+x.others).toFixed(1)}`,W-60,y+30,'30px Rubik',CREAM);y+=56}}
+  y+=50;T('האישי מחושב רק מהתשובות שלך, בלי שאלת מיו. הסוגים, הסטטים וההתפתחות: מה כולם ענו יחד.',W/2,y,'22px Rubik',MIST,'center');
+  y+=50;T("GOTTA UNDERSTAND 'EM ALL",W/2,y,'22px "Press Start 2P"',GOLD,'center');y+=60;
+  const out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(c,0,0);return out.toDataURL('image/jpeg',.9)}
+
 function cardView(me){
-  if(!needEngine())return `<p class="eyebrow">PSP · YOUR CARD</p><h1>מכינים את הכרטיס שלך…</h1>`;
-  if(!S.cardImg||S.cardFor!==me.id){S.cardFor=me.id;S.cardImg=null;const cx=ctxFor(me);(cx?drawCard(cx):Promise.reject('no answers')).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
+  if(!needEngine())return `<p class="eyebrow">PSP · YOUR SUMMARY</p><h1>מכינים את הסיכום שלך…</h1>`;
+  if(!S.cardImg||S.cardFor!==me.id){S.cardFor=me.id;S.cardImg=null;drawDeep(me).then(u=>{S.cardImg=u;render()}).catch(e=>{console.error(e);S.cardImg='err';render()})}
   const code=cardCodeFor(me.id);if(code){const d=S.cardDocs[code];if(S.remembered!==code){S.remembered=code;rememberCard(d)}}else if(S.cardsLoaded&&!S.cardSaving){S.cardSaving=true;saveCard(me).then(()=>{S.cardSaving=false;render()}).catch(()=>{S.cardSaving=false})}
   const n=esc(subjectName());
-  return `<p class="eyebrow">PSP · YOUR CARD</p><h1 style="margin:0">הכרטיס האישי שלך</h1><p class="muted">איך התשובות שלך על ${n} נראות מול התשובות של ${n} על ${gs('עצמו','עצמה')}. לא חובה, רק אם בא לך.</p>
-  ${cardImgHTML(me.name)}${deepBtn()}${roomFoot()}`}
+  const ok=S.cardImg&&S.cardImg!=='err';
+  return `<p class="eyebrow">PSP · YOUR SUMMARY</p><h1 style="margin:0">הסיכום שלך</h1><p class="muted">הפוקימון של ${n}, מה כל חלק בו אומר, ואיך ${me.role==='self'?'התשובות שלך מול הקבוצה':'התשובות שלך מול כולם ומול '+n}.</p>
+  <div class="dlrow">${ok?`<a class="btn" href="${S.cardImg}" download="PSP-${esc(subjectName())}-${esc(me.name)}.jpg" style="text-align:center;text-decoration:none">⬇ הסיכום שלך</a>`:`<span class="btn" style="opacity:.6;text-align:center">מכין…</span>`}${guideBtn()}</div>
+  ${ok?`<img src="${S.cardImg}" alt="הסיכום שלך" style="width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><p class="muted center" style="font-size:13px">באייפון: לחיצה ארוכה על התמונה ← שמירה בתמונות</p>`:S.cardImg==='err'?'<p class="muted">לא הצלחתי ליצור את הסיכום.</p>':'<div class="card center"><div class="ball wobble" style="--s:90px"></div></div>'}${roomFoot()}`}
 const TYPE_KEY={normal:['שייכות','פשוט, נגיש לכולם, הדבק שמחזיק קבוצות'],fire:['להט','תשוקה שסוחפת אחרים, וכעס שעולה מהר'],water:['איזון','יציב רגשית, מעוגן ב"ביחד"'],electric:['ניצוץ','קולט ברגע ומדליק את מי שסביבו'],grass:['שורשים','מטפח לאט, זוכר מאיפה צמח'],ice:['עולם פנימי','קור רוח, שביר מבפנים, שומר מרחק'],fighting:['ישירות','אומר בפנים, עומד במילה'],poison:['חתרנות','ביקורת שמערערת על המובן מאליו'],ground:['קרקוע','מעשי ואמין, מעשים לפני חלומות'],flying:['חופש','צריך מרחב ומבט מלמעלה'],psychic:['תודעה','חי בתוך הראש, קורא אנשים'],bug:['התמדה','חרוץ, מתחיל קטן ומשתנה הרבה'],rock:['עמידות','עקרוני, קשה להזיז'],ghost:['מסתורין','עומק נסתר, קשה לקרוא'],dragon:['שאפתנות','נוכחות שממלאת חדר'],dark:['אי־ציות','עצמאי, חוקים משלו'],steel:['סדר','מדויק, בונה מערכות'],fairy:['חמלה','חם, ומתייצב מול כוח שמדכא']};
 function avgScores(rs){const ax=S.engine.axes,o={};['types','stats','evo'].forEach(L=>{o[L]={};ax[L].forEach(d=>{const v=rs.map(r=>r.scores?.[L]?.[d]).filter(x=>x!=null);if(v.length)o[L][d]=Math.round(v.reduce((a,b)=>a+b,0)/v.length*1000)/1000})});return o}
 function ctxFor(me){const pr=profile(),mine=pr.raters.find(r=>r.pid===me.id),selfR=pr.raters.find(r=>r.role==='self'),others=pr.raters.filter(r=>r.role!=='self');if(!mine)return null;
@@ -1181,7 +1219,7 @@ function phoneView(){
     <button class="btn" data-act="sameok">כן, זה אני</button><button class="btn ghost" data-act="switch">לא, לבחור שם אחר</button>`;
   if(!S.joinSent&&S.db){S.joinSent=true;S.db.doc('joined/'+me.id).set({at:new Date().toISOString(),...(S.joinedDev?.[me.id]?{}:{dev:DEV})},{merge:true}).catch(()=>{S.joinSent=false})}
   if(!S.setupLoaded)return `<p class="eyebrow">PSP · CONNECTING</p><h1>רגע…</h1>`;
-  if(S.state?.status==='closed'){const a=answersOf(me.id);return a&&Object.keys(a).length?cardView(me):`<p class="eyebrow">PSP · RESULTS</p><h1>אין כאן תשובות של ${esc(me.name)}</h1><p class="muted">החדר כבר נסגר.</p>${switchLink(me)}${deepBtn()}`}
+  if(roomClosed()){const a=answersOf(me.id);return a&&Object.keys(a).length?cardView(me):`<p class="eyebrow">PSP · RESULTS</p><h1>אין כאן תשובות של ${esc(me.name)}</h1><p class="muted">החדר כבר נסגר.</p>${switchLink(me)}${deepBtn()}`}
   if(me.role==='self'&&(S.intro?.live||(!S.setup&&S.view!=='setup')))return introView();
   if(me.role!=='self'&&(S.intro?.live||(S.joinedLoaded&&!S.joinedG?.[me.id])))return introView();
   if(me.role==='self'&&(!S.setup||S.view==='setup'))return setupView();
@@ -1228,12 +1266,12 @@ function remoteView(){
     <button class="btn" data-act="rstart">מתחילים</button>`}
   const me={id:S.rid,name:d.name,role:d.relation||'family'},P=planFor(S.rid),units=P.rounds.flat(),ans=d.answers||{};
   const total=countIds(units),done=answeredIn(units,ans);
-  if(done>=total&&(S.state?.status==='closed'||S.deck?.seg==='end')&&person(S.rid))return cardView(person(S.rid));
+  if(done>=total&&(roomClosed()||S.deck?.seg==='end')&&person(S.rid))return cardView(person(S.rid));
   if(done>=total)return `<p class="eyebrow">PSP · CLEAR</p><h1>תודה, ${esc(d.name)}!</h1><div class="card center"><div class="ball wobble" style="--s:110px"></div><p>ענית על כל השאלון. התשובות שלך נשמרו ויישקללו בערב של ${esc(subj)}.</p></div>`;
   const pending=units.filter(u=>u.ids.some(id=>!(id in ans)));
   if(S.view==='review'&&S.reviewUnit)return unitView(S.reviewUnit,me,done,total,true);
   if(S.holdUnit)return unitView(S.holdUnit,me,done,total,false);
-  if(S.state?.status==='closed')return `<p class="eyebrow">PSP · CLOSED</p><h1>השאלון נסגר</h1><p class="muted">התוצאות של ${esc(subj)} כבר נסגרו, ולכן אי אפשר להמשיך לענות.</p>`;
+  if(roomClosed())return `<p class="eyebrow">PSP · CLOSED</p><h1>השאלון נסגר</h1><p class="muted">התוצאות של ${esc(subj)} כבר נסגרו, ולכן אי אפשר להמשיך לענות.</p>`;
   return unitView(pending[0],me,done,total,false);
 }
 
@@ -1267,7 +1305,7 @@ function progressCard(P,ans){
   return `<div class="card"><h3>ההתקדמות שלך</h3>${P.rounds.map((u,i)=>{const t=countIds(u),d=answeredIn(u,ans);
     return `<div class="row"><span style="min-width:56px">סבב ${i+1}</span><div class="bar grow"><i style="width:${t?d/t*100:0}%"></i></div><span class="muted" style="font-variant-numeric:tabular-nums">${d}/${t}</span></div>`}).join('')}</div>`;
 }
-function pickView(){return pickView0()+(S.state?.status==='closed'?deepBtn():'')+roomFoot()}
+function pickView(){return pickView0()+(roomClosed()?deepBtn():'')+roomFoot()}
 function roomFoot(){return ROOM.code?`<p class="muted center" style="margin-top:22px;font-size:13px">חדר <b style="font-family:var(--pixel);direction:ltr">${esc(ROOM.code)}</b> · <button class="linkbtn" data-act="leaveroom">החלפת חדר</button></p>`:''}
 function pickView0(){
   const subj=subjectName();
@@ -1275,7 +1313,7 @@ function pickView0(){
   <div class="card center"><div class="ball wobble" style="--s:90px"></div><p style="margin:16px 0 0">${esc(subj)} ${gs('מגדיר','מגדירה')} עכשיו את המשתתפים והאחוזים.<br>ברגע ${gs('שהוא יסיים','שהיא תסיים')}, השם שלך יופיע כאן לבד ופרופסור אוק יתחיל.</p></div>
   ${S.joined?.has('subj')?'':`<p class="muted center" style="margin-top:30px">רק ${esc(subj)}:</p><div class="names"><button class="name" data-pick="subj">אני ${esc(subj)}<small>${gs('הנבדק','הנבדקת')}</small></button></div>`}`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p><h1>מי אתה?</h1><p class="muted">בוחרים את השם שלך פעם אחת. הטלפון יזכור.</p>
-  <div class="names">${[...(S.state?.status==='closed'?roster().filter(p=>{const a=answersOf(p.id);return a&&Object.keys(a).length}):inRoom())].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
+  <div class="names">${[...(roomClosed()?roster().filter(p=>{const a=answersOf(p.id);return a&&Object.keys(a).length}):inRoom())].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const t=S.joined?.has(p.id);return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}</small></button>`}).join('')}</div>`;
 }
 
 // ----- subject setup -----
@@ -1569,7 +1607,7 @@ function schedInfo(D,now){if(!D?.t0||!D.seg||D.seg==='open'&&!D.log)return null;
 const mmss=m=>{const neg=m<0,t=Math.round(Math.abs(m)*60);return (neg?'-':'')+Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
 const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour12:false});
 const HOF_HE={intro:'פתיחה',board:'הלוח',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
-function deckPub(){clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
+function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
   if(it.id==='d-battle')label='הכי מתמטי: מי מנצח בקרב?';else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label='מצב הסבב';else if(it.kind==='quizwin')label='מנצח משחק הניחושים';else label='היכל התהילה · '+(HOF_HE[HOF_STEPS[HOF]]||'');
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
@@ -2322,7 +2360,7 @@ function renderPanel(){
   const p=$('#panel');if(!p||p.hidden)return;
   const st=stats(),open=S.state?.open||0,m=S.state?.mew;
   const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done);
-  p.innerHTML=`${ROOM.code?`<div class="row" style="margin-bottom:6px"><span class="grow">חדר <b style="font-family:var(--pixel);color:var(--gold)">${esc(ROOM.code)}</b> · ${S.state?.status==='closed'?'נסגר, התוצאות זמינות לכולם':'פתוח'}</span><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),50)" style="text-decoration:none">כל החדרים</a>${S.state?.status==='closed'?'<button class="btn ghost small" data-pa="reopen">פתיחה מחדש</button>':'<button class="btn small" data-pa="closeroom">סגירה לתוצאות</button>'}</div>`:''}
+  p.innerHTML=`${ROOM.code?`<div class="row" style="margin-bottom:6px"><span class="grow">חדר <b style="font-family:var(--pixel);color:var(--gold)">${esc(ROOM.code)}</b> · ${roomClosed()?'נסגר, התוצאות זמינות לכולם':'פתוח'}</span><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),50)" style="text-decoration:none">כל החדרים</a>${roomClosed()?'<button class="btn ghost small" data-pa="reopen">פתיחה מחדש</button>':'<button class="btn small" data-pa="closeroom">סגירה לתוצאות</button>'}</div>`:''}
   ${S.confirmClose?`<div class="card" style="margin:6px 0"><b>${unf.length?`${unf.length} משיבים מרחוק לא סיימו. התשובות שלהם יימחקו:`:'כולם סיימו.'}</b>${unf.map(([id,r])=>`<div class="row" style="font-size:14px"><span class="grow">${esc(r.name||'ללא שם')}</span><span class="muted">${Object.keys(r.answers||{}).length} תשובות</span></div>`).join('')}<p class="muted" style="font-size:13px">אחרי הסגירה כל מי שנכנס עם הקוד מקבל את הכרטיס האישי ואת עמוד העומק.</p><div class="row"><button class="btn red small" data-pa="closeroom2">${unf.length?'למחוק ולסגור':'סגירה'}</button><button class="btn ghost small" data-pa="closeroom0">ביטול</button></div></div>`:''}
   <div class="row"><h3 class="grow">פאנל מארח</h3><button class="btn ghost small" data-pa="close">סגירה</button></div>
   <p class="muted" style="font-size:13px">מקשים: חצים או רווח למעבר, H לפאנל, F למסך מלא.</p>
