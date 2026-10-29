@@ -242,7 +242,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .atab{width:100%;border-collapse:collapse;font-size:15px}.atab th,.atab td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:right;vertical-align:middle}.atab th{color:var(--gold);font-weight:600}.atab td.hit{background:rgba(242,201,76,.18)}.atab.small{font-size:13px}.atab.mat td{text-align:center;min-width:56px}
 .atabs{display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.15);margin:10px 0 16px;flex-wrap:wrap}.atabs button{background:none;border:0;color:var(--cream);font:600 16px var(--body);padding:10px 16px;border-bottom:3px solid transparent;cursor:pointer}.atabs button.on{border-color:var(--gold);color:var(--gold)}
 .apod{display:flex;gap:14px;align-items:flex-end;justify-content:center;margin:10px 0}.apod>div{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.05);border-radius:16px;padding:12px 18px;min-width:140px}.apod>div.win{background:rgba(242,201,76,.16);border:2px solid var(--gold)}
-.chipx{display:inline-block;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 8px;margin:2px;font-size:13px}.agrid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:12px}
+.chipx{display:inline-block;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 8px;margin:2px;font-size:13px}.arow4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}@media (max-width:700px){.arow4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.agrid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:12px}
 @media (max-width:700px){.atab{font-size:13px}.atab th,.atab td{padding:5px 4px}}
 .tbar{position:relative;height:22px}.tbar i{position:absolute;right:0;height:9px;border-radius:5px}.tbar i.pl{top:0;background:rgba(255,255,255,.25)}.tbar i.ac{top:12px;background:var(--gold)}.tbar i.ac.over{background:#FF8A80}
 .tkey{display:inline-block;width:14px;height:8px;border-radius:4px;vertical-align:middle}.tkey.pl{background:rgba(255,255,255,.25)}.tkey.ac{background:var(--gold)}
@@ -632,7 +633,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793233127';
+const BUILDV='1793282420';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -759,7 +760,7 @@ function roomsView(){
    <label class="muted">בן או בת?</label><div class="row" style="gap:8px;margin:6px 0 10px"><button class="btn ghost small ${S.nrg!=='f'?'on':''}" data-nrg="m">בן</button><button class="btn ghost small ${S.nrg==='f'?'on':''}" data-nrg="f">בת</button></div>
    <button class="btn" data-act="newroom">יצירת חדר</button></div>
   ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}</p>
-   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#assets=${esc(r.code)}" style="text-decoration:none">תמונות לערב</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button></div></div>`).join('')}</div>`;
+   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button></div></div>`).join('')}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.nrg){S.nrg=b.dataset.nrg;roomsView();return}
     if(b.dataset.copy){const u=b.dataset.copy;(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור:',u));return}
@@ -776,37 +777,33 @@ function assetsView(){
   if(!S.stateLoaded||!S.assetsLoaded)return `<p class="eyebrow">PSP · IMAGES</p><h1>טוען…</h1>`;
   if(ROOM.legacy){const g=(src,lab)=>`<div class="aslot"><div class="aprev"><img src="${src}" alt=""></div><b>${lab}</b><a class="btn ghost small" href="${src}" download target="_blank" style="text-decoration:none">הורדה</a></div>`;
     const ppl=Object.entries(AV);
-    return `<p class="eyebrow">PSP · FILES · ERI1</p><h1>תמונות וקבצים: הערב של ערי</h1>
-    <div class="card"><h3>ספרייטים של המשתתפים</h3><div class="agrid4">${ppl.map(([nm,k])=>g(`img/av-f-${k}.webp`,nm)+g(`img/av-h-${k}.webp`,nm+' · ראש')+g(`img/av-f-${k}-g.webp`,nm+' · כאישה')+g(`img/av-h-${k}-g.webp`,nm+' · ראש, כאישה')).join('')}</div></div>
+    return `<div class="card"><h3>ספרייטים של המשתתפים</h3>${ppl.map(([nm,k])=>`<p style="margin:12px 0 4px;font-weight:700">${esc(nm)}</p><div class="arow4">${g(`img/av-f-${k}.webp`,'בן')+g(`img/av-h-${k}.webp`,'בן · ראש')+g(`img/av-f-${k}-g.webp`,'בת')+g(`img/av-h-${k}-g.webp`,'בת · ראש')}</div>`).join('')}</div>
     <div class="card"><h3>המאמנים של ערי</h3><div class="agrid4">${TR_KEYS.map((k,i)=>g(`img/tr-eri-${k}.webp`,'מאמן '+(i+1))).join('')}</div></div>
     <div class="card"><h3>התמונות שערי הציג</h3><div class="agrid4">${PHOTOS0.map(id=>g(`img/eri/p${id}.webp`,'תמונה '+(+id))).join('')}</div></div>
-    <div class="card"><h3>PSP Pokédex</h3><div class="agrid4">${g('img/guide-he.jpg','PSP Pokédex')}</div></div>
-    <a class="btn" href="#admin=ERI1" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">לניהול הערב</a>`}
+    <div class="card"><h3>PSP Pokédex</h3><div class="agrid4">${g('img/guide-he.jpg','PSP Pokédex')}</div></div>`}
   const A=S.assets||{},n=subjectName();
   const people=[...new Set([...Object.values(A).filter(x=>x.person).map(x=>x.person),...(S.setup?.roster||[]).filter(r=>r.role!=='self').map(r=>r.name),...(S.newPeople||[])])].filter(Boolean);
   const photos=Object.keys(A).filter(k=>k.startsWith('ph-')).sort();
-  return `<p class="eyebrow">PSP · IMAGES · ${esc(ROOM.code)}</p><h1>תמונות לערב של ${esc(n)}</h1><p class="muted">כל מה שלא מועלה מופיע עם תמונה כללית. ספרייטים על רקע שקוף נראים הכי טוב.</p>
+  return `<p class="muted">כל מה שלא מועלה מופיע עם תמונה כללית. ספרייטים על רקע שקוף נראים הכי טוב.</p>
   <div class="card"><h3>${esc(n)}</h3><div class="agrid">${assetSlot('av-subj-f','ספרייט מלא',A['av-subj-f']?.data)}${assetSlot('av-subj-h','ראש (עיגול)',A['av-subj-h']?.data)}</div></div>
   <div class="card"><h3>המאמנים של ${esc(n)}</h3><p class="muted" style="font-size:13px">הכותרת מופיעה בשקף המאמן (למשל "ספורט").</p><div class="agrid">${[1,2,3,4].map(i=>assetSlot('tr-'+i,'מאמן '+i,A['tr-'+i]?.data,`<input type="text" data-trl="${i}" value="${esc(A['tr-'+i]?.label||'')}" placeholder="כותרת" style="margin:6px 0">`)).join('')}</div></div>
   <div class="card"><h3>משתתפים</h3><p class="muted" style="font-size:13px">ההתאמה לפי השם, בדיוק כמו שהוא מופיע ברשימת המשתתפים.</p>
-   ${people.map(nm=>{const h=hexName(nm);return `<p style="margin:12px 0 4px;font-weight:700">${esc(nm)}</p><div class="agrid">${assetSlot('p-'+h+'-f','ספרייט מלא',S.assetPeople?.[nm]?.f,'',nm)}${assetSlot('p-'+h+'-h','ראש',S.assetPeople?.[nm]?.h,'',nm)}</div>`}).join('')}
+   ${people.map(nm=>{const h=hexName(nm);return `<p style="margin:12px 0 4px;font-weight:700">${esc(nm)}</p><div class="arow4">${assetSlot('p-'+h+'-f','ספרייט מלא',S.assetPeople?.[nm]?.f,'',nm)}${assetSlot('p-'+h+'-h','ראש',S.assetPeople?.[nm]?.h,'',nm)}</div>`}).join('')}
    <div class="row" style="gap:8px;margin-top:12px"><input type="text" id="np-name" placeholder="שם משתתף" style="flex:1"><button class="btn ghost small" data-act="addperson">הוספה</button></div></div>
   <div class="card"><h3>תמונות ש${esc(n)} מציג${gs('','ה')} על המסך</h3><div class="agrid">${photos.map(k=>assetSlot(k,'',A[k].data)).join('')}</div>
-   <label class="btn ghost" style="cursor:pointer;margin-top:10px;text-align:center">הוספת תמונות<input type="file" accept="image/*" multiple hidden data-up="ph-new"></label></div>
-  <a class="btn" href="#screen=${esc(ROOM.code)}" style="text-decoration:none;text-align:center" onclick="setTimeout(()=>location.reload(),50)">למסך של החדר</a>`}
+   <label class="btn ghost" style="cursor:pointer;margin-top:10px;text-align:center">הוספת תמונות<input type="file" accept="image/*" multiple hidden data-up="ph-new"></label></div>`}
 function shrinkImage(file,max,photo){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const g=c.getContext('2d');if(!photo)g.imageSmoothingEnabled=k<1;g.drawImage(im,0,0,c.width,c.height);
   let u=c.toDataURL(photo?'image/jpeg':'image/webp',.85);if(!photo&&!u.startsWith('data:image/webp'))u=c.toDataURL('image/png');if(u.length>900000)u=c.toDataURL('image/jpeg',.7);res(u)};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
-function bindAssets(){const app=$('#app');
-  app.onchange=async e=>{const el=e.target;
+async function assetsChange(e){const el=e.target;
     if(el.dataset.trl){const k='tr-'+el.dataset.trl;await S.db.doc('setup/asset-'+k).set({...(S.assets?.[k]||{}),label:el.value.trim()});toast('נשמר');return}
     const key=el.dataset.up;if(!key||!el.files?.length)return;toast('מעלה…');
     try{for(const f of el.files){const photo=key.startsWith('ph-');const data=await shrinkImage(f,photo?1280:600,photo);
       let k=key,extra={};if(key==='ph-new')k='ph-'+String(Date.now()).slice(-9)+Math.floor(Math.random()*10);
       const m=key.match(/^p-[0-9a-f]+-([fh])$/);if(m)extra={person:el.dataset.person,kind:m[1]};
-      await S.db.doc('setup/asset-'+k).set({...(S.assets?.[k]||{}),...extra,data})}toast('הועלה')}catch(err){console.error(err);toast('ההעלאה נכשלה')}};
-  app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
-    if(b.dataset.del){await S.db.doc('setup/asset-'+b.dataset.del).delete();toast('נמחק')}
-    if(b.dataset.act==='addperson'){const v=($('#np-name')?.value||'').trim();if(v){S.newPeople=[...(S.newPeople||[]),v];render()}}}}
+      await S.db.doc('setup/asset-'+k).set({...(S.assets?.[k]||{}),...extra,data})}toast('הועלה')}catch(err){console.error(err);toast('ההעלאה נכשלה')}}
+async function assetsClick(e){const b=e.target.closest('button');if(!b)return false;
+    if(b.dataset.del){await S.db.doc('setup/asset-'+b.dataset.del).delete();toast('נמחק');return true}
+    if(b.dataset.act==='addperson'){const v=($('#np-name')?.value||'').trim();if(v){S.newPeople=[...(S.newPeople||[]),v];render()}return true}return false}
 // ---------- admin (#admin, #admin=CODE): everything about every evening, host only ----------
 const AITEMS=Object.fromEntries(BANK.items.map(i=>[i.id,i]));
 const LAYER_HE={types:'סוגים',stats:'סטטים',evo:'התפתחות'};
@@ -825,18 +822,18 @@ function adminView(){
     const st=r=>(r.status==='closed'||(r.code===LEGACY_ROOM&&r.status!=='open'))?'נסגר':r.revealed?'אחרי חשיפה':r.open?'פעיל':'טרם התחיל';
     return box(`<p class="eyebrow">PSP · ADMIN</p><h1>כל הערבים</h1><p class="muted">בוחרים ערב כדי לראות משתתפים, תוצאות וקבצים. חדר חדש פותחים מהמסך הגדול.</p>
     <table class="atab"><tr><th>נבדק/ת</th><th>קוד</th><th>תאריך</th><th>מצב</th><th>תוצאה</th><th></th></tr>
-    ${L.map(r=>`<tr><td><b>${esc(admRoomName(r))}</b></td><td class="mono">${esc(r.code)}</td><td>${r.eve?new Date(r.eve).toLocaleDateString('he-IL'):'—'}</td><td>${st(r)}</td><td>${esc(r.result?.finalName||'')}</td><td><a class="btn small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)">ניהול</a></td></tr>`).join('')}</table>
+    ${L.map(r=>`<tr><td><b>${esc(admRoomName(r))}</b></td><td class="mono">${esc(r.code)}</td><td>${r.eve?new Date(r.eve).toLocaleDateString('he-IL'):'—'}</td><td>${st(r)}</td><td>${esc(r.result?.finalName||'')}</td><td style="white-space:nowrap"><a class="btn small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)">ניהול</a> ${r.code===LEGACY_ROOM?'':`<button class="btn ghost small" data-delroom="${esc(r.code)}">מחיקה</button>`}</td></tr>
+     ${S.delRoom===r.code?`<tr><td colspan="6"><div class="card" style="margin:4px 0"><b>למחוק את הערב של ${esc(admRoomName(r))} (${esc(r.code)})?</b> כל התשובות, התמונות והסיכומים של החדר יימחקו, ואי אפשר לבטל.<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-delroom2="${esc(r.code)}">מחיקה לתמיד</button><button class="btn ghost small" data-delroom0="1">ביטול</button></div></div></td></tr>`:''}`).join('')}</table>
     <div class="row" style="gap:8px;margin-top:14px"><a class="btn ghost small" href="#screen" onclick="setTimeout(()=>location.reload(),30)">למסך הגדול</a></div>`)}
   if(!S.stateLoaded||!needEngine())return box(`<p class="eyebrow">PSP · ADMIN · ${esc(ROOM.code)}</p><h1>טוען…</h1>`);
   if(!S.state)return box(`<h1>החדר ${esc(ROOM.code)} לא נמצא</h1><a class="btn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">כל הערבים</a>`);
-  const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','קבצים'],['whatif','מה אם'],['time','לוח זמנים']];
+  const tab=S.admTab||'results',T=[['results','תוצאות'],['people','משתתפים'],['files','סיכומים'],['images','תמונות וקבצים'],['whatif','מה אם'],['time','לוח זמנים']];
   const n=subjectName(),closed=roomClosed();
   if(ROOM.legacy&&closed&&!S.autoClean&&S.remote){const unf=Object.entries(S.remote).filter(([id,r])=>!r.done).map(([id])=>id);S.autoClean=true;if(unf.length)(async()=>{for(const id of unf)await S.db.doc('remote/'+id).delete().catch(()=>{});await ensureCards().catch(()=>{});toast(`נמחקו ${unf.length} תשובות חלקיות (לא סיימו)`)})()}
   const head=`<div class="row" style="flex-wrap:wrap;gap:8px;align-items:center"><a class="linkbtn" href="#admin" onclick="setTimeout(()=>location.reload(),30)">← כל הערבים</a></div>
    <div class="row" style="align-items:baseline;gap:14px;flex-wrap:wrap"><h1 style="margin:6px 0">${esc(n)}</h1><span class="mono" style="color:var(--gold);font-size:20px">${esc(ROOM.code)}</span><span class="muted">${closed?'נסגר · תוצאות פתוחות לכולם':'פתוח'}</span></div>
    <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
     <a class="btn ghost small" href="#screen=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">פתיחה במסך</a>
-    <a class="btn ghost small" href="#assets=${esc(ROOM.code)}" onclick="setTimeout(()=>location.reload(),30)">תמונות וקבצים</a>
     <button class="btn ghost small" data-adm="${closed?'reopen':'close'}">${closed?'פתיחה מחדש':'סגירה לתוצאות'}</button>
     <button class="btn ghost small" data-adm="backup">הורדת גיבוי (JSON)</button>
 </div>
@@ -844,8 +841,13 @@ function adminView(){
    ${S.admConfirm?admConfirmHTML():''}
    <div class="atabs">${T.map(([k,v])=>`<button class="${k===tab?'on':''}" data-tab="${k}">${v}</button>`).join('')}</div>`;
   let body='';
-  try{body=tab==='time'?admTime():tab==='people'?admPeople():tab==='files'?admFiles():tab==='whatif'?admWhatIf():admResults()}catch(e){console.error(e);body=`<p class="muted">שגיאה בחישוב: ${esc(e.message||e)}</p>`}
+  try{body=tab==='images'?assetsView():tab==='time'?admTime():tab==='people'?admPeople():tab==='files'?admFiles():tab==='whatif'?admWhatIf():admResults()}catch(e){console.error(e);body=`<p class="muted">שגיאה בחישוב: ${esc(e.message||e)}</p>`}
   return box(head+body)}
+function rawIds(col,lo,hi){return new Promise(res=>{const FP=firebase.firestore.FieldPath.documentId();let un=null,done=false;un=S.db.raw.collection(col).orderBy(FP).startAt(lo).endAt(hi).onSnapshot(q=>{if(done)return;done=true;res(q.docs.map(d=>d.id));setTimeout(()=>{try{un&&un()}catch(e){}},0)},()=>res([]))})}
+async function deleteRoom(code){if(!code||code===LEGACY_ROOM)return;toast('מוחק…');const raw=S.db.raw;
+  for(const col of ['answers','joined','remote','stage','setup']){const ids=await rawIds(col,code+'~',code+'~');for(const id of ids)await raw.doc(col+'/'+id).delete().catch(()=>{})}
+  const cards=Object.entries(S.cardDocs||{}).filter(([c,d])=>String(d.eve||'').startsWith(code+':')).map(([c])=>c);for(const c of cards)await raw.doc('stage/card-'+c).delete().catch(()=>{});
+  await raw.doc('setup/'+code).delete().catch(()=>{});await raw.doc('state/'+code).delete().catch(()=>{});toast('הערב נמחק')}
 function admConfirmHTML(){const c=S.admConfirm;
   if(c.k==='close'){const unf=Object.entries(S.remote||{}).filter(([id,r])=>!r.done);return `<div class="card"><b>${unf.length?`${unf.length} משיבים מרחוק לא סיימו, התשובות שלהם יימחקו:`:'כולם סיימו.'}</b> ${unf.map(([id,r])=>esc(r.name||'ללא שם')).join(', ')}<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-adm="close2">${unf.length?'למחוק ולסגור':'סגירה'}</button><button class="btn ghost small" data-adm="cancel">ביטול</button></div></div>`}
   if(c.k==='del'){return `<div class="card"><b>למחוק את כל התשובות של ${esc(c.name)}?</b> אי אפשר לבטל.<div class="row" style="gap:8px;margin-top:8px"><button class="btn red small" data-adm="del2">מחיקה</button><button class="btn ghost small" data-adm="cancel">ביטול</button></div></div>`}
@@ -905,8 +907,12 @@ function admWhatIf(){
    <table class="atab">${rs.map((r,i)=>`<tr><td style="width:36px"><input type="checkbox" data-wi="r" data-id="${esc(r.pid)}" ${wi.excl.has(r.pid)?'':'checked'}></td><td>${admWho(r)}</td><td style="width:45%"><input type="range" min="0" max="60" value="${wi.w[r.pid]??0}" data-wi="w" data-id="${esc(r.pid)}" style="width:100%" ${wi.excl.has(r.pid)?'disabled':''}></td><td style="width:110px">${wi.excl.has(r.pid)?'—':Math.round((wi.w[r.pid]||0)/Math.max(1,rs.filter(x=>!wi.excl.has(x.pid)).reduce((a,x)=>a+(wi.w[x.pid]||0),0))*100)+'%'} <span class="muted">(${Math.round(W0[i]*100)}%)</span></td></tr>`).join('')}</table>
    <p class="muted" style="font-size:13px">האחוז הוא המשקל אחרי נרמול. בסוגריים: המשקל בערב עצמו.</p></div>${res}${mat}`}
 function bindAdmin(){const app=$('#app');
-  app.onchange=e=>{const el=e.target;if(!el.dataset.wi)return;const wi=S.wi;if(el.dataset.wi==='mew')wi.mew=el.checked;else if(el.dataset.wi==='w')wi.w[el.dataset.id]=+el.value;else{el.checked?wi.excl.delete(el.dataset.id):wi.excl.add(el.dataset.id)}const y=scrollY;render();scrollTo(0,y)};
-  app.onclick=async e=>{const t=e.target.closest('[data-tab]');if(t){S.admTab=t.dataset.tab;render();return}
+  app.onchange=e=>{const el=e.target;if(el.dataset.up||el.dataset.trl){assetsChange(e);return}if(!el.dataset.wi)return;const wi=S.wi;if(el.dataset.wi==='mew')wi.mew=el.checked;else if(el.dataset.wi==='w')wi.w[el.dataset.id]=+el.value;else{el.checked?wi.excl.delete(el.dataset.id):wi.excl.add(el.dataset.id)}const y=scrollY;render();scrollTo(0,y)};
+  app.onclick=async e=>{const t=e.target.closest('[data-tab]');if(t){e.preventDefault();S.admTab=t.dataset.tab;render();return}
+    if(S.admTab==='images'&&await assetsClick(e))return;
+    const dr=e.target.closest('[data-delroom]');if(dr){S.delRoom=dr.dataset.delroom;render();return}
+    const dr2=e.target.closest('[data-delroom2]');if(dr2){await deleteRoom(dr2.dataset.delroom2);S.delRoom=null;render();return}
+    if(e.target.closest('[data-delroom0]')){S.delRoom=null;render();return}
     const d=e.target.closest('[data-act="deep"]');if(d){makeDeep();return}
     const b=e.target.closest('[data-adm]');if(!b)return;const k=b.dataset.adm;
     if(k==='ans'){S.admAns=S.admAns===b.dataset.id?null:b.dataset.id;render()}
@@ -947,7 +953,7 @@ function render(){
   const app=$('#app');app.hidden=false;
   S.remoteMode=hashParts().mode==='remote';
   if(hashParts().mode==='admin'){app.innerHTML=adminView();bindAdmin();return}
-  if(hashParts().mode==='assets'){app.innerHTML=`<div class="col">${assetsView()}</div>`;bindAssets();return}
+  if(hashParts().mode==='assets'){S.admTab='images';history.replaceState(null,'','#admin='+ROOM.code);app.innerHTML=adminView();bindAdmin();return}
   if(!ROOM.code&&hashParts().mode!=='card'){app.innerHTML=`<div class="col">${joinView()}</div>`;bindPhone();return}
   rememberRoom();
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
@@ -1045,10 +1051,11 @@ async function drawDeep(me){
   const drawSp=async(l,sp,x,y,s)=>{const im=await img(spriteURL(sprite(l,sp)));if(!im)return;g.imageSmoothingEnabled=false;const k=s/Math.max(im.width,im.height);g.drawImage(im,x+(s-im.width*k)/2,y+(s-im.height*k)/2,im.width*k,im.height*k)};
   const chip=(t,xr,y,fs,hh)=>{g.font='bold '+fs+'px Rubik';const w=g.measureText(TYPE_HE[t]).width+fs*1.3;rr(xr-w,y,w,hh,12,TYPE_COL[t]);T(TYPE_HE[t],xr-fs*.65,y+hh*.7,'bold '+fs+'px Rubik','#fff');return w+10};
   const H2=(t,en,y)=>{T(t,W-60,y,'56px "Secular One"',CREAM);T(en,60,y-6,'18px "Press Start 2P"',GOLD,'left');return y+34};
+  const IC={};const icon=async k=>IC[k]||(IC[k]=await img('img/'+k+'.webp'));const putIcon=async(k,x,y,sz)=>{const im=await icon(k);if(im){g.imageSmoothingEnabled=k.startsWith('it-')?false:true;g.drawImage(im,x,y,sz,sz)}};
   const dot=(x,y,col,r=14)=>{g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=col;g.fill();g.strokeStyle=CREAM;g.lineWidth=3;g.stroke()};
   // one row: label on the right, a 1-5 bar for everyone, dots for this person and for the subject's own view
   const BX=90,BW=W-90-330-BX;const pos=v=>BX+BW-BW*((v-1)/4);
-  const barRow=(y,label,sub,v,hi,col,you,subj)=>{T(label,W-90,y+30,'bold 30px Rubik',hi?CREAM:MIST);if(sub)T(sub,W-90,y+64,'24px Rubik',MIST);
+  const barRow=(y,label,sub,v,hi,col,you,subj,ic)=>{const lx=ic?W-150:W-90;if(ic)putIcon(ic,W-90-48,y+4,48);T(label,lx,y+30,'bold 30px Rubik',hi?CREAM:MIST);if(sub)T(sub,lx,y+64,'24px Rubik',MIST);
     rr(BX,y+16,BW,20,10,'#2E3458');rr(pos(v),y+16,BX+BW-pos(v),20,10,col||(hi?GOLD:'#5A6290'));
     if(subj!=null)dot(pos(subj),y+26,SKY,11);if(you!=null)dot(pos(you),y+26,PINK,13)};
   const legend=(y)=>{let x=W-60;const it=[[GOLD,'כולם יחד'],...(mine&&!isSelf?[[PINK,me.name]]:[]),...(isSelf?[[PINK,G('אתה','את')]]:[]),...(self&&!isSelf?[[SKY,n+' על '+G('עצמו','עצמה')]]:[])];
@@ -1068,19 +1075,33 @@ async function drawDeep(me){
   y=H2('הסוגים: מי '+G('הוא','היא'),'TYPES',y+50)+16;
   const finalT=win.stage_types.at(-1),allT=[...new Set(win.stage_types.flat())],earlyT=allT.filter(t=>!finalT.includes(t));
   const tOrd=ax.types.slice().sort((a,b)=>agg('types',b)-agg('types',a));const show=[...new Set([...tOrd.slice(0,6),...allT])];
-  rr(50,y,W-100,show.length*96+30,28,CARD,LINE);let ry=y+22;
-  for(const t of show){const on=finalT.includes(t),early=earlyT.includes(t);barRow(ry,TYPE_HE[t]+(on?' ★':early?' ☆':''),TYPE_KEY[t][0]+' · מקום '+(tOrd.indexOf(t)+1)+' מתוך 18',agg('types',t),on||early,on?TYPE_COL[t]:early?TYPE_COL[t]+'AA':null,sv(mine,'types',t),isSelf?null:sv(self,'types',t));ry+=96}
-  y=ry+20;
-  T(`★ הסוגים של ${finalName(win)}${earlyT.length?' · ☆ סוג מהשלבים הקודמים':''}`,W-60,y+10,'26px Rubik',MIST);y+=46;
-  for(const t of [...finalT,...earlyT]){y=wrap(`${TYPE_HE[t]} · ${TYPE_KEY[t][0]}: ${TYPE_KEY[t][1]}`,W-60,y+6,W-120,40,'28px Rubik',CREAM)}
+  {const cx=W/2,cy=y+400,R0=86,R1=300,rad=v=>R0+(R1-R0)*Math.max(0,Math.min(1,(v-1)/4));
+   rr(50,y,W-100,800,28,CARD,LINE);
+   g.strokeStyle='rgba(255,255,255,.07)';g.lineWidth=2;[1,2,3,4,5].forEach(v=>{g.beginPath();g.arc(cx,cy,rad(v),0,7);g.stroke()});
+   for(let i=0;i<tOrd.length;i++){const t=tOrd[i],an=-Math.PI/2+i*2*Math.PI/18,ca=Math.cos(an),sa=Math.sin(an),on=finalT.includes(t),early=earlyT.includes(t);
+     g.lineCap='round';g.strokeStyle='rgba(255,255,255,.07)';g.lineWidth=18;g.beginPath();g.moveTo(cx+ca*R0,cy+sa*R0);g.lineTo(cx+ca*R1,cy+sa*R1);g.stroke();
+     const r=rad(agg('types',t));g.strokeStyle=TYPE_COL[t];g.globalAlpha=on||early?1:.5;g.beginPath();g.moveTo(cx+ca*R0,cy+sa*R0);g.lineTo(cx+ca*r,cy+sa*r);g.stroke();g.globalAlpha=1;
+     const ss=isSelf?null:sv(self,'types',t),yy=sv(mine,'types',t);if(ss!=null)dot(cx+ca*rad(ss),cy+sa*rad(ss),SKY,9);if(yy!=null)dot(cx+ca*rad(yy),cy+sa*rad(yy),PINK,11);
+     const ir=R1+52,ix=cx+ca*ir,iy=cy+sa*ir;if(on||early){g.beginPath();g.arc(ix,iy,34,0,7);g.fillStyle=on?GOLD:'#8C93B8';g.fill()}await putIcon('ic-'+t,ix-26,iy-26,52);
+     T(String(i+1),cx+ca*(R1+92),cy+sa*(R1+92)+8,'bold 20px Rubik',MIST,'center')}
+   g.lineCap='butt';await drawSp(win,win.species.at(-1),cx-70,cy-70,140);
+   y+=820}
+  y=wrap('הקרניים מסודרות מהסוג החזק ביותר (1) עם כיוון השעון. עיגול זהב: הסוגים של '+finalName(win)+(earlyT.length?' · אפור: סוג מהשלבים הקודמים':''),W-60,y+10,W-120,34,'24px Rubik',MIST);
+  y+=20;
+  for(const t of [...finalT,...earlyT]){await putIcon('ic-'+t,W-60-40,y-4,40);y=wrap(`${TYPE_HE[t]} · ${TYPE_KEY[t][0]}: ${TYPE_KEY[t][1]}`,W-110,y+26,W-170,40,'28px Rubik',CREAM)+6}
   // stats
   y=H2('הסטטים: איך '+G('הוא פועל','היא פועלת'),'STATS',y+60)+16;
   const ls=win.stats,ord=ls.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);
-  rr(50,y,W-100,6*110+30,28,CARD,LINE);let sy=y+22;
-  ax.stats.forEach((k,i)=>{const hi=ord.indexOf(i)<2,lo=ord.indexOf(i)>3;
-    barRow(sy,STAT_SHORT[k]+' · '+(STAT_HE[k].split('·')[1]||'').trim(),'',agg('stats',k),hi,null,sv(mine,'stats',k),isSelf?null:sv(self,'stats',k));
-    T(`${finalName(win)}: `+(hi?'▲ '+STAT_HL[k][0]:lo?'▼ '+STAT_HL[k][1]:'באמצע'),W-90,sy+70,'24px Rubik',hi?'#B5E3A8':lo?'#F2B8A8':MIST);sy+=110});
-  y=sy+30;T(`הפס: מה כולם ענו (1 עד 5). ▲▼: איפה ${finalName(win)} חזק וחלש יחסית לעצמו.`,W-60,y,'24px Rubik',MIST);y+=20;
+  {const VIT={hp:'it-hp-up',attack:'it-protein',defense:'it-iron','special-attack':'it-calcium','special-defense':'it-zinc',speed:'it-carbos'};
+   rr(50,y,W-100,620,28,CARD,LINE);const cx=300,cy=y+310,RR=200,pt=(i,v)=>{const an=-Math.PI/2+i*Math.PI/3,r=RR*Math.max(.04,(v-1)/4);return [cx+Math.cos(an)*r,cy+Math.sin(an)*r]};
+   g.strokeStyle='rgba(255,255,255,.12)';g.lineWidth=2;[2,3,4,5].forEach(v=>{g.beginPath();for(let i=0;i<6;i++){const [x,yy]=pt(i,v);i?g.lineTo(x,yy):g.moveTo(x,yy)}g.closePath();g.stroke()});
+   const poly=(vals,col,fill,dash,w)=>{g.setLineDash(dash||[]);g.beginPath();vals.forEach((v,i)=>{const [x,yy]=pt(i,v??3);i?g.lineTo(x,yy):g.moveTo(x,yy)});g.closePath();if(fill){g.fillStyle=fill;g.fill()}g.strokeStyle=col;g.lineWidth=w||4;g.stroke();g.setLineDash([])};
+   const mn=Math.min(...ls),mx=Math.max(...ls);poly(ls.map(v=>1+4*(v-mn)/Math.max(1e-9,mx-mn)),'#8C93B8',null,[10,8],3);
+   poly(ax.stats.map(k=>agg('stats',k)),GOLD,'rgba(242,201,76,.28)');if(self&&!isSelf)poly(ax.stats.map(k=>sv(self,'stats',k)),SKY,null,null,3);if(mine)poly(ax.stats.map(k=>sv(mine,'stats',k)),PINK,null,null,4);
+   for(let i=0;i<6;i++){const an=-Math.PI/2+i*Math.PI/3;await putIcon(VIT[ax.stats[i]],cx+Math.cos(an)*(RR+44)-22,cy+Math.sin(an)*(RR+44)-30,44)}
+   let ly=y+60;ax.stats.forEach((k,i)=>{const hi=ord.indexOf(i)<2,lo=ord.indexOf(i)>3;T(STAT_SHORT[k]+' · '+(STAT_HE[k].split('·')[1]||'').trim(),W-90,ly,'bold 28px Rubik',CREAM);
+     T(hi?'▲ '+STAT_HL[k][0]:lo?'▼ '+STAT_HL[k][1]:'באמצע',W-90,ly+36,'24px Rubik',hi?'#B5E3A8':lo?'#F2B8A8':MIST);T(agg('stats',k).toFixed(1),600,ly,'bold 26px Rubik',GOLD,'left');ly+=90});
+   y+=640;y=wrap(`זהב: כולם יחד · קו מקווקו: הצורה של ${finalName(win)} · ▲▼: איפה ${finalName(win)} חזק וחלש יחסית לעצמו`,W-60,y,W-120,34,'24px Rubik',MIST)-24}
   // evolution
   y=H2('ההתפתחות: איך '+G('הוא גדל','היא גדלה'),'EVOLUTION',y+60)+16;
   rr(50,y,W-100,280,28,CARD,LINE);const sp=win.species,step=(W-160)/Math.max(1,sp.length);
@@ -1088,20 +1109,36 @@ async function drawDeep(me){
   const meth=ax.evo.filter((k,i)=>win.evo[i]>0);
   T(sp.length>1?('הדרך של '+finalName(win)+': '+(meth.map(k=>EVO_META[k][2]).join(' + ')||'—')):'בלי התפתחות: מגיע שלם לכל מסגרת',W-90,y+245,'bold 30px Rubik',GOLD);y+=310;
   rr(50,y,W-100,5*96+30,28,CARD,LINE);let ey=y+22;
-  for(const k of ax.evo){const on=meth.includes(k);barRow(ey,EVO_META[k][2]+(on?' ★':''),'',agg('evo',k),on,null,sv(mine,'evo',k),isSelf?null:sv(self,'evo',k));ey+=96}
+  for(const k of ax.evo){const on=meth.includes(k);barRow(ey,EVO_META[k][2]+(on?' ★':''),'',agg('evo',k),on,null,sv(mine,'evo',k),isSelf?null:sv(self,'evo',k),EVO_META[k][1]);ey+=96}
   y=ey+20;
   // extra trait, with its three sources
   const xp=S.xparts?.[win.id];if(xp){y=H2('האפיון הנוסף','EXTRA',y+50)+16;
     const tot={};['m','l','c'].forEach(k=>Object.entries(xp[k]||{}).forEach(([t,v])=>tot[t]=(tot[t]||0)+v));
-    const ord2=Object.entries(tot).sort((a,b)=>b[1]-a[1]),main=ord2[0]?.[0];
-    y=wrap(`סוג שלא מופיע על הכרטיס של ${finalName(win)}, אבל מושך אותו. הוא מחושב משלושה מקורות:`,W-60,y+10,W-120,40,'28px Rubik',MIST)+6;
-    const src=[['m','המתקפות שהליין לומד (48%)',x=>''],['l','הפוקדקס: מילים בתיאורים (32%)',t=>xp.w?.[t]?.length?' ("'+xp.w[t].join('", "')+'")':''],['c','סוג שהיה בשלב מוקדם ונעלם (20%)',t=>'']];
-    for(const [k,lab,extra] of src){const e=Object.entries(xp[k]||{}).sort((a,b)=>b[1]-a[1]);rr(50,y,W-100,56+Math.max(1,e.length)*44,22,CARD,LINE);T(lab,W-80,y+40,'bold 28px Rubik',CREAM);let yy=y+84;
-      if(!e.length){T('אין',W-80,yy,'26px Rubik',MIST);yy+=44}
-      for(const [t,v] of e.slice(0,4)){const sh=Math.round(v/(ord2[0][1]||1)*100);rr(W-80-330,yy-20,330*Math.min(1,v/(ord2[0][1]||1)),18,9,TYPE_COL[t]);T(TYPE_HE[t]+extra(t),W-80-350,yy,'26px Rubik',CREAM);yy+=44}
-      y=yy+16}
-    if(main){T(`בשורה התחתונה: האפיון הנוסף של ${finalName(win)} הוא ${TYPE_HE[main]} · ${TYPE_KEY[main][0]}`,W-60,y+20,'bold 30px Rubik',GOLD);y+=40;
-      const ex=R.agg.extra_types?R.agg.extra_types[ax.types.indexOf(main)]:null;if(ex!=null)T(`ואצל ${n}, לפי כולם: ${TYPE_HE[main]} ${(+ex).toFixed(1)}`,W-60,y+20,'28px Rubik',CREAM),y+=40}}
+    const ord2=Object.entries(tot).sort((a,b)=>b[1]-a[1]),main=ord2[0]?.[0],sum=ord2.reduce((a,x)=>a+x[1],0)||1;
+    y=wrap(`סוג שלא מופיע על הכרטיס של ${finalName(win)}, אבל מושך אותו. שלושה מקורות:`,W-60,y+10,W-120,40,'28px Rubik',MIST)+10;
+    // 1. moves
+    const mk=Object.keys(xp.mv||{}).sort((a,b)=>xp.mv[b].p-xp.mv[a].p);const h1=150+mk.length*62;rr(50,y,W-100,h1,24,CARD,LINE);
+    T('המתקפות שהוא לומד',W-80,y+46,'bold 32px Rubik',CREAM);T('48% מהאפיון',80,y+44,'24px Rubik',MIST,'left');
+    T(`${xp.mt} מתקפות התקפיות שהליין לומד ברמות, לפי סוג:`,W-80,y+84,'24px Rubik',MIST);
+    {let x=W-80;const bw=W-160;const md=Object.entries(xp.md||{}).sort((a,b)=>b[1]-a[1]);for(const [t,c] of md){const w=bw*c/xp.mt;rr(x-w,y+100,Math.max(2,w-2),26,6,TYPE_COL[t]);g.globalAlpha=1;x-=w}}
+    let yy=y+170;for(const t of mk){await putIcon('ic-'+t,W-80-44,yy-34,44);T(TYPE_HE[t]+' · '+Math.round(xp.mv[t].p*100)+'%',W-140,yy-4,'bold 28px Rubik',CREAM);T(xp.mv[t].n.join(', '),W-380,yy-4,'24px Rubik',MIST);yy+=62}
+    y+=h1+16;
+    // 2. pokédex words
+    const lk=Object.keys(xp.l||{});const h2=110+Math.max(1,lk.length)*62;rr(50,y,W-100,h2,24,CARD,LINE);
+    T('מה הפוקדקס מספר',W-80,y+46,'bold 32px Rubik',CREAM);T('32% מהאפיון',80,y+44,'24px Rubik',MIST,'left');yy=y+110;
+    if(!lk.length)T('אין מילים מסוג אחר בתיאורים',W-140,yy-4,'26px Rubik',MIST);
+    for(const t of lk){await putIcon('ic-'+t,W-80-44,yy-34,44);T(TYPE_HE[t]+' · '+Math.round((xp.lp?.[t]||0)*100)+'%',W-140,yy-4,'bold 28px Rubik',CREAM);let wx=W-380;for(const w of (xp.w?.[t]||[])){g.font='24px Rubik';const ww=g.measureText(w).width+28;rr(wx-ww,yy-32,ww,38,19,TYPE_COL[t]);T(w,wx-14,yy-5,'24px Rubik','#fff');wx-=ww+10}yy+=62}
+    y+=h2+16;
+    // 3. a type that disappeared on the way
+    const ck=Object.keys(xp.c||{});const h3=ck.length?330:120;rr(50,y,W-100,h3,24,CARD,LINE);
+    T('סוג שנעלם בדרך',W-80,y+46,'bold 32px Rubik',CREAM);T('20% מהאפיון',80,y+44,'24px Rubik',MIST,'left');
+    if(!ck.length)T('הליין לא החליף סוג בדרך',W-80,y+90,'26px Rubik',MIST);
+    else{const st2=win.stage_types,stp=(W-160)/st2.length;for(let i=0;i<st2.length;i++){const x=W-80-stp*(i+1)+(stp-120)/2;await drawSp(win,win.species[i],x,y+64,120);let ix=x+60-st2[i].length*22;for(const t of st2[i]){if(ck.includes(t)){g.beginPath();g.arc(ix+20,y+214,26,0,7);g.fillStyle=GOLD;g.fill()}await putIcon('ic-'+t,ix,y+194,40);ix+=44}}
+      T(ck.map(t=>`${TYPE_HE[t]} היה ב־${(xp.cp?.[t]||[]).length} מתוך ${st2.length} שלבים, ונעלם בשלב האחרון`).join(' · '),W-80,y+290,'26px Rubik',CREAM)}
+    y+=h3+16;
+    if(main){rr(50,y,W-100,150,24,'#3A3418',GOLD);await putIcon('ic-'+main,W-80-90,y+30,90);
+      T(`האפיון הנוסף של ${finalName(win)}: ${TYPE_HE[main]} · ${TYPE_KEY[main][0]}`,W-200,y+64,'bold 32px Rubik',GOLD);
+      T(`${Math.round(tot[main]/sum*100)}% מכל המשיכה לסוגים אחרים · ${TYPE_KEY[main][1]}`,W-200,y+108,'24px Rubik',CREAM);y+=170}}
   // pokedex
   const ms=S.state?.mew?.statements||[],st=ms.find(x=>x.lineId===win.id);
   if(st){y=H2('הפוקדקס: השאלה של מיו','POKÉDEX',y+60)+10;const votes=pr.raters.filter(r=>S.answers[r.pid]?.mew===st.id).length,tv=pr.raters.filter(r=>S.answers[r.pid]?.mew).length;
