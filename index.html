@@ -257,6 +257,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qclock{position:absolute;left:128px;top:220px;z-index:6;width:150px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .qclock svg{position:absolute;inset:0;transform:rotate(-90deg)}.qcb{fill:rgba(22,26,46,.92);stroke:#3A4170;stroke-width:8}.qcf{fill:none;stroke:var(--gold);stroke-width:8;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .2s linear}
 .qclock b{position:relative;font:400 44px var(--pixel);color:var(--gold)}.qclock span{position:relative;font-size:16px;color:var(--cream);margin-top:4px}.qnext{font-size:13px;color:var(--gold)}
+.en .gbbox,.en .gbbox p,.en .bd-bub,.en .gpanel,.en .lgcard{direction:ltr;text-align:left}
 .en .qboard{left:auto;right:40px;top:96px}
 .qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
 .qbh{grid-column:1/-1;font:400 14px var(--pixel);color:var(--gold);text-align:center;margin-bottom:2px}
@@ -653,7 +654,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793768097';
+const BUILDV='1793768244';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1806,7 +1807,7 @@ function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur(
     el.querySelector('b').textContent=left>0?mmss(left):'0:00';el.classList.toggle('over',left<=0);
     el.querySelector('span').textContent=seg[0]==='r'?(left>0?ll('זמן לסבב','round time'):(seg==='r4'?ll('מחכים לכולם, כולל מיו','waiting for everyone, Mew too'):ll('מי שלא סיים, ממשיך בהפסקה','if you\'re not done, keep going in the break'))):(left>0?ll('עד סוף ההפסקה','until the break ends'):ll('חוזרים למקומות','back to your seats'))};
   tick();S.segT=setInterval(tick,1000)}
-function show(fresh,atEnd){
+function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ[POS]?.kind==='hof'||SEQ[POS]?.id==='closing')?'none':''}
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   const cv=$('#cv');
   if(it.kind==='slide'){
