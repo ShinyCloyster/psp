@@ -232,7 +232,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .crow.back{top:165px;height:250px;z-index:2}.crow.mid{top:375px;height:290px;z-index:1}.crow.front{bottom:85px;height:420px;z-index:3}
 .crow.front>*{margin-left:-40px}
 .cg{image-rendering:pixelated;object-fit:contain;filter:drop-shadow(0 8px 0 rgba(0,0,0,.18))}.cg.mon{margin-bottom:-20px}
-.crow .avf{filter:drop-shadow(0 8px 0 rgba(0,0,0,.18));margin:0 0 0 -30px;max-width:none}.cgap{width:0}
+.crow .avf{filter:drop-shadow(0 8px 0 rgba(0,0,0,.18));margin:0 0 0 -30px;max-width:none}.cgap{width:0}.crow.back .cgap{width:70px}
 .chero{display:flex;align-items:flex-end;gap:0;margin:0 10px;position:relative;z-index:2}.cg.win{filter:drop-shadow(0 0 24px rgba(242,201,76,.95)) drop-shadow(0 8px 0 rgba(0,0,0,.2));margin-right:-70px}
 .qic{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex:none}.qic svg{width:62%;height:62%;fill:#fff}
 .qsc{font:400 18px var(--pixel);color:var(--gold)}
@@ -258,7 +258,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qclock svg{position:absolute;inset:0;transform:rotate(-90deg)}.qcb{fill:rgba(22,26,46,.92);stroke:#3A4170;stroke-width:8}.qcf{fill:none;stroke:var(--gold);stroke-width:8;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .2s linear}
 .qclock b{position:relative;font:400 44px var(--pixel);color:var(--gold)}.qclock span{position:relative;font-size:16px;color:var(--cream);margin-top:4px}.qnext{font-size:13px;color:var(--gold)}
 .en .gbbox,.en .gbbox p,.en .bd-bub,.en .gpanel,.en .lgcard{direction:ltr;text-align:left}
-.en .qboard{left:auto;right:40px;top:96px}
+.en .gbtri{left:auto;right:46px}.en .gbpage{right:auto;left:46px}.en .gbp-tri{left:auto;right:16px}.en .bd-bub .gbtri{left:auto;right:24px}
+.en .qboard{left:auto;right:575px}.en section[id^="q-"] h2{max-width:690px}
 .qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
 .qbh{grid-column:1/-1;font:400 14px var(--pixel);color:var(--gold);text-align:center;margin-bottom:2px}
 .qr{display:flex;align-items:center;gap:8px;font-size:22px;color:var(--cream)}.qr .qn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
@@ -654,7 +655,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793768244';
+const BUILDV='1793776941';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1769,14 +1770,21 @@ function slideMusic(id){
   if(id==='x-finale')return music('mus-enter-hall',{vol:.35});
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
-const QSTEP=12;
+// characters come up by themselves: 12 s for the first, 10 for the second, 8 for the third; the host can also move on by hand
+const QD=[12,10,8],qDur=()=>QD[Math.max(0,Math.min(2,BUILD-1))];
 function qAutoStop(){clearInterval(S.qT);S.qAuto=null;$('#qclock')?.remove()}
-function qAutoStart(){qAutoStop();S.qAuto={pos:POS,next:Date.now()+QSTEP*1000};
+function qPlaceClock(){const el=$('#qclock'),cv=$('#cv');if(!el||!cv)return;const t=[...cv.querySelectorAll('div[data-build-in]')].find(e=>(e.getAttribute('data-build-in')||'').split(' ')[1]===String(BUILD));if(!t)return;
+  const cr=cv.getBoundingClientRect(),k=cr.width/1920||1,r=t.getBoundingClientRect();el.style.left=Math.round((r.right-cr.left)/k-100)+'px';el.style.top=Math.round((r.top-cr.top)/k-55)+'px'}
+function qAdvance(){const n=buildOrders().length;if(!S.qAuto)return;
+  if(BUILD<3){BUILD++;applyBuilds();S.qAuto.next=Date.now()+qDur()*1000;S.qAuto.len=qDur();qPlaceClock();quizSync()}
+  else{BUILD=n;applyBuilds();qAutoStop();sfx('sfx-dex-page-added');quizSync()}}
+function qAutoStart(){qAutoStop();S.qAuto={pos:POS,next:Date.now()+qDur()*1000,len:qDur()};
   $('#cv').insertAdjacentHTML('beforeend','<div id="qclock" class="qclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>');
-  S.qT=setInterval(()=>{const it=cur(),n=buildOrders().length;if(!S.qAuto||POS!==S.qAuto.pos||!/^q-/.test(it?.id||'')){qAutoStop();return}
+  qPlaceClock();
+  S.qT=setInterval(()=>{const it=cur();if(!S.qAuto||POS!==S.qAuto.pos||!/^q-/.test(it?.id||'')){qAutoStop();return}
     const left=(S.qAuto.next-Date.now())/1000,el=$('#qclock');
-    if(el){el.querySelector('b').textContent=Math.max(0,Math.ceil(left));el.querySelector('.qcf').style.strokeDashoffset=100-Math.max(0,left)/QSTEP*100;el.querySelector('span').textContent=BUILD<3?ll('הדמות הבאה','next character'):ll('חשיפה','reveal')}
-    if(left<=0){if(BUILD<3){BUILD++;applyBuilds();S.qAuto.next=Date.now()+QSTEP*1000;quizSync()}else{BUILD=n;applyBuilds();qAutoStop();sfx('sfx-dex-page-added');quizSync()}}},200)}
+    if(el){el.querySelector('b').textContent=Math.max(0,Math.ceil(left));el.querySelector('.qcf').style.strokeDashoffset=100-Math.max(0,left)/(S.qAuto.len||12)*100;el.querySelector('span').textContent=BUILD<3?ll('הדמות הבאה','next character'):ll('חשיפה','reveal')}
+    if(left<=0)qAdvance()},200)}
 function quizTypes(){return SEQ.filter(x=>/^q-/.test(x.id)).map(x=>x.id.slice(2))}
 function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ.findIndex(x=>x.id==='q-'+T[0]);
   const passed=t=>{const j=SEQ.findIndex(x=>x.id==='q-'+t);return j<POS||(j===POS&&BUILD>=buildOrders().length)};
@@ -1831,7 +1839,7 @@ function go(d){
   const it=cur();if(!it)return;
   if(it.kind==='slide'){
     const n=buildOrders().length;
-    if(/^q-/.test(it.id)&&S.qAuto&&d>0&&BUILD<n){toast(ll('הדמויות עולות לבד','The characters appear by themselves'));return}
+    if(/^q-/.test(it.id)&&S.qAuto&&d>0&&BUILD<n){qAdvance();return}
     if(d>0&&BUILD<n){BUILD++;applyBuilds();if(/^q-/.test(it.id)&&BUILD===1)qAutoStart();quizSync();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
     if(d<0&&BUILD>0){qAutoStop();BUILD--;applyBuilds();quizSync();return}
   }
@@ -2359,7 +2367,9 @@ async function publishResult(){
 function flavorOf(l){const sp=l.species.at(-1),pid=S.engine.spr[l.id+':'+sp]||String(sp);return S.engine.lineFlavor?.[l.id]||S.engine.flavor[pid]||S.engine.flavor[String(sp)]||''}
 function dexEntry(l){const he=S.mewlib?.[l.id]?.[1]||'';return {en:flavorOf(l),he}}
 function loadOak(){if(!S.oak)fetch(OAK_F+'?v='+BUILDV).then(r=>r.json()).then(o=>{S.oak=o;if(HOF_STEPS[HOF]==='oak'&&cur()?.kind==='hof'){S.oakFor=null;renderHof()}}).catch(()=>{});if(!S.mewlib)fetch(MEW_F+'?v='+BUILDV).then(r=>r.json()).then(m=>S.mewlib=m).catch(()=>{})}
-function splitPages(txt,max){const out=[];txt.split('\n\n').forEach(par=>{const ss=par.match(/(?:[^.!?…]|\.(?=\d))+[.!?…]+["״]?\s*|(?:[^.!?…]|\.(?=\d))+$/g)||[par];let cur='';ss.forEach(x=>{x=x.trim();if(!x)return;if((cur+' '+x).trim().length>max&&cur){out.push(cur.trim());cur=x}else cur=(cur+' '+x).trim()});if(cur)out.push(cur)});return out}
+function splitPages(txt,max){if(EN)max=Math.min(max,150);const out=[];txt.split('\n\n').forEach(par=>{let ss=par.match(/(?:[^.!?…]|\.(?=\d))+[.!?…]+["״]?\s*|(?:[^.!?…]|\.(?=\d))+$/g)||[par];
+  // a sentence that is too long for the dialog box on its own is cut at commas and colons
+  ss=ss.flatMap(x=>{if(x.trim().length<=max)return [x];const parts=x.split(/(?<=[,:;])\s+/),r=[];let c='';parts.forEach(p=>{if((c+' '+p).trim().length>max&&c){r.push(c.trim()+(/[,;:]$/.test(c.trim())?' …':''));c=p}else c=(c+' '+p).trim()});if(c)r.push(c);return r});let cur='';ss.forEach(x=>{x=x.trim();if(!x)return;if((cur+' '+x).trim().length>max&&cur){out.push(cur.trim());cur=x}else cur=(cur+' '+x).trim()});if(cur)out.push(cur)});return out}
 const ISO=x=>'\u2068'+x+'\u2069';
 function oakPages(R){if(EN)return oakPagesEN(R);
   const n=subjectName(),t=R.main[0],l=t.line,ax=S.engine.axes,name=ISO(finalName(l)),lt=l.stage_types.at(-1);
