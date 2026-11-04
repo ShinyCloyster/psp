@@ -585,9 +585,9 @@ const ITEMS={}; BANK.items.forEach(i=>ITEMS[i.id]=i);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LEGACY_ROOM='ERI1',ROOM_ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets|admin)(?:=([A-Za-z0-9]{4}))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase()};return {mode:/^c=/.test(h)?'card':'',code:''}}
+function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets|admin)(?:=([A-Za-z0-9]{4}))?(?:@([\w-]+))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase(),at:m[3]||''};return {mode:/^c=/.test(h)?'card':'',code:''}}
 const RAWSTORE={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-const ROOM=(()=>{const hp=hashParts();let code=hp.code;if(!code&&(hp.mode===''||hp.mode==='r'||hp.mode==='remote'))code=(RAWSTORE.get('psp-room')||'').toUpperCase();return {code,legacy:code===LEGACY_ROOM,mode:hp.mode}})();
+const ROOM=(()=>{const hp=hashParts();let code=hp.code;if(!code&&(hp.mode===''||hp.mode==='r'||hp.mode==='remote'))code=(RAWSTORE.get('psp-room')||'').toUpperCase();return {code,legacy:code===LEGACY_ROOM,mode:hp.mode,at:hp.at||''}})();
 const SCOPED=['psp-me','psp-eve','psp-remote-id','psp-pos'];
 const skey=k=>ROOM.code&&!ROOM.legacy&&SCOPED.includes(k)?k+':'+ROOM.code:k;
 const store={get(k){return RAWSTORE.get(skey(k))},set(k,v){RAWSTORE.set(skey(k),v)}};
@@ -634,7 +634,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793283712';
+const BUILDV='1793763518';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -846,15 +846,21 @@ function adminView(){
   return box(head+body)}
 const FRIENDS=['ROS1','RAC1','PHE1','MON1','CHA1','JOE1'];
 // six simulated evenings on the cast of Friends (generated offline: friends/gen.js), written once from the admin screen
-async function seedFriends(){toast('יוצר את ערבי ההדגמה…');const D=await fetch('friends_rooms.json?v='+BUILDV).then(r=>r.json());const raw=S.db.raw;
-  for(const R of Object.values(D)){const c=R.code;if((S.roomList||[]).some(r=>r.code===c))continue;
+async function seedRoom(R){const raw=S.db.raw,c=R.code;
     await raw.doc('setup/'+c).set(R.setup);
     for(const [id,a] of Object.entries(R.answers))await raw.doc('answers/'+c+'~'+id).set(a);
     for(const [id,j] of Object.entries(R.joined))await raw.doc('joined/'+c+'~'+id).set(j);
-    await raw.doc('stage/'+c+'~deck').set(R.deck);
-    for(const [k,a] of Object.entries(R.assets))await raw.doc('setup/'+c+'~asset-'+k).set(a);
+    if(R.deck)await raw.doc('stage/'+c+'~deck').set(R.deck);
+    for(const [k,a] of Object.entries(R.assets||{}))await raw.doc('setup/'+c+'~asset-'+k).set(a);
     await raw.doc('state/'+c).set(R.state)}
+async function seedFriends(){toast('יוצר את ערבי ההדגמה…');const D=await fetch('friends_rooms.json?v='+BUILDV).then(r=>r.json());
+  for(const R of Object.values(D)){if((S.roomList||[]).some(r=>r.code===R.code))continue;await seedRoom(R)}
   toast('נוצרו ערבי ההדגמה')}
+// prepared rooms that write themselves the first time the host opens their screen (CLA1: Claude's own evening)
+const PREP={CLA1:'claude_room.json'};
+function rawOnce(path){return new Promise(res=>{let un=null,done=false;un=S.db.raw.doc(path).onSnapshot(d=>{if(done)return;done=true;res(d.exists?d.data():null);setTimeout(()=>{try{un&&un()}catch(e){}},0)},()=>res(undefined))})}
+async function seedPrepared(){const f=PREP[ROOM.code];if(!f)return;const ex=await rawOnce('state/'+ROOM.code);if(ex!==null)return;
+  const R=await fetch(f+'?v='+BUILDV).then(r=>r.json()).catch(()=>null);if(!R)return;await seedRoom(R).catch(()=>{});location.reload()}
 function rawIds(col,lo,hi){return new Promise(res=>{const FP=firebase.firestore.FieldPath.documentId();let un=null,done=false;un=S.db.raw.collection(col).orderBy(FP).startAt(lo).endAt(hi).onSnapshot(q=>{if(done)return;done=true;res(q.docs.map(d=>d.id));setTimeout(()=>{try{un&&un()}catch(e){}},0)},()=>res([]))})}
 async function deleteRoom(code){if(!code||code===LEGACY_ROOM)return;toast('מוחק…');const raw=S.db.raw;
   for(const col of ['answers','joined','remote','stage','setup']){const ids=await rawIds(col,code+'~',code+'~');for(const id of ids)await raw.doc(col+'/'+id).delete().catch(()=>{})}
@@ -1608,6 +1614,8 @@ async function startScreen(){
   S.slides=sl;S.engine=engFor(en);S.sprites=sp;
   SEQ=[];sl.forEach((s,i)=>{SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});
   if(POS>=SEQ.length)POS=0;
+  if(PREP[ROOM.code])await seedPrepared();
+  if(ROOM.at){const i=SEQ.findIndex(x=>x.id===ROOM.at);if(i>=0){POS=i;HOF=0;SUB=0;BUILD=0}history.replaceState(null,'',location.pathname+location.search+'#screen='+ROOM.code)}
   setTimeout(maybeMew,0);
   if(!S.state&&(!ROOM.code||ROOM.legacy))await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
   $('#scr').onclick=e=>{if(e.target.closest('button'))return;go(1)};
