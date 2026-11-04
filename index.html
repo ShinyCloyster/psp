@@ -601,7 +601,7 @@ const BANK=EN?BANK_EN:BANK_HE,OAK_F=EN?'oak_en.json':'oak.json',MEW_F=EN?'mew_en
 const ITEMS={}; BANK.items.forEach(i=>ITEMS[i.id]=i);
 if(EN){Object.assign(TYPE_HE,{normal:'Normal',fire:'Fire',water:'Water',electric:'Electric',grass:'Grass',ice:'Ice',fighting:'Fighting',poison:'Poison',ground:'Ground',flying:'Flying',psychic:'Psychic',bug:'Bug',rock:'Rock',ghost:'Ghost',dragon:'Dragon',dark:'Dark',steel:'Steel',fairy:'Fairy'});
   Object.assign(STAT_HE,{hp:'HP · emotional endurance',attack:'Attack · practical assertiveness',defense:'Defense · boundaries','special-attack':'Sp. Atk · intellectual power','special-defense':'Sp. Def · inner immunity',speed:'Speed · pace'});
-  EVO_META.level[2]='gradual build-up';EVO_META.item[2]='a leap all at once';EVO_META.trade[2]='a move to a new setting';EVO_META.friendship[2]='growth through a bond';EVO_META.special[2]='a unique set of circumstances';
+  EVO_META.level[2]='step by step';EVO_META.item[2]='one big leap';EVO_META.trade[2]='a new setting';EVO_META.friendship[2]='a close bond';EVO_META.special[2]='rare conditions';
   Object.assign(EVO_HE,{level:'gradual growth',item:'a catalyst that changes everything',trade:'change of environment',friendship:'bond and trust',special:'special conditions'});
   Object.assign(ROLES,{partner:'partner',family:'family',friend:'friend'})}
 if(EN){document.documentElement.lang='en';document.documentElement.dir='ltr';document.documentElement.classList.add('en');document.title='PSP · Hall of Fame'}
@@ -653,7 +653,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793767207';
+const BUILDV='1793768097';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1156,7 +1156,7 @@ async function drawDeep(me){
    const mn=Math.min(...ls),mx=Math.max(...ls);poly(ls.map(v=>1+4*(v-mn)/Math.max(1e-9,mx-mn)),'#8C93B8',null,[10,8],3);
    poly(ax.stats.map(k=>agg('stats',k)),GOLD,'rgba(242,201,76,.28)');if(self&&!isSelf)poly(ax.stats.map(k=>sv(self,'stats',k)),SKY,null,null,3);if(mine)poly(ax.stats.map(k=>sv(mine,'stats',k)),PINK,null,null,4);
    for(let i=0;i<6;i++){const an=-Math.PI/2+i*Math.PI/3;await putIcon(VIT[ax.stats[i]],cx+Math.cos(an)*(RR+44)-22,cy+Math.sin(an)*(RR+44)-30,44)}
-   let ly=y+60;ax.stats.forEach((k,i)=>{const hi=ord.indexOf(i)<2,lo=ord.indexOf(i)>3;T(STAT_SHORT[k]+' · '+(STAT_HE[k].split('·')[1]||'').trim(),W-90,ly,'bold 28px Rubik',CREAM);
+   let ly=y+60;ax.stats.forEach((k,i)=>{const hi=ord.indexOf(i)<2,lo=ord.indexOf(i)>3;T(STAT_SHORT[k]+' · '+(STAT_HE[k].split('·')[1]||'').trim(),W-90,ly,EN?'bold 23px Rubik':'bold 28px Rubik',CREAM);
      T(hi?'▲ '+STAT_HL[k][0]:lo?'▼ '+STAT_HL[k][1]:ll('באמצע','in the middle'),W-90,ly+36,'24px Rubik',hi?'#B5E3A8':lo?'#F2B8A8':MIST);T(agg('stats',k).toFixed(1),600,ly,'bold 26px Rubik',GOLD,'left');ly+=90});
    y+=640;y=wrap(`${ll(`זהב: כולם יחד · קו מקווקו: הצורה של ${finalName(win)} · ▲▼: איפה ${finalName(win)} חזק וחלש יחסית לעצמו`,`Gold: everyone together · dashed line: the shape of ${finalName(win)} · ▲▼: where ${finalName(win)} is strong and weak relative to itself`)}`,W-60,y,W-120,34,'24px Rubik',MIST)-24}
   // evolution
@@ -1199,7 +1199,7 @@ async function drawDeep(me){
   // pokedex
   const ms=S.state?.mew?.statements||[],st=ms.find(x=>x.lineId===win.id);
   if(st){y=H2(ll('הפוקדקס: השאלה של מיו','The Pokédex: Mew\'s question'),'POKÉDEX',y+60)+10;const votes=pr.raters.filter(r=>S.answers[r.pid]?.mew===st.id).length,tv=pr.raters.filter(r=>S.answers[r.pid]?.mew).length;
-    const y0=y,q='"'+(EN?(st.entry||st.text):(st.entryHe||st.text))+'"',ps=ll('בשפה של PSP: ','In PSP terms: ')+st.text;let yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E',true);yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63',true);const hh=yy+50-y0;
+    const y0=y,q='"'+(EN?(st.entry||st.entryHe||st.text):(st.entryHe||st.text))+'"',ps=ll('בשפה של PSP: ','In PSP terms: ')+st.text;let yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E',true);yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63',true);const hh=yy+50-y0;
     rr(50,y0,W-100,hh,28,CREAM);yy=wrap(q,W-90,y0+60,W-180,50,'36px "Secular One"','#161A2E');yy=wrap(ps,W-90,yy+10,W-180,42,'28px Rubik','#4A4F63');
     T(`${ll(`${votes} מתוך ${tv} בחרו בתיאור הזה`,`${votes} of ${tv} picked this description`)}`,W-90,yy+20,'bold 28px Rubik','#7A2E5A');y=y0+hh+20}
   // through your eyes
@@ -1220,7 +1220,7 @@ async function drawDeep(me){
     y+=108}
   const gp=(R.gaps||[]).slice(0,3);if(gp.length){y=H2(ll('מה החברים רואים אחרת','What friends see differently'),'BLIND SPOTS',y+60)+10;
     for(const x of gp){const nm=x.layer==='types'?TYPE_HE[x.dim]:x.layer==='stats'?(STAT_HE[x.dim].split('·')[1]||'').trim():EVO_META[x.dim][2];T(`${ll(`${nm} · ${n} ${(+x.self).toFixed(1)} · החברים ${(+x.others).toFixed(1)}`,`${nm} · ${n} ${(+x.self).toFixed(1)} · friends ${(+x.others).toFixed(1)}`)}`,W-60,y+30,'30px Rubik',CREAM);y+=56}}
-  y+=50;T(ll('האישי מחושב רק מהתשובות שלך, בלי שאלת מיו. הסוגים, הסטטים וההתפתחות: מה כולם ענו יחד.','The personal part is computed from your answers only, without the Mew question. Types, stats and evolution: what everyone answered together.'),W/2,y,'22px Rubik',MIST,'center');
+  y+=50;if(EN)y=wrap('The personal part is computed from your answers only, without the Mew question. Types, stats and evolution: what everyone answered together.',W-60,y,W-120,30,'22px Rubik',MIST)-30;else T('האישי מחושב רק מהתשובות שלך, בלי שאלת מיו. הסוגים, הסטטים וההתפתחות: מה כולם ענו יחד.',W/2,y,'22px Rubik',MIST,'center');
   y+=50;T("GOTTA UNDERSTAND 'EM ALL",W/2,y,'22px "Press Start 2P"',GOLD,'center');y+=60;
   const out=document.createElement('canvas');out.width=W;out.height=y;out.getContext('2d').drawImage(c,0,0);return out.toDataURL('image/jpeg',.9)}
 
@@ -1241,15 +1241,15 @@ function ctxFor(me){const pr=profile(),mine=pr.raters.find(r=>r.pid===me.id),sel
 async function drawCard(ctx){
   await document.fonts?.ready;const E=S.engine,ax=E.axes,n=ctx.subject,isSelf=ctx.role==='self',gs=(m,f)=>ctx.gender==='f'?f:m,me={name:ctx.name};
   const A=L=>ax[L].map(d=>ctx.mine?.[L]?.[d]??null),B=L=>ax[L].map(d=>ctx.B?.[L]?.[d]??null);
-  const nameA=isSelf?'את/ה':ctx.name,nameB=isSelf?'הקבוצה':n;
+  const nameA=isSelf?ll('את/ה','you'):ctx.name,nameB=isSelf?ll('הקבוצה','the group'):n;
   // this person's answers alone, without the Mew question (dex = null)
   const top3=sc=>{try{return PSP.run({raters:[{scores:sc,role:'friend',weight:1}]},E,null).main.slice(0,3).map(x=>x.line)}catch(e){return []}};
   const T3=top3(ctx.mine),lineA=T3[0],lineB=isSelf||!ctx.B||!Object.keys(ctx.B).length?null:top3(ctx.B)[0],finalName_=ctx.finalName||'';
   let diffs=[],tot=0,cnt=0;['types','stats','evo'].forEach(L=>{const a=A(L),b=B(L);a.forEach((x,i)=>{if(x!=null&&b[i]!=null){tot+=Math.abs(x-b[i]);cnt++;diffs.push({L,d:ax[L][i],a:x,b:b[i],g:Math.abs(x-b[i])})}})});
   const agree=cnt?Math.max(0,Math.round(100-tot/cnt/2.5*100)):0;diffs.sort((x,y)=>y.g-x.g);
-  const W=1080,H=2600,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.direction='rtl';
+  const W=1080,H=2600,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.direction='rtl';if(EN){g.setTransform(-1,0,0,1,W,0);g.direction='ltr'}
   const bg=g.createRadialGradient(W/2,500,50,W/2,900,1700);bg.addColorStop(0,'#2D3468');bg.addColorStop(1,'#161A2E');g.fillStyle=bg;g.fillRect(0,0,W,H);
-  const T=(t,x,y,f,col,al='right')=>{g.font=f;g.fillStyle=col;g.textAlign=al;g.fillText(t,x,y)};
+  const T=(t,x,y,f,col,al='right')=>{g.font=f;g.fillStyle=col;if(EN){g.save();g.translate(x,y);g.scale(-1,1);g.textAlign=al==='right'?'left':al==='left'?'right':al;g.fillText(t,0,0);g.restore()}else{g.textAlign=al;g.fillText(t,x,y)}};
   const fit=(t,max,size,fam)=>{let s=size;g.font=s+'px '+fam;while(g.measureText(t).width>max&&s>22){s-=2;g.font=s+'px '+fam}return s+'px '+fam};
   const rr=(x,y,w,h,r,fill,stroke)=>{g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.stroke()}};
   const img=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
@@ -1257,10 +1257,10 @@ async function drawCard(ctx){
   const chips=(types,xr,y,fs,hh)=>{let x=xr;for(const t of types){g.font='bold '+fs+'px Rubik';const w=g.measureText(TYPE_HE[t]).width+fs*1.3;rr(x-w,y,w,hh,12,TYPE_COL[t]);T(TYPE_HE[t],x-fs*0.65,y+hh*0.7,'bold '+fs+'px Rubik','#fff');x-=w+10}};
   const GOLD='#F2C94C',SKY='#6FC3E8',CREAM='#F6F1E7',MIST='#B9BDD6';
   T('PSP · PERSONAL CARD',W-70,100,'26px "Press Start 2P"',GOLD);
-  T(isSelf?`${n}: את/ה מול הקבוצה`:`${n}, לפי ${me.name}`,W-70,190,fit(isSelf?`${n}: את/ה מול הקבוצה`:`${n}, לפי ${me.name}`,W-140,72,'"Secular One"'),CREAM);
+  T((EN?(isSelf?`${n}: you vs. the group`:`${n}, according to ${me.name}`):isSelf?`${n}: את/ה מול הקבוצה`:`${n}, לפי ${me.name}`),W-70,190,fit((EN?(isSelf?`${n}: you vs. the group`:`${n}, according to ${me.name}`):isSelf?`${n}: את/ה מול הקבוצה`:`${n}, לפי ${me.name}`),W-140,72,'"Secular One"'),CREAM);
   // #1
   rr(60,240,W-120,520,36,'rgba(32,37,63,.9)','#3A4170');
-  T(isSelf?`אם רק ${n} ${gs('היה','הייתה')} ${gs('עונה','עונה')} על ${gs('עצמו','עצמה')}:`:`אם רק ${me.name} היה עונה, ${n} ${gs('היה','הייתה')}:`,W-100,310,'40px Rubik',MIST);
+  T(EN?(isSelf?`If only ${n} had answered about ${gs('himself','herself')}:`:`If only ${me.name} had answered, ${n} would be:`):isSelf?`אם רק ${n} ${gs('היה','הייתה')} ${gs('עונה','עונה')} על ${gs('עצמו','עצמה')}:`:`אם רק ${me.name} היה עונה, ${n} ${gs('היה','הייתה')}:`,W-100,310,'40px Rubik',MIST);
   if(lineA){await drawSp(lineA,100,330,320);
     T(finalName(lineA),W-100,420,fit(finalName(lineA),W-560,86,'"Secular One"'),GOLD);
     chips(lineA.stage_types.at(-1),W-100,450,36,62);
@@ -1271,14 +1271,14 @@ async function drawCard(ctx){
     T('#'+(i+1),x+bw-24,850,'26px "Press Start 2P"',i===1?'#C0C6E0':'#D9A066');
     T(finalName(l),x+bw-24,915,fit(finalName(l),bw-230,44,'"Secular One"'),CREAM);
     chips(l.stage_types.at(-1),x+bw-24,940,24,42)}
-  if(lineB)T(`לפי ${n} ${gs('עצמו','עצמה')}: ${finalName(lineB)}`,W-70,1080,'34px Rubik',CREAM);
-  if(finalName_)T(`התוצאה הסופית של כולם: ${finalName_}`,W-70,1135,'34px Rubik',CREAM);
+  if(lineB)T(ll(`לפי ${n} ${gs('עצמו','עצמה')}: `,`According to ${n}: `)+finalName(lineB),W-70,1080,'34px Rubik',CREAM);
+  if(finalName_)T(ll('התוצאה הסופית של כולם: ','Everyone\'s final result: ')+finalName_,W-70,1135,'34px Rubik',CREAM);
   // agreement
-  T(isSelf?'כמה הקבוצה רואה אותך כמו שאת/ה רואה את עצמך':`כמה ${me.name} ו${n} מסכימים`,W-70,1240,'40px Rubik',CREAM);
+  T(EN?(isSelf?'How much the group sees you the way you see yourself':`How much ${me.name} and ${n} agree`):isSelf?'כמה הקבוצה רואה אותך כמו שאת/ה רואה את עצמך':`כמה ${me.name} ו${n} מסכימים`,W-70,1240,'40px Rubik',CREAM);
   rr(70,1270,W-140,44,22,'rgba(255,255,255,.1)');rr(W-70-(W-140)*agree/100,1270,(W-140)*agree/100,44,22,GOLD);T(agree+'%',W/2,1308,'34px "Press Start 2P"',agree>12?'#161A2E':CREAM,'center');
   // stats radar
   const O=450;
-  T('סטטים',W-70,950+O,'46px "Secular One"',CREAM);
+  T(ll('סטטים','Stats'),W-70,950+O,'46px "Secular One"',CREAM);
   const cx=300,cy=1180+O,R0=190,pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/3;return [cx+Math.cos(a)*R0*r,cy+Math.sin(a)*R0*r]};
   g.strokeStyle='#3A4170';g.lineWidth=2;[.5,1].forEach(r=>{g.beginPath();for(let i=0;i<6;i++){const [x,y]=pt(i,r);i?g.lineTo(x,y):g.moveTo(x,y)}g.closePath();g.stroke()});
   const poly=(v,col)=>{g.beginPath();v.forEach((x,i)=>{const [px,py]=pt(i,Math.max(.05,((x??3)-1)/4));i?g.lineTo(px,py):g.moveTo(px,py)});g.closePath();g.fillStyle=col+'44';g.fill();g.strokeStyle=col;g.lineWidth=5;g.stroke()};
@@ -1287,18 +1287,18 @@ async function drawCard(ctx){
   T('■ '+nameA,W-80,1060+O,'36px Rubik',GOLD);T('■ '+nameB,W-80,1110+O,'36px Rubik',SKY);
   const ord=v=>v.map((x,i)=>[x??0,i]).sort((a,b)=>b[0]-a[0]);
   const sA=ord(A('stats'))[0][1],sB=ord(B('stats'))[0][1];
-  T('הכי גבוה אצל '+nameA+':',W-80,1200+O,'30px Rubik',MIST);T(STAT_HE[ax.stats[sA]],W-80,1245+O,'bold 32px Rubik',GOLD);
-  T('הכי גבוה אצל '+nameB+':',W-80,1300+O,'30px Rubik',MIST);T(STAT_HE[ax.stats[sB]],W-80,1345+O,'bold 32px Rubik',SKY);
+  T(ll('הכי גבוה אצל ','Highest for ')+nameA+':',W-80,1200+O,'30px Rubik',MIST);T(STAT_HE[ax.stats[sA]],W-80,1245+O,'bold 32px Rubik',GOLD);
+  T(ll('הכי גבוה אצל ','Highest for ')+nameB+':',W-80,1300+O,'30px Rubik',MIST);T(STAT_HE[ax.stats[sB]],W-80,1345+O,'bold 32px Rubik',SKY);
   // types: top 3 each
-  T('3 הסוגים הבולטים',W-70,1460+O,'46px "Secular One"',CREAM);
+  T(ll('3 הסוגים הבולטים','Top 3 types'),W-70,1460+O,'46px "Secular One"',CREAM);
   const top3t=v=>ord(v).slice(0,3).map(x=>ax.types[x[1]]);
   [[nameA,A('types'),GOLD,1530+O],[nameB,B('types'),SKY,1610+O]].forEach(([nm,v,col,y])=>{T(nm,W-80,y+42,'bold 34px Rubik',col);chips(top3t(v),W-330,y,32,58)});
   {let y=1745+O;const seen=new Set(lineA?lineA.stage_types.at(-1):[]);for(const t of top3t(A('types'))){if(seen.has(t))continue;seen.add(t);T(`${TYPE_HE[t]} · ${TYPE_KEY[t][0]}: ${TYPE_KEY[t][1]}`,W-80,y,fit(`${TYPE_HE[t]} · ${TYPE_KEY[t][0]}: ${TYPE_KEY[t][1]}`,W-160,28,'Rubik'),MIST);y+=44}}
   // evolution + biggest gap
   const eA=ax.evo[ord(A('evo'))[0][1]],eB=ax.evo[ord(B('evo'))[0][1]];
-  T(`התפתחות: ${nameA} ${EVO_META[eA][2]} · ${nameB} ${EVO_META[eB][2]}`,W-70,1900+O,fit(`התפתחות: ${nameA} ${EVO_META[eA][2]} · ${nameB} ${EVO_META[eB][2]}`,W-140,32,'Rubik'),CREAM);
-  const gp=diffs[0];if(gp){const nm=gp.L==='types'?TYPE_HE[gp.d]:gp.L==='stats'?STAT_SHORT[gp.d]:EVO_META[gp.d][2];T(`הפער הכי גדול: ${nm} (${nameA} ${gp.a.toFixed(1)}, ${nameB} ${gp.b.toFixed(1)})`,W-70,1955+O,'32px Rubik',MIST)}
-  T('מחושב מהתשובות שלך בלבד, בלי שאלת מיו',W/2,2470,'26px Rubik',MIST,'center');
+  T((ll('התפתחות: ','Evolution: ')+`${nameA} ${EVO_META[eA][2]} · ${nameB} ${EVO_META[eB][2]}`),W-70,1900+O,fit((ll('התפתחות: ','Evolution: ')+`${nameA} ${EVO_META[eA][2]} · ${nameB} ${EVO_META[eB][2]}`),W-140,32,'Rubik'),CREAM);
+  const gp=diffs[0];if(gp){const nm=gp.L==='types'?TYPE_HE[gp.d]:gp.L==='stats'?STAT_SHORT[gp.d]:EVO_META[gp.d][2];T(ll('הפער הכי גדול: ','Biggest gap: ')+`${nm} (${nameA} ${gp.a.toFixed(1)}, ${nameB} ${gp.b.toFixed(1)})`,W-70,1955+O,'32px Rubik',MIST)}
+  T(ll('מחושב מהתשובות שלך בלבד, בלי שאלת מיו','Computed from your answers only, without the Mew question'),W/2,2470,'26px Rubik',MIST,'center');
   T("GOTTA UNDERSTAND 'EM ALL",W/2,2550,'22px "Press Start 2P"',GOLD,'center');
   return c.toDataURL('image/png')}
 function dexTag(n){const b=S.dex?.[n];return `<div class="dexno">${b?`<img src="data:image/png;base64,${b}" alt="">`:''}<span>#${String(n).padStart(3,'0')}</span></div>`}
