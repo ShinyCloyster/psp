@@ -391,7 +391,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .mhd{height:84px;display:flex;align-items:center;gap:14px;border-top:2px dashed rgba(232,121,249,.45);padding-top:6px}
 .mspr{width:80px;height:80px;object-fit:contain;flex:none;filter:drop-shadow(0 0 16px rgba(232,121,249,.8));animation:mewfloat 2.6s ease-in-out infinite}
 @keyframes mewfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.mlab{width:150px;flex:none}.mlab b{display:block;font:400 12px var(--pixel);color:#F0ABFC;direction:ltr;text-align:right}.mlab span{display:block;font-size:16px;color:var(--mist);margin-top:6px}
+.mlab{width:150px;flex:none}.mlab b{display:block;font:400 12px var(--pixel);color:#F0ABFC;direction:ltr;text-align:right}.en .mlab b{text-align:left}.mlab span{display:block;font-size:16px;color:var(--mist);margin-top:6px}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .mvo{position:absolute;width:42px;display:flex;flex-direction:column;align-items:center;gap:2px;transition:left 1.1s cubic-bezier(.3,.9,.25,1),top 1.1s cubic-bezier(.3,.9,.25,1);z-index:5}
 .mvo small{font-size:11px;font-weight:700;color:var(--cream);max-width:46px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2}
@@ -409,31 +409,32 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .bd-bub .gbtri{position:absolute;left:24px;bottom:12px}
 .mem{background:#F6F1E7;color:#22263A}
 .mti{font-size:60px!important;top:126px!important}
-.mgrid{position:absolute;right:110px;top:250px;width:1240px;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:240px;gap:20px;direction:rtl}
-.mc{position:relative;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;font:inherit;color:inherit}
+.mmg{position:absolute;right:100px;top:220px;width:1220px;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:252px;gap:20px;direction:rtl}
+.mmc{position:relative;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;font:inherit;color:inherit}
 .mci{position:absolute;inset:0;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
-.mc.up .mci{transform:rotateY(180deg)}
+.mmc.up .mci{transform:rotateY(180deg)}
 .mcb,.mcf{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .mcb{background:radial-gradient(circle at 50% 40%,#2C3260,#161A2E 75%);border:4px solid #3A4170;box-shadow:0 8px 0 rgba(22,26,46,.25)}
 .mcb img{width:96px;height:96px;image-rendering:pixelated;opacity:.92}.mcb b{font:400 26px var(--pixel);color:#F2C94C}
 .mcf{transform:rotateY(180deg);background:#FFFDF8;border:4px solid #E4DCCB;padding:16px 18px;text-align:center;box-shadow:0 8px 0 rgba(22,26,46,.12)}
-.mcf.lens{border-top:14px solid var(--c)}.mcf.lens b{font-size:30px;line-height:1.1;color:#161A2E}
-.mcs{font-size:19px;line-height:1.2;color:#5A5F73;background:#EFE8D8;border-radius:10px;padding:4px 10px}
+.mcf.lens{border-top:14px solid var(--c);gap:5px}.mcf.lens b{font-size:28px;line-height:1.1;color:#161A2E}.mtag{font-style:normal;font-size:19px;color:#5A5F73}
+.mleg{display:flex;flex-direction:column;gap:6px;border-top:2px solid rgba(255,255,255,.12);padding-top:12px}.mleg div{display:grid;grid-template-columns:54px auto 1fr;gap:10px;align-items:center;font-size:19px}.mleg div>:first-child{justify-self:center}.mleg b{font-size:19px;white-space:nowrap}.mleg span{color:#C9CCE0}
+.mcs{font-size:17px;line-height:1.2;color:#5A5F73;background:#EFE8D8;border-radius:10px;padding:4px 10px}
 .mico{display:flex;align-items:center;justify-content:center;min-height:90px}
 .mcf.qq{background:#FFF6D8;border-color:#F2C94C}.mcf.qq i{position:absolute;top:8px;inset-inline-end:14px;font:400 26px var(--pixel);font-style:normal;color:#C9A227}
 .mcf.qq p{font-size:26px;line-height:1.3;font-weight:700;color:#161A2E}
-.mc.got .mcf{border-color:#5BC48A;box-shadow:0 0 0 5px rgba(91,196,138,.35)}
+.mmc.got .mcf{border-color:#5BC48A;box-shadow:0 0 0 5px rgba(91,196,138,.35)}
 .mown{position:absolute;bottom:-12px;inset-inline-start:-12px;z-index:3}
-.mside{position:absolute;left:90px;top:250px;width:440px;background:rgba(22,26,46,.94);border:4px solid #F2C94C;border-radius:26px;padding:20px 22px;color:#F6F1E7;display:flex;flex-direction:column;gap:14px;max-height:780px}
+.mside{position:absolute;left:70px;top:200px;width:480px;background:rgba(22,26,46,.94);border:4px solid #F2C94C;border-radius:26px;padding:20px 22px;color:#F6F1E7;display:flex;flex-direction:column;gap:14px;max-height:780px}
 .msh{font:400 18px var(--pixel);color:#F2C94C;text-align:center}
 .mrules p{font-size:24px;line-height:1.4;margin:0 0 8px}.mgo{font:400 16px var(--pixel);color:#F2C94C;text-align:center;animation:blink 1.2s infinite}
 @keyframes blink{50%{opacity:.35}}
 .mturn{display:flex;align-items:center;gap:16px;justify-content:center}.mturn b{font-family:var(--display);font-size:40px;font-weight:400}
 .mclock{position:relative;width:120px;height:120px;margin:0 auto;display:flex;align-items:center;justify-content:center}
 .mclock svg,.gclock svg{position:absolute;inset:0;transform:rotate(-90deg)}.mclock b{position:relative;font:400 38px var(--pixel);color:#F2C94C}
-.mscore{display:flex;flex-direction:column;gap:6px;overflow:hidden}.mscore .qr{font-size:22px;padding:2px 8px;border-radius:12px}.mscore .qr.now{background:rgba(242,201,76,.18)}
+.mscore{display:flex;flex-direction:column;gap:6px;overflow:hidden}.mscore .qr{font-size:20px;padding:1px 8px;border-radius:12px}.mscore .qr.now{background:rgba(242,201,76,.18)}
 .mwin{display:flex;flex-direction:column;align-items:center;gap:6px}.mwin p{font-family:var(--display);font-size:34px;color:#F2C94C}
-.en .mgrid{right:auto;left:110px;direction:ltr}.en .mside{left:auto;right:90px}
+.en .mmg{right:auto;left:100px;direction:ltr}.en .mside{left:auto;right:70px}
 /* battle game */
 .btboard{position:absolute;left:60px;top:112px;width:560px;background:rgba(22,26,46,.92);border:3px solid var(--gold);border-radius:20px;padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;z-index:6}
 .btboard .qr{font-size:19px}.en .btboard{left:auto;right:60px}.en .battle .btti{font-size:56px;white-space:nowrap}.en .battle .btsub{font-size:26px;max-width:1150px;top:218px}
@@ -461,6 +462,19 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .bps{display:grid;grid-template-columns:30px 1fr 28px;gap:1px 6px;font-size:10px;direction:ltr}.bps i{font-style:normal;color:var(--mist)}.bps em{height:6px;margin-top:4px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}.bps u{display:block;height:100%;background:var(--gold)}
 .tch{overflow-x:auto;margin-top:6px}.tch table{border-collapse:collapse;direction:ltr;margin:0 auto}.tch td,.tch th{width:18px;height:18px;padding:0;text-align:center;font-size:9px;border:1px solid rgba(255,255,255,.06)}
 .tch .qic{display:inline-block;border-radius:50%}.tch td.x2{background:#3FA129;color:#fff}.tch td.xh{background:#B03A2E;color:#fff}.tch td.x0{background:#000;color:#888}.tch th.hl{outline:2px solid var(--gold)}.tch td.hl{outline:2px solid var(--gold);outline-offset:-2px}
+.np{padding:20px 18px}.np-name{font-size:22px;padding:14px 16px;border-radius:16px}
+.np-opts{display:flex;gap:12px;margin:14px 0 6px}.np-seg{flex:1;display:flex;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;padding:5px}
+.np-o{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:78px;border:2px solid transparent;border-radius:14px;background:none;color:var(--mist);font:600 13px var(--body);cursor:pointer;position:relative}
+.np-o img{width:30px;height:auto;image-rendering:pixelated;transform:scale(1.6);margin:8px 0 4px}.np-o .flag{width:46px;height:31px;border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.25);object-fit:cover}
+.np-sym{position:absolute;top:6px;inset-inline-end:10px;font-size:18px;font-weight:700}.np-o.on{border-color:var(--gold);background:rgba(242,201,76,.12);color:var(--cream)}
+.np-h{font:400 13px var(--pixel);color:var(--gold);margin:14px 0 8px}
+.np-plan{display:flex;flex-direction:column;gap:10px}.np-part{display:flex;flex-direction:column;gap:5px}.np-pl{font:400 10px var(--pixel);color:var(--mist)}
+.np-row{display:grid;grid-template-columns:1fr 1fr 74px;gap:6px}
+.np-t{position:relative;display:flex;align-items:center;gap:8px;text-align:start;padding:8px 9px;border-radius:14px;border:2px solid var(--line);background:var(--night2);color:var(--mist);font:600 12.5px/1.25 var(--body);cursor:pointer;filter:grayscale(1);opacity:.5;transition:all .15s}
+.np-t img{width:34px;height:34px;object-fit:contain;flex:none}.np-t b{color:var(--gold)}.np-t.tr{flex-direction:column;justify-content:center;gap:2px;text-align:center}.np-t.tr img{image-rendering:pixelated;width:30px;height:30px}
+.np-t.on{filter:none;opacity:1;border-color:rgba(242,201,76,.75);background:#2A3060;color:var(--cream)}
+.np-ck{position:absolute;top:-7px;inset-inline-start:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#161A2E;font:800 12px/20px var(--body);text-align:center;font-style:normal;display:none}.np-t.on .np-ck{display:block}
+.np-sum{margin:4px 0 0;font-weight:700;color:var(--cream);text-align:center;font-size:15px}.np-go{width:100%;margin-top:14px;font-size:20px;padding:14px}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -709,7 +723,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793918733';
+const BUILDV='1793922073';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -833,8 +847,14 @@ function tryJoin(v){v=(v||'').trim().toUpperCase();if(v===ADMIN_CODE){location.h
   const ref=S.db.raw.doc(v===LEGACY_ROOM?'state/main':'state/'+v);let done=false;
   const un=ref.onSnapshot(sn=>{if(done)return;done=true;try{un&&un()}catch(e){}if(sn.exists){RAWSTORE.set('psp-room',v);location.hash='r='+v;location.reload()}else toast(ll('לא מצאתי חדר עם הקוד הזה','No room found with that code'))},()=>toast(ll('לא הצלחתי לבדוק את הקוד','Couldn\'t check the code')))}
 function leaveRoom(){RAWSTORE.set('psp-room','');location.hash='';location.reload()}
-function planPick(sk,tgt){const on=k=>!sk.includes(k),b=(k,t)=>`<button class="btn ghost small ${on(k)?'on':''}" data-pk="${tgt}|${k}" style="${on(k)?'':'opacity:.45;text-decoration:line-through'}">${t}</button>`;
-  return `<div style="display:flex;flex-direction:column;gap:6px;margin:6px 0 12px">${[1,2,3,4].map(p=>`<div class="row" style="gap:6px;flex-wrap:wrap;align-items:center"><span class="muted" style="width:52px;font-size:13px">חלק ${p}</span>${b('c'+(2*p-1),(2*p-1)+'. '+COURSE_NAMES[2*p-2][0])}${b('c'+2*p,2*p+'. '+COURSE_NAMES[2*p-1][0])}${b('t'+p,'מאמן '+p)}</div>`).join('')}<span class="muted" style="font-size:12px">לחיצה מוציאה או מחזירה. סבבי השאלות וההיכל תמיד נשארים.</span></div>`}
+const FLAG_IL='<svg viewBox="0 0 220 160" class="flag"><rect width="220" height="160" fill="#fff"/><rect y="15" width="220" height="25" fill="#0038b8"/><rect y="120" width="220" height="25" fill="#0038b8"/><path d="M110 50L137 97H83Z M110 110L83 63H137Z" fill="none" stroke="#0038b8" stroke-width="6"/></svg>';
+const FLAG_UK='<svg viewBox="0 0 60 30" class="flag"><clipPath id="ukt"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#ukt)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>';
+function planMinutes(sk){let m=PLAN.reduce((a,p)=>a+p[2],0);[1,2,3,4].forEach(p=>{const c=planOf('c'+p)[2];if(sk.includes('c'+(2*p-1)))m-=c/2;if(sk.includes('c'+2*p))m-=c/2;if(sk.includes('t'+p))m-=planOf('tr'+p)[2]});return Math.round(m)}
+function planPick(sk,tgt){const on=k=>!sk.includes(k);
+  const tile=(k,img,name,cls)=>`<button class="np-t ${cls||''} ${on(k)?'on':''}" data-pk="${tgt}|${k}" aria-pressed="${on(k)}"><img src="${img}" alt="">${name}<i class="np-ck">${on(k)?'✓':''}</i></button>`;
+  const nc=8-sk.filter(x=>x[0]==='c').length,nt=4-sk.filter(x=>x[0]==='t').length,m=planMinutes(sk);
+  return `<div class="np-plan">${[1,2,3,4].map(p=>`<div class="np-part"><span class="np-pl">PKMN ${p}01</span><div class="np-row">${tile('c'+(2*p-1),`img/badge-${2*p-1}.webp`,`<span><b>${2*p-1}</b> ${COURSE_NAMES[2*p-2][0]}</span>`)}${tile('c'+2*p,`img/badge-${2*p}.webp`,`<span><b>${2*p}</b> ${COURSE_NAMES[2*p-1][0]}</span>`)}${tile('t'+p,'img/tr-silhouette.webp',`<span>מאמן ${p}</span>`,'tr')}</div></div>`).join('')}
+   <p class="np-sum">${nc} קורסים · ${nt} מאמנים · כ-${Math.floor(m/60)}:${String(m%60).padStart(2,'0')} שעות</p><p class="muted" style="font-size:12px;margin:0">סבבי השאלות וההיכל תמיד נשארים. רק המארח יכול לשנות את זה.</p></div>`}
 function roomsView(){
   const app=$('#app');app.hidden=false;
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
@@ -842,11 +862,12 @@ function roomsView(){
   const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
   const st=r=>(r.status==='closed'||(r.code===LEGACY_ROOM&&r.status!=='open'))?'נסגר · תוצאות זמינות':r.revealed?'אחרי החשיפה':r.open?'ערב פעיל':'פתוח, טרם התחיל';
   app.innerHTML=`<div class="col"><p class="eyebrow">PSP · ROOMS</p><h1>החדרים שלך</h1>
-  <div class="card"><h3 style="margin-top:0">חדר חדש</h3><label class="muted" for="nr-name">על מי הערב?</label><input type="text" id="nr-name" placeholder="שם הנבדק/ת" value="${esc(S.nrn||'')}" oninput="S.nrn=this.value">
-   <label class="muted">בן או בת?</label><div class="row" style="gap:8px;margin:6px 0 10px"><button class="btn ghost small ${S.nrg!=='f'?'on':''}" data-nrg="m">בן</button><button class="btn ghost small ${S.nrg==='f'?'on':''}" data-nrg="f">בת</button></div>
-   <label class="muted">שפת הערב</label><div class="row" style="gap:8px;margin:6px 0 10px"><button class="btn ghost small ${S.nrl!=='en'?'on':''}" data-nrl="he">עברית</button><button class="btn ghost small ${S.nrl==='en'?'on':''}" data-nrl="en">English</button></div>
-   <label class="muted">מה נכלל בערב</label>${planPick(S.nrs||[],'nrs')}
-   <button class="btn" data-act="newroom">יצירת חדר</button></div>
+  <div class="card np"><p class="eyebrow" style="margin:0">NEW ROOM</p><h2 style="margin:2px 0 12px">חדר חדש</h2>
+   <input type="text" id="nr-name" class="np-name" placeholder="על מי הערב?" value="${esc(S.nrn||'')}" oninput="S.nrn=this.value">
+   <div class="np-opts"><div class="np-seg"><button class="np-o ${S.nrg!=='f'?'on':''}" data-nrg="m" aria-label="בן"><img src="img/gb-boy.png" alt=""><span class="np-sym" style="color:#6390F0">♂</span></button><button class="np-o ${S.nrg==='f'?'on':''}" data-nrg="f" aria-label="בת"><img src="img/gb-girl.png" alt=""><span class="np-sym" style="color:#F95587">♀</span></button></div>
+    <div class="np-seg"><button class="np-o ${S.nrl!=='en'?'on':''}" data-nrl="he">${FLAG_IL}<span>עברית</span></button><button class="np-o ${S.nrl==='en'?'on':''}" data-nrl="en">${FLAG_UK}<span>English</span></button></div></div>
+   <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
+   <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button></div>
   ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}</p>
    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button><button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
@@ -1738,7 +1759,7 @@ async function startScreen(){
   if(ROOM.at){const i=SEQ.findIndex(x=>x.id===ROOM.at);if(i>=0){POS=i;HOF=0;SUB=0;BUILD=0}history.replaceState(null,'',location.pathname+location.search+'#screen='+ROOM.code)}
   setTimeout(maybeMew,0);
   if(!S.state&&(!ROOM.code||ROOM.legacy))await S.db.doc('state/main').set({subject:'ערי',open:0,closed:[],result:null,revealed:false,mew:{status:'none'}}).catch(()=>{});
-  $('#scr').onclick=e=>{const mc=e.target.closest('.mc');if(mc&&S.mem?.started){memPick(+mc.dataset.mi);return}if(e.target.closest('button'))return;go(1)};
+  $('#scr').onclick=e=>{const mc=e.target.closest('.mmc');if(mc&&S.mem?.started){memPick(+mc.dataset.mi);return}if(e.target.closest('button'))return;go(1)};
   $('#gear').onclick=()=>{const p=$('#panel');p.hidden=!p.hidden;renderPanel()};
   document.addEventListener('keydown',onKey);
   loadArt();loadOak();
@@ -1772,9 +1793,9 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),16,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
- ['c2',ll('קורס 2','Course 2'),20,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
- ['c3',ll('קורס 3','Course 3'),32,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
+const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),12,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+ ['c2',ll('קורס 2','Course 2'),16,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
+ ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
  ['c4',ll('קורס 4','Course 4'),16,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),25,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
@@ -1843,7 +1864,7 @@ function slideMusic(id){
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
 // characters come up by themselves: 12 s for the first, 10 for the second, 8 for the third; the host can also move on by hand
-const QD=[12,10,8],qDur=()=>QD[Math.max(0,Math.min(2,BUILD-1))];
+const QD=[10,8,6],qDur=()=>QD[Math.max(0,Math.min(2,BUILD-1))];
 function qAutoStop(){clearInterval(S.qT);S.qAuto=null;$('#qclock')?.remove()}
 function qPlaceClock(){const el=$('#qclock'),cv=$('#cv');if(!el||!cv)return;const t=[...cv.querySelectorAll('div[data-build-in]')].find(e=>(e.getAttribute('data-build-in')||'').split(' ')[1]===String(BUILD));if(!t)return;
   const cr=cv.getBoundingClientRect(),k=cr.width/1920||1,r=t.getBoundingClientRect();el.style.left=Math.round((r.right-cr.left)/k-100)+'px';el.style.top=Math.round((r.top-cr.top)/k-55)+'px'}
@@ -2135,28 +2156,23 @@ function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
 const LL=a=>EN?a[1]:a[0];
 const MEM_T=20;
 const MEM={
- 's-memory':{eb:'MEMORY · PARADIGM GLASSES',ti:['משחק זיכרון: אילו משקפיים שואלים מה?','Memory: which glasses ask what?'],
+ 'c-memory':{eb:'MEMORY · GLASSES & FATHERS',ti:['משחק זיכרון: מי שואל מה?','Memory: who asks what?'],
   pairs:[
-   {s:['ילד צועק בכיתה','A child shouts in class'],k:'edu',a:['משקפי חינוך','Education glasses'],q:['איך גורמים לו להקשיב בשיעור?','How do we get him to listen in class?']},
-   {s:['ילד צועק בכיתה','A child shouts in class'],k:'med',a:['משקפי רפואה','Medical glasses'],q:['האם יש לו קושי שצריך לאבחן?','Does he have a difficulty that needs a diagnosis?']},
-   {s:['ילד צועק בכיתה','A child shouts in class'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['איזה מקום הוא מנסה לתפוס בכיתה?','What place is he trying to take in the class?']},
    {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'edu',a:['משקפי חינוך','Education glasses'],q:['איך מאלפים אותו להישמע למאמן?','How do we train him to obey his trainer?']},
    {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'med',a:['משקפי רפואה','Medical glasses'],q:['אולי הוא פצוע? שיבדקו אותו במרכז הפוקימונים','Maybe he\'s hurt? Get him checked at the Pokémon Center']},
-   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?']}]},
- 'c-memory':{eb:'MEMORY · THREE FATHERS',ti:['משחק זיכרון: איזה הוגה שואל מה?','Memory: which thinker asks what?'],
-  pairs:[
-   {s:['צוות רוקט','Team Rocket'],k:'durkheim',a:['דורקהיים','Durkheim'],q:['מה מחזיק את צוות רוקט יחד, אחרי כל כך הרבה כישלונות?','What holds Team Rocket together after so many failures?']},
-   {s:['צוות רוקט','Team Rocket'],k:'marx',a:['מרקס','Marx'],q:['ג׳ובאני מרוויח, ג׳סי וג׳יימס עושים את העבודה. מי שולט במי?','Giovanni profits, Jessie and James do the work. Who controls whom?']},
-   {s:['צוות רוקט','Team Rocket'],k:'weber',a:['וובר','Weber'],q:['למה ג׳סי וג׳יימס ממשיכים: אינטרס, ערכים, רגש או הרגל?','Why do Jessie and James keep going: interest, values, emotion or habit?']},
-   {s:['המסע לליגת הפוקימון','The journey to the Pokémon League'],k:'durkheim',a:['דורקהיים','Durkheim'],q:['אילו ערכים משותפים הופכים מאמנים זרים לקהילה אחת?','Which shared values turn strangers into one community of trainers?']},
-   {s:['המסע לליגת הפוקימון','The journey to the Pokémon League'],k:'marx',a:['מרקס','Marx'],q:['הפוקימונים נלחמים, והמאמן מקבל את התג. מי מרוויח מהעבודה?','The Pokémon fight, the trainer gets the badge. Who profits from the work?']},
-   {s:['המסע לליגת הפוקימון','The journey to the Pokémon League'],k:'weber',a:['וובר','Weber'],q:['למה כל מאמן יוצא למסע: מטרה, אמונה, רגש או מסורת?','Why does each trainer set out: a goal, a belief, emotion or tradition?']}]}};
+   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?']},
+   {s:['קרב פוקימונים','A Pokémon battle'],k:'durkheim',a:['דורקהיים','Durkheim'],q:['אילו כללים משותפים גורמים לשני זרים ללחוץ ידיים בסוף הקרב?','Which shared rules make two strangers shake hands after the battle?']},
+   {s:['קרב פוקימונים','A Pokémon battle'],k:'marx',a:['מרקס','Marx'],q:['הפוקימונים נלחמים, והמאמן מקבל את התג. מי מרוויח מהעבודה?','The Pokémon fight, the trainer gets the badge. Who profits from the work?']},
+   {s:['קרב פוקימונים','A Pokémon battle'],k:'weber',a:['וובר','Weber'],q:['למה כל מאמן נלחם: בשביל התג, בשביל הכבוד, מההתרגשות, או כי ככה נהוג?','Why does each trainer fight: for the badge, for honor, for the thrill, or because that\'s what\'s done?']}]}};
+// one line per lens / thinker, shown on its card and in the legend, so people remember what each one looks at
+const LENS_TAG={edu:['איך מלמדים אותו?','How do we teach him?'],med:['מה לא תקין אצלו?','What\'s wrong with him?'],soc:['מה מקומו בקבוצה?','What\'s his place in the group?'],
+ durkheim:['מה מחבר אותנו?','What holds us together?'],marx:['מי מרוויח, ומי עובד?','Who profits, who works?'],weber:['למה בכלל עושים את זה?','Why do we act at all?']};
 const LENS_COL={edu:'#6390F0',med:'#F95587',soc:'#7AC74C'};
 const glassSvg=(c,w)=>`<svg viewBox="0 0 100 44" style="width:${w}px;height:auto"><circle cx="24" cy="22" r="17" fill="${c}" fill-opacity=".35" stroke="#161A2E" stroke-width="6"/><circle cx="76" cy="22" r="17" fill="${c}" fill-opacity=".35" stroke="#161A2E" stroke-width="6"/><path d="M41 20 Q50 12 59 20" fill="none" stroke="#161A2E" stroke-width="6"/></svg>`;
 function memCard(key,id){const p=MEM[key].pairs[+id.slice(0,-1)];return {p,kind:id.slice(-1),pair:+id.slice(0,-1)}}
 function memIcon(k,w){return LENS_COL[k]?glassSvg(LENS_COL[k],w):`<img src="img/th-${k}.webp" alt="" style="height:${Math.round(w*1.15)}px;width:auto;image-rendering:pixelated">`}
 function memFace(key,id){const {p,kind}=memCard(key,id);
-  return kind==='a'?`<div class="mcf lens" style="--c:${LENS_COL[p.k]||'#C9A227'}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?150:86)}</div><b>${esc(LL(p.a))}</b></div>`
+  return kind==='a'?`<div class="mcf lens" style="--c:${LENS_COL[p.k]||'#C9A227'}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?120:74)}</div><b>${esc(LL(p.a))}</b><em class="mtag">${esc(LL(LENS_TAG[p.k]))}</em></div>`
    :`<div class="mcf qq"><i>?</i><p>${esc(LL(p.q))}</p></div>`}
 function gamePlayers(){const pl=inRoom().filter(p=>!isPresenter(p)),j=pl.filter(p=>S.joined?.has(p.id));return j.length?j:pl}
 function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i+'q'));for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
@@ -2166,17 +2182,18 @@ function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i
 const memCur=()=>{const M=S.mem;return M&&M.order.length?M.order[M.t%M.order.length]:null};
 function memHTML(){const M=S.mem,set=MEM[M.key];
   return `<div class="st mem"><p class="bteb">${set.eb}</p><h2 class="btti mti">${esc(LL(set.ti))}</h2>
-   <div class="mgrid">${M.layout.map((id,i)=>`<button class="mc" data-mi="${i}"><div class="mci"><div class="mcb"><img src="img/it-poke-ball.webp" alt=""><b>${i+1}</b></div>${memFace(M.key,id)}</div><span class="mown"></span></button>`).join('')}</div>
+   <div class="mmg">${M.layout.map((id,i)=>`<button class="mmc" data-mi="${i}"><div class="mci"><div class="mcb"><img src="img/it-poke-ball.webp" alt=""><b>${i+1}</b></div>${memFace(M.key,id)}</div><span class="mown"></span></button>`).join('')}</div>
    <div class="mside" id="mside"></div></div>`}
 function memPaint(){const M=S.mem;if(!M)return;const cv=$('#cv');if(!cv.querySelector('.mem'))return;
-  M.layout.forEach((id,i)=>{const el=cv.querySelector(`.mc[data-mi="${i}"]`);if(!el)return;const up=M.flips.includes(i)||M.matched[i]!=null;el.classList.toggle('up',up);el.classList.toggle('got',M.matched[i]!=null);
+  M.layout.forEach((id,i)=>{const el=cv.querySelector(`.mmc[data-mi="${i}"]`);if(!el)return;const up=M.flips.includes(i)||M.matched[i]!=null;el.classList.toggle('up',up);el.classList.toggle('got',M.matched[i]!=null);
     const o=el.querySelector('.mown'),p=person(M.matched[i]);o.innerHTML=p?avHead(p,44):''});
   const side=$('#mside'),cp=person(memCur()),rows=M.order.map(id=>({p:person(id),s:M.scores[id]||0})).filter(r=>r.p).sort((a,b)=>b.s-a.s);
   const board=`<div class="mscore">${rows.map(r=>`<div class="qr ${r.p.id===memCur()&&M.started&&!M.done?'now':''}">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><b>${r.s}</b></div>`).join('')}</div>`;
-  if(!M.started){side.innerHTML=`<p class="msh">${ll('איך משחקים','HOW TO PLAY')}</p><div class="mrules">${ll(`<p>בכל תור הופכים <b>שני קלפים</b> מהטלפון.</p><p>מצאתם משקפיים והשאלה שהם שואלים? <b>זוג ונקודה</b>, ועוד תור אחד.</p><p>${MEM_T} שניות לתור.</p>`,`<p>Each turn, flip <b>two cards</b> from your phone.</p><p>Found the glasses and the question they ask? <b>A pair and a point</b>, plus one more turn.</p><p>${MEM_T} seconds per turn.</p>`)}</div><p class="mgo">${ll('לחיצה, ומתחילים','Click to start')}</p>${board}`;return}
+  if(!M.started){side.innerHTML=`<p class="msh">${ll('איך משחקים','HOW TO PLAY')}</p><div class="mrules">${ll(`<p>בכל תור הופכים <b>שני קלפים</b> מהטלפון.</p><p>מצאתם משקפיים והשאלה שהם שואלים? <b>זוג ונקודה</b>, ועוד תור אחד.</p><p>${MEM_T} שניות לתור.</p>`,`<p>Each turn, flip <b>two cards</b> from your phone.</p><p>Found the glasses and the question they ask? <b>A pair and a point</b>, plus one more turn.</p><p>${MEM_T} seconds per turn.</p>`)}</div><p class="mgo">${ll('לחיצה, ומתחילים','Click to start')}</p>${memLegend()}`;return}
   if(M.done){const tops=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);side.innerHTML=`<p class="msh">${ll('סוף המשחק','GAME OVER')}</p>${tops.length?`<div class="mwin"><div style="display:flex;gap:10px;align-items:flex-end">${tops.slice(0,3).map(r=>avFull(r.p,tops.length>1?150:200)).join('')}</div><p>🏆 ${tops.map(r=>esc(r.p.name)).join(' · ')} · ${tops[0].s} ${ll('זוגות','pairs')}</p></div>`:''}${board}`;return}
   side.innerHTML=`<p class="msh">${M.bonus?ll('תור נוסף!','BONUS TURN!'):ll('התור של','NOW PLAYING')}</p><div class="mturn">${cp?avHead(cp,84):''}<b>${cp?esc(cp.name):ll('מי שליד המסך','Whoever is at the screen')}</b></div>
-   <div class="mclock" id="mclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b></div>${board}`;memTick()}
+   <div class="mclock" id="mclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b></div>${board}${memLegend()}`;memTick()}
+function memLegend(){return `<div class="mleg">${['edu','med','soc','durkheim','marx','weber'].map(k=>`<div>${memIcon(k,LENS_COL[k]?50:32)}<b>${esc(LL(k in LENS_COL?MEM['c-memory'].pairs.find(p=>p.k===k).a:MEM['c-memory'].pairs.find(p=>p.k===k).a))}</b><span>${esc(LL(LENS_TAG[k]))}</span></div>`).join('')}</div>`}
 function memTick(){const M=S.mem,el=$('#mclock');if(!M||!el)return;const l=Math.max(0,(M.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/MEM_T*100}
 function memStart(){const M=S.mem;M.started=true;memTurn();music(null)}
 function memTurn(){const M=S.mem;M.flips=[];M.lock=false;M.end=Date.now()+MEM_T*1000;M.tid=Date.now();memPaint();gamePub();
@@ -2242,7 +2259,7 @@ function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores
     :`<div class="card qnow">${cp?avHead(cp,36):''}<span>${ll(`עכשיו התור של <b>${esc(cp?.name||'')}</b>`,`Now playing: <b>${esc(cp?.name||'')}</b>`)}<br><span class="gend" data-end="${G.end}"></span></span></div>`)+grid}
 function btPhone(me,G){const v=(S.myG||{})['b'+G.id],my=G.scores?.[me.id]||0,side=(X,k)=>`<button class="bpv${v===k?' on':''}${G.win===k?' win':''}" data-bv="${k}" ${G.phase==='guess'&&!v?'':'disabled'}>
    <span class="bph">${X.spr?`<img src="${X.spr}" alt="">`:''}<span><b>${esc(X.name)}</b><span class="bpt">${X.types.map(t=>`<span style="background:${TYPE_COL[t]}">${TYPE_HE[t]}</span>`).join('')}</span></span></span>
-   <span class="bps">${['HP','Atk','Def','SpA','SpD','Spe'].map((l,i)=>`<i>${l}</i><em><u style="width:${Math.min(100,X.st[i]/1.6)}%"></u></em><i>${X.st[i]}</i>`).join('')}</span></button>`;
+</button>`;
   let msg='';if(G.phase==='guess')msg=v?ll(`ניחשת: <b>${esc((v==='a'?G.A:G.B).name)}</b>. מחכים לקרב…`,`Your guess: <b>${esc((v==='a'?G.A:G.B).name)}</b>. Waiting for the battle…`):`<span class="gend" data-end="${G.end}"></span>`;
   else if(G.phase==='fight')msg=ll('הקרב רץ על המסך…','The battle is on the screen…');
   else if(G.win){const ok=v===G.win;msg=ok?ll('<b>צדקת! +1</b>','<b>Correct! +1</b>'):v?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}
@@ -2469,7 +2486,7 @@ function boardUpdate(){
     const mt=$('#mlabT');if(mt)mt.textContent=pend.length?ll(`${pend.length} עוד לא נחשפו`,`${pend.length} not revealed yet`):ll('כולם נחשפו','all revealed');
     mc.querySelectorAll('.mvo').forEach(el=>{const j=+el.dataset.j,a=at[j];let x,y;
       if(a){const c=mc.querySelector(`.mc[data-s="${a.sid}"]`);x=c.offsetLeft+c.offsetWidth-12-(a.k+1)*42;y=c.offsetTop+c.offsetHeight-60}
-      else{const k=pend.indexOf(j);x=4+k*43;y=16}
+      else{const k=pend.indexOf(j);x=EN?mc.offsetWidth-46-k*43:4+k*43;y=16}
       el.style.left=x+'px';el.style.top=y+'px';el.classList.toggle('land',!!a)});
   }
   else{mc.classList.remove('show');mc.innerHTML='';delete mc.dataset.built}
