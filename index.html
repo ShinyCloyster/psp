@@ -774,7 +774,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793998019';
+const BUILDV='1794001727';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1877,7 +1877,7 @@ const mmss=m=>{const neg=m<0,t=Math.round(Math.abs(m)*60);return (neg?'-':'')+Ma
 const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour12:false});
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
-  if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(it.id==='x-guess')label=ll('ניחוש הקהל','Crowd guess');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
+  if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.id==='x-guess')label=ll('ניחוש הקהל','Crowd guess');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
   if(POS===0){t0=null;log={}}else if(!t0)t0=now;
@@ -1987,7 +1987,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     onEnterSlide(it.id);
     if(it.id==='d-battle')btgEnter();
     if(MEM[it.id])memNew(it.id);
-    if(PQ[it.id])pqNew(it.id);
+    if(PQ[it.id]||PQ_ROUND(it.id))pqEnter(it.id);
     if(it.id==='k-scenario'){S.scn={revealed:false};scnBadge()}
     if(it.id==='x-guess')cgScreen();
     sumApply(it.id);
@@ -2012,7 +2012,7 @@ function go(d){
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.btg){const G=S.btg;if(G.phase==='guess'){btgFight();return}if(G.phase==='fight')return;if(G.phase==='result'){btgAfter();return}}
-  if(PQ[it.id]&&pqGo(d))return;
+  if((PQ[it.id]||PQ_ROUND(it.id))&&pqGo(d))return;
   if(it.id==='k-scenario'&&d>0&&!S.scn?.revealed&&BUILD>=buildOrders().length){scnReveal();return}
   if(MEM[it.id]&&d>0&&S.mem&&!S.mem.done){if(!S.mem.started)memStart();else if(!S.mem.lock)memNext(false);return}
   if(d>0&&!S.gateOk){const ix=id=>SEQ.findIndex(x=>x.id===id),bm=it.kind==='slide'&&it.id.match(/^x-break-(\d)$/),rm=it.kind==='slide'&&it.id.match(/^x-round-(\d)$/);
@@ -2220,7 +2220,7 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
 
 // ---------- room plan: which of the 8 courses and 4 trainers this room includes (state.skip: 'c1'..'c8', 't1'..'t4') ----------
 const COURSE_NAMES=[['מדע, פרדיגמה ו-PSP','Science, paradigm & PSP'],['איך מודדים: השאלון','How we measure: the questionnaire'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['המודל של PSP','The PSP model'],['18 הסוגים','The 18 types'],['אפיון נוסף ו־6 הסטטים','Extra trait and the 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
-function courseOf(id){if(id==='f-extra'||id==='pq-stats')return 7;if(id==='pq-evo')return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,k:2,c:3,d:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
+function courseOf(id){if(id==='f-extra'||id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,k:2,c:3,d:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
 const skipSet=()=>new Set(S.state?.skip||[]);
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&sk.has('t'+m[1]))return false;
   m=id.match(/^x-(part|sum)-(\d)$/);if(m&&sk.has('c'+(2*m[2]-1))&&sk.has('c'+2*m[2]))return false;return true}
@@ -2327,7 +2327,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
   else if(it?.id==='k-scenario')d={g:'scn',revealed:!!S.scn?.revealed};
   else if(it?.id==='x-guess')d={g:'cg'};
-  else if(S.pq&&it?.id===S.pq.key){const Q=S.pq;d={g:'pq',key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
+  else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='k-scenario'&&!S.scn?.revealed)scnBadge();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
@@ -2379,23 +2379,25 @@ const PQ={
   {k:'special',img:'neo',n:['ניאו','Neo'],h:[['עובד משרד שמרגיש שמשהו בעולם לא בסדר.','An office worker who feels something is wrong with the world.'],['ההתעוררות שלו דורשת צירוף אחד ויחיד: הנבואה הנכונה, האנשים הנכונים, והרגע שבו הוא מבין שכל העולם שהכיר בנוי הפוך.','His awakening needs one exact combination: the right prophecy, the right people, and the moment he sees that the whole world he knew is built upside down.']]}]}};
 const pqOpt=(set,k)=>PQ_OPT[set].find(o=>o[0]===k);
 const pqLab=o=>Array.isArray(o[1])?LL(o[1]):o[1];
-function pqNew(key){const P=PQ[key],ord=P.items.map((_,i)=>i);for(let i=ord.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ord[i],ord[j]]=[ord[j],ord[i]]}
-  const scores={};gamePlayers().forEach(p=>scores[p.id]=0);S.pq={key,ord,i:0,stage:1,revealed:false,done:false,scores,end:0,got:[]};pqRound()}
+const PQ_ROUND=id=>{const m=id.match(/^pq-(st|ev)-([a-z]+)$/);if(!m)return null;const key=m[1]==='st'?'pq-stats':'pq-evo',i=PQ[key].items.findIndex(x=>x.k===m[2]);return i<0?null:{key,i}};
+function pqScores(key){S.pqSc=S.pqSc||{};const sc=S.pqSc[key]||(S.pqSc[key]={});gamePlayers().forEach(p=>{if(sc[p.id]==null)sc[p.id]=0});return sc}
+function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
+  if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
 function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
 function pqOpen(){const Q=S.pq,P=PQ[Q.key],past=Q.ord.slice(0,Q.i).map(j=>P.items[j].k);return PQ_OPT[P.set].map(o=>o[0]).filter(k=>!past.includes(k))}
 function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.end=Date.now()+QD[0]*1000;pqPaint();gamePub();pqClock()}
-function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.key){clearInterval(S.pqT);return}
+function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.slide){clearInterval(S.pqT);return}
   const el=$('#pqclock');if(el&&!Q.revealed){const len=QD[Q.stage-1],l=Math.max(0,(Q.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/len*100;el.querySelector('span').textContent=Q.stage<3?ll('הרמז הבא','next hint'):ll('חשיפה','reveal')}
   if(!Q.revealed&&!Q.done&&Date.now()>Q.end)pqStep()},250)}
 function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;if(Q.stage<3){Q.stage++;Q.end=Date.now()+QD[Q.stage-1]*1000;sfx('sfx-tink');pqPaint();gamePub();return}pqReveal()}
-function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;
+function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;S.pqRev=S.pqRev||{};if(S.pqRev[Q.slide]){Q.got=S.pqRev[Q.slide];pqPaint();gamePub();return}S.pqRev[Q.slide]=Q.got;
   gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){Q.scores[p.id]=(Q.scores[p.id]||0)+(4-g.n);Q.got.push([p.id,g.n])}});
   sfx('sfx-dex-page-added');pqPaint();gamePub()}
 function pqNext(){const Q=S.pq;if(Q.i<Q.ord.length-1){Q.i++;pqRound();return}Q.done=true;clearInterval(S.pqT);leagueSet(Q.key,Q.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}
-function pqGo(d){const Q=S.pq;if(!Q||d<0)return false;if(Q.done)return false;if(!Q.revealed){pqStep();return true}pqNext();return true}
+function pqGo(d){const Q=S.pq;if(!Q||d<0||Q.slide!==cur()?.id)return false;if(Q.done||Q.revealed)return false;pqStep();return true}
 function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
   const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
-  const board=`<div class="qboard pqboard"><p class="qbh">SCOREBOARD</p>${rows.map(r=>{let st='';if(Q.revealed){const hit=Q.got.find(x=>x[0]===r.p.id);st=hit?`<img src="img/${QBALL[hit[1]][0]}.webp" alt="">`:'<i class="qx">✗</i>'}else if(r.g)st='<i class="qv">✓</i>';
+  const board=`<div class="qboard pqboard"><p class="qbh">SCOREBOARD</p>${rows.map(r=>{let st='';if(Q.done){}else if(Q.revealed){const hit=Q.got.find(x=>x[0]===r.p.id);st=hit?`<img src="img/${QBALL[hit[1]][0]}.webp" alt="">`:'<i class="qx">✗</i>'}else if(r.g)st='<i class="qv">✓</i>';
     return `<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${st}</span><b>${r.s}</b></div>`}).join('')}</div>`;
   if(Q.done){const top=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);
     cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · RESULTS</p><div class="pqend">${top.length?`<div class="btwin">${top.slice(0,3).map(r=>avFull(r.p,300)).join('')}</div><h2>🏆 ${top.map(r=>esc(r.p.name)).join(' · ')}</h2><p>${top[0].s} ${ll('נק׳','pts')}</p>`:`<h2>${ll('אף אחד לא ניחש הפעם','Nobody guessed this time')}</h2>`}</div>${board}</div>`;return}
@@ -2406,7 +2408,7 @@ function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
    <div class="pqopts">${opts.map(x=>{const past=!pqOpen().includes(x[0]);return `<div class="pqo ${Q.revealed&&x[0]===it.k?'hit':''} ${past?'past':''}"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`}).join('')}</div>
    ${Q.revealed?`<div class="pqans">${ll('התשובה:','The answer:')} <b>${pqLab(o)}</b> · ${esc(LL(o[2]))}</div>`:`<div id="pqclock" class="qclock pqclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>`}
    ${board}</div>`}
-function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.key)return;const b=$('.pqboard');if(!b||Q.revealed)return;const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
+function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.slide)return;const b=$('.pqboard');if(!b||Q.revealed)return;const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
   b.innerHTML=`<p class="qbh">SCOREBOARD</p>`+rows.map(r=>`<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${r.g?'<i class="qv">✓</i>':''}</span><b>${r.s}</b></div>`).join('')}
 function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item],id=G.key+'-'+G.i,mine=(S.myG||{})['p'+id],my=G.scores?.[me.id]||0;
   const head=`<p class="eyebrow">${P.eb} · ${G.i+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
@@ -2518,7 +2520,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   // battles: a gut guess, sometimes late
   const G=S.btg;if(G&&it.id==='d-battle'&&G.phase==='guess')B.forEach(id=>once('bt'+G.id+id,1000+Math.random()*BT_T*800,()=>put(id,{['b'+G.id]:Math.random()<.6?S.bt.win:brnd(['a','b'])})));
   // stats / evolution: guess at a random stage, right more often on the later hints
-  const Q=S.pq;if(Q&&it.id===Q.key&&!Q.revealed&&!Q.done)B.forEach(id=>{if(S.gIn?.[id]?.['p'+Q.key+'-'+Q.i])return;if(Math.random()<.12*Q.stage){const right=Math.random()<.25+.2*Q.stage;put(id,{['p'+Q.key+'-'+Q.i]:{v:right?pqItem().k:brnd(pqOpen()),n:Q.stage}})}});
+  const Q=S.pq;if(Q&&it.id===Q.slide&&!Q.revealed&&!Q.done)B.forEach(id=>{if(S.gIn?.[id]?.['p'+Q.key+'-'+Q.i])return;if(Math.random()<.12*Q.stage){const right=Math.random()<.25+.2*Q.stage;put(id,{['p'+Q.key+'-'+Q.i]:{v:right?pqItem().k:brnd(pqOpen()),n:Q.stage}})}});
   // who's that type: guesses go through the real docs, like phones
   if(/^q-/.test(it.id)){const t=it.id.slice(2),n=Math.min(3,BUILD);if(n>0)B.forEach(id=>{if(S.guesses?.[id]?.[t])return;if(Math.random()<.15*n){const g=Math.random()<.2+.25*n?t:brnd(Object.keys(TYPE_HE));S.db.doc('stage/q-'+id).set({[t]:{g,n,at:now}},{merge:true}).catch(()=>{})}})}
   if(it.id==='k-scenario'&&!S.scn?.revealed)B.forEach(id=>once('scn'+id,800+Math.random()*6000,()=>put(id,{scn:Math.floor(Math.random()*4)})));
