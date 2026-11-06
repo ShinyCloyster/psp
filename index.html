@@ -475,6 +475,55 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .np-t.on{filter:none;opacity:1;border-color:rgba(242,201,76,.75);background:#2A3060;color:var(--cream)}
 .np-ck{position:absolute;top:-7px;inset-inline-start:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#161A2E;font:800 12px/20px var(--body);text-align:center;font-style:normal;display:none}.np-t.on .np-ck{display:block}
 .np-sum{margin:4px 0 0;font-weight:700;color:var(--cream);text-align:center;font-size:15px}.np-go{width:100%;margin-top:14px;font-size:20px;padding:14px}
+.pq{background:radial-gradient(circle at 50% 40%,#262B4A 0%,#161A2E 70%);color:#F6F1E7}
+.pqeb{color:#F2C94C!important}.pqti{position:absolute;right:128px;top:126px;font-family:var(--display);font-size:68px;font-weight:400;color:#F6F1E7}
+.pqfig{position:absolute;right:110px;top:240px;width:540px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.pqimg{width:400px;height:400px;object-fit:contain}.pqname{font-family:var(--display);font-size:50px;line-height:1.1;text-align:center}
+.pqh{display:flex;flex-direction:column;gap:10px;width:100%}.pqh p{font-size:27px;line-height:1.38;text-align:center;color:#C9CCE0;opacity:0;transform:translateY(8px);transition:all .5s}.pqh p.on{opacity:1;transform:none}
+.pqopts{position:absolute;left:70px;top:320px;width:1060px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;direction:rtl}
+.pqo{background:rgba(255,255,255,.05);border:3px solid #3A4170;border-radius:22px;padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:all .4s}
+.pqo img{width:70px;height:70px;image-rendering:pixelated;object-fit:contain}.pqo b{font-family:var(--display);font-size:36px;font-weight:400}.pqo span{font-size:21px;color:#C9CCE0}
+.pqo.past{opacity:.25}.pqo.hit{border-color:#F2C94C;background:rgba(242,201,76,.16);box-shadow:0 0 0 6px rgba(242,201,76,.25),0 0 50px rgba(242,201,76,.35);opacity:1}
+.pqans{position:absolute;left:70px;bottom:70px;width:1060px;text-align:center;background:#F2C94C;color:#161A2E;border-radius:999px;padding:16px 30px;font-size:34px}.pqans b{font-family:var(--display);font-weight:400;font-size:40px}
+.pqclock{left:600px!important;top:auto!important;bottom:60px}
+.qboard.pqboard{left:70px;top:110px;width:1060px;grid-template-columns:repeat(3,1fr)}
+.pqend{position:absolute;left:70px;right:70px;top:260px;display:flex;flex-direction:column;align-items:center;gap:10px}.pqend h2{font-family:var(--display);font-size:60px;font-weight:400;color:#F2C94C}.pqend p{font-size:32px}
+.pq .pqend+.qboard{top:auto;bottom:40px;left:430px;width:1060px}
+.en .pqti{right:auto;left:128px}.en .pqfig{right:auto;left:110px}.en .pqopts{left:auto;right:70px;direction:ltr}.en .pqans{left:auto;right:70px}.en .pqclock{left:auto!important;right:600px}.en .qboard.pqboard{left:auto;right:70px}.en .pq .pqend+.qboard{left:430px;right:auto}
+/* league */
+.lgbox{background:rgba(22,26,46,.94);border:3px solid #F2C94C;border-radius:24px;padding:16px 20px;color:#F6F1E7;display:flex;flex-direction:column;gap:6px}
+.lgh{font:400 16px var(--pixel);color:#F2C94C;text-align:center;margin-bottom:4px}
+.lgr{display:grid;grid-template-columns:30px auto 1fr 50px;gap:10px;align-items:center;font-size:22px;padding:2px 8px;border-radius:12px}.lgr i{font:400 16px var(--pixel);font-style:normal;color:#9FA7C7}
+.lgr span{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lgr b{font:400 20px var(--pixel);color:#F2C94C;text-align:left}.lgr.top{background:rgba(242,201,76,.16)}.lgr.top i{color:#F2C94C}
+.lgbox.cmp .lgr{font-size:20px}
+.lgbreak{position:absolute;left:70px;top:170px;width:620px;z-index:5}.lgbreak.low{top:600px}.lgbreak.low .lgbox{max-height:420px;overflow:hidden}
+.en .lgbreak{left:auto;right:70px}
+.lgchamp{background:radial-gradient(circle at 50% 35%,#3A2F6B 0%,#161A2E 70%);color:#F6F1E7}
+.lgeb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#F2C94C}.lgti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400}
+.lgpod{position:absolute;right:128px;left:720px;top:280px;bottom:80px;display:flex;align-items:flex-end;justify-content:center;gap:30px}
+.lgp{display:flex;flex-direction:column;align-items:center;gap:6px}.lgp p{font-family:var(--display);font-size:50px}.lgp b{font:400 24px var(--pixel);color:#F2C94C}
+.lgchamp .lgbox{position:absolute;left:90px;top:280px;width:560px}
+.en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:720px;left:128px}.en .lgchamp .lgbox{left:auto;right:90px}
+.scnb{position:absolute;left:70px;bottom:110px;z-index:6;background:rgba(22,26,46,.92);border:3px solid #F2C94C;border-radius:22px;padding:12px 18px;color:#F6F1E7;max-width:620px}
+.scnb p{font-size:22px;font-weight:700;margin-bottom:6px}.scnb div{display:flex;flex-wrap:wrap;gap:6px}.en .scnb{left:auto;right:70px}
+.scnr{position:absolute;inset:0;background:rgba(10,12,24,.55);z-index:20;display:flex;align-items:center;justify-content:center}
+.scnr .card{background:#FFFDF8;color:#161A2E;border-radius:30px;padding:30px 44px;width:1500px;display:flex;flex-direction:column;gap:16px}
+.scnrow{display:grid;grid-template-columns:560px 1fr 300px 150px;gap:18px;align-items:center;padding:10px 14px;border-radius:18px}
+.scnrow.own{background:rgba(242,201,76,.25);box-shadow:inset 0 0 0 3px #F2C94C}.scnt{font-size:26px;font-weight:700;line-height:1.25}
+.scnbar{height:22px;border-radius:11px;background:#EFE8D8;overflow:hidden}.scnbar i{display:block;height:100%;background:#6390F0;border-radius:11px}
+.scnav{display:flex;flex-wrap:wrap;gap:4px}.scnme{font:400 15px var(--pixel);color:#B7860B}.scnf{font-size:28px;text-align:center;margin-top:6px}
+.scnbtn{text-align:start;white-space:normal;line-height:1.3;padding:14px 16px}.scnbtn.on{border-color:var(--gold);background:rgba(242,201,76,.16);color:var(--cream)}
+.cgs{background:radial-gradient(circle at 50% 40%,#2C3260 0%,#161A2E 70%);color:#F6F1E7}.cgs .btti{color:#F6F1E7}.cgs .btsub{color:#C9CCE0}
+.cgparts{position:absolute;left:160px;right:160px;top:360px;display:flex;gap:40px;direction:rtl}.en .cgparts{direction:ltr}
+.cgp{flex:1;background:rgba(255,255,255,.06);border:3px solid #3A4170;border-radius:28px;padding:34px 20px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.cgp img{width:110px;height:110px;image-rendering:pixelated}.cgp b{font-family:var(--display);font-size:44px;font-weight:400}.cgic{display:flex;gap:10px;height:110px;align-items:center}
+.cgdone{position:absolute;left:160px;right:160px;top:720px;text-align:center}.cgdone p{font-size:30px;margin-bottom:12px}.cgdone div{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cgq{font-weight:700;margin:12px 0 6px}.cgq small{color:var(--mist);font-weight:400}.cgt{grid-template-columns:repeat(6,1fr)!important;gap:5px!important}.cgt .qt{padding:6px 2px;font-size:10px}
+.cgtab{position:absolute;left:110px;right:110px;top:290px;display:flex;flex-direction:column;gap:22px}
+.cgrow{display:grid;grid-template-columns:230px 1fr 1fr 420px;gap:20px;align-items:center;background:rgba(255,255,255,.05);border:2px solid #3A4170;border-radius:24px;padding:18px 26px}
+.cgl{font-family:var(--display);font-size:40px;font-weight:400;color:#F2C94C}.cgv{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:30px}.cgv span{font-size:18px;color:#9FA7C7;width:100%}
+.cgv em{font-style:normal;font-weight:700}.cgv.crowd em{color:#C9CCE0}.cgav{display:flex;gap:6px;flex-wrap:wrap}
+.cgbest{position:absolute;left:0;right:0;bottom:80px;text-align:center;font-size:34px}.cgbest b{color:#F2C94C}
 </style>
 
 <div class="wrap" id="app"><div class="col"><p class="eyebrow">PSP · LOADING</p><h1>טוען…</h1></div></div>
@@ -723,7 +772,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793924403';
+const BUILDV='1793927678';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -812,6 +861,7 @@ async function boot(){
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0,os=S.deck?.seg;S.deck=d;if((!had&&d?.t0)||os!==d?.seg)render();else deckLabels()},()=>{});
+  S.db.doc('stage/league').onSnapshot(sn=>{S.league=sn.exists?clone(sn.data()):{};if(isScreen()&&cur()?.kind==='league')$('#cv').innerHTML=leagueHTML()},()=>{});
   S.db.doc('stage/game').onSnapshot(sn=>{if(isScreen())return;const was=S.game;S.game=sn.exists?sn.data():null;const G=S.game;
     if(G?.g==='bt'&&G.win&&!(was?.id===G.id&&was.win)&&(S.myG||{})['b'+G.id])sfx((S.myG||{})['b'+G.id]===G.win?'sfx-caught-mon':'sfx-ball-poof');
     if(G?.g==='mem'&&G.cur===S.me&&was?.tid!==G.tid&&!G.done)try{navigator.vibrate?.([30,60,30])}catch(e){}
@@ -1689,6 +1739,11 @@ function bindPhone(){
     if(b.dataset.mp!=null){const G=S.game;if(G?.g!=='mem'||G.cur!==S.me||G.done)return;const i=+b.dataset.mp;if(!S.mpick||S.mpick.tid!==G.tid)S.mpick={tid:G.tid,picks:[]};const P=S.mpick.picks;if(P.length>=2||P.includes(i)||G.faces?.[i])return;
       P.push(i);sfx('sfx-tink');try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({mk:G.key,tid:G.tid,picks:[...P]},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')));return}
     if(b.dataset.bv){const G=S.game;if(G?.g!=='bt'||G.phase!=='guess'||(S.myG||{})['b'+G.id])return;S.myG={...(S.myG||{}),['b'+G.id]:b.dataset.bv};sfx('sfx-ball-toss');try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['b'+G.id]:b.dataset.bv},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
+    if(b.dataset.scn!=null){if(S.game?.g!=='scn'||S.game.revealed)return;const v=+b.dataset.scn;S.myG={...(S.myG||{}),scn:v};sfx('sfx-tink');render();S.db.doc('stage/g-'+S.me).set({scn:v},{merge:true}).catch(()=>toast(ll('לא נשלח','Not sent')));return}
+    if(b.dataset.cgt||b.dataset.cgs||b.dataset.cge){if(S.game?.g!=='cg')return;const g={t:[],...((S.myG||{}).cg||{})};g.t=[...(g.t||[])];
+      if(b.dataset.cgt){const t=b.dataset.cgt,i=g.t.indexOf(t);if(i>=0)g.t.splice(i,1);else{if(g.t.length>=2)g.t.shift();g.t.push(t)}}if(b.dataset.cgs)g.s=b.dataset.cgs;if(b.dataset.cge)g.e=b.dataset.cge;
+      S.myG={...(S.myG||{}),cg:g};sfx('sfx-tink');render();S.db.doc('stage/g-'+S.me).set({cg:g},{merge:true}).catch(()=>toast(ll('לא נשלח','Not sent')));return}
+    if(b.dataset.pq){const G=S.game;if(G?.g!=='pq'||G.revealed||G.done)return;const k='p'+G.key+'-'+G.i;if((S.myG||{})[k])return;const g={v:b.dataset.pq,n:G.stage};S.myG={...(S.myG||{}),[k]:g};sfx('sfx-ball-toss');try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({[k]:g},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
     if(b.dataset.act==='tchart'){S.tchart=!S.tchart;render();return}
     if(b.dataset.act==='say'){sayOpen();return}
     if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
@@ -1739,7 +1794,7 @@ function bindPhone(){
 // SCREEN: deck + live snapshots + Hall of Fame
 // =====================================================================
 let SEQ=[],POS=+(store.get('psp-pos')||0),BUILD=0,SUB=0,HOF=0;
-const HOF_STEPS=['intro','board','ball','reveal','oak','gaps','legend','map'];
+const HOF_STEPS=['intro','board','crowd','champ','ball','reveal','oak','gaps','legend','map'];
 const OAK_STEPS=['oak','gaps','legend','map'];
 async function startScreen(){
   const app=$('#app');
@@ -1793,10 +1848,10 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),12,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),14,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
  ['c2',ll('קורס 2','Course 2'),16,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
  ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
- ['c4',ll('קורס 4','Course 4'),16,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),25,'x-finale'],['end',ll('סיום','End'),2,'closing']];
+ ['c4',ll('קורס 4','Course 4'),23,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
 const planOf=k=>PLAN.find(x=>x[0]===k);
@@ -1807,9 +1862,9 @@ function schedInfo(D,now){if(!D?.t0||!D.seg||D.seg==='open'&&!D.log)return null;
   return {name:p[1],len:p[2],el,left:p[2]-el,late,frac:D.frac??0}}
 const mmss=m=>{const neg=m<0,t=Math.round(Math.abs(m)*60);return (neg?'-':'')+Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
 const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour12:false});
-const HOF_HE=EN?{intro:'Opening',board:'The board',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
+const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
-  if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
+  if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(it.id==='x-guess')label=ll('ניחוש הקהל','Crowd guess');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
   if(POS===0){t0=null;log={}}else if(!t0)t0=now;
@@ -1919,12 +1974,16 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     onEnterSlide(it.id);
     if(it.id==='d-battle')btgEnter();
     if(MEM[it.id])memNew(it.id);
+    if(PQ[it.id])pqNew(it.id);
+    if(it.id==='k-scenario'){S.scn={revealed:false};scnBadge()}
+    if(it.id==='x-guess')cgScreen();
     sumApply(it.id);
-    breakFacts(it.id);qAutoStop();
+    breakFacts(it.id);leagueOnBreak(it.id);qAutoStop();
     slideMusic(it.id);
     quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
-  } else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
+  } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-hof',{vol:.35});sfx('sfx-caught-mon') }
+  else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();try{leagueSet('types',quizState().scores)}catch(e){}quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
   else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
   screenOverlay();deckPub();gamePub();
@@ -1940,6 +1999,8 @@ function go(d){
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.btg){const G=S.btg;if(G.phase==='guess'){btgFight();return}if(G.phase==='fight')return;if(G.phase==='result'){btgAfter();return}}
+  if(PQ[it.id]&&pqGo(d))return;
+  if(it.id==='k-scenario'&&d>0&&!S.scn?.revealed&&BUILD>=buildOrders().length){scnReveal();return}
   if(MEM[it.id]&&d>0&&S.mem&&!S.mem.done){if(!S.mem.started)memStart();else if(!S.mem.lock)memNext(false);return}
   if(d>0&&!S.gateOk){const ix=id=>SEQ.findIndex(x=>x.id===id),bm=it.kind==='slide'&&it.id.match(/^x-break-(\d)$/),rm=it.kind==='slide'&&it.id.match(/^x-round-(\d)$/);
     const m=bm&&ix('x-round-'+bm[1])>=0&&ix('x-round-'+bm[1])<POS?bm:rm&&SEQ[POS+1]?.id!=='x-break-'+rm[1]?rm:null;if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
@@ -2101,12 +2162,19 @@ function btAttack(A,D){let best=null;A.t.forEach(t=>{const m=D.t.reduce((x,d)=>x
   const phys=A.atk>=A.spa,At=phys?A.atk:A.spa,Df=phys?D.def:D.spd;
   const dmg=best.m?Math.max(1,Math.floor((Math.floor(22*80*At/Df)/50+2)*1.5*best.m*.925)):0;
   return {...best,phys,dmg,hits:dmg?Math.ceil(D.hp/dmg):Infinity,pct:dmg?Math.min(100,dmg/D.hp*100):0}}
-function battleNew(){if(!S.btTry)music(null);
+// the three battles of a set tell a story: 1) a plain type advantage, 2) a second type that changes the picture, 3) type advantage that loses to the stats
+const BT_KIND=['type','dual','surprise'];
+function btFits(kind,A,B,xa,xb,win){if(!win||xa.m===xb.m)return false;const adv=xa.m>xb.m?'a':'b';
+  if(kind==='type')return A.t.length===1&&B.t.length===1&&Math.max(xa.m,xb.m)>=2&&win===adv;
+  if(kind==='dual'){const two=(X,Y,x)=>X.t.length===2&&(CHART[x.type][X.t[0]]??1)!==x.m;return (two(B,A,xa)||two(A,B,xb))&&Math.max(xa.m,xb.m)>=2&&win===adv}
+  return Math.max(xa.m,xb.m)>=2&&win!==adv}
+function battleNew(){music(null);
   const pool=S.engine.lines.filter(l=>!l.legendary&&S.engine.base?.[l.id]&&!['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023'].includes(l.id));
-  const pick=()=>pool[Math.floor(Math.random()*pool.length)];let a=pick(),b=pick();while(b.id===a.id)b=pick();
-  const A=btSide(a),B=btSide(b),xa=btAttack(A,B),xb=btAttack(B,A);
-  let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity)win=A.spe===B.spe?null:A.spe>B.spe?'a':'b';if(!win&&(S.btTry=(S.btTry||0)+1)<30){battleNew();return}S.btTry=0;
-  S.bt={A,B,xa,xb,win,done:false};$('#cv').innerHTML=battleHTML();
+  const kind=BT_KIND[((S.btg?.n||1)-1)%3],pick=()=>pool[Math.floor(Math.random()*pool.length)];let A,B,xa,xb,win,best=null;
+  for(let i=0;i<3000;i++){let a=pick(),b=pick();if(b.id===a.id)continue;A=btSide(a);B=btSide(b);xa=btAttack(A,B);xb=btAttack(B,A);
+    win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
+    if(win&&!best)best={A,B,xa,xb,win};if(btFits(kind,A,B,xa,xb,win)){best={A,B,xa,xb,win};break}}
+  S.bt={...best,kind,done:false};$('#cv').innerHTML=battleHTML();
 }
 function btCard(X,x,k){const l=X.l,phys=x.phys;
   return `<div class="btc" id="bt-${k}"><img ${artAttr(l)} alt="" class="bti"><p class="btn2">${esc(finalName(l))}</p><div class="btt">${X.t.map(plateH).join('')}</div>
@@ -2114,8 +2182,8 @@ function btCard(X,x,k){const l=X.l,phys=x.phys;
    <div class="btbars">${[['Attack',1],['Defense',2],['Sp. Atk',3],['Sp. Def',4],['Speed',5]].map(([n,i])=>`<i>${n}</i><em><u style="width:${Math.min(100,X.b[i]/1.6)}%;background:${X.b[i]>=100?'#5BC48A':X.b[i]>=70?'#F2C94C':'#F08A5D'}"></u></em><b>${X.b[i]}</b>`).join('')}</div>
    <div class="btx" id="btx-${k}"><p>${ll(`תוקף ב<b style="color:${TYPE_COL[x.type]}">${TYPE_HE[x.type]}</b>: <b>${MULT_HE(x.m)}</b>`,`Attacks with <b style="color:${TYPE_COL[x.type]}">${TYPE_HE[x.type]}</b>: <b>${MULT_HE(x.m)}</b>`)}</p><p>${ll(`${x.dmg?`כל מכה מורידה <b>${Math.round(x.pct)}%</b> מהחיים, כך ש<b>${x.hits===1?'מכה אחת':x.hits+' מכות'}</b> מספיקות לניצחון`:'לא יכול לפגוע בכלל'}`,`${x.dmg?`Each hit takes <b>${Math.round(x.pct)}%</b> of HP, so <b>${x.hits===1?'one hit':x.hits+' hits'}</b> are enough to win`:'Can\'t hit at all'}`)}</p></div></div>`}
 function battleHTML(){const {A,B,xa,xb}=S.bt,first=A.spe>=B.spe?A:B;
-  return `<div class="st battle"><p class="bteb">IT'S A BATTLE! · DAMAGE FORMULA</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
-   <p class="btsub">${ll(`סוג מול סוג, כוח מול הגנה, ומי מהיר יותר. נחשו בטלפון מי ינצח: ${BT_T} שניות לכל קרב.`,`Type vs. type, power vs. defense, and who is faster. Guess on your phone who wins: ${BT_T} seconds a battle.`)}</p>
+  return `<div class="st battle"><p class="bteb" dir="ltr">IT'S A BATTLE! · ${{type:'BATTLE 1 · TYPE VS. TYPE',dual:'BATTLE 2 · DUAL TYPE',surprise:'BATTLE 3 · WHAT ABOUT THE STATS?'}[S.bt.kind]}</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
+   <p class="btsub"><b>${ll({type:'קרב 1: סוג מול סוג.',dual:'קרב 2: סוג כפול.',surprise:'קרב 3: ומה עם הסטטים?'}[S.bt.kind],{type:'Battle 1: type vs. type.',dual:'Battle 2: a dual type.',surprise:'Battle 3: what about the stats?'}[S.bt.kind])}</b> ${ll(`נחשו בטלפון מי ינצח: ${BT_T} שניות.`,`Guess on your phone who wins: ${BT_T} seconds.`)}</p>
    <div class="btrow">${btCard(A,xa,'a')}<div class="btvs"><div class="gclock" id="gclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div><b>VS</b><small id="btfirst"><bdi>${esc(finalName(first.l))}</bdi> ${ll(`מהיר יותר ותוקף ראשון`,`is faster and attacks first`)}</small></div>${btCard(B,xb,'b')}</div>
    <div class="btres" id="btres"></div><div class="btboard" id="btboard"></div></div>`}
 function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
@@ -2130,7 +2198,8 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
     if(!T.win){r.innerHTML=`${ll(`<span>תיקו: אף אחד מהם לא יכול לפגוע בשני.</span>`,`<span>A draw: neither can hurt the other.</span>`)}`}
     else{const W=T.win==='a'?T.A:T.B,L=T.win==='a'?T.B:T.A,xw=T.win==='a'?T.xa:T.xb,xl=T.win==='a'?T.xb:T.xa;$('#bt-'+T.win)?.classList.add('win');
       const why=xw.hits<xl.hits?(xw.m>xl.m?ll('בזכות יתרון הסוג','thanks to the type advantage'):ll('בזכות כוח מול הגנה','thanks to power vs. defense')):ll('כי הוא מהיר יותר ומכה ראשון','because it is faster and strikes first');
-      r.innerHTML=`<span>🏆 <bdi>${esc(finalName(W.l))}</bdi> ${ll(`מנצח, ${why}.`,`wins, ${why}.`)}</span>`}
+      const les={type:'',dual:ll(' הסוג השני שינה את התמונה.',' The second type changed the picture.'),surprise:ll(' יתרון הסוג לא הספיק.',' The type advantage wasn\'t enough.')}[T.kind]||'';
+      r.innerHTML=`<span>🏆 <bdi>${esc(finalName(W.l))}</bdi> ${ll(`מנצח, ${why}.`,`wins, ${why}.`)}${les}</span>`}
     r.classList.add('show')};
   step();
 }
@@ -2138,7 +2207,7 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
 
 // ---------- room plan: which of the 8 courses and 4 trainers this room includes (state.skip: 'c1'..'c8', 't1'..'t4') ----------
 const COURSE_NAMES=[['מדע, פרדיגמה ו-PSP','Science, paradigm & PSP'],['איך מודדים: השאלון','How we measure: the questionnaire'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['המודל של PSP','The PSP model'],['18 הסוגים','The 18 types'],['אפיון נוסף ו־6 הסטטים','Extra trait and the 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
-function courseOf(id){if(id==='f-extra')return 7;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,k:2,c:3,d:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
+function courseOf(id){if(id==='f-extra'||id==='pq-stats')return 7;if(id==='pq-evo')return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,k:2,c:3,d:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
 const skipSet=()=>new Set(S.state?.skip||[]);
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&sk.has('t'+m[1]))return false;
   m=id.match(/^x-(part|sum)-(\d)$/);if(m&&sk.has('c'+(2*m[2]-1))&&sk.has('c'+2*m[2]))return false;return true}
@@ -2204,7 +2273,7 @@ function memPick(i,pid){const M=S.mem;if(!M||!M.started||M.done||M.lock)return;i
   if(M.flips.length===2){M.lock=true;const [a,b]=M.flips,ca=memCard(M.key,M.layout[a]),cb=memCard(M.key,M.layout[b]),ok=ca.pair===cb.pair;
     setTimeout(()=>{if(S.mem!==M)return;const who=memCur();
       if(ok){M.matched[a]=M.matched[b]=who||'_';if(who)M.scores[who]=(M.scores[who]||0)+1;sfx('sfx-caught-mon');
-        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
+        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;leagueSet('mem',M.scores);M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
       else sfx('sfx-ball-poof');
       memNext(ok)},ok?1500:2300)}}
 function memIn(){const M=S.mem;if(!M?.started||M.done)return;const pid=memCur();if(!pid)return;const x=S.gIn?.[pid];if(!x||x.mk!==M.key||x.tid!==M.tid)return;
@@ -2222,7 +2291,7 @@ function btgFight(){const G=S.btg;if(G.phase!=='guess')return;G.phase='fight';$(
 function btgDone(){const G=S.btg;if(!G||G.phase!=='fight')return;G.phase='result';const win=S.bt.win;G.right=[];
   gamePlayers().forEach(p=>{const v=S.gIn?.[p.id]?.['b'+G.id];if(v&&v===win){G.scores[p.id]=(G.scores[p.id]||0)+1;G.right.push(p.id)}});
   G.end=Date.now()+BT_RES*1000;$('#gclock')?.classList.remove('off');btgPaint();gamePub()}
-function btgAfter(){const G=S.btg;if(G.n<3){btgNext();return}G.phase='table';clearInterval(S.btgT);btgPaint();gamePub()}
+function btgAfter(){const G=S.btg;if(G.n<3){btgNext();return}G.phase='table';leagueSet('bt',G.scores);clearInterval(S.btgT);btgPaint();gamePub()}
 function btgMore(){const G=S.btg;G.set++;G.n=0;btgNext()}
 function btgBoard(){const G=S.btg,rows=gamePlayers().map(p=>({p,s:G.scores[p.id]||0})).sort((a,b)=>b.s-a.s);
   return rows.map(r=>{const v=S.gIn?.[r.p.id]?.['b'+G.id];let st='';if(G.phase==='result')st=G.right?.includes(r.p.id)?'<i class="qv">✓</i>':'<i class="qx">✗</i>';else if(v)st='<i class="qv">•</i>';
@@ -2241,12 +2310,15 @@ function btgSide(X){return {name:finalName(X.l),types:X.t,st:X.b.slice(0,6),spr:
 function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   if(S.mem&&it?.id===S.mem.key){const M=S.mem,faces={};M.layout.forEach((id,i)=>{if(M.flips.includes(i)||M.matched[i]!=null)faces[i]=id});
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
-  else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
+  else if(it?.id==='k-scenario')d={g:'scn',revealed:!!S.scn?.revealed};
+  else if(it?.id==='x-guess')d={g:'cg'};
+  else if(S.pq&&it?.id===S.pq.key){const Q=S.pq;d={g:'pq',key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
+  else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
-function gameIn(){if(!isScreen())return;if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
+function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='k-scenario'&&!S.scn?.revealed)scnBadge();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
 
 // ----- phone side -----
-function gameView(me){const G=S.game;if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);return ''}
+function gameView(me){const G=S.game;if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);return ''}
 function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores?.[me.id]||0,mine=G.cur===me.id,cp=person(G.cur);
   const picks=(S.mpick&&S.mpick.tid===G.tid)?S.mpick.picks:[];
   const head=`<p class="eyebrow">${set.eb}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('משחק זיכרון','Memory')}</h1><b class="qsc">${my} ${ll('זוגות','pairs')}</b></div>`;
@@ -2264,15 +2336,144 @@ function btPhone(me,G){const v=(S.myG||{})['b'+G.id],my=G.scores?.[me.id]||0,sid
   else if(G.phase==='fight')msg=ll('הקרב רץ על המסך…','The battle is on the screen…');
   else if(G.win){const ok=v===G.win;msg=ok?ll('<b>צדקת! +1</b>','<b>Correct! +1</b>'):v?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}
   return `<p class="eyebrow">WHO WINS? · ${ll(`קרב ${G.n}/3`,`BATTLE ${G.n}/3`)}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('מי ינצח?','Who wins?')}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>
-   <div class="card qnow" style="display:block">${msg}</div><div class="bpg">${side(G.A,'a')}<span class="bpvs">VS</span>${side(G.B,'b')}</div>
+   <div class="card qnow" style="display:block">${msg}${G.kind==='surprise'&&G.phase==='guess'?`<br><small class="muted">${ll('רמז: הפעם שווה להציץ גם בסטטים שעל המסך.','Hint: this time, glance at the stats on the screen too.')}</small>`:''}</div><div class="bpg">${side(G.A,'a')}<span class="bpvs">VS</span>${side(G.B,'b')}</div>
    <button class="btn ghost small" data-act="tchart" style="margin-top:10px">${S.tchart?ll('הסתרת טבלת הסוגים','Hide the type chart'):ll('📊 טבלת הסוגים','📊 Type chart')}</button>${S.tchart?typeChartH([...G.A.types,...G.B.types]):''}`}
 function typeChartH(hl){const T=Object.keys(TYPE_HE),h=new Set(hl);
   return `<div class="tch"><p class="muted" style="font-size:12px;margin:6px 0">${ll('שורה = התוקף, עמודה = המותקף. ירוק ×2, אדום ×½, שחור ×0','Row = attacker, column = defender. Green ×2, red ×½, black ×0')}</p><table><tr><td></td>${T.map(t=>`<th class="${h.has(t)?'hl':''}">${qIcon(t,16)}</th>`).join('')}</tr>
    ${T.map(a=>`<tr><th class="${h.has(a)?'hl':''}">${qIcon(a,16)}</th>${T.map(d=>{const m=CHART[a][d]??1;return `<td class="${m===2?'x2':m===0?'x0':m===.5?'xh':''}${h.has(a)&&h.has(d)?' hl':''}">${m===2?'2':m===0?'0':m===.5?'½':''}</td>`}).join('')}</tr>`).join('')}</table></div>`}
 
+// ---------- "who's that stat?" / "how did they evolve?": one character a round, three hints, the earlier the guess the more it's worth ----------
+const PQ_OPT={
+ stats:[['hp','HP',['סיבולת רגשית','Emotional stamina'],'it-hp-up'],['atk','Attack',['אסרטיביות מעשית','Practical assertiveness'],'it-protein'],['def','Defense',['גבולות','Boundaries'],'it-iron'],
+  ['spa','Sp. Atk',['כוח אינטלקטואלי','Intellectual power'],'it-calcium'],['spd','Sp. Def',['חסינות פנימית','Inner immunity'],'it-zinc'],['spe','Speed',['קצב','Pace'],'it-carbos']],
+ evo:[['level',['רמה','Level up'],['צבירה: ניסיון וזמן','Accumulation'],'it-rare-candy'],['item',['אבן','Stone'],['זרז: הכול בבת אחת','A catalyst'],'it-thunder-stone'],['trade',['טרייד','Trade'],['מעבר: סביבה חדשה','A new setting'],'it-metal-coat'],
+  ['friend',['חברות','Friendship'],['קשר: צמיחה דרך אמון','A close bond'],'it-soothe-bell'],['special',['תנאי מיוחד','Special'],['צירוף נסיבות ייחודי','A unique combination'],'it-silph-scope']]};
+const PQ={
+ 'pq-stats':{set:'stats',eb:"WHO'S THAT STAT?",ti:['איזה סטט בולט אצלו?','Which stat stands out?'],items:[
+  {k:'hp',img:'mandela',n:['נלסון מנדלה','Nelson Mandela'],h:[['27 שנה בכלא, רובן בתא קטן על אי.','27 years in prison, most of them in a small cell on an island.'],['יוצא בגיל 71 בלי מרירות, ומוביל את המדינה שכלאה אותו.','He walks out at 71 without bitterness, and leads the country that locked him up.']]},
+  {k:'atk',img:'pippi',n:['בילבי בת־גרב','Pippi Longstocking'],h:[['גרה לבד בווילה עם סוס וקוף, ולא מחכה שמבוגר יגיד לה מה לעשות.','She lives alone in a villa with a horse and a monkey, and doesn\'t wait for a grown-up to tell her what to do.'],['שוטרים באים לקחת אותה? היא מרימה אותם ומוציאה אותם מהבית. הסוס על המרפסת? היא מרימה גם אותו.','Police come to take her away? She lifts them up and carries them out. The horse on the porch? She lifts him too.']]},
+  {k:'def',img:'parks',n:['רוזה פארקס','Rosa Parks'],h:[['1955, אוטובוס במונטגומרי. הנהג דורש ממנה לפנות את המקום.','1955, a bus in Montgomery. The driver demands that she give up her seat.'],['השוטרים מגיעים, הלחץ עולה, והיא נשארת לשבת.','The police arrive, the pressure rises, and she stays in her seat.']]},
+  {k:'spa',img:'phil',n:['ד"ר פיל','Dr. Phil'],h:[['אורח מגיע לאולפן בטוח שהוא צודק.','A guest walks into the studio sure that he is right.'],['בלי להרים את הקול, שאלה אחרי שאלה, הוא מפרק לו את הסיפור עד שהוא מודה בעצמו: "אז איך זה עובד לך?"','Without raising his voice, question after question, he takes the story apart until the guest admits it himself: "So how\'s that working for you?"']]},
+  {k:'spd',img:'elle',n:['אל וודס','Elle Woods'],h:[['בהרווארד צוחקים על השיער, על הצ׳יוואווה ועל הוורוד.','At Harvard they laugh at her hair, her chihuahua and all the pink.'],['היא לא משנה כלום, מגיעה לשיעור בוורוד, ומנצחת בתיק.','She changes nothing, shows up to class in pink, and wins the case.']]},
+  {k:'spe',img:'aladdin',n:['אלאדין','Aladdin'],h:[['גונב כיכר לחם וקופץ מגג לגג לפני שהשומרים מבינים לאן נעלם.','He steals a loaf of bread and jumps from roof to roof before the guards know where he went.'],['כשהחיים מתהפכים בבת אחת, הוא כבר נסיך עם סיפור חדש, ומשנה אותו בכל פעם שמשהו משתבש.','When his life flips overnight, he is already a prince with a new story, and changes it every time something goes wrong.']]}]},
+ 'pq-evo':{set:'evo',eb:'HOW DID THEY EVOLVE?',ti:['איך הוא התפתח?','How did they evolve?'],items:[
+  {k:'level',img:'rocky',n:['רוקי בלבואה','Rocky Balboa'],h:[['מתאגרף אלמוני מפילדלפיה. ריצה עם שחר, ביצים נאות, אגרופים בבשר קפוא.','An unknown boxer from Philadelphia. A run at dawn, raw eggs, punches into frozen meat.'],['ושוב מחר, ושוב מחרתיים, עד שיום אחד הוא מגיע לראש המדרגות.','And again tomorrow, and the day after, until one day he reaches the top of the steps.']]},
+  {k:'item',img:'walter',n:['וולטר וייט','Walter White'],h:[['מורה לכימיה צנוע, 50 שנה של שקט.','A modest chemistry teacher, 50 years of quiet.'],['משפט אחד אצל הרופא, ותוך חודשים הוא אדם אחר, ואין דרך חזרה.','One sentence at the doctor\'s, and within months he is a different man, with no way back.']]},
+  {k:'trade',img:'rachel',n:['רייצ׳ל גרין','Rachel Green'],h:[['בורחת בשמלת כלה מחתונה בלונג איילנד, ונוחתת בבית קפה בניו יורק.','She runs from her own wedding on Long Island in her wedding dress, and lands in a New York coffee house.'],['בלי הכסף של אבא היא לומדת לעבוד, ומגיעה עד עולם האופנה.','Without her father\'s money she learns to work, and makes it all the way into fashion.']]},
+  {k:'friend',img:'beast',n:['החיה','The Beast'],h:[['נסיך מקולל שמסתגר בטירה וצועק על כולם.','A cursed prince who shuts himself in his castle and yells at everyone.'],['לא הזמן משנה אותו ולא האיומים, אלא רק מישהי שמתחילה לראות בו משהו טוב.','Not time changes him and not threats, only someone who starts to see something good in him.']]},
+  {k:'special',img:'neo',n:['ניאו','Neo'],h:[['עובד משרד שמרגיש שמשהו בעולם לא בסדר.','An office worker who feels something is wrong with the world.'],['ההתעוררות שלו דורשת צירוף אחד ויחיד: הנבואה הנכונה, האנשים הנכונים, והרגע שבו הוא מבין שכל העולם שהכיר בנוי הפוך.','His awakening needs one exact combination: the right prophecy, the right people, and the moment he sees that the whole world he knew is built upside down.']]}]}};
+const pqOpt=(set,k)=>PQ_OPT[set].find(o=>o[0]===k);
+const pqLab=o=>Array.isArray(o[1])?LL(o[1]):o[1];
+function pqNew(key){const P=PQ[key],ord=P.items.map((_,i)=>i);for(let i=ord.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ord[i],ord[j]]=[ord[j],ord[i]]}
+  const scores={};gamePlayers().forEach(p=>scores[p.id]=0);S.pq={key,ord,i:0,stage:1,revealed:false,done:false,scores,end:0,got:[]};pqRound()}
+function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
+function pqOpen(){const Q=S.pq,P=PQ[Q.key],past=Q.ord.slice(0,Q.i).map(j=>P.items[j].k);return PQ_OPT[P.set].map(o=>o[0]).filter(k=>!past.includes(k))}
+function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.end=Date.now()+QD[0]*1000;pqPaint();gamePub();pqClock()}
+function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.key){clearInterval(S.pqT);return}
+  const el=$('#pqclock');if(el&&!Q.revealed){const len=QD[Q.stage-1],l=Math.max(0,(Q.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/len*100;el.querySelector('span').textContent=Q.stage<3?ll('הרמז הבא','next hint'):ll('חשיפה','reveal')}
+  if(!Q.revealed&&!Q.done&&Date.now()>Q.end)pqStep()},250)}
+function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;if(Q.stage<3){Q.stage++;Q.end=Date.now()+QD[Q.stage-1]*1000;sfx('sfx-tink');pqPaint();gamePub();return}pqReveal()}
+function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;
+  gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){Q.scores[p.id]=(Q.scores[p.id]||0)+(4-g.n);Q.got.push([p.id,g.n])}});
+  sfx('sfx-dex-page-added');pqPaint();gamePub()}
+function pqNext(){const Q=S.pq;if(Q.i<Q.ord.length-1){Q.i++;pqRound();return}Q.done=true;clearInterval(S.pqT);leagueSet(Q.key,Q.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}
+function pqGo(d){const Q=S.pq;if(!Q||d<0)return false;if(Q.done)return false;if(!Q.revealed){pqStep();return true}pqNext();return true}
+function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
+  const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
+  const board=`<div class="qboard pqboard"><p class="qbh">SCOREBOARD</p>${rows.map(r=>{let st='';if(Q.revealed){const hit=Q.got.find(x=>x[0]===r.p.id);st=hit?`<img src="img/${QBALL[hit[1]][0]}.webp" alt="">`:'<i class="qx">✗</i>'}else if(r.g)st='<i class="qv">✓</i>';
+    return `<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${st}</span><b>${r.s}</b></div>`}).join('')}</div>`;
+  if(Q.done){const top=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);
+    cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · RESULTS</p><div class="pqend">${top.length?`<div class="btwin">${top.slice(0,3).map(r=>avFull(r.p,300)).join('')}</div><h2>🏆 ${top.map(r=>esc(r.p.name)).join(' · ')}</h2><p>${top[0].s} ${ll('נק׳','pts')}</p>`:`<h2>${ll('אף אחד לא ניחש הפעם','Nobody guessed this time')}</h2>`}</div>${board}</div>`;return}
+  const o=pqOpt(P.set,it.k),opts=PQ_OPT[P.set];
+  cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(Q.i+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
+   <div class="pqfig"><img src="img/${Q.revealed?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg"><p class="pqname">${esc(LL(it.n))}</p>
+    <div class="pqh">${it.h.map((h,j)=>`<p class="${Q.stage>j+1||Q.revealed?'on':''}">${esc(LL(h))}</p>`).join('')}</div></div>
+   <div class="pqopts">${opts.map(x=>{const past=!pqOpen().includes(x[0]);return `<div class="pqo ${Q.revealed&&x[0]===it.k?'hit':''} ${past?'past':''}"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`}).join('')}</div>
+   ${Q.revealed?`<div class="pqans">${ll('התשובה:','The answer:')} <b>${pqLab(o)}</b> · ${esc(LL(o[2]))}</div>`:`<div id="pqclock" class="qclock pqclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>`}
+   ${board}</div>`}
+function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.key)return;const b=$('.pqboard');if(!b||Q.revealed)return;const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
+  b.innerHTML=`<p class="qbh">SCOREBOARD</p>`+rows.map(r=>`<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${r.g?'<i class="qv">✓</i>':''}</span><b>${r.s}</b></div>`).join('')}
+function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item],id=G.key+'-'+G.i,mine=(S.myG||{})['p'+id],my=G.scores?.[me.id]||0;
+  const head=`<p class="eyebrow">${P.eb} · ${G.i+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
+  if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')||'—'}</h2><p class="muted" style="margin:6px 0 0">${ll(`צברת ${my} נקודות`,`You scored ${my} points`)}</p></div>`}
+  const b=QBALL[G.stage];
+  if(G.revealed){const ok=mine&&mine.v===G.ans,o=pqOpt(P.set,G.ans);return head+`<div class="card center qres ${ok?'ok':'no'}"><p style="margin:0 0 4px;font-weight:700">${esc(LL(it.n))}</p><h2 style="margin:4px 0">${pqLab(o)}</h2>${ok?`<img src="img/${QBALL[mine.n][0]}.webp" alt="" style="width:64px;height:64px;image-rendering:pixelated"><p style="margin:4px 0 0"><b>${ll(`צדקת! ${4-mine.n} נק׳`,`Correct! ${4-mine.n} pts`)}</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}</p>`}</div>`}
+  return head+`<div class="card qnow"><img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span><b>${esc(LL(it.n))}</b><br>${ll(`שלב ${G.stage} מתוך 3. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b>`,`Hint ${G.stage} of 3. A correct guess now: <b>${b[1]} · ${b[2]} pts</b>`)}<br><span class="gend" data-end="${G.end}"></span></span></div>
+   <div class="qgrid pqgrid">${PQ_OPT[P.set].filter(o=>G.open.includes(o[0])).map(o=>`<button class="qt${mine?.v===o[0]?' on':''}" data-pq="${o[0]}" ${mine?'disabled':''}><img src="img/${o[3]}.webp" alt="" style="width:34px;height:34px;image-rendering:pixelated"><span>${pqLab(o)}</span><small style="font-weight:400;color:var(--mist);font-size:11px">${esc(LL(o[2]))}</small></button>`).join('')}</div>
+   ${mine?`<p class="muted center" style="font-size:14px">${ll(`ניחשת <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. מחכים לחשיפה…`,`You guessed <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. Waiting for the reveal…`)}</p>`:''}`}
+
+// ---------- the evening league: every game hands out league points by rank, so no game outweighs another ----------
+const LEAGUE_GAMES=[['mem',ll('זיכרון','Memory')],['types',ll('מי הסוג?','Types')],['pq-stats',ll('מי הסטט?','Stats')],['pq-evo',ll('איך התפתח?','Evolution')]];
+function leagueSet(game,scores){if(!S.db||!scores)return;S.league={...(S.league||{}),[game]:scores};S.db.doc('stage/league').set({[game]:scores},{merge:true}).catch(()=>{})}
+function leagueRank(sc){const pts={},E=Object.entries(sc||{}).filter(([id,v])=>v>0).sort((a,b)=>b[1]-a[1]);let rank=0,prev=null;
+  E.forEach(([id,v],i)=>{if(v!==prev){rank=i;prev=v}pts[id]=[5,3,2][rank]||1});return pts}
+function leagueTable(){const L=S.league||{},T={};gamePlayers().forEach(p=>T[p.id]={p,pts:0,by:{}});
+  LEAGUE_GAMES.forEach(([g])=>{const r=leagueRank(L[g]);Object.entries(r).forEach(([id,v])=>{if(T[id]){T[id].pts+=v;T[id].by[g]=v}})});
+  const bt=L.bt||{},bmax=Math.max(0,...Object.values(bt));if(bmax>0)Object.entries(bt).forEach(([id,v])=>{if(v===bmax&&T[id]){T[id].pts+=1;T[id].by.bt=1}});
+  Object.entries(L.guess||{}).forEach(([id,v])=>{if(T[id]&&v>0){T[id].pts+=v;T[id].by.guess=v}});
+  return Object.values(T).sort((a,b)=>b.pts-a.pts||a.p.name.localeCompare(b.p.name))}
+const leagueAny=()=>Object.keys(S.league||{}).some(k=>Object.values(S.league[k]||{}).some(v=>v>0));
+function leagueBox(compact){const T=leagueTable();let rank=0,prev=null;
+  return `<div class="lgbox ${compact?'cmp':''}"><p class="lgh">🏆 ${ll('ליגת הערב','THE EVENING LEAGUE')}</p>${T.map((r,i)=>{if(r.pts!==prev){rank=i;prev=r.pts}return `<div class="lgr ${rank===0&&r.pts>0?'top':''}"><i>${r.pts>0?rank+1:'–'}</i>${avHead(r.p,compact?34:40)}<span>${esc(r.p.name)}</span><b>${r.pts}</b></div>`}).join('')}</div>`}
+function leagueOnBreak(id){if(!/^x-break-\d$/.test(id)||!leagueAny())return;const cv=$('#cv'),nurse=cv.querySelector('img[src*="tr-nurse"]');
+  if(!$('#facts')&&nurse)nurse.parentElement.style.visibility='hidden';cv.insertAdjacentHTML('beforeend',`<div class="lgbreak ${$('#facts')?'low':''}">${leagueBox(true)}</div>`)}
+function leagueHTML(){const T=leagueTable(),top=T.filter(r=>r.pts===T[0]?.pts&&r.pts>0);
+  return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · CHAMPION</p><h2 class="lgti">${ll('אלוף הליגה של הערב','The champion of the evening league')}</h2>
+   <div class="lgpod">${top.length?top.slice(0,3).map(r=>`<div class="lgp">${avFull(r.p,top.length>1?360:440)}<p>${esc(r.p.name)}</p><b>${r.pts} ${ll('נק׳','pts')}</b></div>`).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBox(false)}</div>`}
+
+// ---------- "who knows them best?": the party scenario, live, no points ----------
+const SCN=[['לעבור בין קבוצות ולפתוח שיחות עם כמה שיותר אנשים','Move between groups and start conversations with as many people as possible'],['למצוא פינה שקטה ושיחה עמוקה אחת','Find a quiet corner and one deep conversation'],
+ ['להשתלב במה שקורה, בלי לתכנן','Blend into whatever is going on, without planning'],['לעזור למארחים: להגיש, לסדר, לדאוג שהכול יעבוד','Help the hosts: serve, tidy up, make sure everything runs smoothly']];
+const subjId=()=>roster().find(p=>p.role==='self')?.id;
+function scnVotes(){const V={};roster().filter(p=>!p.remote&&!isPresenter(p)).forEach(p=>{const v=S.gIn?.[p.id]?.scn;if(v!=null)V[p.id]=+v});return V}
+function scnBadge(){if(cur()?.id!=='k-scenario')return;$('#scnb')?.remove();const V=scnVotes(),ps=Object.keys(V).map(person).filter(Boolean);
+  $('#cv').insertAdjacentHTML('beforeend',`<div id="scnb" class="scnb"><p>${ll(`בטלפון: מה ${esc(subjectName())} ${gs('יעשה','תעשה')}?`,`On your phone: what would ${esc(subjectName())} do?`)}</p><div>${ps.map(p=>avHead(p,40)).join('')}</div></div>`)}
+function scnReveal(){S.scn={revealed:true};$('#scnb')?.remove();const V=scnVotes(),sid=subjId(),own=V[sid],n=esc(subjectName());
+  const rows=SCN.map((t,i)=>{const who=Object.entries(V).filter(([id,v])=>v===i&&id!==sid).map(([id])=>person(id)).filter(Boolean);return {t,i,who}}),mx=Math.max(1,...rows.map(r=>r.who.length));
+  const right=own!=null?rows[own].who:[];
+  $('#cv').insertAdjacentHTML('beforeend',`<div id="scnr" class="scnr"><div class="card"><h3 style="font-family:var(--display);font-size:44px;font-weight:400;margin:0">${ll(`מי מכיר את ${esc(subjectName())} הכי טוב?`,`Who knows ${esc(subjectName())} best?`)}</h3>
+   ${rows.map(r=>`<div class="scnrow ${own===r.i?'own':''}"><span class="scnt">${esc(LL(r.t))}</span><div class="scnbar"><i style="width:${r.who.length/mx*100}%"></i></div><div class="scnav">${r.who.map(p=>avHead(p,38)).join('')}</div>${own===r.i?`<b class="scnme">${ll(`${n} ${gs('בחר','בחרה')}`,`${n}'s pick`)}</b>`:''}</div>`).join('')}
+   <p class="scnf">${own==null?ll(`${n} עוד לא ${gs('ענה','ענתה')}.`,`${n} hasn't answered yet.`):right.length?ll(`פגעו בול: `,`Spot on: `)+right.map(p=>`<b>${esc(p.name)}</b>`).join(' · '):ll('אף אחד לא ניחש. אז מי באמת מכיר את '+n+'?','Nobody got it. So who really knows '+n+'?')}</p></div></div>`);gamePub()}
+function scnPhone(me,G){const self=me.role==='self',mine=(S.myG||{}).scn,n=esc(subjectName());
+  if(G.revealed)return `<p class="eyebrow">EXAMPLE · SCENARIO</p><h1 style="font-size:26px">${ll('התשובות על המסך','The answers are on the screen')}</h1>`;
+  return `<p class="eyebrow">EXAMPLE · SCENARIO</p><h1 style="font-size:24px;margin-bottom:4px">${ll('מסיבה עם הרבה אנשים לא מוכרים.','A party with lots of people you don\'t know.')}</h1>
+   <p class="muted" style="margin:0 0 10px">${self?ll('מה הכי מתאים לך?','What fits you best?'):ll(`מה ${n} הכי ${gs('יעשה','תעשה')}?`,`What would ${n} most likely do?`)}</p>
+   <div style="display:flex;flex-direction:column;gap:8px">${SCN.map((t,i)=>`<button class="btn ghost scnbtn${mine===i?' on':''}" data-scn="${i}">${esc(LL(t))}</button>`).join('')}</div>${mine!=null?`<p class="muted center" style="font-size:13px">${ll('אפשר לשנות עד החשיפה','You can change it until the reveal')}</p>`:''}`}
+
+// ---------- crowd guess: before the Hall of Fame, everyone guesses the subject's types, leading stat and way of evolving ----------
+const CG_ST=['hp','atk','def','spa','spd','spe'],CG_AX={hp:'hp',atk:'attack',def:'defense',spa:'special-attack',spd:'special-defense',spe:'speed'};
+const CG_EV=['level','item','trade','friend','special'],CG_EVAX={level:'level',item:'item',trade:'trade',friend:'friendship',special:'special'};
+function cgOf(pid){return S.gIn?.[pid]?.cg||null}
+function cgPlayers(){const sid=subjId();return inRoom().filter(p=>!isPresenter(p)&&p.id!==sid)}
+function cgScreen(){const n=esc(subjectName()),ps=cgPlayers(),done=ps.filter(p=>{const g=cgOf(p.id);return g&&g.t?.length&&g.s&&g.e});
+  $('#cv').innerHTML=`<div class="st cgs"><p class="bteb" dir="ltr">CROWD GUESS · BEFORE THE REVEAL</p><h2 class="btti">${ll(`מה ${n} לדעתכם?`,`What do you think ${n} is?`)}</h2>
+   <p class="btsub">${ll('שלושה ניחושים בטלפון. נקודה לכל פגיעה, והתשובות נחשפות בהיכל התהילה.','Three guesses on your phone. A point for each hit, revealed in the Hall of Fame.')}</p>
+   <div class="cgparts">${[[ll('סוג אחד או שניים','One or two types'),'<span class="cgic">'+['fire','water','grass'].map(t=>qIcon(t,64)).join('')+'</span>'],[ll('הסטט המוביל','The leading stat'),'<img src="img/it-protein.webp" alt="">'],[ll('דרך ההתפתחות','The way to evolve'),'<img src="img/it-thunder-stone.webp" alt="">']].map(([t,ic])=>`<div class="cgp">${ic}<b>${t}</b></div>`).join('')}</div>
+   <div class="cgdone"><p>${ll(`${done.length} מתוך ${ps.length} ניחשו`,`${done.length} of ${ps.length} have guessed`)}</p><div>${done.map(p=>avHead(p,54)).join('')}</div></div></div>`}
+function cgPhone(me){const n=esc(subjectName());if(me.role==='self')return `<p class="eyebrow">CROWD GUESS</p><h1 style="font-size:26px">${ll(`כולם מנחשים עכשיו מה את${gs('ה','')}…`,'Everyone is guessing what you are…')}</h1><p class="muted">${ll('התשובות ייחשפו בהיכל התהילה.','The answers come out in the Hall of Fame.')}</p>`;
+  const g=(S.myG||{}).cg||{t:[]},T=g.t||[];
+  return `<p class="eyebrow">CROWD GUESS · ${n}</p><h1 style="font-size:24px;margin:0 0 6px">${ll(`מה ${n} לדעתך?`,`What do you think ${n} is?`)}</h1><p class="muted" style="margin:0 0 8px">${ll('נקודה לכל פגיעה. אפשר לשנות עד ההיכל.','A point for each hit. You can change until the Hall of Fame.')}</p>
+   <p class="cgq">${ll('סוג אחד או שניים','One or two types')} <small>${T.length}/2</small></p><div class="qgrid cgt">${Object.keys(TYPE_HE).map(t=>`<button class="qt${T.includes(t)?' on':''}" data-cgt="${t}">${qIcon(t,30)}<span>${TYPE_HE[t]}</span></button>`).join('')}</div>
+   <p class="cgq">${ll('הסטט המוביל','The leading stat')}</p><div class="qgrid">${PQ_OPT.stats.map(o=>`<button class="qt${g.s===o[0]?' on':''}" data-cgs="${o[0]}"><img src="img/${o[3]}.webp" alt="" style="width:28px;height:28px;image-rendering:pixelated"><span>${pqLab(o)}</span></button>`).join('')}</div>
+   <p class="cgq">${ll('דרך ההתפתחות','The way to evolve')}</p><div class="qgrid">${PQ_OPT.evo.map(o=>`<button class="qt${g.e===o[0]?' on':''}" data-cge="${o[0]}"><img src="img/${o[3]}.webp" alt="" style="width:28px;height:28px;image-rendering:pixelated"><span>${pqLab(o)}</span></button>`).join('')}</div>
+   ${T.length&&g.s&&g.e?`<p class="muted center" style="color:var(--ok)">✓ ${ll('הניחוש נשמר','Your guess is saved')}</p>`:''}`}
+function cgTruth(){const R=S.R,ax=S.engine.axes;if(!R)return null;const ty=R.agg.types,top=ty.map((v,j)=>j).sort((a,b)=>ty[b]-ty[a]).slice(0,2).map(j=>ax.types[j]);
+  const st=CG_ST[CG_ST.map(k=>R.agg.stats[ax.stats.indexOf(CG_AX[k])]).reduce((m,v,i,a)=>v>a[m]?i:m,0)];
+  const ev=CG_EV[CG_EV.map(k=>R.agg.evo[ax.evo.indexOf(CG_EVAX[k])]).reduce((m,v,i,a)=>v>a[m]?i:m,0)];return {t:top,s:st,e:ev}}
+function cgScore(){const tr=cgTruth();if(!tr)return {};const pts={};cgPlayers().forEach(p=>{const g=cgOf(p.id);if(!g)return;pts[p.id]=(g.t||[]).filter(t=>tr.t.includes(t)).length+(g.s===tr.s?1:0)+(g.e===tr.e?1:0)});return pts}
+const cgAny=()=>cgPlayers().some(p=>cgOf(p.id));
+function cgHof(){const tr=cgTruth(),n=esc(subjectName()),ps=cgPlayers().filter(p=>cgOf(p.id)),pts=cgScore();leagueSet('guess',pts);
+  const mode=arr=>{const c={};arr.forEach(x=>{if(x)c[x]=(c[x]||0)+1});return Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0]};
+  const crowdT=(()=>{const c={};ps.forEach(p=>(cgOf(p.id).t||[]).forEach(t=>c[t]=(c[t]||0)+1));return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0])})();
+  const row=(lab,truthH,crowdH,hit)=>`<div class="cgrow"><b class="cgl">${lab}</b><div class="cgv"><span>${ll('השאלון','The questionnaire')}</span>${truthH}</div><div class="cgv crowd"><span>${ll('הקהל','The crowd')}</span>${crowdH||'—'}</div><div class="cgav">${hit.map(p=>avHead(p,44)).join('')}</div></div>`;
+  const oS=k=>{const o=pqOpt('stats',k);return o?`<em>${pqLab(o)}</em>`:''},oE=k=>{const o=pqOpt('evo',k);return o?`<em>${pqLab(o)}</em>`:''},tH=a=>a.map(t=>`${qIcon(t,40)}<em>${TYPE_HE[t]}</em>`).join(' ');
+  return hofShell('CROWD GUESS · THE CROWD VS. THE QUESTIONNAIRE',ll(`כמה טוב אתם מכירים את ${n}?`,`How well do you know ${n}?`),'',
+   `<div class="cgtab">${row(ll('סוגים','Types'),tH(tr.t),tH(crowdT),ps.filter(p=>(cgOf(p.id).t||[]).some(t=>tr.t.includes(t))))}${row(ll('סטט מוביל','Leading stat'),oS(tr.s),oS(mode(ps.map(p=>cgOf(p.id).s))),ps.filter(p=>cgOf(p.id).s===tr.s))}${row(ll('התפתחות','Evolution'),oE(tr.e),oE(mode(ps.map(p=>cgOf(p.id).e))),ps.filter(p=>cgOf(p.id).e===tr.e))}</div>
+    <div class="cgbest">${(()=>{const mx=Math.max(0,...Object.values(pts)),b=ps.filter(p=>pts[p.id]===mx&&mx>0);return b.length?ll('הכי קרובים: ','Closest: ')+b.map(p=>`<b>${esc(p.name)}</b>`).join(' · ')+` · ${mx}/4`:ll('אף פגיעה. השאלון יודע משהו שאתם לא.','Not one hit. The questionnaire knows something you don\'t.')})()}</div>`)}
+
 // ---------- Hall of Fame ----------
 function hofStep(d){
-  const step=HOF_STEPS[HOF];
+  S.hofDir=d;const step=HOF_STEPS[HOF];
   if(step==='board'&&boardStep(d))return true;
   if(d>0){
     if(step==='types'&&SUB===0){SUB=1;animateTypes();return true}
@@ -2293,8 +2494,11 @@ function hofShell(eb,title,sub,inner){return `<div class="st">${eb?`<div class="
 function renderHof(){
   const cv=$('#cv'),R=S.R,n=esc(subjectName()),step=HOF_STEPS[HOF],ax=S.engine.axes;
   if(!R){cv.innerHTML=hofShell('POKÉMON LEAGUE · HALL OF FAME',ll('היכל התהילה','Hall of Fame'),'',`<div class="center"><p class="lead">${ll('עוד אין תשובות.','No answers yet.')}</p></div>`);return}
+  if((step==='crowd'&&!cgAny())||(step==='champ'&&!leagueAny())){const nx=HOF+(S.hofDir<0?-1:1);if(nx>=0&&nx<HOF_STEPS.length){HOF=nx;return renderHof()}}
   let h='';
-  if(step==='intro'){
+  if(step==='crowd'){h=cgHof()}
+  else if(step==='champ'){h=leagueHTML();music('mus-hof',{vol:.35})}
+  else if(step==='intro'){
     h=`<div class="st"><div style="position:absolute;left:150px;bottom:110px">${avFull(subjP(),560)}</div><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">POKÉMON LEAGUE · HALL OF FAME</p>${ll(`<div class="big">היכל התהילה של ${n}</div>`,`<div class="big">${n}\'s Hall of Fame</div>`)}<div class="ball wobble" style="--s:220px"></div><p class="lead" style="max-width:1000px">${ll(`לפני שפותחים את הפוקבול: נראה איך כל התשובות שלכם, אחת אחרי השנייה, בונות את הפוקימון של ${n}.`,`Before we open the Poké Ball: let\'s see how all your answers, one after another, build ${n}\'s Pokémon.`)}</p></div></div>`;
   }
   else if(step==='types'){
