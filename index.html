@@ -474,7 +474,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .np-t img{width:34px;height:34px;object-fit:contain;flex:none}.np-t b{color:var(--gold)}.np-t.tr{flex-direction:column;justify-content:center;gap:2px;text-align:center}.np-t.tr img{image-rendering:pixelated;width:30px;height:30px}
 .np-t.on{filter:none;opacity:1;border-color:rgba(242,201,76,.75);background:#2A3060;color:var(--cream)}
 .np-ck{position:absolute;top:-7px;inset-inline-start:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#161A2E;font:800 12px/20px var(--body);text-align:center;font-style:normal;display:none}.np-t.on .np-ck{display:block}
-.np-sum{margin:4px 0 0;font-weight:700;color:var(--cream);text-align:center;font-size:15px}.np-go{width:100%;margin-top:14px;font-size:20px;padding:14px}
+.np-reh{display:flex;gap:8px;margin-top:10px;align-items:stretch}.np-reh .btn{flex:1}.np-sum{margin:4px 0 0;font-weight:700;color:var(--cream);text-align:center;font-size:15px}.np-go{width:100%;margin-top:14px;font-size:20px;padding:14px}
 .pq{background:radial-gradient(circle at 50% 40%,#262B4A 0%,#161A2E 70%);color:#F6F1E7}
 .pqeb{color:#F2C94C!important}.pqti{position:absolute;right:128px;top:126px;font-family:var(--display);font-size:68px;font-weight:400;color:#F6F1E7}
 .pqfig{position:absolute;right:110px;top:240px;width:540px;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -772,7 +772,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793927678';
+const BUILDV='1793928109';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -854,7 +854,7 @@ async function boot(){
   render();
   S.db=roomDb(S.db);globalSubs();
   if(!ROOM.code){render();return}
-  S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;S.stateLoaded=true;langSync();skipSync();changed()},()=>{});
+  S.db.doc('state/main').onSnapshot(s=>{S.state=s.exists?clone(s.data()):null;S.stateLoaded=true;langSync();skipSync();speedSync();changed()},()=>{});
   S.db.doc('setup/main').onSnapshot(s=>{S.setup=s.exists?clone(s.data()):null;S.setupLoaded=true;changed()},()=>{});
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};S.joinedDev={};q.docs.forEach(d=>{const x=d.data()||{};if(x.gender)S.joinedG[d.id]=x.gender;if(x.dev)S.joinedDev[d.id]=x.dev});changed()},()=>{});
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
@@ -917,12 +917,17 @@ function roomsView(){
    <div class="np-opts"><div class="np-seg"><button class="np-o ${S.nrg!=='f'?'on':''}" data-nrg="m" aria-label="בן"><img src="img/ow-boy.webp" alt=""><span class="np-sym" style="color:#6390F0">♂</span></button><button class="np-o ${S.nrg==='f'?'on':''}" data-nrg="f" aria-label="בת"><img src="img/ow-girl.webp" alt=""><span class="np-sym" style="color:#F95587">♀</span></button></div>
     <div class="np-seg"><button class="np-o ${S.nrl!=='en'?'on':''}" data-nrl="he">${FLAG_IL}<span>עברית</span></button><button class="np-o ${S.nrl==='en'?'on':''}" data-nrl="en">${FLAG_UK}<span>English</span></button></div></div>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
-   <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button></div>
-  ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}</p>
-   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button><button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
+   <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button>
+   <div class="np-reh"><button class="btn ghost small" data-act="rehearse">🎭 חזרה גנרלית עם בוטים</button><button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">⏩ מצב מהיר</button></div>
+   <p class="muted" style="font-size:12px;margin:6px 0 0">חזרה גנרלית: חדר בדיקה עם 6 בוטים שעונים, משחקים ומדברים לבד. את השקפים מעבירים כרגיל, ובפאנל המארח יש דוח זמנים.</p></div>
+  ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🎭 חזרה גנרלית'+(r.fast?' ⏩':''):''}</p>
+   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.nrg){S.nrg=b.dataset.nrg;roomsView();return}
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
+    if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
+    if(b.dataset.act==='rehearse'){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf);return}
+    if(b.dataset.del){if(!confirm('למחוק את חדר הבדיקה '+b.dataset.del+'?'))return;await S.db.raw.doc('state/'+b.dataset.del).delete().catch(()=>{});await S.db.raw.doc('setup/'+b.dataset.del).delete().catch(()=>{});toast('נמחק');return}
     if(b.dataset.plan){S.planOpen=S.planOpen===b.dataset.plan?null:b.dataset.plan;roomsView();return}
     if(b.dataset.pk){const [tgt,k]=b.dataset.pk.split('|');if(tgt==='nrs'){const a=new Set(S.nrs||[]);a.has(k)?a.delete(k):a.add(k);S.nrs=[...a];roomsView();return}
       const code=tgt.slice(3),r=(S.roomList||[]).find(x=>x.code===code);if(!r)return;const a=new Set(r.skip||[]);a.has(k)?a.delete(k):a.add(k);r.skip=[...a];roomsView();
@@ -2223,7 +2228,7 @@ function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
 
 // ---------- mini-games: memory (paradigm glasses / thinkers) and "who wins?" battles ----------
 const LL=a=>EN?a[1]:a[0];
-const MEM_T=20;
+let MEM_T=20;
 const MEM={
  'c-memory':{eb:'MEMORY · GLASSES & FATHERS',ti:['משחק זיכרון: מי שואל מה?','Memory: who asks what?'],
   pairs:[
@@ -2280,7 +2285,7 @@ function memIn(){const M=S.mem;if(!M?.started||M.done)return;const pid=memCur();
   const used=M.used[M.tid]||(M.used[M.tid]=0);(x.picks||[]).slice(used).forEach(i=>memPick(+i,pid));M.used[M.tid]=(x.picks||[]).length}
 
 // "who wins?": three battles a set, guesses from the phones, a clock that moves things on by itself
-const BT_T=20,BT_RES=7;
+let BT_T=20,BT_RES=7;
 function btgEnter(){S.btg=S.btg||{set:1,n:0,scores:{},phase:'guess'};const G=S.btg;G.n=0;G.phase='guess';gamePlayers().forEach(p=>{if(G.scores[p.id]==null)G.scores[p.id]=0});btgNext()}
 function btgNext(){const G=S.btg;G.n++;G.id=G.set+'-'+G.n;G.phase='guess';G.end=Date.now()+BT_T*1000;battleNew();btgPaint();gamePub();btgClock()}
 function btgClock(){clearInterval(S.btgT);S.btgT=setInterval(()=>{const G=S.btg;if(cur()?.id!=='d-battle'){clearInterval(S.btgT);return}
@@ -2470,6 +2475,51 @@ function cgHof(){const tr=cgTruth(),n=esc(subjectName()),ps=cgPlayers().filter(p
   return hofShell('CROWD GUESS · THE CROWD VS. THE QUESTIONNAIRE',ll(`כמה טוב אתם מכירים את ${n}?`,`How well do you know ${n}?`),'',
    `<div class="cgtab">${row(ll('סוגים','Types'),tH(tr.t),tH(crowdT),ps.filter(p=>(cgOf(p.id).t||[]).some(t=>tr.t.includes(t))))}${row(ll('סטט מוביל','Leading stat'),oS(tr.s),oS(mode(ps.map(p=>cgOf(p.id).s))),ps.filter(p=>cgOf(p.id).s===tr.s))}${row(ll('התפתחות','Evolution'),oE(tr.e),oE(mode(ps.map(p=>cgOf(p.id).e))),ps.filter(p=>cgOf(p.id).e===tr.e))}</div>
     <div class="cgbest">${(()=>{const mx=Math.max(0,...Object.values(pts)),b=ps.filter(p=>pts[p.id]===mx&&mx>0);return b.length?ll('הכי קרובים: ','Closest: ')+b.map(p=>`<b>${esc(p.name)}</b>`).join(' · ')+` · ${mx}/4`:ll('אף פגיעה. השאלון יודע משהו שאתם לא.','Not one hit. The questionnaire knows something you don\'t.')})()}</div>`)}
+
+// ---------- dress rehearsal: a test room full of bots that answer, play and chat by themselves ----------
+const BOTS_HE=[['אש','self',40],['ברוק','friend',12],['מיסטי','friend',12],['גארי','friend',12],['ג׳סי','friend',12],['ג׳יימס','friend',12]];
+const BOTS_EN=[['Ash','self',40],['Brock','friend',12],['Misty','friend',12],['Gary','friend',12],['Jessie','friend',12],['James','friend',12]];
+const BOT_SAY=[['איזה קטע','No way'],['זה כל כך נכון','So true'],['פיקאצ׳ו, אני בוחר בך!','Pikachu, I choose you!'],['רגע, מה?','Wait, what?'],['חחחח','Haha'],['אני רוצה להיות ליין של דרקון','I want to be a dragon line']];
+const isRehearsal=()=>!!S.state?.rehearsal;
+function botIds(){return isRehearsal()?roster().filter(p=>p.bot).map(p=>p.id):[]}
+const brnd=a=>a[Math.floor(Math.random()*a.length)];
+async function rehearseCreate(nm,lang,skip,fast){const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c='T'+Array.from({length:3},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c));
+  const B=lang==='en'?BOTS_EN:BOTS_HE,ros=B.map(([n,role,w],i)=>({id:i?'bot'+i:'subj',name:i?n:(nm||n),role,weight:w,bot:true,relation:role==='self'?'':ll('חבר/ה','friend')}));
+  await S.db.raw.doc('state/'+c).set({subject:ros[0].name,gender:'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang,skip,rehearsal:true,fast:!!fast,presenter:''});
+  await S.db.raw.doc('setup/'+c).set({roster:ros,gender:'m',name:ros[0].name,at:Date.now()});
+  for(const p of ros)await S.db.raw.doc('joined/'+c+'~'+p.id).set({at:new Date().toISOString(),gender:'m',dev:'bot'});
+  RAWSTORE.set('psp-lang:'+c,lang);location.hash='screen='+c;location.reload()}
+// speed: in a fast rehearsal every game clock runs at roughly a third
+function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,3,2);MEM_T=7;BT_T=7;BT_RES=3}else{QD.splice(0,3,10,8,6);MEM_T=20;BT_T=20;BT_RES=7}}
+async function botFill(){if(S.botFilled||!S.answersLoaded&&!S.answers)return;S.botFilled=true;
+  for(const id of botIds()){const cur=S.answers?.[id]?.answers||{};if(Object.keys(cur).length>20)continue;const a={...cur},r=rng('bot-'+id+Date.now()),bias={};
+    BANK.items.forEach(it=>{if(it.kind==='bonus'||it.id in a)return;bias[it.dim]??=1+r()*4;a[it.id]=Math.max(1,Math.min(5,Math.round(bias[it.dim]+(r()-.5)*2)))});
+    await S.db.doc('answers/'+id).set({answers:a,mew:'',demo:true,at:new Date().toISOString()},{merge:true}).catch(()=>{})}}
+function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=cur(),B=botIds(),now=Date.now();if(!it||!B.length)return;S.botAt=S.botAt||{};
+  const once=(k,ms,fn)=>{if(S.botAt[k]==null)S.botAt[k]=now+ms;else if(S.botAt[k]>0&&now>=S.botAt[k]){S.botAt[k]=-1;fn()}};
+  if((S.state?.open||0)>0)botFill();
+  const m=S.state?.mew;if(m?.status==='ready'&&m.statements?.length)B.forEach(id=>once('mew'+id,2000+Math.random()*8000,()=>{if(!S.answers?.[id]?.mew)S.db.doc('answers/'+id).set({mew:brnd(m.statements).id},{merge:true}).catch(()=>{})}));
+  const put=(id,o)=>{S.gIn=S.gIn||{};S.gIn[id]={...(S.gIn[id]||{}),...o};gameIn()};
+  // memory: the bot whose turn it is flips two cards, and half the time it remembers a pair it saw
+  const M=S.mem;if(M&&it.id===M.key&&M.started&&!M.done&&!M.lock&&B.includes(memCur()))once('mem'+M.tid,1500+Math.random()*2500,()=>{
+    const free=M.layout.map((c,i)=>i).filter(i=>M.matched[i]==null);let a=brnd(free),b;
+    if(Math.random()<.5){const c=M.layout[a],pair=c.slice(0,-1)+(c.slice(-1)==='a'?'q':'a');b=M.layout.indexOf(pair)}else{do{b=brnd(free)}while(b===a&&free.length>1)}
+    put(memCur(),{mk:M.key,tid:M.tid,picks:[a]});setTimeout(()=>put(memCur(),{mk:M.key,tid:M.tid,picks:[a,b]}),700)});
+  // battles: a gut guess, sometimes late
+  const G=S.btg;if(G&&it.id==='d-battle'&&G.phase==='guess')B.forEach(id=>once('bt'+G.id+id,1000+Math.random()*BT_T*800,()=>put(id,{['b'+G.id]:Math.random()<.6?S.bt.win:brnd(['a','b'])})));
+  // stats / evolution: guess at a random stage, right more often on the later hints
+  const Q=S.pq;if(Q&&it.id===Q.key&&!Q.revealed&&!Q.done)B.forEach(id=>{if(S.gIn?.[id]?.['p'+Q.key+'-'+Q.i])return;if(Math.random()<.12*Q.stage){const right=Math.random()<.25+.2*Q.stage;put(id,{['p'+Q.key+'-'+Q.i]:{v:right?pqItem().k:brnd(pqOpen()),n:Q.stage}})}});
+  // who's that type: guesses go through the real docs, like phones
+  if(/^q-/.test(it.id)){const t=it.id.slice(2),n=Math.min(3,BUILD);if(n>0)B.forEach(id=>{if(S.guesses?.[id]?.[t])return;if(Math.random()<.15*n){const g=Math.random()<.2+.25*n?t:brnd(Object.keys(TYPE_HE));S.db.doc('stage/q-'+id).set({[t]:{g,n,at:now}},{merge:true}).catch(()=>{})}})}
+  if(it.id==='k-scenario'&&!S.scn?.revealed)B.forEach(id=>once('scn'+id,800+Math.random()*6000,()=>put(id,{scn:Math.floor(Math.random()*4)})));
+  if(it.id==='x-guess')B.forEach(id=>{if(roster().find(p=>p.id===id)?.role==='self')return;once('cg'+id,1500+Math.random()*9000,()=>{const T=Object.keys(TYPE_HE);put(id,{cg:{t:[brnd(T),brnd(T)].filter((x,i,a)=>a.indexOf(x)===i),s:brnd(CG_ST),e:brnd(CG_EV)}})})});
+  // chatter on trainer talks, rounds and breaks
+  if(/^(tr|b|r)\d$/.test(segAt(POS))&&Math.random()<.02){const id=brnd(B),l=brnd(BOT_SAY);S.db.doc('stage/say-'+id).set({t:LL(l),at:now}).catch(()=>{})}}
+setInterval(()=>{try{botTick()}catch(e){console.warn('bot',e)}},1000);
+// timing report: plan vs. what actually happened, per part (from the deck clock)
+function timingReport(){const D=S.deck||{},log={...(D.log||{})};if(D.seg&&D.segAt)log[D.seg]=(log[D.seg]||0)+(Date.now()-D.segAt)/60000;
+  let tp=0,ta=0;const rows=PLAN.map(p=>{const a=log[p[0]];tp+=p[2];if(a!=null)ta+=a;return `<tr><td>${esc(p[1])}</td><td>${p[2]}</td><td>${a!=null?mmss(a):'–'}</td><td style="color:${a==null?'var(--mist)':a>p[2]+1?'#FF8A80':a<p[2]-1?'var(--ok)':'var(--cream)'}">${a!=null?(a>p[2]?'+':'')+mmss(a-p[2]):''}</td></tr>`}).join('');
+  return `<table class="prog"><thead><tr><th>חלק</th><th>תכנון</th><th>בפועל</th><th>פער</th></tr></thead><tbody>${rows}<tr><td><b>סה"כ</b></td><td><b>${tp}</b></td><td><b>${mmss(ta)}</b></td><td></td></tr></tbody></table>`}
 
 // ---------- Hall of Fame ----------
 function hofStep(d){
@@ -2991,6 +3041,7 @@ function renderPanel(){
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
   <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
   <div class="row"><span class="muted grow" style="font-size:13px">שעון הערב: ${S.deck?.t0?'רץ':'יתחיל במעבר מהשקף הראשון'} (מתאפס בשקף הראשון)</span><button class="btn ghost small" data-pa="clock">איפוס השעון</button></div>
+  <details ${isRehearsal()?'open':''}><summary class="muted" style="cursor:pointer">דוח זמנים: תכנון מול בפועל${isRehearsal()?' · 🎭 חזרה גנרלית':''}</summary>${timingReport()}</details>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
   <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn ghost small" data-pa="cards">קישורים אישיים</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
   ${S.showCards?`<div class="card" style="margin:8px 0"><div class="row"><b class="grow">קישורים אישיים לכרטיסים (נשמרים גם אחרי איפוס)</b><button class="btn ghost small" data-pa="copyall">העתקת הכול</button></div>${roster().map(r=>{const c=cardCodeFor(r.id);return c?`<div class="row" style="font-size:14px"><span class="grow">${esc(r.name)}</span><code style="direction:ltr">${c.toUpperCase()}</code><a href="${cardLink(c)}" target="_blank" style="color:var(--gold)">פתיחה</a></div>`:''}).join('')}</div>`:''}
