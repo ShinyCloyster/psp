@@ -774,7 +774,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794001727';
+const BUILDV='1794004947';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1932,7 +1932,7 @@ function slideMusic(id){
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
 // characters come up by themselves: 12 s for the first, 10 for the second, 8 for the third; the host can also move on by hand
-const QD=[10,8,6],qDur=()=>QD[Math.max(0,Math.min(2,BUILD-1))];
+const QD=[10,9,8],qDur=()=>QD[Math.max(0,Math.min(2,BUILD-1))];
 function qAutoStop(){clearInterval(S.qT);S.qAuto=null;$('#qclock')?.remove()}
 function qPlaceClock(){const el=$('#qclock'),cv=$('#cv');if(!el||!cv)return;const t=[...cv.querySelectorAll('div[data-build-in]')].find(e=>(e.getAttribute('data-build-in')||'').split(' ')[1]===String(BUILD));if(!t)return;
   const cr=cv.getBoundingClientRect(),k=cr.width/1920||1,r=t.getBoundingClientRect();el.style.left=Math.round((r.right-cr.left)/k-100)+'px';el.style.top=Math.round((r.top-cr.top)/k-55)+'px'}
@@ -2385,13 +2385,16 @@ function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[
   if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
 function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
 function pqOpen(){const Q=S.pq,P=PQ[Q.key],past=Q.ord.slice(0,Q.i).map(j=>P.items[j].k);return PQ_OPT[P.set].map(o=>o[0]).filter(k=>!past.includes(k))}
-function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.end=Date.now()+QD[0]*1000;pqPaint();gamePub();pqClock()}
+// one 10-second window with all the text showing: the first 3 seconds are an Ultra Ball, the next 3 a Great Ball, the last 4 a Poké Ball
+let PQ_T=10;const pqBall=Q=>{const e=(Date.now()-Q.t0)/1000;return e<PQ_T*.3?1:e<PQ_T*.6?2:3};
+function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.t0=Date.now();Q.end=Q.t0+PQ_T*1000;Q.at={};pqPaint();gamePub();pqClock()}
 function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.slide){clearInterval(S.pqT);return}
-  const el=$('#pqclock');if(el&&!Q.revealed){const len=QD[Q.stage-1],l=Math.max(0,(Q.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/len*100;el.querySelector('span').textContent=Q.stage<3?ll('הרמז הבא','next hint'):ll('חשיפה','reveal')}
-  if(!Q.revealed&&!Q.done&&Date.now()>Q.end)pqStep()},250)}
-function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;if(Q.stage<3){Q.stage++;Q.end=Date.now()+QD[Q.stage-1]*1000;sfx('sfx-tink');pqPaint();gamePub();return}pqReveal()}
+  if(!Q.revealed&&!Q.done){const n=pqBall(Q);if(n!==Q.stage){Q.stage=n;sfx('sfx-tink');gamePub()}
+    const el=$('#pqclock');if(el){const l=Math.max(0,(Q.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/PQ_T*100;el.querySelector('span').innerHTML=`<img src="img/${QBALL[n][0]}.webp" alt="" style="width:30px;height:30px;image-rendering:pixelated;vertical-align:middle"> ${QBALL[n][2]}`}
+    if(Date.now()>Q.end)pqReveal()}},200)}
+function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;pqReveal()}
 function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;S.pqRev=S.pqRev||{};if(S.pqRev[Q.slide]){Q.got=S.pqRev[Q.slide];pqPaint();gamePub();return}S.pqRev[Q.slide]=Q.got;
-  gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){Q.scores[p.id]=(Q.scores[p.id]||0)+(4-g.n);Q.got.push([p.id,g.n])}});
+  gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){const n=Q.at?.[p.id]||g.n||3;Q.scores[p.id]=(Q.scores[p.id]||0)+(4-n);Q.got.push([p.id,n])}});
   sfx('sfx-dex-page-added');pqPaint();gamePub()}
 function pqNext(){const Q=S.pq;if(Q.i<Q.ord.length-1){Q.i++;pqRound();return}Q.done=true;clearInterval(S.pqT);leagueSet(Q.key,Q.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}
 function pqGo(d){const Q=S.pq;if(!Q||d<0||Q.slide!==cur()?.id)return false;if(Q.done||Q.revealed)return false;pqStep();return true}
@@ -2404,18 +2407,18 @@ function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
   const o=pqOpt(P.set,it.k),opts=PQ_OPT[P.set];
   cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(Q.i+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
    <div class="pqfig"><img src="img/${Q.revealed?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg"><p class="pqname">${esc(LL(it.n))}</p>
-    <div class="pqh">${it.h.map((h,j)=>`<p class="${Q.stage>j+1||Q.revealed?'on':''}">${esc(LL(h))}</p>`).join('')}</div></div>
+    <div class="pqh">${it.h.map((h,j)=>`<p class="on">${esc(LL(h))}</p>`).join('')}</div></div>
    <div class="pqopts">${opts.map(x=>{const past=!pqOpen().includes(x[0]);return `<div class="pqo ${Q.revealed&&x[0]===it.k?'hit':''} ${past?'past':''}"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`}).join('')}</div>
    ${Q.revealed?`<div class="pqans">${ll('התשובה:','The answer:')} <b>${pqLab(o)}</b> · ${esc(LL(o[2]))}</div>`:`<div id="pqclock" class="qclock pqclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>`}
    ${board}</div>`}
-function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.slide)return;const b=$('.pqboard');if(!b||Q.revealed)return;const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
+function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.slide)return;if(!Q.revealed&&Q.t0){Q.at=Q.at||{};gamePlayers().forEach(p=>{if(S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]&&!Q.at[p.id])Q.at[p.id]=pqBall(Q)})}const b=$('.pqboard');if(!b||Q.revealed)return;const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
   b.innerHTML=`<p class="qbh">SCOREBOARD</p>`+rows.map(r=>`<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${r.g?'<i class="qv">✓</i>':''}</span><b>${r.s}</b></div>`).join('')}
 function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item],id=G.key+'-'+G.i,mine=(S.myG||{})['p'+id],my=G.scores?.[me.id]||0;
   const head=`<p class="eyebrow">${P.eb} · ${G.i+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
   if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')||'—'}</h2><p class="muted" style="margin:6px 0 0">${ll(`צברת ${my} נקודות`,`You scored ${my} points`)}</p></div>`}
   const b=QBALL[G.stage];
   if(G.revealed){const ok=mine&&mine.v===G.ans,o=pqOpt(P.set,G.ans);return head+`<div class="card center qres ${ok?'ok':'no'}"><p style="margin:0 0 4px;font-weight:700">${esc(LL(it.n))}</p><h2 style="margin:4px 0">${pqLab(o)}</h2>${ok?`<img src="img/${QBALL[mine.n][0]}.webp" alt="" style="width:64px;height:64px;image-rendering:pixelated"><p style="margin:4px 0 0"><b>${ll(`צדקת! ${4-mine.n} נק׳`,`Correct! ${4-mine.n} pts`)}</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}</p>`}</div>`}
-  return head+`<div class="card qnow"><img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span><b>${esc(LL(it.n))}</b><br>${ll(`שלב ${G.stage} מתוך 3. ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b>`,`Hint ${G.stage} of 3. A correct guess now: <b>${b[1]} · ${b[2]} pts</b>`)}<br><span class="gend" data-end="${G.end}"></span></span></div>
+  return head+`<div class="card qnow"><img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span><b>${esc(LL(it.n))}</b><br>${ll(`ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b>. מהר יותר = כדור טוב יותר.`,`A correct guess now: <b>${b[1]} · ${b[2]} pts</b>. Faster = a better ball.`)}<br><span class="gend" data-end="${G.end}"></span></span></div>
    <div class="qgrid pqgrid">${PQ_OPT[P.set].filter(o=>G.open.includes(o[0])).map(o=>`<button class="qt${mine?.v===o[0]?' on':''}" data-pq="${o[0]}" ${mine?'disabled':''}><img src="img/${o[3]}.webp" alt="" style="width:34px;height:34px;image-rendering:pixelated"><span>${pqLab(o)}</span><small style="font-weight:400;color:var(--mist);font-size:11px">${esc(LL(o[2]))}</small></button>`).join('')}</div>
    ${mine?`<p class="muted center" style="font-size:14px">${ll(`ניחשת <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. מחכים לחשיפה…`,`You guessed <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. Waiting for the reveal…`)}</p>`:''}`}
 
@@ -2502,7 +2505,7 @@ async function rehearseCreate(nm,lang,skip,fast){const taken=new Set((S.roomList
   for(const p of ros)await S.db.raw.doc('joined/'+c+'~'+p.id).set({at:new Date().toISOString(),gender:'m',dev:'bot'});
   RAWSTORE.set('psp-lang:'+c,lang);location.hash='screen='+c;location.reload()}
 // speed: in a fast rehearsal every game clock runs at roughly a third
-function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,3,2);MEM_T=7;BT_T=7;BT_RES=3}else{QD.splice(0,3,10,8,6);MEM_T=20;BT_T=20;BT_RES=7}}
+function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,4,3);MEM_T=7;BT_T=7;BT_RES=3;PQ_T=6}else{QD.splice(0,3,10,9,8);MEM_T=20;BT_T=20;BT_RES=7;PQ_T=10}}
 async function botFill(){if(S.botFilled||!S.answersLoaded&&!S.answers)return;S.botFilled=true;
   for(const id of botIds()){const cur=S.answers?.[id]?.answers||{};if(Object.keys(cur).length>20)continue;const a={...cur},r=rng('bot-'+id+Date.now()),bias={};
     BANK.items.forEach(it=>{if(it.kind==='bonus'||it.id in a)return;bias[it.dim]??=1+r()*4;a[it.id]=Math.max(1,Math.min(5,Math.round(bias[it.dim]+(r()-.5)*2)))});
