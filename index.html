@@ -774,7 +774,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794006490';
+const BUILDV='1794006879';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2378,7 +2378,7 @@ const PQ={
   {k:'def',img:'parks',n:['רוזה פארקס','Rosa Parks'],h:[['1955, אוטובוס במונטגומרי. הנהג דורש ממנה לפנות את המקום.','1955, a bus in Montgomery. The driver demands that she give up her seat.'],['השוטרים מגיעים, הלחץ עולה, והיא נשארת לשבת.','The police arrive, the pressure rises, and she stays in her seat.']]},
   {k:'spa',img:'phil',n:['ד"ר פיל','Dr. Phil'],h:[['אורח מגיע לאולפן בטוח שהוא צודק.','A guest walks into the studio sure that he is right.'],['בלי להרים את הקול, שאלה אחרי שאלה, הוא מפרק לו את הסיפור עד שהוא מודה בעצמו: "אז איך זה עובד לך?"','Without raising his voice, question after question, he takes the story apart until the guest admits it himself: "So how\'s that working for you?"']]},
   {k:'spd',img:'elle',n:['אל וודס','Elle Woods'],h:[['בהרווארד צוחקים על השיער, על הצ׳יוואווה ועל הוורוד.','At Harvard they laugh at her hair, her chihuahua and all the pink.'],['היא לא משנה כלום, מגיעה לשיעור בוורוד, ומנצחת בתיק.','She changes nothing, shows up to class in pink, and wins the case.']]},
-  {k:'spe',img:'aladdin',n:['אלאדין','Aladdin'],h:[['גונב כיכר לחם וקופץ מגג לגג לפני שהשומרים מבינים לאן נעלם.','He steals a loaf of bread and jumps from roof to roof before the guards know where he went.'],['כשהחיים מתהפכים בבת אחת, הוא כבר נסיך עם סיפור חדש, ומשנה אותו בכל פעם שמשהו משתבש.','When his life flips overnight, he is already a prince with a new story, and changes it every time something goes wrong.']]}]},
+  {k:'spe',img:'chandler',n:['צ׳נדלר בינג','Chandler Bing'],h:[['כל משפט שנאמר בבית הקפה מקבל ממנו תשובה עוקצנית, עוד לפני שמישהו הספיק לנשום.','Every sentence said in the coffee house gets a sarcastic reply from him before anyone can take a breath.'],['רגע מביך, ריב או הפתעה: הוא כבר בדיחה אחת קדימה, ומתאים את עצמו לכל מצב בשנייה.','An awkward moment, a fight or a surprise: he is already one joke ahead, adjusting to any situation in a second.']]}]},
  'pq-evo':{set:'evo',eb:'HOW DID THEY EVOLVE?',ti:['איך הוא התפתח?','How did they evolve?'],items:[
   {k:'level',img:'taylor',n:['טיילור סוויפט','Taylor Swift'],h:[['בגיל 16 היא מנגנת בגיטרה בבתי קפה בנאשוויל.','At 16 she plays guitar in Nashville coffee shops.'],['אלבום אחרי אלבום, עידן אחרי עידן, עד סיבוב ההופעות הכי גדול בהיסטוריה.','Album after album, era after era, all the way to the biggest tour in history.']]},
   {k:'item',img:'walter',n:['וולטר וייט','Walter White'],h:[['מורה לכימיה צנוע, 50 שנה של שקט.','A modest chemistry teacher, 50 years of quiet.'],['משפט אחד אצל הרופא, ותוך חודשים הוא אדם אחר, ואין דרך חזרה.','One sentence at the doctor\'s, and within months he is a different man, with no way back.']]},
