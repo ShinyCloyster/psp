@@ -491,7 +491,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .qboard.pqboard{left:70px;top:110px;width:1060px;grid-template-columns:repeat(3,1fr)}
 .pqend{position:absolute;left:70px;right:70px;top:260px;display:flex;flex-direction:column;align-items:center;gap:10px}.pqend h2{font-family:var(--display);font-size:60px;font-weight:400;color:#F2C94C}.pqend p{font-size:32px}
 .pq .pqend+.qboard{top:auto;bottom:40px;left:430px;width:1060px}
-.en .pqti{right:auto;left:128px}.en .pqfig{right:auto;left:110px}.en .pqopts{left:auto;right:70px;direction:ltr}.en .pqans{left:auto;right:70px}.en .pqclock{left:auto!important;right:600px}.en .qboard.pqboard{left:auto;right:70px}.en .pq .pqend+.qboard{left:430px;right:auto}
+.en .pqti{right:auto;left:128px;font-size:56px}.en .qboard.pqboard{width:960px}.en .pqfig{right:auto;left:110px}.en .pqopts{left:auto;right:70px;direction:ltr}.en .pqans{left:auto;right:70px}.en .pqclock{left:auto!important;right:600px}.en .qboard.pqboard{left:auto;right:70px}.en .pq .pqend+.qboard{left:430px;right:auto}
 /* league */
 .lgbox{background:rgba(22,26,46,.94);border:3px solid #F2C94C;border-radius:24px;padding:16px 20px;color:#F6F1E7;display:flex;flex-direction:column;gap:6px}
 .lgh{font:400 16px var(--pixel);color:#F2C94C;text-align:center;margin-bottom:4px}
@@ -774,7 +774,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794005772';
+const BUILDV='1794006490';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -804,9 +804,17 @@ function roomAv(p,kind){if(ROOM.legacy||!p)return null;if(p.role==='self'||p.id=
 function avColor(p,i){const k=avKey(p);return k?AVCOL[k]:XCOL[(i||0)%XCOL.length]}
 const avG=(p,g)=>(g||genderOf(p))==='f'?'-g':'';
 function avHead(p,size,ring){const k=avKey(p),sh=ring?`;box-shadow:0 0 0 ${Math.max(2,Math.round(size/14))}px ${ring}`:'';const ra=roomAv(p,'h');if(ra)return `<span class="avh" style="width:${size}px;height:${size}px${sh}"><img src="${ra}" alt="${esc(p.name)}"></span>`;
-  return `<span class="avh" style="width:${size}px;height:${size}px${sh}">${k?`<img src="img/av-h-${k}${avG(p)}.webp" alt="${esc(p.name)}">`:`<img src="img/it-poke-ball.webp" alt="" style="object-fit:contain;padding:14%">`}</span>`}
+  return `<span class="avh" style="width:${size}px;height:${size}px${sh}">${k?`<img src="img/av-h-${k}${avG(p)}.webp" alt="${esc(p.name)}">`:`<img src="${defSprite(p)}" alt="${esc(p?.name||'')}" style="object-fit:cover;object-position:50% 0;transform:scale(1.7);transform-origin:50% 0;margin-top:6%">`}</span>`}
 const AVSCALE={doron:1.18};
-function avFull(p,h,g){const ra=roomAv(p,'f');if(ra)return `<img class="avf" src="${ra}" alt="${esc(p.name)}" style="height:${h}px">`;const k=avKey(p);if(k&&AVSCALE[k])h=Math.round(h*AVSCALE[k]);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="img/it-poke-ball.webp" alt="" style="height:${Math.round(h*.5)}px;margin:${Math.round(h*.25)}px auto">`}
+// no avatar? give them a trainer from the sprite bank: by name when it is one of the characters, else a stable pick per person, never twice in a room
+const DEF_M=['red','brock','lance','falkner','bugsy','morty','koga','ltsurge','blaine','pryce','bruno','ash'],DEF_F=['misty','erika','whitney','jasmine','karen','valerie','mom-johto'];
+const DEF_NAME={'אש':'ash','ash':'ash','ברוק':'brock','brock':'brock','מיסטי':'misty','misty':'misty','רד':'red','red':'red'};
+function defSprite(p){if(!p)return 'img/tr-red.webp';const nm=String(p.name||'').trim().toLowerCase();if(DEF_NAME[nm])return 'img/tr-'+DEF_NAME[nm]+'.webp';
+  const key=JSON.stringify(roster().map(x=>x.id+(genderOf(x)||'')));if(S.defKey!==key){S.defKey=key;S.defMap={};const used=new Set(roster().map(x=>DEF_NAME[String(x.name||'').trim().toLowerCase()]).filter(Boolean));
+    const nx=(pool,seed)=>{const free=pool.filter(k=>!used.has(k));const k=(free.length?free:pool)[seed%(free.length||pool.length)];used.add(k);return k};
+    roster().forEach((x,i)=>{if(DEF_NAME[String(x.name||'').trim().toLowerCase()])return;let h=0;for(const c of String(x.id||x.name))h=(h*31+c.charCodeAt(0))>>>0;S.defMap[x.id]=nx(genderOf(x)==='f'?DEF_F:DEF_M,h)})}
+  const k=S.defMap[p.id]||(genderOf(p)==='f'?DEF_F:DEF_M)[0];return 'img/tr-'+k+'.webp'}
+function avFull(p,h,g){const ra=roomAv(p,'f');if(ra)return `<img class="avf" src="${ra}" alt="${esc(p.name)}" style="height:${h}px">`;const k=avKey(p);if(k&&AVSCALE[k])h=Math.round(h*AVSCALE[k]);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="${defSprite(p)}" alt="${esc(p?.name||'')}" style="height:${Math.round(h*.85)}px">`}
 function subjP(){return roster().find(p=>p.role==='self')||{name:subjectName(),role:'self'}}
 
 // ---------- progress dial ----------
@@ -1911,7 +1919,7 @@ function closingHTML(){
   const n=esc(subjectName()),R=S.R,top=R?.main?.slice(0,5)||[],win=top[0]?.line;
   const im=(src,h,cls='')=>`<img class="cg ${cls}" src="img/${src}.webp" alt="" style="height:${h}px">`;
   const lect=['tr-bill','tr-cynthia','tr-sabrina','tr-giovanni'].map(x=>im(x,190)).join('')+im('tr-oak',195,'oak');
-  const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,205)).join('');
+  const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,205)).join('')+'<span class="cgap"></span>'+['durkheim','marx','weber','popper','kuhn'].map(k=>im('th-'+k,165)).join('');
   const tr=ROOM.legacy||!ROOM.code?TR_KEYS.map(k=>im('tr-eri-'+k,k==='family'?200:k==='sport'?180:215)).join(''):[1,2,3,4].map(i=>S.assets?.['tr-'+i]?.data).filter(Boolean).map(d=>`<img class="cg" src="${d}" alt="" style="height:200px">`).join('');
   const ppl=inRoom().filter(p=>p.role!=='self').map(p=>avFull(p,225)).join('');
   const spr=(l,w)=>`<img class="cg mon" src="${spriteURL(sprite(l,l.species.at(-1)))}" alt="" style="width:${w}px;height:${w}px">`,runners=top.slice(1).map(t=>spr(t.line,230));
@@ -2366,13 +2374,13 @@ const PQ_OPT={
 const PQ={
  'pq-stats':{set:'stats',eb:"WHO'S THAT STAT?",ti:['איזה סטט בולט אצלו?','Which stat stands out?'],items:[
   {k:'hp',img:'mandela',n:['נלסון מנדלה','Nelson Mandela'],h:[['27 שנה בכלא, רובן בתא קטן על אי.','27 years in prison, most of them in a small cell on an island.'],['יוצא בגיל 71 בלי מרירות, ומוביל את המדינה שכלאה אותו.','He walks out at 71 without bitterness, and leads the country that locked him up.']]},
-  {k:'atk',img:'pippi',n:['בילבי בת־גרב','Pippi Longstocking'],h:[['גרה לבד בווילה עם סוס וקוף, ולא מחכה שמבוגר יגיד לה מה לעשות.','She lives alone in a villa with a horse and a monkey, and doesn\'t wait for a grown-up to tell her what to do.'],['שוטרים באים לקחת אותה? היא מרימה אותם ומוציאה אותם מהבית. הסוס על המרפסת? היא מרימה גם אותו.','Police come to take her away? She lifts them up and carries them out. The horse on the porch? She lifts him too.']]},
+  {k:'atk',img:'merida',n:['מרידה','Merida'],h:[['כולם כבר החליטו בשבילה: נסיכה, חתונה, מחזרים.','Everyone has already decided for her: princess, wedding, suitors.'],['היא לוקחת את הקשת, מתחרה על היד של עצמה, ומשנה את הגורל במו ידיה.','She takes up her bow, competes for her own hand, and changes her fate with her own hands.']]},
   {k:'def',img:'parks',n:['רוזה פארקס','Rosa Parks'],h:[['1955, אוטובוס במונטגומרי. הנהג דורש ממנה לפנות את המקום.','1955, a bus in Montgomery. The driver demands that she give up her seat.'],['השוטרים מגיעים, הלחץ עולה, והיא נשארת לשבת.','The police arrive, the pressure rises, and she stays in her seat.']]},
   {k:'spa',img:'phil',n:['ד"ר פיל','Dr. Phil'],h:[['אורח מגיע לאולפן בטוח שהוא צודק.','A guest walks into the studio sure that he is right.'],['בלי להרים את הקול, שאלה אחרי שאלה, הוא מפרק לו את הסיפור עד שהוא מודה בעצמו: "אז איך זה עובד לך?"','Without raising his voice, question after question, he takes the story apart until the guest admits it himself: "So how\'s that working for you?"']]},
   {k:'spd',img:'elle',n:['אל וודס','Elle Woods'],h:[['בהרווארד צוחקים על השיער, על הצ׳יוואווה ועל הוורוד.','At Harvard they laugh at her hair, her chihuahua and all the pink.'],['היא לא משנה כלום, מגיעה לשיעור בוורוד, ומנצחת בתיק.','She changes nothing, shows up to class in pink, and wins the case.']]},
   {k:'spe',img:'aladdin',n:['אלאדין','Aladdin'],h:[['גונב כיכר לחם וקופץ מגג לגג לפני שהשומרים מבינים לאן נעלם.','He steals a loaf of bread and jumps from roof to roof before the guards know where he went.'],['כשהחיים מתהפכים בבת אחת, הוא כבר נסיך עם סיפור חדש, ומשנה אותו בכל פעם שמשהו משתבש.','When his life flips overnight, he is already a prince with a new story, and changes it every time something goes wrong.']]}]},
  'pq-evo':{set:'evo',eb:'HOW DID THEY EVOLVE?',ti:['איך הוא התפתח?','How did they evolve?'],items:[
-  {k:'level',img:'rocky',n:['רוקי בלבואה','Rocky Balboa'],h:[['מתאגרף אלמוני מפילדלפיה. ריצה עם שחר, ביצים נאות, אגרופים בבשר קפוא.','An unknown boxer from Philadelphia. A run at dawn, raw eggs, punches into frozen meat.'],['ושוב מחר, ושוב מחרתיים, עד שיום אחד הוא מגיע לראש המדרגות.','And again tomorrow, and the day after, until one day he reaches the top of the steps.']]},
+  {k:'level',img:'taylor',n:['טיילור סוויפט','Taylor Swift'],h:[['בגיל 16 היא מנגנת בגיטרה בבתי קפה בנאשוויל.','At 16 she plays guitar in Nashville coffee shops.'],['אלבום אחרי אלבום, עידן אחרי עידן, עד סיבוב ההופעות הכי גדול בהיסטוריה.','Album after album, era after era, all the way to the biggest tour in history.']]},
   {k:'item',img:'walter',n:['וולטר וייט','Walter White'],h:[['מורה לכימיה צנוע, 50 שנה של שקט.','A modest chemistry teacher, 50 years of quiet.'],['משפט אחד אצל הרופא, ותוך חודשים הוא אדם אחר, ואין דרך חזרה.','One sentence at the doctor\'s, and within months he is a different man, with no way back.']]},
   {k:'trade',img:'rachel',n:['רייצ׳ל גרין','Rachel Green'],h:[['בורחת בשמלת כלה מחתונה בלונג איילנד, ונוחתת בבית קפה בניו יורק.','She runs from her own wedding on Long Island in her wedding dress, and lands in a New York coffee house.'],['בלי הכסף של אבא היא לומדת לעבוד, ומגיעה עד עולם האופנה.','Without her father\'s money she learns to work, and makes it all the way into fashion.']]},
   {k:'friend',img:'beast',n:['החיה','The Beast'],h:[['נסיך מקולל שמסתגר בטירה וצועק על כולם.','A cursed prince who shuts himself in his castle and yells at everyone.'],['לא הזמן משנה אותו ולא האיומים, אלא רק מישהי שמתחילה לראות בו משהו טוב.','Not time changes him and not threats, only someone who starts to see something good in him.']]},
