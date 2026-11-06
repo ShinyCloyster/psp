@@ -315,7 +315,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .gbp{display:flex;flex-direction:column;gap:12px}
 .gbp-scene{height:250px;border:4px solid #20253F;border-radius:14px;background:linear-gradient(180deg,#A8D8F0 0%,#D8F0F8 62%,#9CCB6B 62%,#7FB24E 100%);display:flex;align-items:flex-end;justify-content:center;gap:34px;padding-bottom:18px;overflow:hidden}
 .gbp-fig{height:175px;image-rendering:pixelated;filter:drop-shadow(0 6px 0 rgba(0,0,0,.18));transition:transform .2s}
-.gbp-fig[src*="gb-"]{height:150px}.gbp-fig.pick{transform:translateY(-10px) scale(1.06)}
+.gbp-fig[src*="gb-"]{height:150px}.gbp-fig[src*="ow-"]{height:105px;image-rendering:pixelated;margin:0 22px}.gbp-fig.pick{transform:translateY(-10px) scale(1.06)}
 .gbp-box,.gbp-menu{background:#F8F8F8;color:#1E2238;border:4px solid #2A2E45;border-radius:10px;box-shadow:inset 0 0 0 3px #F8F8F8,inset 0 0 0 6px #6A8CC8}
 .gbp-box{position:relative;display:block;width:100%;min-height:128px;padding:18px 20px 30px;font-family:var(--body);font-size:21px;line-height:1.55;text-align:right;white-space:pre-line}
 .gbp-tri{position:absolute;left:16px;bottom:8px;color:#E4483F;font-style:normal;font-size:18px;animation:gbblink 1s steps(2) infinite}
@@ -410,6 +410,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .mem{background:#F6F1E7;color:#22263A}
 .mti{font-size:60px!important;top:126px!important}
 .mmg{position:absolute;right:100px;top:220px;width:1220px;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:252px;gap:20px;direction:rtl}
+.mmg.six{grid-template-columns:repeat(3,1fr);grid-auto-rows:330px;gap:26px}.mmg.six .mcf.qq p{font-size:30px}.mmg.six .mcf.lens b{font-size:34px}.mmg.six .mtag{font-size:22px}.mmg.six .mcs{font-size:20px}
 .mmc{position:relative;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;font:inherit;color:inherit}
 .mci{position:absolute;inset:0;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
 .mmc.up .mci{transform:rotateY(180deg)}
@@ -474,6 +475,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .np-t img{width:34px;height:34px;object-fit:contain;flex:none}.np-t b{color:var(--gold)}.np-t.tr{flex-direction:column;justify-content:center;gap:2px;text-align:center}.np-t.tr img{image-rendering:pixelated;width:30px;height:30px}
 .np-t.on{filter:none;opacity:1;border-color:rgba(242,201,76,.75);background:#2A3060;color:var(--cream)}
 .np-ck{position:absolute;top:-7px;inset-inline-start:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#161A2E;font:800 12px/20px var(--body);text-align:center;font-style:normal;display:none}.np-t.on .np-ck{display:block}
+.np-host{display:flex;gap:6px;margin:8px 0 0}.np-host input{flex:1}.np-host .np-o{flex:none;width:52px;min-height:0}
 .np-reh{display:flex;gap:8px;margin-top:10px;align-items:stretch}.np-reh .btn{flex:1}.np-sum{margin:4px 0 0;font-weight:700;color:var(--cream);text-align:center;font-size:15px}.np-go{width:100%;margin-top:14px;font-size:20px;padding:14px}
 .pq{background:radial-gradient(circle at 50% 40%,#262B4A 0%,#161A2E 70%);color:#F6F1E7}
 .pqeb{color:#F2C94C!important}.pqti{position:absolute;right:128px;top:126px;font-family:var(--display);font-size:68px;font-weight:400;color:#F6F1E7}
@@ -772,7 +774,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1793928109';
+const BUILDV='1793998019';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -889,7 +891,7 @@ function joinView(){
   return `<div style="display:flex;justify-content:center;align-items:flex-end;gap:6px;margin:4px 0 0"><img src="img/tr-oak.webp" alt="פרופסור אוק" style="height:120px;image-rendering:pixelated">${balls}</div><img src="img/band.webp" alt="" style="width:100%;height:46px;object-fit:cover;image-rendering:pixelated;border-radius:8px;margin:6px 0 4px"><p class="eyebrow">PSP · JOIN</p><p style="margin:-4px 0 0;text-align:end"><button class="linkbtn" onclick="location.search='?lang=${EN?'he':'en'}'">${EN?'עברית':'English'}</button></p>${ll(`<h1>כניסה לחדר</h1>`,`<h1>Join a room</h1>`)}<p class="muted">${ll(`מקלידים את קוד החדר (4 תווים) שמופיע על המסך הגדול. יש לך קוד סיכום אישי מערב קודם (6 תווים)? אפשר להקליד אותו כאן.`,`Type the room code (4 characters) shown on the big screen. Have a personal summary code from a past evening (6 characters)? You can type it here too.`)}</p>
   <div class="card"><input id="roomcode" maxlength="6" placeholder="ABCD" autocomplete="off" autocapitalize="characters" style="text-align:center;font:400 30px var(--pixel);letter-spacing:10px;direction:ltr;text-transform:uppercase"><button class="btn" data-act="joinroom" ${ll(`style="margin-top:10px">כניסה</button>`,`style="margin-top:10px">Enter</button>`)}</div>
   ${L.length?`<div class="card">${ll(`<p style="margin:0 0 8px;font-weight:700">החדרים שלך</p>`,`<p style="margin:0 0 8px;font-weight:700">Your rooms</p>`)}${L.map(x=>`<a class="btn ghost small" href="#r=${esc(x.code)}" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px">${esc(x.subject||'')} · <span style="direction:ltr;font-family:var(--pixel)">${esc(x.code)}</span></a>`).join('')}</div>`:''}
-  ${pastCardsHTML()}`}
+  ${pastCardsHTML()}<p class="center" style="margin:18px 0 4px"><a href="#screen" onclick="setTimeout(()=>location.reload(),50)" class="muted" style="font-size:13px;text-decoration:underline">${ll('מארח? כניסה למסך הגדול','Host? Open the big screen')}</a></p>`}
 const ADMIN_CODE='CLOY';
 function tryJoin(v){v=(v||'').trim().toUpperCase();if(v===ADMIN_CODE){location.hash='admin';location.reload();return}
   if(/^[A-Z0-9]{6}$/.test(v)){const c=v.toLowerCase();if(S.cardsLoaded&&!S.cardDocs?.[c]){toast(ll('לא מצאתי סיכום עם הקוד הזה','No summary found with that code'));return}location.hash='c='+c;return}
@@ -916,6 +918,7 @@ function roomsView(){
    <input type="text" id="nr-name" class="np-name" placeholder="על מי הערב?" value="${esc(S.nrn||'')}" oninput="S.nrn=this.value">
    <div class="np-opts"><div class="np-seg"><button class="np-o ${S.nrg!=='f'?'on':''}" data-nrg="m" aria-label="בן"><img src="img/ow-boy.webp" alt=""><span class="np-sym" style="color:#6390F0">♂</span></button><button class="np-o ${S.nrg==='f'?'on':''}" data-nrg="f" aria-label="בת"><img src="img/ow-girl.webp" alt=""><span class="np-sym" style="color:#F95587">♀</span></button></div>
     <div class="np-seg"><button class="np-o ${S.nrl!=='en'?'on':''}" data-nrl="he">${FLAG_IL}<span>עברית</span></button><button class="np-o ${S.nrl==='en'?'on':''}" data-nrl="en">${FLAG_UK}<span>English</span></button></div></div>
+   <div class="np-host"><input type="text" id="nr-host" placeholder="מי מנחה? (אוק יקרא לו הנכד שלו)" value="${esc(S.nrh||'')}" oninput="S.nrh=this.value"><button class="np-o ${S.nrhg!=='f'?'on':''}" data-nrhg="m" aria-label="מנחה"><span class="np-sym" style="position:static;color:#6390F0">♂</span></button><button class="np-o ${S.nrhg==='f'?'on':''}" data-nrhg="f" aria-label="מנחה"><span class="np-sym" style="position:static;color:#F95587">♀</span></button></div>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
    <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button>
    <div class="np-reh"><button class="btn ghost small" data-act="rehearse">🎭 חזרה גנרלית עם בוטים</button><button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">⏩ מצב מהיר</button></div>
@@ -926,6 +929,7 @@ function roomsView(){
     if(b.dataset.nrg){S.nrg=b.dataset.nrg;roomsView();return}
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
     if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
+    if(b.dataset.nrhg){S.nrhg=b.dataset.nrhg;roomsView();return}
     if(b.dataset.act==='rehearse'){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf);return}
     if(b.dataset.del){if(!confirm('למחוק את חדר הבדיקה '+b.dataset.del+'?'))return;await S.db.raw.doc('state/'+b.dataset.del).delete().catch(()=>{});await S.db.raw.doc('setup/'+b.dataset.del).delete().catch(()=>{});toast('נמחק');return}
     if(b.dataset.plan){S.planOpen=S.planOpen===b.dataset.plan?null:b.dataset.plan;roomsView();return}
@@ -935,7 +939,7 @@ function roomsView(){
     if(b.dataset.copy){const u=b.dataset.copy;(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור:',u));return}
     if(b.dataset.act==='newroom'){const nm=($('#nr-name')?.value||'').trim();if(!nm){toast('מה השם?');return}
       const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c=Array.from({length:4},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c)||c===LEGACY_ROOM);
-      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[]});
+      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null});
       RAWSTORE.set('psp-lang:'+c,S.nrl==='en'?'en':'he');location.hash='screen='+c;location.reload()}}}
 const hexName=n=>Array.from(String(n)).map(c=>c.charCodeAt(0).toString(16)).join('');
 function assetSlot(key,label,data,extra,who){return `<div class="aslot"><div class="aprev">${data?`<img src="${data}" alt="">`:'<span class="muted">אין עדיין</span>'}</div><b>${label}</b>${extra||''}
@@ -1156,7 +1160,7 @@ function render(){
   if(!S.dex)fetch('dex151.json?v='+BUILDV).then(r=>r.json()).then(d=>{S.dex=d;render()}).catch(()=>{S.dex={}});
 }
 // ----- presenter remote -----
-function presenterName(){const v=S.state?.presenter;return v==null?'אייל':v}
+function presenterName(){const v=S.state?.presenter;return v==null?(ROOM.legacy?'אייל':''):v}
 function isPresenter(me){return !!me&&!me.remote&&presenterName()!==''&&String(me.name||'').trim()===presenterName()}
 function sendCtl(d){try{navigator.vibrate?.(25)}catch(e){}S.db.doc('stage/ctl').set({n:Date.now(),d,by:S.me||''}).catch(()=>toast(ll('לא הצלחתי לשלוח למסך','Couldn\'t send to the screen')))}
 function remoteClock(){const I=schedInfo(S.deck,Date.now());
@@ -1561,7 +1565,7 @@ function draft(){
   if(S.draft)return S.draft;
   const r=S.setup?.roster;
   if(r&&r.length)S.draft=r.filter(p=>p.role!=='self').map(p=>({...p}));
-  else if(EN)S.draft=[0,1,2,3,4].map(i=>({id:newId(),name:'',role:'friend',weight:11}));
+  else if(EN||!ROOM.legacy)S.draft=[0,1,2,3,4].map(i=>({id:newId(),name:'',role:'friend',weight:11}));
   else S.draft=[{id:newId(),name:'רון',role:'partner',weight:15},{id:newId(),name:'אייל',role:'friend',weight:10},{id:newId(),name:'דורון',role:'friend',weight:10},{id:newId(),name:'דולב',role:'friend',weight:10},{id:newId(),name:'ניר',role:'friend',weight:10}];
   return S.draft;
 }
@@ -1594,11 +1598,14 @@ function slideHTML(h){
     if(S.qr){h=h.split('img/qr-app.webp').join(S.qr).split('סורקים, בוחרים שם, עונים').join('סורקים, או נכנסים עם הקוד '+ROOM.code).split('Scan, pick your name, answer').join('Scan, or join with the code '+ROOM.code)}}
   return h;
 }
+// who runs the evening; Oak calls them his grandchild. Set per room; the first evening (ERI1) was Shusho's
+function roomHost(){const h=S.state?.host;if(h?.name)return h;return ROOM.code===LEGACY_ROOM?{name:'שושו',g:'m',aka:['אייל','eyal','shusho']}:null}
 function introScript(){
-  const I=S.intro,self=I.role==='self',nm=I.name||'',subj=subjectName(),eyal=['אייל','eyal','shusho'].includes(nm.trim().toLowerCase());
+  const I=S.intro,self=I.role==='self',nm=I.name||'',subj=subjectName(),H=roomHost(),hn=H?.name||'',gh=(m,f)=>H?.g==='f'?f:m,eyal=!!H&&[hn,...(H.aka||[])].map(x=>String(x).trim().toLowerCase()).includes(nm.trim().toLowerCase());
   if(EN){const open=['Hello there! Welcome to the world of PSP!','My name is Oak. People call me the Pokémon Professor.','This world is inhabited by creatures called Pokémon. Some people live with them as pets, others fight alongside them.','Myself? I study Pokémon. And tonight I\'m studying one person in particular.','But first, tell me: are you a boy or a girl?'];
-    const grandson=eyal?[`Wait… ${nm}? Then you\'re Shusho! My grandchild!`,'You were always one step ahead of me. So take the stage: the presentation is yours.','I\'ll be back at the end, in the Hall of Fame. Good luck, Shusho!']
-      :['And now I hand the stage to my grandson, Shusho.','He was always one step ahead of me, so tonight he\'ll run the presentation. I\'ll be back at the end, in the Hall of Fame.','Good luck! Let\'s get going!'];
+    const grandson=eyal?[`Wait… ${nm}? Then you\'re my grandchild!`,'You were always one step ahead of me. So take the stage: the presentation is yours.',`I\'ll be back at the end, in the Hall of Fame. Good luck, ${hn}!`]
+      :hn?[`And now I hand the stage to my ${gh('grandson','granddaughter')}, ${hn}.`,`${gh('He','She')} was always one step ahead of me, so tonight ${gh('he','she')}\'ll run the presentation. I\'ll be back at the end, in the Hall of Fame.`,'Good luck! Let\'s get going!']
+      :['And now I hand the stage to tonight\'s host.','I\'ll be back at the end, in the Hall of Fame.','Good luck! Let\'s get going!'];
     if(self)return [{say:open,ask:'gender'},{say:[gx('Ah, a boy! Excellent.','Ah, a girl! Excellent.'),'And what is your name?'],ask:'name'},
       {say:[`${nm}! What a great name.`,`Tonight your friends will help me study you, ${nm}.`,'45% of the picture is yours. The other 55% is split between them: whoever knows you better gets more.'],ask:'roster'},
       {say:[`${nm}!`,'Your very own PSP adventure is about to unfold!','A world of dreams and adventures with Pokémon awaits!',...grandson],ask:'done'}];
@@ -1607,8 +1614,9 @@ function introScript(){
       {t:'Your answers are private: the screen only shows what the group thinks together, and only the host sees individual answers.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'}]}
   const open=['שלום! ברוכים הבאים לעולם של PSP!','שמי אוק. אנשים קוראים לי פרופסור הפוקימונים.','העולם הזה מלא ביצורים שנקראים פוקימונים. יש אנשים שחיים איתם כחיות מחמד, ויש שנלחמים לצידם.','ואני? אני חוקר פוקימונים. והערב אני חוקר מישהו אחד במיוחד.','אבל קודם, ספרו לי: בן או בת?'];
   const grandson=eyal
-    ?[`רגע… ${nm}? אז ${gx('אתה','את')} שושו! ${gx('הנכד','הנכדה')} שלי!`,`תמיד ${gx('היית','היית')} צעד אחד לפניי. אז ${gx('קח','קחי')} את הבמה: המצגת שלך.`,'אני אחזור בסוף, בהיכל התהילה. בהצלחה, שושו!']
-    :['ועכשיו אני מעביר את הבמה לנכד שלי, שושו.','הוא תמיד היה צעד אחד לפניי, אז הערב הוא יריץ את המצגת. אני אחזור בסוף, בהיכל התהילה.',gx('בהצלחה! בוא נצא לדרך!','בהצלחה! בואי נצא לדרך!')];
+    ?[`רגע… ${nm}? אז ${gx('אתה','את')} ${hn}! ${gx('הנכד','הנכדה')} שלי!`,`תמיד ${gx('היית','היית')} צעד אחד לפניי. אז ${gx('קח','קחי')} את הבמה: המצגת שלך.`,`אני אחזור בסוף, בהיכל התהילה. בהצלחה, ${hn}!`]
+    :hn?[`ועכשיו אני מעביר את הבמה ל${gh('נכד','נכדה')} שלי, ${hn}.`,`${gh('הוא','היא')} תמיד ${gh('היה','הייתה')} צעד אחד לפניי, אז הערב ${gh('הוא יריץ','היא תריץ')} את המצגת. אני אחזור בסוף, בהיכל התהילה.`,gx('בהצלחה! בוא נצא לדרך!','בהצלחה! בואי נצא לדרך!')]
+    :['ועכשיו אני מעביר את הבמה למנחה הערב.','אני אחזור בסוף, בהיכל התהילה.',gx('בהצלחה! בוא נצא לדרך!','בהצלחה! בואי נצא לדרך!')];
   if(self)return [
     {say:open,ask:'gender'},
     {say:[gx('אה, בן! מצוין.','אה, בת! מצוין.'),'ומה השם שלך?'],ask:'name'},
@@ -1628,9 +1636,9 @@ function introView(){
   const I=S.intro||(S.intro={role:me.role==='self'?'self':'friend',step:0,page:0,g:null,name:me.role==='self'?null:me.name,ci:0,typed:'',live:true});
   const sc=introScript()[I.step],last=I.page>=sc.say.length-1,key=I.step+':'+I.page,typed=I.typed===key,asking=last&&typed&&sc.ask!=='done',cur=sc.say[I.page];
   const who={...me,name:I.name||me.name};
-  const sprite=g=>roomAv(who,'f')||(avKey(who)?`img/av-f-${avKey(who)}${g==='f'?'-g':''}.webp`:`img/gb-${g==='f'?'girl':'boy'}.png`);
+  const sprite=g=>roomAv(who,'f')||(avKey(who)?`img/av-f-${avKey(who)}${g==='f'?'-g':''}.webp`:`img/ow-${g==='f'?'girl':'boy'}.webp`);
   let figs=`<img class="gbp-fig" src="img/tr-oak.webp" alt="${ll(`פרופסור אוק`,`Professor Oak`)}">`;
-  if(sc.ask==='gender'&&last)figs=`<img class="gbp-fig${I.g==='m'?' pick':''}" src="${sprite('m')}" ${ll(`alt="בן">`,`alt="Boy">`)}<img class="gbp-fig${I.g==='f'?' pick':''}" src="${sprite('f')}" ${ll(`alt="בת">`,`alt="Girl">`)}`;
+  if(sc.ask==='gender'&&last)figs=`<img class="gbp-fig${I.g==='m'?' pick':''}" src="img/ow-boy.webp" ${ll(`alt="בן">`,`alt="Boy">`)}<img class="gbp-fig${I.g==='f'?' pick':''}" src="img/ow-girl.webp" ${ll(`alt="בת">`,`alt="Girl">`)}`;
   else if(I.g&&(I.role==='self'?I.step>=2:true)){
     figs+=`<img class="gbp-fig" src="${sprite(I.g)}" alt="${esc(who.name)}">`;
     if(cur&&cur.subj){const sp=subjP();figs=`<img class="gbp-fig" src="img/tr-oak.webp" alt="פרופסור אוק"><img class="gbp-fig gbp-subj" src="${roomAv(sp,'f')||(avKey(sp)?`img/av-f-${avKey(sp)}${avG(sp)}.webp`:'img/gb-'+(S.setup?.gender==='f'?'girl':'boy')+'.png')}" alt="${esc(sp.name)}">`}
@@ -1853,8 +1861,8 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),14,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
- ['c2',ll('קורס 2','Course 2'),16,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
+const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),16,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+ ['c2',ll('קורס 2','Course 2'),15,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
  ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
  ['c4',ll('קורס 4','Course 4'),23,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
@@ -2230,11 +2238,13 @@ function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
 const LL=a=>EN?a[1]:a[0];
 let MEM_T=20;
 const MEM={
- 'c-memory':{eb:'MEMORY · GLASSES & FATHERS',ti:['משחק זיכרון: מי שואל מה?','Memory: who asks what?'],
+ 's-memory':{eb:'MEMORY · PARADIGM GLASSES',ti:['משחק זיכרון: אילו משקפיים שואלים מה?','Memory: which glasses ask what?'],
   pairs:[
    {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'edu',a:['משקפי חינוך','Education glasses'],q:['איך מאלפים אותו להישמע למאמן?','How do we train him to obey his trainer?']},
    {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'med',a:['משקפי רפואה','Medical glasses'],q:['אולי הוא פצוע? שיבדקו אותו במרכז הפוקימונים','Maybe he\'s hurt? Get him checked at the Pokémon Center']},
-   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?']},
+   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?']}]},
+ 'c-memory':{eb:'MEMORY · THREE FATHERS',ti:['משחק זיכרון: איזה הוגה שואל מה?','Memory: which thinker asks what?'],
+  pairs:[
    {s:['קרב פוקימונים','A Pokémon battle'],k:'durkheim',a:['דורקהיים','Durkheim'],q:['אילו כללים משותפים גורמים לשני זרים ללחוץ ידיים בסוף הקרב?','Which shared rules make two strangers shake hands after the battle?']},
    {s:['קרב פוקימונים','A Pokémon battle'],k:'marx',a:['מרקס','Marx'],q:['הפוקימונים נלחמים, והמאמן מקבל את התג. מי מרוויח מהעבודה?','The Pokémon fight, the trainer gets the badge. Who profits from the work?']},
    {s:['קרב פוקימונים','A Pokémon battle'],k:'weber',a:['וובר','Weber'],q:['למה כל מאמן נלחם: בשביל התג, בשביל הכבוד, מההתרגשות, או כי ככה נהוג?','Why does each trainer fight: for the badge, for honor, for the thrill, or because that\'s what\'s done?']}]}};
@@ -2256,23 +2266,23 @@ function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i
 const memCur=()=>{const M=S.mem;return M&&M.order.length?M.order[M.t%M.order.length]:null};
 function memHTML(){const M=S.mem,set=MEM[M.key];
   return `<div class="st mem"><p class="bteb">${set.eb}</p><h2 class="btti mti">${esc(LL(set.ti))}</h2>
-   <div class="mmg">${M.layout.map((id,i)=>`<button class="mmc" data-mi="${i}"><div class="mci"><div class="mcb"><img src="img/it-poke-ball.webp" alt=""><b>${i+1}</b></div>${memFace(M.key,id)}</div><span class="mown"></span></button>`).join('')}</div>
+   <div class="mmg six">${M.layout.map((id,i)=>`<button class="mmc" data-mi="${i}"><div class="mci"><div class="mcb"><img src="img/it-poke-ball.webp" alt=""><b>${i+1}</b></div>${memFace(M.key,id)}</div><span class="mown"></span></button>`).join('')}</div>
    <div class="mside" id="mside"></div></div>`}
 function memPaint(){const M=S.mem;if(!M)return;const cv=$('#cv');if(!cv.querySelector('.mem'))return;
   M.layout.forEach((id,i)=>{const el=cv.querySelector(`.mmc[data-mi="${i}"]`);if(!el)return;const up=M.flips.includes(i)||M.matched[i]!=null;el.classList.toggle('up',up);el.classList.toggle('got',M.matched[i]!=null);
     const o=el.querySelector('.mown'),p=person(M.matched[i]);o.innerHTML=p?avHead(p,44):''});
   const side=$('#mside'),cp=person(memCur()),rows=M.order.map(id=>({p:person(id),s:M.scores[id]||0})).filter(r=>r.p).sort((a,b)=>b.s-a.s);
   const board=`<div class="mscore">${rows.map(r=>`<div class="qr ${r.p.id===memCur()&&M.started&&!M.done?'now':''}">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><b>${r.s}</b></div>`).join('')}</div>`;
-  if(!M.started){side.innerHTML=`<p class="msh">${ll('איך משחקים','HOW TO PLAY')}</p><div class="mrules">${ll(`<p>בכל תור הופכים <b>שני קלפים</b> מהטלפון.</p><p>מצאתם משקפיים והשאלה שהם שואלים? <b>זוג ונקודה</b>, ועוד תור אחד.</p><p>${MEM_T} שניות לתור.</p>`,`<p>Each turn, flip <b>two cards</b> from your phone.</p><p>Found the glasses and the question they ask? <b>A pair and a point</b>, plus one more turn.</p><p>${MEM_T} seconds per turn.</p>`)}</div><p class="mgo">${ll('לחיצה, ומתחילים','Click to start')}</p>${memLegend()}`;return}
+  if(!M.started){side.innerHTML=`<p class="msh">${ll('איך משחקים','HOW TO PLAY')}</p><div class="mrules">${ll(`<p>בכל תור הופכים <b>שני קלפים</b> מהטלפון.</p><p>מצאתם קלף והשאלה שלו? <b>זוג ונקודה</b>.</p><p>${MEM_T} שניות לתור.</p>`,`<p>Each turn, flip <b>two cards</b> from your phone.</p><p>Found a card and its question? <b>A pair and a point</b>.</p><p>${MEM_T} seconds per turn.</p>`)}</div><p class="mgo">${ll('לחיצה, ומתחילים','Click to start')}</p>${memLegend()}`;return}
   if(M.done){const tops=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);side.innerHTML=`<p class="msh">${ll('סוף המשחק','GAME OVER')}</p>${tops.length?`<div class="mwin"><div style="display:flex;gap:10px;align-items:flex-end">${tops.slice(0,3).map(r=>avFull(r.p,tops.length>1?150:200)).join('')}</div><p>🏆 ${tops.map(r=>esc(r.p.name)).join(' · ')} · ${tops[0].s} ${ll('זוגות','pairs')}</p></div>`:''}${board}`;return}
   side.innerHTML=`<p class="msh">${M.bonus?ll('תור נוסף!','BONUS TURN!'):ll('התור של','NOW PLAYING')}</p><div class="mturn">${cp?avHead(cp,84):''}<b>${cp?esc(cp.name):ll('מי שליד המסך','Whoever is at the screen')}</b></div>
    <div class="mclock" id="mclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b></div>${board}${memLegend()}`;memTick()}
-function memLegend(){return `<div class="mleg">${['edu','med','soc','durkheim','marx','weber'].map(k=>`<div>${memIcon(k,LENS_COL[k]?50:32)}<b>${esc(LL(k in LENS_COL?MEM['c-memory'].pairs.find(p=>p.k===k).a:MEM['c-memory'].pairs.find(p=>p.k===k).a))}</b><span>${esc(LL(LENS_TAG[k]))}</span></div>`).join('')}</div>`}
+function memLegend(){const P=MEM[S.mem.key].pairs;return `<div class="mleg">${P.map(p=>`<div>${memIcon(p.k,LENS_COL[p.k]?50:32)}<b>${esc(LL(p.a))}</b><span>${esc(LL(LENS_TAG[p.k]))}</span></div>`).join('')}</div>`}
 function memTick(){const M=S.mem,el=$('#mclock');if(!M||!el)return;const l=Math.max(0,(M.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/MEM_T*100}
 function memStart(){const M=S.mem;M.started=true;memTurn();music(null)}
 function memTurn(){const M=S.mem;M.flips=[];M.lock=false;M.end=Date.now()+MEM_T*1000;M.tid=Date.now();memPaint();gamePub();
   clearInterval(S.memT);S.memT=setInterval(()=>{if(!S.mem||cur()?.id!==M.key){clearInterval(S.memT);return}memTick();if(!M.lock&&!M.done&&Date.now()>M.end)memNext(false)},250)}
-function memNext(match){const M=S.mem;if(match&&!M.bonus)M.bonus=true;else{M.bonus=false;M.t++}memTurn()}
+function memNext(match){const M=S.mem;M.bonus=false;M.t++;memTurn()}
 function memPick(i,pid){const M=S.mem;if(!M||!M.started||M.done||M.lock)return;if(pid&&pid!==memCur())return;if(M.matched[i]!=null||M.flips.includes(i)||i<0||i>=M.layout.length)return;
   M.flips.push(i);sfx('sfx-tink');memPaint();gamePub();
   if(M.flips.length===2){M.lock=true;const [a,b]=M.flips,ca=memCard(M.key,M.layout[a]),cb=memCard(M.key,M.layout[b]),ok=ca.pair===cb.pair;
