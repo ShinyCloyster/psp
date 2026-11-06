@@ -774,7 +774,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794004947';
+const BUILDV='1794005772';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2362,7 +2362,7 @@ const PQ_OPT={
  stats:[['hp','HP',['סיבולת רגשית','Emotional stamina'],'it-hp-up'],['atk','Attack',['אסרטיביות מעשית','Practical assertiveness'],'it-protein'],['def','Defense',['גבולות','Boundaries'],'it-iron'],
   ['spa','Sp. Atk',['כוח אינטלקטואלי','Intellectual power'],'it-calcium'],['spd','Sp. Def',['חסינות פנימית','Inner immunity'],'it-zinc'],['spe','Speed',['קצב','Pace'],'it-carbos']],
  evo:[['level',['רמה','Level up'],['צבירה: ניסיון וזמן','Accumulation'],'it-rare-candy'],['item',['אבן','Stone'],['זרז: הכול בבת אחת','A catalyst'],'it-thunder-stone'],['trade',['טרייד','Trade'],['מעבר: סביבה חדשה','A new setting'],'it-metal-coat'],
-  ['friend',['חברות','Friendship'],['קשר: צמיחה דרך אמון','A close bond'],'it-soothe-bell'],['special',['תנאי מיוחד','Special'],['צירוף נסיבות ייחודי','A unique combination'],'it-silph-scope']]};
+  ['friend',['חברות','Friendship'],['קשר: צמיחה דרך אמון','A close bond'],'it-soothe-bell'],['special',['תנאי מיוחד','Special'],['צירוף נסיבות ייחודי','A unique combination'],'it-silph-scope'],['none',['לא מתפתח',"Doesn't evolve"],['אוורסטון: מגיע כבר שלם','Everstone: arrives already whole'],'it-everstone']]};
 const PQ={
  'pq-stats':{set:'stats',eb:"WHO'S THAT STAT?",ti:['איזה סטט בולט אצלו?','Which stat stands out?'],items:[
   {k:'hp',img:'mandela',n:['נלסון מנדלה','Nelson Mandela'],h:[['27 שנה בכלא, רובן בתא קטן על אי.','27 years in prison, most of them in a small cell on an island.'],['יוצא בגיל 71 בלי מרירות, ומוביל את המדינה שכלאה אותו.','He walks out at 71 without bitterness, and leads the country that locked him up.']]},
@@ -2376,7 +2376,8 @@ const PQ={
   {k:'item',img:'walter',n:['וולטר וייט','Walter White'],h:[['מורה לכימיה צנוע, 50 שנה של שקט.','A modest chemistry teacher, 50 years of quiet.'],['משפט אחד אצל הרופא, ותוך חודשים הוא אדם אחר, ואין דרך חזרה.','One sentence at the doctor\'s, and within months he is a different man, with no way back.']]},
   {k:'trade',img:'rachel',n:['רייצ׳ל גרין','Rachel Green'],h:[['בורחת בשמלת כלה מחתונה בלונג איילנד, ונוחתת בבית קפה בניו יורק.','She runs from her own wedding on Long Island in her wedding dress, and lands in a New York coffee house.'],['בלי הכסף של אבא היא לומדת לעבוד, ומגיעה עד עולם האופנה.','Without her father\'s money she learns to work, and makes it all the way into fashion.']]},
   {k:'friend',img:'beast',n:['החיה','The Beast'],h:[['נסיך מקולל שמסתגר בטירה וצועק על כולם.','A cursed prince who shuts himself in his castle and yells at everyone.'],['לא הזמן משנה אותו ולא האיומים, אלא רק מישהי שמתחילה לראות בו משהו טוב.','Not time changes him and not threats, only someone who starts to see something good in him.']]},
-  {k:'special',img:'neo',n:['ניאו','Neo'],h:[['עובד משרד שמרגיש שמשהו בעולם לא בסדר.','An office worker who feels something is wrong with the world.'],['ההתעוררות שלו דורשת צירוף אחד ויחיד: הנבואה הנכונה, האנשים הנכונים, והרגע שבו הוא מבין שכל העולם שהכיר בנוי הפוך.','His awakening needs one exact combination: the right prophecy, the right people, and the moment he sees that the whole world he knew is built upside down.']]}]}};
+  {k:'special',img:'neo',n:['ניאו','Neo'],h:[['עובד משרד שמרגיש שמשהו בעולם לא בסדר.','An office worker who feels something is wrong with the world.'],['ההתעוררות שלו דורשת צירוף אחד ויחיד: הנבואה הנכונה, האנשים הנכונים, והרגע שבו הוא מבין שכל העולם שהכיר בנוי הפוך.','His awakening needs one exact combination: the right prophecy, the right people, and the moment he sees that the whole world he knew is built upside down.']]},
+  {k:'none',img:'homer',n:['הומר סימפסון','Homer Simpson'],h:[['עשרות עונות באותה עבודה בתחנת הכוח, על אותה ספה, עם אותה בירה ביד.','Decades in the same job at the power plant, on the same couch, the same beer in hand.'],['משברים, חברים חדשים והרפתקאות לא חסרו לו. ובסוף כל פרק הוא בדיוק מי שהיה בהתחלה.','He has had plenty of crises, new friends and adventures. And at the end of every episode he is exactly who he was at the start.']]}]}};
 const pqOpt=(set,k)=>PQ_OPT[set].find(o=>o[0]===k);
 const pqLab=o=>Array.isArray(o[1])?LL(o[1]):o[1];
 const PQ_ROUND=id=>{const m=id.match(/^pq-(st|ev)-([a-z]+)$/);if(!m)return null;const key=m[1]==='st'?'pq-stats':'pq-evo',i=PQ[key].items.findIndex(x=>x.k===m[2]);return i<0?null:{key,i}};
@@ -2384,7 +2385,8 @@ function pqScores(key){S.pqSc=S.pqSc||{};const sc=S.pqSc[key]||(S.pqSc[key]={});
 function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
   if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
 function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
-function pqOpen(){const Q=S.pq,P=PQ[Q.key],past=Q.ord.slice(0,Q.i).map(j=>P.items[j].k);return PQ_OPT[P.set].map(o=>o[0]).filter(k=>!past.includes(k))}
+// every round keeps all the options: with only 6 answers, crossing out the past ones would hand away the last rounds
+function pqOpen(){const Q=S.pq,P=PQ[Q.key];return PQ_OPT[P.set].map(o=>o[0])}
 // one 10-second window with all the text showing: the first 3 seconds are an Ultra Ball, the next 3 a Great Ball, the last 4 a Poké Ball
 let PQ_T=10;const pqBall=Q=>{const e=(Date.now()-Q.t0)/1000;return e<PQ_T*.3?1:e<PQ_T*.6?2:3};
 function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.t0=Date.now();Q.end=Q.t0+PQ_T*1000;Q.at={};pqPaint();gamePub();pqClock()}
