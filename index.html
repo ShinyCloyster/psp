@@ -775,7 +775,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794057601';
+const BUILDV='1794058784';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1870,7 +1870,7 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),17,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),15,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
  ['c2',ll('קורס 2','Course 2'),16,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
  ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
  ['c4',ll('קורס 4','Course 4'),23,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
@@ -1997,7 +1997,6 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     if(it.id==='d-battle')btgEnter();
     if(MEM[it.id])memNew(it.id);
     if(PQ[it.id]||PQ_ROUND(it.id))pqEnter(it.id);
-    if(it.id==='k-scenario'){S.scn={revealed:false};scnBadge()}
     if(it.id==='x-guess')cgScreen();
     sumApply(it.id);
     breakFacts(it.id);leagueOnBreak(it.id);qAutoStop();
@@ -2022,7 +2021,6 @@ function go(d){
   if(it.kind==='hof'){ if(hofStep(d))return; }
   if(it.id==='d-battle'&&d>0&&S.btg){const G=S.btg;if(G.phase==='guess'){btgFight();return}if(G.phase==='fight')return;if(G.phase==='result'){btgAfter();return}}
   if((PQ[it.id]||PQ_ROUND(it.id))&&pqGo(d))return;
-  if(it.id==='k-scenario'&&d>0&&!S.scn?.revealed&&BUILD>=buildOrders().length){scnReveal();return}
   if(MEM[it.id]&&d>0&&S.mem&&!S.mem.done){if(!S.mem.started)memStart();else if(!S.mem.lock)memNext(false);return}
   if(d>0&&!S.gateOk){const ix=id=>SEQ.findIndex(x=>x.id===id),bm=it.kind==='slide'&&it.id.match(/^x-break-(\d)$/),rm=it.kind==='slide'&&it.id.match(/^x-round-(\d)$/);
     const m=bm&&ix('x-round-'+bm[1])>=0&&ix('x-round-'+bm[1])<POS?bm:rm&&SEQ[POS+1]?.id!=='x-break-'+rm[1]?rm:null;if(m){const miss=gateMissing(+m[1]);if(miss.length){gateModal(+m[1],miss);return}}}
@@ -2228,7 +2226,7 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
 
 
 // ---------- room plan: which of the 8 courses and 4 trainers this room includes (state.skip: 'c1'..'c8', 't1'..'t4') ----------
-const COURSE_NAMES=[['מדע, פרדיגמה ו-PSP','Science, paradigm & PSP'],['איך מודדים: השאלון','How we measure: the questionnaire'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['המודל של PSP','The PSP model'],['18 הסוגים','The 18 types'],['אפיון נוסף ו־6 הסטטים','Extra trait and the 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
+const COURSE_NAMES=[['מדע, פרדיגמה ו-PSP','Science, paradigm & PSP'],['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['המודל של PSP','The PSP model'],['18 הסוגים','The 18 types'],['אפיון נוסף ו־6 הסטטים','Extra trait and the 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
 function courseOf(id){if(id==='f-extra'||id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,k:2,c:3,d:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
 const skipSet=()=>new Set(S.state?.skip||[]);
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&sk.has('t'+m[1]))return false;
@@ -2336,12 +2334,11 @@ function btgSide(X){return {name:finalName(X.l),types:X.t,st:X.b.slice(0,6),spr:
 function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   if(S.mem&&it?.id===S.mem.key){const M=S.mem,faces={};M.layout.forEach((id,i)=>{if(M.flips.includes(i)||M.matched[i]!=null)faces[i]=id});
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
-  else if(it?.id==='k-scenario')d={g:'scn',revealed:!!S.scn?.revealed};
   else if(it?.id==='x-guess')d={g:'cg'};
   else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
-function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='k-scenario'&&!S.scn?.revealed)scnBadge();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
+function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
 
 // ----- phone side -----
 function gameView(me){const G=S.game;if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);return ''}
@@ -2542,7 +2539,6 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   const Q=S.pq;if(Q&&it.id===Q.slide&&!Q.revealed&&!Q.done)B.forEach(id=>{if(S.gIn?.[id]?.['p'+Q.key+'-'+Q.i])return;if(Math.random()<.12*Q.stage){const right=Math.random()<.25+.2*Q.stage;put(id,{['p'+Q.key+'-'+Q.i]:{v:right?pqItem().k:brnd(pqOpen()),n:Q.stage}})}});
   // who's that type: guesses go through the real docs, like phones
   if(/^q-/.test(it.id)){const t=it.id.slice(2),n=Math.min(3,BUILD);if(n>0)B.forEach(id=>{if(S.guesses?.[id]?.[t])return;if(Math.random()<.15*n){const g=Math.random()<.2+.25*n?t:brnd(Object.keys(TYPE_HE));S.db.doc('stage/q-'+id).set({[t]:{g,n,at:now}},{merge:true}).catch(()=>{})}})}
-  if(it.id==='k-scenario'&&!S.scn?.revealed)B.forEach(id=>once('scn'+id,800+Math.random()*6000,()=>put(id,{scn:Math.floor(Math.random()*4)})));
   if(it.id==='x-guess')B.forEach(id=>{if(roster().find(p=>p.id===id)?.role==='self')return;once('cg'+id,1500+Math.random()*9000,()=>{const T=Object.keys(TYPE_HE);put(id,{cg:{t:[brnd(T),brnd(T)].filter((x,i,a)=>a.indexOf(x)===i),s:brnd(CG_ST),e:brnd(CG_EV)}})})});
   // chatter on trainer talks, rounds and breaks
   if(/^(tr|b|r)\d$/.test(segAt(POS))&&Math.random()<.09){const id=brnd(B),l=brnd(BOT_SAY);S.db.doc('stage/say-'+id).set({t:LL(l),at:now}).catch(()=>{})}}
