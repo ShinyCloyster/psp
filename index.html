@@ -446,6 +446,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .btbars{display:grid;grid-template-columns:96px 1fr 44px;gap:4px 12px;width:100%;align-items:center;direction:ltr}
 .btbars i{font:700 19px var(--body);font-style:normal;color:#5A5F73}.btbars em{height:16px;border-radius:8px;background:#EFE8D8;overflow:hidden}.btbars em u{display:block;height:100%;border-radius:8px;text-decoration:none}
 .btbars b{font:700 20px var(--body);color:#161A2E;text-align:right}.btbars .use i,.btbars .use b{color:#E5484D}
+.btnext{display:block;font:400 18px var(--pixel);color:#B7860B;margin-top:10px}
 .bttable{position:absolute;inset:0;background:rgba(10,12,24,.6);z-index:20;display:flex;align-items:center;justify-content:center}
 .bttable .card{background:#FFFDF8;color:#161A2E;border-radius:30px;padding:30px 44px;display:flex;flex-direction:column;align-items:center;gap:14px;min-width:760px}
 .bttable .btn{font-size:28px;padding:14px 34px}.bttable h3{font-family:var(--display);font-size:46px;font-weight:400;margin:0}.bteb2{font:400 20px var(--pixel);color:#E5484D}
@@ -508,10 +509,10 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .en .lgbreak{left:auto;right:70px}
 .lgchamp{background:radial-gradient(circle at 50% 35%,#3A2F6B 0%,#161A2E 70%);color:#F6F1E7}
 .lgeb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#F2C94C}.lgti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400}
-.lgpod{position:absolute;right:128px;left:720px;top:280px;bottom:80px;display:flex;align-items:flex-end;justify-content:center;gap:30px}
+.lgpod{position:absolute;right:128px;left:830px;top:280px;bottom:80px;display:flex;align-items:flex-end;justify-content:center;gap:30px}
 .lgp{display:flex;flex-direction:column;align-items:center;gap:6px}.lgp p{font-family:var(--display);font-size:50px}.lgp b{font:400 24px var(--pixel);color:#F2C94C}
-.lgchamp .lgbox{position:absolute;left:90px;top:280px;width:560px}
-.en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:720px;left:128px}.en .lgchamp .lgbox{left:auto;right:90px}
+.lgchamp .lgbox{position:absolute;left:70px;top:260px;width:720px}.lgtab{width:100%;border-collapse:collapse;font-size:20px}.lgtab th{font:400 13px var(--pixel);color:#9FA7C7;padding:4px 6px;text-align:center}.lgtab td{padding:5px 6px;text-align:center;border-top:1px solid rgba(255,255,255,.08)}.lgtab td:first-child{text-align:start;white-space:nowrap;font-weight:700}.lgtab td b{color:#F2C94C;font:400 18px var(--pixel)}
+.en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:830px;left:128px}.en .lgchamp .lgbox{left:auto;right:90px}
 .scnb{position:absolute;left:70px;bottom:110px;z-index:6;background:rgba(22,26,46,.92);border:3px solid #F2C94C;border-radius:22px;padding:12px 18px;color:#F6F1E7;max-width:620px}
 .scnb p{font-size:22px;font-weight:700;margin-bottom:6px}.scnb div{display:flex;flex-wrap:wrap;gap:6px}.en .scnb{left:auto;right:70px}
 .scnr{position:absolute;inset:0;background:rgba(10,12,24,.55);z-index:20;display:flex;align-items:center;justify-content:center}
@@ -780,7 +781,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794085896';
+const BUILDV='1794088472';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1837,7 +1838,7 @@ function bindPhone(){
 // SCREEN: deck + live snapshots + Hall of Fame
 // =====================================================================
 let SEQ=[],POS=+(store.get('psp-pos')||0),BUILD=0,SUB=0,HOF=0;
-const HOF_STEPS=['intro','board','champ','ball','reveal','oak','gaps','legend','map'];
+const HOF_STEPS=['intro','board','ball','reveal','oak','gaps','legend','map'];
 const OAK_STEPS=['oak','gaps','legend','map'];
 async function startScreen(){
   const app=$('#app');
@@ -1907,7 +1908,7 @@ const mmss=m=>{const neg=m<0,t=Math.round(Math.abs(m)*60);return (neg?'-':'')+Ma
 const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour12:false});
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
-  if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.id==='x-guess')label=ll('ניחוש הקהל','Crowd guess');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
+  if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
   if(POS===0){t0=null;log={}}else if(!t0)t0=now;
@@ -1957,7 +1958,6 @@ function slideMusic(id){
   if(/^x-break-/.test(id))return music('mus-healed',{loop:false,vol:.35,then:'mus-center'});
   if(/^x-part-/.test(id))return music('mus-badge',{loop:false,vol:.4});
   if(id==='h-divider')return music('mus-evolution',{loop:false,vol:.3});
-  if(/^ev-/.test(id)||id==='h-noevo')return music('mus-evolution',{loop:false,vol:.12});
   if(id==='x-finale')return music('mus-enter-hall',{vol:.35});
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
@@ -2019,7 +2019,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     if(MEM[it.id])memNew(it.id);
     if(PQ[it.id]||PQ_ROUND(it.id))pqEnter(it.id);
     if(it.id==='x-guess')cgScreen();
-    sumApply(it.id);
+    sumApply(it.id);pqNum(it.id);
     breakFacts(it.id);leagueOnBreak(it.id);qAutoStop();
     slideMusic(it.id);
     quizSync();
@@ -2209,11 +2209,12 @@ function btFits(kind,A,B,xa,xb,win){if(!win||xa.m===xb.m)return false;const adv=
   if(kind==='type')return A.t.length===1&&B.t.length===1&&Math.max(xa.m,xb.m)>=2&&win===adv;
   if(kind==='dual'){const two=(X,Y,x)=>X.t.length===2&&(CHART[x.type][X.t[0]]??1)!==x.m;return (two(B,A,xa)||two(A,B,xb))&&Math.max(xa.m,xb.m)>=2&&win===adv}
   return Math.max(xa.m,xb.m)>=2&&win!==adv}
-// the first set is hand-picked so each battle shows its point cleanly: water vs. fire; a double weakness (×4 vs. ×¼); and type advantage that loses to the stats
-const BT_FIXED=[['7-8-9','77-78'],['4-5-6','46-47'],['90-91','4-5-6']];
+// the first set is hand-picked so each battle shows its point cleanly: Blastoise vs. Rapidash (water vs. fire); Raichu vs. Gyarados (flying doubles the weakness to electric); Dugtrio vs. Arcanine (a type advantage that loses to the stats)
+const BT_FIXED=[[9,78],[26,130],[51,59]];
+const btLine=sp=>S.engine.lines.find(l=>l.species.includes(sp)&&!/Alola|Galar|Hisui|Paldea/.test(finalName(l)));
 function btClear(kind,xa,xb,win){const W=win==='a'?xa:xb,L=win==='a'?xb:xa,gap=(L.hits===Infinity?9:L.hits)-W.hits;if(xa.m>=2&&xb.m>=2)return false;return kind==='surprise'?gap>=1&&W.m<=1:gap>=2}
 function battleNew(){music(null);
-  if((S.btg?.set||1)===1){const f=BT_FIXED[((S.btg?.n||1)-1)%3],ln=id=>S.engine.lines.find(l=>l.id===id);if(f&&ln(f[0])&&ln(f[1])){const A=btSide(ln(f[0])),B=btSide(ln(f[1])),xa=btAttack(A,B),xb=btAttack(B,A);let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
+  if((S.btg?.set||1)===1){const f=BT_FIXED[((S.btg?.n||1)-1)%3],ln=btLine;if(f&&ln(f[0])&&ln(f[1])){const A=btSide(ln(f[0])),B=btSide(ln(f[1])),xa=btAttack(A,B),xb=btAttack(B,A);let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
     if(win){S.bt={A,B,xa,xb,win,kind:BT_KIND[((S.btg?.n||1)-1)%3],done:false};$('#cv').innerHTML=battleHTML();return}}}
   const pool=S.engine.lines.filter(l=>!l.legendary&&S.engine.base?.[l.id]&&!['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023'].includes(l.id));
   const kind=BT_KIND[((S.btg?.n||1)-1)%3],pick=()=>pool[Math.floor(Math.random()*pool.length)];let A,B,xa,xb,win,best=null;
@@ -2257,7 +2258,15 @@ function courseOf(id){if(id==='f-extra'||id==='pq-stats'||/^pq-st-/.test(id))ret
 const skipSet=()=>new Set(S.state?.skip||[]);
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&sk.has('t'+m[1]))return false;
   m=id.match(/^x-(part|sum)-(\d)$/);if(m&&sk.has('c'+(2*m[2]-1))&&sk.has('c'+2*m[2]))return false;return true}
-function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})})}
+// stats and ways to evolve: each round stays glued to its explanation slide, but the pairs come in a different order every evening
+const PQ_PAIRS={'pq-stats':['st',['hp','atk','def','spa','spd','spe']],'pq-evo':['ev',['level','item','trade','friend','special','none']]};
+function pqShuffle(){S.pqPos={};const seed=String(ROOM.code||'')+String(S.state?.eve||'');
+  Object.entries(PQ_PAIRS).forEach(([key,[pre,ks]])=>{const pairs=ks.map(k=>{const a=SEQ.findIndex(x=>x.id===`pq-${pre}-${k}`),b=SEQ.findIndex(x=>x.id===(k==='none'?'h-noevo':`${pre}-${k}`));return a>=0&&b===a+1?{k,a}:null}).filter(Boolean);if(pairs.length<2)return;
+    const start=Math.min(...pairs.map(p=>p.a)),r=rng(seed+key),ord=pairs.slice();for(let i=ord.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[ord[i],ord[j]]=[ord[j],ord[i]]}
+    const items=ord.flatMap(p=>[SEQ[p.a],SEQ[p.a+1]]);if(pairs.every(p=>p.a>=start&&p.a<start+pairs.length*2))SEQ.splice(start,items.length,...items);S.pqPos[key]=ord.map(p=>p.k)})}
+const pqPosOf=(key,k)=>{const o=S.pqPos?.[key];const i=o?o.indexOf(k):-1;return i>=0?i:PQ[key].items.findIndex(x=>x.k===k)};
+function leagueSpot(){const last=['pq-evo','pq-stats','quizwin','c-memory','s-memory'].map(id=>SEQ.findIndex(x=>x.id===id)).reduce((a,b)=>Math.max(a,b),-1);if(last>=0)SEQ.splice(last+1,0,{kind:'league',id:'league'})}
+function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});pqShuffle();leagueSpot()}
 function skipSync(){if(!isScreen()||!S.slides||!SEQ.length)return;const k=JSON.stringify([...skipSet()].sort());if(k===S.skipKey)return;const id=cur()?.id,old=SEQ.slice(0,POS+1).map(x=>x.id);buildSeq();
   let p=SEQ.findIndex(x=>x.id===id);if(p<0){p=0;old.forEach(o=>{const j=SEQ.findIndex(x=>x.id===o);if(j>=0)p=j})}POS=p;HOF=0;SUB=0;show(true)}
 function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
@@ -2336,11 +2345,11 @@ function btgNext(){const G=S.btg;G.n++;G.id=G.set+'-'+G.n;G.phase='guess';G.end=
 function btgClock(){clearInterval(S.btgT);S.btgT=setInterval(()=>{const G=S.btg;if(cur()?.id!=='d-battle'){clearInterval(S.btgT);return}
   const el=$('#gclock');const l=Math.max(0,(G.end-Date.now())/1000);
   if(el){el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/(G.phase==='guess'?BT_T:BT_RES)*100;el.querySelector('span').textContent=G.phase==='guess'?ll('לנחש בטלפון','guess on your phone'):G.n<3?ll('הקרב הבא','next battle'):ll('הטבלה','standings')}
-  if(Date.now()>G.end){if(G.phase==='guess')btgFight();else if(G.phase==='result')btgAfter()}},250)}
+  if(G.phase==='guess'&&Date.now()>G.end)btgFight()},250)}
 function btgFight(){const G=S.btg;if(G.phase!=='guess')return;G.phase='fight';$('#gclock')?.classList.add('off');gamePub();battleRun()}
 function btgDone(){const G=S.btg;if(!G||G.phase!=='fight')return;G.phase='result';const win=S.bt.win;G.right=[];
   gamePlayers().forEach(p=>{const v=S.gIn?.[p.id]?.['b'+G.id];if(v&&v===win){G.scores[p.id]=(G.scores[p.id]||0)+1;G.right.push(p.id)}});
-  G.end=Date.now()+BT_RES*1000;$('#gclock')?.classList.remove('off');btgPaint();gamePub()}
+  btgPaint();gamePub();const r=$('#btres');if(r)r.insertAdjacentHTML('beforeend',`<small class="btnext">${G.n<3?ll('לחיצה = הקרב הבא','Click = next battle'):ll('לחיצה = הטבלה','Click = the standings')}</small>`)}
 function btgAfter(){const G=S.btg;if(G.n<3){btgNext();return}G.phase='table';leagueSet('bt',G.scores);clearInterval(S.btgT);btgPaint();gamePub()}
 function btgMore(){const G=S.btg;G.set++;G.n=0;btgNext()}
 function btgBoard(){const G=S.btg,rows=gamePlayers().map(p=>({p,s:G.scores[p.id]||0})).sort((a,b)=>b.s-a.s);
@@ -2361,7 +2370,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   if(S.mem&&it?.id===S.mem.key){const M=S.mem,faces={};M.layout.forEach((id,i)=>{if(M.flips.includes(i)||M.matched[i]!=null)faces[i]=id});
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
   else if(it?.id==='x-guess')d={g:'cg'};
-  else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',intro:!!Q.intro,key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
+  else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',intro:!!Q.intro,key:Q.key,i:Q.i,pos:pqPosOf(Q.key,pqItem().k),n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
@@ -2383,7 +2392,8 @@ function btPhone(me,G){const v=(S.myG||{})['b'+G.id],my=G.scores?.[me.id]||0,sid
 </button>`;
   let msg='';if(G.phase==='guess')msg=v?ll(`ניחשת: <b>${esc((v==='a'?G.A:G.B).name)}</b>. מחכים לקרב…`,`Your guess: <b>${esc((v==='a'?G.A:G.B).name)}</b>. Waiting for the battle…`):`<span class="gend" data-end="${G.end}"></span>`;
   else if(G.phase==='fight')msg=ll('הקרב רץ על המסך…','The battle is on the screen…');
-  else if(G.win){const ok=v===G.win;msg=ok?ll('<b>צדקת! +1</b>','<b>Correct! +1</b>'):v?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}
+  else if(G.phase==='table')msg=ll('הטבלה על המסך','The standings are on the screen');
+  else if(G.win){const ok=v===G.win;msg=(ok?ll('<b>צדקת! +1</b>','<b>Correct! +1</b>'):v?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.'))+(G.n<3?`<br><small class="muted">${ll('מחכים לקרב הבא…','Waiting for the next battle…')}</small>`:'')}
   return `<p class="eyebrow">WHO WINS? · ${ll(`קרב ${G.n}/3`,`BATTLE ${G.n}/3`)}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('מי ינצח?','Who wins?')}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>
    <div class="card qnow" style="display:block">${msg}${G.kind==='surprise'&&G.phase==='guess'?`<br><small class="muted">${ll('רמז: הפעם שווה להציץ גם בסטטים שעל המסך.','Hint: this time, glance at the stats on the screen too.')}</small>`:''}</div><div class="bpg">${side(G.A,'a')}<span class="bpvs">VS</span>${side(G.B,'b')}</div>
    <button class="btn ghost small" data-act="tchart" style="margin-top:10px">${S.tchart?ll('הסתרת טבלת הסוגים','Hide the type chart'):ll('📊 טבלת הסוגים','📊 Type chart')}</button>${S.tchart?typeChartH([...G.A.types,...G.B.types]):''}`}
@@ -2416,7 +2426,9 @@ const pqOpt=(set,k)=>PQ_OPT[set].find(o=>o[0]===k);
 const pqLab=o=>Array.isArray(o[1])?LL(o[1]):o[1];
 const PQ_ROUND=id=>{const m=id.match(/^pq-(st|ev)-([a-z]+)$/);if(!m)return null;const key=m[1]==='st'?'pq-stats':'pq-evo',i=PQ[key].items.findIndex(x=>x.k===m[2]);return i<0?null:{key,i}};
 function pqScores(key){S.pqSc=S.pqSc||{};const sc=S.pqSc[key]||(S.pqSc[key]={});gamePlayers().forEach(p=>{if(sc[p.id]==null)sc[p.id]=0});return sc}
-function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(!done&&r.i===0){S.pq.intro=true;clearInterval(S.pqT);pqPaint();gamePub();return}if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
+function pqNum(id){const m=id.match(/^(st|ev)-([a-z]+)$/)||(id==='h-noevo'?[0,'ev','none']:null);if(!m)return;const key=m[1]==='st'?'pq-stats':'pq-evo';if(!S.pqPos?.[key])return;const n=pqPosOf(key,m[2])+1;
+  $('#cv').querySelectorAll('p').forEach(p=>{if(/^(STAT|EVOLUTION) \d\/6/.test(p.textContent))p.textContent=p.textContent.replace(/^(STAT|EVOLUTION) \d\/6/,(x,w)=>`${w} ${n}/6`)})}
+function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(!done&&pqPosOf(r.key,PQ[r.key].items[r.i].k)===0){S.pq.intro=true;clearInterval(S.pqT);pqPaint();gamePub();return}if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
   if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);leagueFlash();pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
 function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
 // every round keeps all the options: with only 6 answers, crossing out the past ones would hand away the last rounds
@@ -2444,7 +2456,7 @@ function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
   if(Q.intro){cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
     <div class="pqfig pqintro"><img src="img/it-poke-ball.webp" alt="" style="width:150px;height:150px;image-rendering:pixelated"><p>${P.set==='stats'?ll('תכף תופיע דמות. איזה סטט בולט אצלה?','A character is about to appear. Which stat stands out?'):ll('תכף תופיע דמות. איך היא התפתחה?','A character is about to appear. How did they evolve?')}</p><p class="pqsm">${ll(`${PQ_T} שניות לכל דמות. הכי מהר = הכי הרבה נקודות.`,`${PQ_T} seconds per character. Fastest = most points.`)}</p></div>
     <div class="pqopts">${opts.map(x=>`<div class="pqo"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`).join('')}</div>${board}</div>`;return}
-  cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(Q.i+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
+  cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(pqPosOf(Q.key,it.k)+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
    <div class="pqfig"><img src="img/${Q.revealed?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg"><p class="pqname">${esc(LL(it.n))}</p>
     <div class="pqh">${it.h.map((h,j)=>`<p class="on">${esc(LL(h))}</p>`).join('')}</div></div>
    <div class="pqopts">${opts.map(x=>{const past=!pqOpen().includes(x[0]);return `<div class="pqo ${Q.revealed&&x[0]===it.k?'hit':''} ${past?'past':''}"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`}).join('')}</div>
@@ -2453,7 +2465,7 @@ function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
 function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.slide)return;if(!Q.revealed&&Q.t0){Q.at=Q.at||{};gamePlayers().forEach(p=>{if(S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]&&!Q.at[p.id])Q.at[p.id]=pqBall(Q)})}const b=$('.pqboard');if(!b||Q.revealed)return;const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
   b.innerHTML=`<p class="qbh">SCOREBOARD</p>`+rows.map(r=>`<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${r.g?'<i class="qv">✓</i>':''}</span><b>${r.s}</b></div>`).join('')}
 function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item],id=G.key+'-'+G.i,mine=(S.myG||{})['p'+id],my=G.scores?.[me.id]||0;
-  const head=`<p class="eyebrow">${P.eb} · ${G.i+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
+  const head=`<p class="eyebrow">${P.eb} · ${(G.pos??G.i)+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
   if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')||'—'}</h2><p class="muted" style="margin:6px 0 0">${ll(`צברת ${my} נקודות`,`You scored ${my} points`)}</p></div>`}
   const b=QBALL[G.stage];
   if(G.intro)return head+`<div class="card center"><p style="margin:0">${ll('מסתכלים על האפשרויות במסך: תכף מתחילים.','Look at the options on the screen: starting in a moment.')}</p></div>`;
@@ -2480,7 +2492,9 @@ function leagueOnBreak(id){if(!/^x-break-\d$/.test(id)||!leagueAny())return;cons
   if(!$('#facts')&&nurse)nurse.parentElement.style.visibility='hidden';cv.insertAdjacentHTML('beforeend',`<div class="lgbreak ${$('#facts')?'low':''}">${leagueBox(true)}</div>`)}
 function leagueHTML(){const T=leagueTable(),top=T.filter(r=>r.pts===T[0]?.pts&&r.pts>0);
   return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · CHAMPION</p><h2 class="lgti">${ll('אלוף הליגה של הערב','The champion of the evening league')}</h2>
-   <div class="lgpod">${top.length?top.slice(0,3).map(r=>`<div class="lgp">${avFull(r.p,top.length>1?360:440)}<p>${esc(r.p.name)}</p><b>${r.pts} ${ll('נק׳','pts')}</b></div>`).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBox(false)}</div>`}
+   <div class="lgpod">${top.length?top.slice(0,3).map(r=>`<div class="lgp">${avFull(r.p,top.length>1?360:440)}<p>${esc(r.p.name)}</p><b>${r.pts} ${ll('נק׳','pts')}</b></div>`).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBreak()}</div>`}
+function leagueBreak(){const L=S.league||{},G=[...LEAGUE_GAMES.filter(([g])=>Object.values(L[g]||{}).some(v=>v>0)),...(Object.values(L.bt||{}).some(v=>v>0)?[['bt',ll('בונוס קרבות','Battle bonus')]]:[])],T=leagueTable();
+  return `<div class="lgbox lgtabw"><p class="lgh">🏆 ${ll('פירוט הניקוד','THE SCORE, GAME BY GAME')}</p><table class="lgtab"><tr><th></th>${G.map(([g,n])=>`<th>${n}</th>`).join('')}<th>${ll('סה״כ','Total')}</th></tr>${T.map(r=>`<tr><td>${avHead(r.p,34)} ${esc(r.p.name)}</td>${G.map(([g])=>`<td>${r.by[g]||'·'}</td>`).join('')}<td><b>${r.pts}</b></td></tr>`).join('')}</table></div>`}
 
 // ---------- "who knows them best?": the party scenario, live, no points ----------
 const SCN=[['לעבור בין קבוצות ולפתוח שיחות עם כמה שיותר אנשים','Move between groups and start conversations with as many people as possible'],['למצוא פינה שקטה ושיחה עמוקה אחת','Find a quiet corner and one deep conversation'],
