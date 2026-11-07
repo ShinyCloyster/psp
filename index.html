@@ -477,6 +477,9 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .np-t.on{filter:none;opacity:1;border-color:rgba(242,201,76,.75);background:#2A3060;color:var(--cream)}
 .np-ck{position:absolute;top:-7px;inset-inline-start:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#161A2E;font:800 12px/20px var(--body);text-align:center;font-style:normal;display:none}.np-t.on .np-ck{display:block}
 .np-host{display:flex;gap:6px;margin:8px 0 0}.np-host input{flex:1}.np-host .np-o{flex:none;width:52px;min-height:0}
+.np-cnt{display:flex;align-items:center;gap:8px;margin:10px 0 6px}.np-cnt span{flex:1;font-size:14px;color:var(--mist)}.np-cnt .np-o{flex:none;width:44px;min-height:40px;font-size:20px}.np-cnt b{min-width:28px;text-align:center;font-size:20px}.np-names{width:100%;font:15px/1.4 var(--body);background:rgba(255,255,255,.04);color:var(--cream);border:1px solid var(--line);border-radius:14px;padding:10px 14px;resize:vertical;box-sizing:border-box}
+.wsl{display:flex;flex-direction:column;align-items:stretch;gap:0;width:128px;flex:none}.wsl input{width:100%;accent-color:var(--gold);height:30px;margin:0}.wsl b{text-align:center;color:var(--gold);font-size:18px;order:-1}
+.saychs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.saych{border:1px solid var(--line);background:var(--night2);color:var(--cream);border-radius:999px;padding:7px 12px;font:600 13px var(--body);cursor:pointer}.saych:active{transform:scale(.96)}.saych.mix{border-color:var(--gold);color:var(--gold)}
 .np-reh{display:flex;gap:8px;margin-top:10px;align-items:stretch}.np-reh .btn{flex:1}.np-sum{margin:4px 0 0;font-weight:700;color:var(--cream);text-align:center;font-size:15px}.np-go{width:100%;margin-top:14px;font-size:20px;padding:14px}
 .pq{background:radial-gradient(circle at 50% 40%,#262B4A 0%,#161A2E 70%);color:#F6F1E7}
 .pqeb{color:#F2C94C!important}.pqti{position:absolute;right:128px;top:126px;font-family:var(--display);font-size:68px;font-weight:400;color:#F6F1E7}
@@ -490,6 +493,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pqans{position:absolute;left:70px;bottom:70px;width:1060px;text-align:center;background:#F2C94C;color:#161A2E;border-radius:999px;padding:16px 30px;font-size:34px}.pqans b{font-family:var(--display);font-weight:400;font-size:40px}
 .pqclock{left:600px!important;top:auto!important;bottom:60px}
 .qboard.pqboard{left:70px;top:110px;width:1060px;grid-template-columns:repeat(3,1fr)}
+.pqintro{top:330px}.pqintro p{font-family:var(--display);font-size:42px;text-align:center;line-height:1.2}.pqintro .pqsm{font-family:var(--body);font-size:26px;color:#C9CCE0}.pqrank{color:#F6F1E7;font-size:26px;margin-top:10px}
 .pqend{position:absolute;left:70px;right:70px;top:260px;display:flex;flex-direction:column;align-items:center;gap:10px}.pqend h2{font-family:var(--display);font-size:60px;font-weight:400;color:#F2C94C}.pqend p{font-size:32px}
 .pq .pqend+.qboard{top:auto;bottom:40px;left:430px;width:1060px}
 .en .pqti{right:auto;left:128px;font-size:56px}.en .qboard.pqboard{width:960px}.en .pqfig{right:auto;left:110px}.en .pqopts{left:auto;right:70px;direction:ltr}.en .pqans{left:auto;right:70px}.en .pqclock{left:auto!important;right:600px}.en .qboard.pqboard{left:auto;right:70px}.en .pq .pqend+.qboard{left:430px;right:auto}
@@ -499,6 +503,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .lgr{display:grid;grid-template-columns:30px auto 1fr 50px;gap:10px;align-items:center;font-size:22px;padding:2px 8px;border-radius:12px}.lgr i{font:400 16px var(--pixel);font-style:normal;color:#9FA7C7}
 .lgr span{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lgr b{font:400 20px var(--pixel);color:#F2C94C;text-align:left}.lgr.top{background:rgba(242,201,76,.16)}.lgr.top i{color:#F2C94C}
 .lgbox.cmp .lgr{font-size:20px}
+.lgflash{position:fixed;right:24px;bottom:24px;width:420px;z-index:60;animation:lgin .5s ease}.lgflash.out{opacity:0;transform:translateY(20px);transition:all .7s}.en .lgflash{right:auto;left:24px}@keyframes lgin{from{opacity:0;transform:translateY(30px)}}
 .lgbreak{position:absolute;left:70px;top:170px;width:620px;z-index:5}.lgbreak.low{top:600px}.lgbreak.low .lgbox{max-height:420px;overflow:hidden}
 .en .lgbreak{left:auto;right:70px}
 .lgchamp{background:radial-gradient(circle at 50% 35%,#3A2F6B 0%,#161A2E 70%);color:#F6F1E7}
@@ -775,7 +780,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794058784';
+const BUILDV='1794085896';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -814,7 +819,7 @@ function defSprite(p){if(!p)return 'img/tr-red.webp';const nm=String(p.name||'')
   const key=JSON.stringify(roster().map(x=>x.id+(genderOf(x)||'')));if(S.defKey!==key){S.defKey=key;S.defMap={};const used=new Set(roster().map(x=>DEF_NAME[String(x.name||'').trim().toLowerCase()]).filter(Boolean));
     const nx=(pool,seed)=>{const free=pool.filter(k=>!used.has(k));const k=(free.length?free:pool)[seed%(free.length||pool.length)];used.add(k);return k};
     roster().forEach((x,i)=>{if(DEF_NAME[String(x.name||'').trim().toLowerCase()])return;let h=0;for(const c of String(x.id||x.name))h=(h*31+c.charCodeAt(0))>>>0;S.defMap[x.id]=nx(genderOf(x)==='f'?DEF_F:DEF_M,h)})}
-  const k=S.defMap[p.id]||(genderOf(p)==='f'?DEF_F:DEF_M)[0];return 'img/tr-'+k+'.webp'}
+  let k=S.defMap[p.id];if(!k){const pool=genderOf(p)==='f'?DEF_F:DEF_M;let h=0;for(const c of String(p.id||p.name||''))h=(h*31+c.charCodeAt(0))>>>0;k=pool[h%pool.length]}return 'img/tr-'+k+'.webp'}
 function avFull(p,h,g){const ra=roomAv(p,'f');if(ra)return `<img class="avf" src="${ra}" alt="${esc(p.name)}" style="height:${h}px">`;const k=avKey(p);if(k&&AVSCALE[k])h=Math.round(h*AVSCALE[k]);return k?`<img class="avf" src="img/av-f-${k}${avG(p,g)}.webp" alt="${esc(p.name)}" style="height:${h}px">`:`<img class="avf" src="${defSprite(p)}" alt="${esc(p?.name||'')}" style="height:${Math.round(h*.85)}px">`}
 function subjP(){return roster().find(p=>p.role==='self')||{name:subjectName(),role:'self'}}
 
@@ -928,6 +933,8 @@ function roomsView(){
    <div class="np-opts"><div class="np-seg"><button class="np-o ${S.nrg!=='f'?'on':''}" data-nrg="m" aria-label="בן"><img src="img/ow-boy.webp" alt=""><span class="np-sym" style="color:#6390F0">♂</span></button><button class="np-o ${S.nrg==='f'?'on':''}" data-nrg="f" aria-label="בת"><img src="img/ow-girl.webp" alt=""><span class="np-sym" style="color:#F95587">♀</span></button></div>
     <div class="np-seg"><button class="np-o ${S.nrl!=='en'?'on':''}" data-nrl="he">${FLAG_IL}<span>עברית</span></button><button class="np-o ${S.nrl==='en'?'on':''}" data-nrl="en">${FLAG_UK}<span>English</span></button></div></div>
    <div class="np-host"><input type="text" id="nr-host" placeholder="מי מנחה? (אוק יקרא לו הנכד שלו)" value="${esc(S.nrh||'')}" oninput="S.nrh=this.value"><button class="np-o ${S.nrhg!=='f'?'on':''}" data-nrhg="m" aria-label="מנחה"><span class="np-sym" style="position:static;color:#6390F0">♂</span></button><button class="np-o ${S.nrhg==='f'?'on':''}" data-nrhg="f" aria-label="מנחה"><span class="np-sym" style="position:static;color:#F95587">♀</span></button></div>
+   <div class="np-cnt"><span>כמה עונים על הנבדק?</span><button class="np-o" data-nrc="-1">−</button><b>${S.nrc||5}</b><button class="np-o" data-nrc="1">+</button></div>
+   <textarea id="nr-names" class="np-names" rows="2" placeholder="השמות שלהם, אם ידועים (לא חובה), מופרדים בפסיק" oninput="S.nrnames=this.value">${esc(S.nrnames||'')}</textarea>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
    <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button>
    <div class="np-reh"><button class="btn ghost small" data-act="rehearse">🎭 חזרה גנרלית עם בוטים</button><button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">⏩ מצב מהיר</button></div>
@@ -939,6 +946,7 @@ function roomsView(){
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
     if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
     if(b.dataset.nrhg){S.nrhg=b.dataset.nrhg;roomsView();return}
+    if(b.dataset.nrc){S.nrc=Math.max(1,Math.min(14,(S.nrc||5)+(+b.dataset.nrc)));roomsView();return}
     if(b.dataset.act==='rehearse'){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf);return}
     if(b.dataset.del){if(!confirm('למחוק את חדר הבדיקה '+b.dataset.del+'?'))return;await S.db.raw.doc('state/'+b.dataset.del).delete().catch(()=>{});await S.db.raw.doc('setup/'+b.dataset.del).delete().catch(()=>{});toast('נמחק');return}
     if(b.dataset.plan){S.planOpen=S.planOpen===b.dataset.plan?null:b.dataset.plan;roomsView();return}
@@ -948,7 +956,7 @@ function roomsView(){
     if(b.dataset.copy){const u=b.dataset.copy;(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור:',u));return}
     if(b.dataset.act==='newroom'){const nm=($('#nr-name')?.value||'').trim();if(!nm){toast('מה השם?');return}
       const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c=Array.from({length:4},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c)||c===LEGACY_ROOM);
-      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null});
+      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null,pre:(()=>{const names=(S.nrnames||'').split(/[,،\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,14);return {n:Math.max(S.nrc||5,names.length),names}})()});
       RAWSTORE.set('psp-lang:'+c,S.nrl==='en'?'en':'he');location.hash='screen='+c;location.reload()}}}
 const hexName=n=>Array.from(String(n)).map(c=>c.charCodeAt(0).toString(16)).join('');
 function assetSlot(key,label,data,extra,who){return `<div class="aslot"><div class="aprev">${data?`<img src="${data}" alt="">`:'<span class="muted">אין עדיין</span>'}</div><b>${label}</b>${extra||''}
@@ -1200,10 +1208,15 @@ function quizView(me){const Q=S.quiz,mine=(S.myQ||{})[Q.type],score=Q.scores?.[m
   ${mine?`<p class="muted center" style="font-size:14px">${ll(`הכדור נזרק: <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> ב${QBALL[mine.n][1]}. מחכים לחשיפה…`,`Ball thrown: <b style="color:var(--cream)">${TYPE_HE[mine.g]}</b> with a ${QBALL[mine.n][1]}. Waiting for the reveal…`)}</p>`:''}`}
 const SAYMAX=70;
 // lives on <body>, outside #app, so live re-renders (deck/quiz/answers updates) never close it or drop the keyboard
+const SAY_POOL={"tr": [["וואו, לא ידעתי את זה", "Wow, I didn't know that"], ["עוד! עוד!", "More! More!"], ["עכשיו הכול מתחבר", "Now it all makes sense"], ["זה מסביר הרבה", "That explains a lot"], ["אני רוצה את המאמן הזה", "I want that trainer"], ["יש פה חומר לסרט", "This is movie material"], ["מישהו מצלם את זה?", "Is anyone filming this?"], ["רגע מרגש, לא בוכים", "Emotional moment, no crying"], ["אני צריך רגע עם זה", "I need a moment with that"], ["זה הכי מתאים", "That fits perfectly"]], "r": [["השאלה הזאת עליי", "That question is about me"], ["עניתי \"לא יודע\" בגאווה", "I answered \"don't know\" proudly"], ["מי כתב את השאלות האלה?", "Who wrote these questions?"], ["סיימתי! מי הכי איטי?", "Done! Who's the slowest?"], ["השאלה האחרונה פגעה בי אישית", "That last question hit me personally"], ["עונה בכנות, זה מפחיד", "Answering honestly, it's scary"], ["כמו פסיכומטרי, רק כיף", "Like the SATs, but fun"], ["אני אדם של 3 מתוך 5", "I'm a 3-out-of-5 kind of person"]], "g": [["לא הבנתי כלום ואני בסדר עם זה", "Understood nothing and I'm fine with it"], ["זה סופר אפקטיבי!", "It's super effective!"], ["אני מתפתח עכשיו, אל תפריעו", "I'm evolving right now, don't interrupt"], ["פרופסור אוק היה גאה", "Professor Oak would be proud"], ["מישהו אמר במבה?", "Did someone say snacks?"], ["אני כבר יודע איזה פוקימון יצא", "I already know which Pokémon it'll be"], ["זה לא מבחן אישיות, זה פרדיגמה", "It's not a personality test, it's a paradigm"], ["מרקס היה מסכים", "Marx would agree"], ["פופר היה מפריך את זה", "Popper would falsify this"], ["אני ב-HP נמוך, צריך הפסקה", "Low HP, I need a break"], ["קלאסי", "Classic"], ["מאה אחוז", "A hundred percent"], ["אני בצוות רוקט מעכשיו", "I'm on Team Rocket now"], ["הרגשתי את זה בסטטים", "I felt that in my stats"], ["מישהו עוד עוקב?", "Is anyone still following?"], ["זה הרגע הכי טוב בערב", "Best moment of the evening"], ["רגע, מה?", "Wait, what?"], ["חחחחחח", "Hahaha"], ["אוק, תחזור!", "Oak, come back!"], ["אני רוצה תעודה על זה", "I want a certificate for this"], ["פיקאצ׳ו, אני בוחר בך!", "Pikachu, I choose you!"], ["שמישהו יעצור את זה", "Someone stop this"]]};
+function sayPicks(){const seg=S.deck?.seg||'',g=/^tr\d/.test(seg)?'tr':/^r\d/.test(seg)?'r':'g',src=[...(SAY_POOL[g]||[]),...(g==='g'?[]:SAY_POOL.g.slice())];const a=src.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  if(g!=='g'){const own=a.filter(x=>SAY_POOL[g].includes(x)).slice(0,4),gen=a.filter(x=>!SAY_POOL[g].includes(x)).slice(0,2);return [...own,...gen]}return a.slice(0,6)}
+function sayChips(){return sayPicks().map(x=>`<button class="saych" data-sq="${esc(LL(x))}">${esc(LL(x))}</button>`).join('')+`<button class="saych mix" data-act="saymix">🔀 ${ll('אחרות','Others')}</button>`}
 function sayOpen(){$('#sayov')?.remove();document.body.insertAdjacentHTML('beforeend',`<div id="sayov" class="sayov"><div class="card"><p class="eyebrow">${ll(`💬 על המסך הגדול`,`💬 On the big screen`)}</p><p class="muted" style="margin:0 0 8px">${ll(`הדמות שלך תופיע על המסך ותגיד את זה.`,`Your character will appear on screen and say it.`)}</p>
-  <textarea id="saytxt" maxlength="${SAYMAX}" rows="2" ${ll(`placeholder="מה להגיד?"`,`placeholder="What to say?"`)}></textarea><div class="row" style="justify-content:space-between;align-items:center"><span class="muted" id="saycnt">0/${SAYMAX}</span><span class="row" style="gap:8px"><button class="btn ghost small" ${ll(`data-act="sayclose">ביטול</button><button class="btn small" data-act="saysend">שליחה</button>`,`data-act="sayclose">Cancel</button><button class="btn small" data-act="saysend">Send</button>`)}</span></div></div></div>`);
+  <div class="saychs" id="saychs">${sayChips()}</div>
+  <textarea id="saytxt" maxlength="${SAYMAX}" rows="2" ${ll(`placeholder="או לכתוב משהו משלך…"`,`placeholder="Or write your own…"`)}></textarea><div class="row" style="justify-content:space-between;align-items:center"><span class="muted" id="saycnt">0/${SAYMAX}</span><span class="row" style="gap:8px"><button class="btn ghost small" ${ll(`data-act="sayclose">ביטול</button><button class="btn small" data-act="saysend">שליחה</button>`,`data-act="sayclose">Cancel</button><button class="btn small" data-act="saysend">Send</button>`)}</span></div></div></div>`);
   const ov=$('#sayov'),ta=$('#saytxt');ta.focus();ta.oninput=()=>{$('#saycnt').textContent=ta.value.length+'/'+SAYMAX};
-  ov.onclick=e=>{const b=e.target.closest('button');if(e.target===ov||b?.dataset.act==='sayclose'){ov.remove();return}if(b?.dataset.act==='saysend')saySend()}}
+  ov.onclick=e=>{const b=e.target.closest('button');if(e.target===ov||b?.dataset.act==='sayclose'){ov.remove();return}if(b?.dataset.act==='saymix'){$('#saychs').innerHTML=sayChips();return}if(b?.dataset.sq){ta.value=b.dataset.sq;saySend();return}if(b?.dataset.act==='saysend')saySend()}}
 function saySend(){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date.now()-(S.saidAt||0)<12000){toast(ll('רגע, אפשר שוב בעוד כמה שניות','Wait, you can send again in a few seconds'));return}S.saidAt=Date.now();$('#sayov')?.remove();sfx('sfx-a');
   S.db.doc('stage/say-'+S.me).set({t:t.slice(0,SAYMAX),at:Date.now()}).then(()=>toast(ll('נשלח למסך!','Sent to the screen!'))).catch(()=>toast(ll('לא נשלח','Not sent')))}
 // ----- personal take-home card (closing slide): your answers vs the subject's own -----
@@ -1511,7 +1524,7 @@ function remoteView(){
     return `<p class="eyebrow">PSP · REMOTE TRAINER</p><h1>${ll(`שאלון PSP על ${esc(subj)}`,`PSP questionnaire about ${esc(subj)}`)}</h1>
     <div class="card"><p>${ll(`${esc(subj)} רוצה לשמוע גם ממך. השאלון מורכב מ־150 משפטים קצרים, ועל כל אחד עונים עד כמה הוא נכון לגבי ${esc(subj)}, מ־1 עד 5. לוקח בערך 20 דקות, ואפשר לעצור ולחזור לאותו קישור מאותו טלפון. התשובות נשמרות לבד.`,`${esc(subj)} wants to hear from you too. The questionnaire has 150 short statements, and for each you answer how true it is of ${esc(subj)}, from 1 to 5. It takes about 20 minutes, and you can stop and come back to the same link on the same phone. Answers save automatically.`)}</p>
     <p class="muted">${ll(`חשוב: אם השאלון לא יושלם עד שהתוצאות של ${esc(subj)} נסגרות, התשובות החלקיות יימחקו ולא ייכנסו לחישוב.`,`Important: if the questionnaire isn't finished by the time ${esc(subj)}'s results close, partial answers are deleted and won't count.`)}</p>
-    <p class="muted">${ll(`התשובות פרטיות: שאר המשתתפים רואים רק את השקלול של כולם יחד. רק המארח רואה תשובות אישיות.`,`Answers are private: other participants only see everyone combined. Only the host sees individual answers.`)}</p></div>
+    <p class="muted">${ll(`התשובות פרטיות: על המסך מופיע רק השקלול של כולם יחד.`,`Answers are private: the screen only shows everyone combined.`)}</p></div>
     <div class="card">${ll(`<label class="muted" for="r-name">השם שלך</label>`,`<label class="muted" for="r-name">Your name</label>`)}<input type="text" id="r-name" value="${esc(d?.name||'')}" ${ll(`placeholder="השם שלך"`,`placeholder="Your name"`)}>
      <label class="muted" for="r-rel">${ll(`מה הקשר שלך ל${esc(subj)}?`,`How do you know ${esc(subj)}?`)}</label><select id="r-rel">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${(d?.relation||'family')===k?'selected':''}>${v}</option>`).join('')}</select>
      <label class="muted">${ll(`בן או בת? (רק בשביל הניסוח)`,`Man or woman? (only for the wording)`)}</label><div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost small ${g==='m'?'on':''}" ${ll(`data-rg="m">בן</button>`,`data-rg="m">Man</button>`)}<button class="btn ghost small ${g==='f'?'on':''}" ${ll(`data-rg="f">בת</button>`,`data-rg="f">Woman</button>`)}</div></div>
@@ -1574,19 +1587,27 @@ function draft(){
   if(S.draft)return S.draft;
   const r=S.setup?.roster;
   if(r&&r.length)S.draft=r.filter(p=>p.role!=='self').map(p=>({...p}));
-  else if(EN||!ROOM.legacy)S.draft=[0,1,2,3,4].map(i=>({id:newId(),name:'',role:'friend',weight:11}));
+  else if(EN||!ROOM.legacy){const pre=S.state?.pre||{},names=pre.names||[],n=Math.max(1,pre.n||5,names.length);S.draft=Array.from({length:n},(_,i)=>({id:newId(),name:names[i]||'',role:'friend',weight:0}));wsNorm(S.draft)}
   else S.draft=[{id:newId(),name:'רון',role:'partner',weight:15},{id:newId(),name:'אייל',role:'friend',weight:10},{id:newId(),name:'דורון',role:'friend',weight:10},{id:newId(),name:'דולב',role:'friend',weight:10},{id:newId(),name:'ניר',role:'friend',weight:10}];
   return S.draft;
 }
+// the 55% left after the subject, split with sliders: moving one re-balances the rest, so the total is always 100
+function wsFit(d,keep,total){const idx=d.map((p,j)=>j).filter(j=>j!==keep),sum=idx.reduce((a,j)=>a+(+d[j].weight||0),0);if(!idx.length)return;
+  const al=idx.map(j=>sum>0?(+d[j].weight||0)/sum*total:total/idx.length),fl=al.map(Math.floor);let left=total-fl.reduce((a,b)=>a+b,0);
+  al.map((a,k)=>[a-fl[k],k]).sort((a,b)=>b[0]-a[0]).forEach(([_,k])=>{if(left>0){fl[k]++;left--}});idx.forEach((j,k)=>d[j].weight=fl[k])}
+function wsNorm(d){if(!d?.length)return;const sum=d.reduce((a,p)=>a+(+p.weight||0),0);if(sum!==55)wsFit(d,-1,55)}
+function wsSet(i,v){const d=draft();if(d.length===1){d[0].weight=55}else{v=Math.max(0,Math.min(55,Math.round(v)));d[i].weight=v;wsFit(d,i,55-v)}
+  d.forEach((p,j)=>{const r=document.querySelector(`[data-ws="${j}"]`);if(r&&j!==i)r.value=p.weight;const b=document.getElementById('wv-'+j);if(b)b.textContent=p.weight+'%'})}
+document.addEventListener('input',e=>{const r=e.target.closest?.('[data-ws]');if(r){wsSet(+r.dataset.ws,+r.value);S.setupErr=null}});
 function setupView(){
-  const d=draft(),subj=subjectName(),tot=45+d.reduce((s,p)=>s+(+p.weight||0),0);
+  wsNorm(draft());const d=draft(),subj=subjectName(),tot=45+d.reduce((s,p)=>s+(+p.weight||0),0);
   return `<p class="eyebrow">PSP · SETUP</p>${ll(`<h1>מי עונה עליך?</h1>`,`<h1>Who answers about you?</h1>`)}
   <p class="muted">${ll(`${gs('אתה','את')} תמיד 45%. את 55% הנותרים מחלקים בין מי שעונים עליך: ככל שמישהו מכיר אותך טוב יותר, ${gs('תן','תני')} לו יותר. אפשר להוסיף משתתפים.`,`You are always 45%. The remaining 55% is split between the people answering about you: the better someone knows you, the more you give them. You can add participants.`)}</p>
   <div class="card">
    <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px">${avHead(subjP(),38)}<div style="display:flex;flex-direction:column"><b>${esc(subj)}</b><span class="muted" style="font-size:13px">${ll(`${gs('הנבדק','הנבדקת')} · קבוע`,`the subject · fixed`)}</span></div></div><div class="step"><b>45%</b></div></div>
    ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" ${ll(`placeholder="שם" aria-label="שם"`,`placeholder="Name" aria-label="Name"`)}><button class="x" data-del="${i}" ${ll(`aria-label="הסרה"`,`aria-label="Remove"`)}>×</button></div>
      <select id="rl-${i}" data-i="${i}" data-f="role" ${ll(`aria-label="קשר"`,`aria-label="Relation"`)}>${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?'selected':''}>${v}</option>`).join('')}</select></div>
-     <div class="step"><button data-w="${i}" data-d="-1" ${ll(`aria-label="פחות"`,`aria-label="Less"`)}>−</button><b>${+p.weight||0}%</b><button data-w="${i}" data-d="1" ${ll(`aria-label="יותר"`,`aria-label="More"`)}>+</button></div></div>`).join('')}
+     <div class="wsl"><input type="range" min="0" max="55" step="1" value="${+p.weight||0}" data-ws="${i}" ${ll(`aria-label="משקל"`,`aria-label="Weight"`)}><b id="wv-${i}">${+p.weight||0}%</b></div></div>`).join('')}
    <button class="btn ghost small" data-act="addp">${ll(`+ הוספת משתתף`,`+ Add participant`)}</button>${remoteBlock()}
    <div class="row">${ll(`<span class="grow">סה״כ</span>`,`<span class="grow">Total</span>`)}<b style="font-size:20px;color:${tot===100?'var(--ok)':'var(--gold)'}">${tot}%</b></div>
   </div>
@@ -1620,7 +1641,7 @@ function introScript(){
       {say:[`${nm}!`,'Your very own PSP adventure is about to unfold!','A world of dreams and adventures with Pokémon awaits!',...grandson],ask:'done'}];
     return [{say:open,ask:'gender'},{say:[gx('Ah, a boy! Excellent.','Ah, a girl! Excellent.'),`So you\'re ${nm}! I\'ve heard a lot about you.`,`Tonight ${subj} is looking for ${gs('his','her')} Pokémon, and you\'re here to help me find it.`,
       {t:`Here is ${subj}.`,subj:1},{t:`You know ${gs('him','her')} from an angle nobody else sees, and that\'s exactly what I need.`,subj:1},
-      {t:'Your answers are private: the screen only shows what the group thinks together, and only the host sees individual answers.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'}]}
+      {t:'Your answers are private: the screen only shows what the group thinks together.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'}]}
   const open=['שלום! ברוכים הבאים לעולם של PSP!','שמי אוק. אנשים קוראים לי פרופסור הפוקימונים.','העולם הזה מלא ביצורים שנקראים פוקימונים. יש אנשים שחיים איתם כחיות מחמד, ויש שנלחמים לצידם.','ואני? אני חוקר פוקימונים. והערב אני חוקר מישהו אחד במיוחד.','אבל קודם, ספרו לי: בן או בת?'];
   const grandson=eyal
     ?[`רגע… ${nm}? אז ${gx('אתה','את')} ${hn}! ${gx('הנכד','הנכדה')} שלי!`,`תמיד ${gx('היית','היית')} צעד אחד לפניי. אז ${gx('קח','קחי')} את הבמה: המצגת שלך.`,`אני אחזור בסוף, בהיכל התהילה. בהצלחה, ${hn}!`]
@@ -1636,7 +1657,7 @@ function introScript(){
     {say:open,ask:'gender'},
     {say:[gx('אה, בן! מצוין.','אה, בת! מצוין.'),`אז ${gx('אתה','את')} ${nm}! שמעתי עליך הרבה.`,`הערב ${subj} ${gs('מחפש','מחפשת')} את הפוקימון ${gs('שלו','שלה')}, ו${gx('אתה','את')} כאן כדי לעזור לי לגלות אותו.`,
       {t:`הנה ${subj}.`,subj:1},{t:`${gx('אתה מכיר','את מכירה')} ${gs('אותו','אותה')} מזווית שאף אחד אחר לא רואה, וזה בדיוק מה שאני צריך.`,subj:1},
-      {t:'התשובות שלך פרטיות: על המסך יופיע רק מה שהקבוצה חושבת ביחד, ורק המארח רואה תשובות אישיות.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'},
+      {t:'התשובות שלך פרטיות: על המסך יופיע רק מה שהקבוצה חושבת ביחד.',subj:1},...grandson.map(t=>({t,subj:1}))],ask:'done'},
   ];
 }
 const sayText=x=>typeof x==='string'?x:x.t;
@@ -1657,12 +1678,12 @@ function introView(){
   if(asking&&sc.ask==='name'){const def=S.state?.subject||'ערי';
     below=I.naming?`<div class="gbp-menu gbp-naming"><input id="gbp-name" type="text" maxlength="14" value="${esc(I.draftName||'')}" ${ll(`placeholder="השם שלך" aria-label="השם שלך"><button data-act="inameok">אישור</button>`,`placeholder="Your name" aria-label="Your name"><button data-act="inameok">OK</button>`)}</div>`
       :`<div class="gbp-menu"><button data-in="def">${esc(def)}</button>${ll(`<button data-in="new">שם חדש</button>`,`<button data-in="new">New name</button>`)}</div>`}
-  if(asking&&sc.ask==='roster'){const d=draft(),tot=45+d.reduce((t,p)=>t+(+p.weight||0),0),sp={name:I.name,role:'self'};
+  if(asking&&sc.ask==='roster'){wsNorm(draft());const d=draft(),tot=45+d.reduce((t,p)=>t+(+p.weight||0),0),sp={name:I.name,role:'self'};
     below=`<div class="gbp-menu gbp-roster">
-     <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px"><span class="avh" style="width:38px;height:38px">${avKey(sp)?`<img src="img/av-h-${avKey(sp)}${I.g==='f'?'-g':''}.webp" alt="">`:'<img src="img/it-poke-ball.webp" alt="" style="object-fit:contain;padding:14%">'}</span><b>${esc(I.name)}</b></div><div class="step"><b>45%</b></div></div>
+     <div class="prow"><div class="who" style="flex-direction:row;align-items:center;gap:10px"><span class="avh" style="width:38px;height:38px">${avKey(sp)?`<img src="img/av-h-${avKey(sp)}${I.g==='f'?'-g':''}.webp" alt="">`:`<img src="${defSprite({...sp,id:'subj'})}" alt="" style="object-fit:cover;object-position:50% 0;transform:scale(1.7);transform-origin:50% 0;margin-top:6%">`}</span><b>${esc(I.name)}</b></div><div class="step"><b>45%</b></div></div>
      ${d.map((p,i)=>`<div class="prow"><div class="who"><div class="two"><span id="av-${i}">${avHead(p,38)}</span><input type="text" id="nm-${i}" data-i="${i}" data-f="name" value="${esc(p.name)}" ${ll(`placeholder="שם" aria-label="שם"`,`placeholder="Name" aria-label="Name"`)}><button class="x" data-del="${i}" ${ll(`aria-label="הסרה"`,`aria-label="Remove"`)}>×</button></div>
        <select id="rl-${i}" data-i="${i}" data-f="role" ${ll(`aria-label="קשר"`,`aria-label="Relation"`)}>${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?'selected':''}>${v}</option>`).join('')}</select></div>
-       <div class="step"><button data-w="${i}" data-d="-1" ${ll(`aria-label="פחות"`,`aria-label="Less"`)}>−</button><b>${+p.weight||0}%</b><button data-w="${i}" data-d="1" ${ll(`aria-label="יותר"`,`aria-label="More"`)}>+</button></div></div>`).join('')}
+       <div class="wsl"><input type="range" min="0" max="55" step="1" value="${+p.weight||0}" data-ws="${i}" ${ll(`aria-label="משקל"`,`aria-label="Weight"`)}><b id="wv-${i}">${+p.weight||0}%</b></div></div>`).join('')}
      <button class="gbp-add" data-act="addp">${ll(`+ הוספת משתתף`,`+ Add participant`)}</button>${remoteBlock()}
      <div class="row gbp-tot">${ll(`<span class="grow">סה״כ</span>`,`<span class="grow">Total</span>`)}<b style="color:${tot===100?'#2E8B57':'#C0392B'}">${tot}%</b></div>
      ${S.setupErr?`<div class="gbp-err">${S.setupErr.map(e=>`<span>${esc(e)}</span>`).join('')}</div>`:''}
@@ -1800,7 +1821,7 @@ function bindPhone(){
       return;
     }
     if(act==='editsetup'){S.view='setup';S.draft=null;render()}
-    if(act==='addp'){draft().push({id:newId(),name:'',role:'friend',weight:0});render()}
+    if(act==='addp'){const d=draft();d.push({id:newId(),name:'',role:'friend',weight:Math.round(55/(d.length+1))});wsFit(d,d.length-1,55-d.at(-1).weight);render()}
     if(act==='savesetup'){
       const errs=validateSetup();if(errs.length){S.setupErr=errs;render();return}
       const r=[{id:'subj',name:subjectName(),role:'self',weight:45},...draft().map(p=>({id:p.id,name:p.name.trim(),role:p.role,relation:ROLES[p.role],weight:+p.weight,...(p.remote?{remote:true}:{})}))];
@@ -1816,7 +1837,7 @@ function bindPhone(){
 // SCREEN: deck + live snapshots + Hall of Fame
 // =====================================================================
 let SEQ=[],POS=+(store.get('psp-pos')||0),BUILD=0,SUB=0,HOF=0;
-const HOF_STEPS=['intro','board','crowd','champ','ball','reveal','oak','gaps','legend','map'];
+const HOF_STEPS=['intro','board','champ','ball','reveal','oak','gaps','legend','map'];
 const OAK_STEPS=['oak','gaps','legend','map'];
 async function startScreen(){
   const app=$('#app');
@@ -2004,7 +2025,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
   } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-hof',{vol:.35});sfx('sfx-caught-mon') }
-  else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();try{leagueSet('types',quizState().scores)}catch(e){}quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
+  else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();try{leagueSet('types',quizState().scores);leagueFlash()}catch(e){}quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
   else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
   screenOverlay();deckPub();gamePub();
@@ -2188,12 +2209,17 @@ function btFits(kind,A,B,xa,xb,win){if(!win||xa.m===xb.m)return false;const adv=
   if(kind==='type')return A.t.length===1&&B.t.length===1&&Math.max(xa.m,xb.m)>=2&&win===adv;
   if(kind==='dual'){const two=(X,Y,x)=>X.t.length===2&&(CHART[x.type][X.t[0]]??1)!==x.m;return (two(B,A,xa)||two(A,B,xb))&&Math.max(xa.m,xb.m)>=2&&win===adv}
   return Math.max(xa.m,xb.m)>=2&&win!==adv}
+// the first set is hand-picked so each battle shows its point cleanly: water vs. fire; a double weakness (×4 vs. ×¼); and type advantage that loses to the stats
+const BT_FIXED=[['7-8-9','77-78'],['4-5-6','46-47'],['90-91','4-5-6']];
+function btClear(kind,xa,xb,win){const W=win==='a'?xa:xb,L=win==='a'?xb:xa,gap=(L.hits===Infinity?9:L.hits)-W.hits;if(xa.m>=2&&xb.m>=2)return false;return kind==='surprise'?gap>=1&&W.m<=1:gap>=2}
 function battleNew(){music(null);
+  if((S.btg?.set||1)===1){const f=BT_FIXED[((S.btg?.n||1)-1)%3],ln=id=>S.engine.lines.find(l=>l.id===id);if(f&&ln(f[0])&&ln(f[1])){const A=btSide(ln(f[0])),B=btSide(ln(f[1])),xa=btAttack(A,B),xb=btAttack(B,A);let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
+    if(win){S.bt={A,B,xa,xb,win,kind:BT_KIND[((S.btg?.n||1)-1)%3],done:false};$('#cv').innerHTML=battleHTML();return}}}
   const pool=S.engine.lines.filter(l=>!l.legendary&&S.engine.base?.[l.id]&&!['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023'].includes(l.id));
   const kind=BT_KIND[((S.btg?.n||1)-1)%3],pick=()=>pool[Math.floor(Math.random()*pool.length)];let A,B,xa,xb,win,best=null;
   for(let i=0;i<3000;i++){let a=pick(),b=pick();if(b.id===a.id)continue;A=btSide(a);B=btSide(b);xa=btAttack(A,B);xb=btAttack(B,A);
     win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
-    if(win&&!best)best={A,B,xa,xb,win};if(btFits(kind,A,B,xa,xb,win)){best={A,B,xa,xb,win};break}}
+    if(win&&!best)best={A,B,xa,xb,win};if(btFits(kind,A,B,xa,xb,win)&&btClear(kind,xa,xb,win)){best={A,B,xa,xb,win};break}}
   S.bt={...best,kind,done:false};$('#cv').innerHTML=battleHTML();
 }
 function btCard(X,x,k){const l=X.l,phys=x.phys;
@@ -2297,7 +2323,7 @@ function memPick(i,pid){const M=S.mem;if(!M||!M.started||M.done||M.lock)return;i
   if(F.length===3||miss){M.lock=true;const ok=!miss&&F.length===3;
     setTimeout(()=>{if(S.mem!==M)return;const who=memCur();
       if(ok){F.forEach(j=>M.matched[j]=who||'_');if(who)M.scores[who]=(M.scores[who]||0)+1;sfx('sfx-caught-mon');
-        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;S.memTot=S.memTot||{};S.memTot[M.key]={...M.scores};const sum={};Object.values(S.memTot).forEach(sc=>Object.entries(sc).forEach(([id,v])=>sum[id]=(sum[id]||0)+v));leagueSet('mem',sum);M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
+        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;S.memTot=S.memTot||{};S.memTot[M.key]={...M.scores};const sum={};Object.values(S.memTot).forEach(sc=>Object.entries(sc).forEach(([id,v])=>sum[id]=(sum[id]||0)+v));leagueSet('mem',sum);leagueFlash();M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
       else sfx('sfx-ball-poof');
       memNext(ok)},ok?1500:2300)}}
 function memIn(){const M=S.mem;if(!M?.started||M.done)return;const pid=memCur();if(!pid)return;const x=S.gIn?.[pid];if(!x||x.mk!==M.key||x.tid!==M.tid)return;
@@ -2335,7 +2361,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   if(S.mem&&it?.id===S.mem.key){const M=S.mem,faces={};M.layout.forEach((id,i)=>{if(M.flips.includes(i)||M.matched[i]!=null)faces[i]=id});
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
   else if(it?.id==='x-guess')d={g:'cg'};
-  else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
+  else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',intro:!!Q.intro,key:Q.key,i:Q.i,n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
@@ -2384,19 +2410,19 @@ const PQ={
   {k:'item',img:'walter',n:['וולטר וייט','Walter White'],h:[['מורה לכימיה צנוע, 50 שנה של שקט.','A modest chemistry teacher, 50 years of quiet.'],['משפט אחד אצל הרופא, ותוך חודשים הוא אדם אחר, ואין דרך חזרה.','One sentence at the doctor\'s, and within months he is a different man, with no way back.']]},
   {k:'trade',img:'rachel',n:['רייצ׳ל גרין','Rachel Green'],h:[['בורחת בשמלת כלה מחתונה בלונג איילנד, ונוחתת בבית קפה בניו יורק.','She runs from her own wedding on Long Island in her wedding dress, and lands in a New York coffee house.'],['בלי הכסף של אבא היא לומדת לעבוד, ומגיעה עד עולם האופנה.','Without her father\'s money she learns to work, and makes it all the way into fashion.']]},
   {k:'friend',img:'beast',n:['החיה','The Beast'],h:[['נסיך מקולל שמסתגר בטירה וצועק על כולם.','A cursed prince who shuts himself in his castle and yells at everyone.'],['לא הזמן משנה אותו ולא האיומים, אלא רק מישהי שמתחילה לראות בו משהו טוב.','Not time changes him and not threats, only someone who starts to see something good in him.']]},
-  {k:'special',img:'neo',n:['ניאו','Neo'],h:[['עובד משרד שמרגיש שמשהו בעולם לא בסדר.','An office worker who feels something is wrong with the world.'],['ההתעוררות שלו דורשת צירוף אחד ויחיד: הנבואה הנכונה, האנשים הנכונים, והרגע שבו הוא מבין שכל העולם שהכיר בנוי הפוך.','His awakening needs one exact combination: the right prophecy, the right people, and the moment he sees that the whole world he knew is built upside down.']]},
+  {k:'special',img:'neo',n:['ניאו','Neo'],h:[['עובד משרד שמרגיש שמשהו בעולם לא בסדר.','An office worker who feels something is wrong with the world.'],['מורפיאוס מוצא אותו, האורקל מדברת על נבואה, והוא יוצא מהמטריקס אל העולם האמיתי. רק שם הוא הופך לניאו.','Morpheus finds him, the Oracle speaks of a prophecy, and he leaves the Matrix for the real world. Only there does he become Neo.']]},
   {k:'none',img:'homer',n:['הומר סימפסון','Homer Simpson'],h:[['עשרות עונות באותה עבודה בתחנת הכוח, על אותה ספה, עם אותה בירה ביד.','Decades in the same job at the power plant, on the same couch, the same beer in hand.'],['משברים, חברים חדשים והרפתקאות לא חסרו לו. ובסוף כל פרק הוא בדיוק מי שהיה בהתחלה.','He has had plenty of crises, new friends and adventures. And at the end of every episode he is exactly who he was at the start.']]}]}};
 const pqOpt=(set,k)=>PQ_OPT[set].find(o=>o[0]===k);
 const pqLab=o=>Array.isArray(o[1])?LL(o[1]):o[1];
 const PQ_ROUND=id=>{const m=id.match(/^pq-(st|ev)-([a-z]+)$/);if(!m)return null;const key=m[1]==='st'?'pq-stats':'pq-evo',i=PQ[key].items.findIndex(x=>x.k===m[2]);return i<0?null:{key,i}};
 function pqScores(key){S.pqSc=S.pqSc||{};const sc=S.pqSc[key]||(S.pqSc[key]={});gamePlayers().forEach(p=>{if(sc[p.id]==null)sc[p.id]=0});return sc}
-function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
-  if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
+function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(!done&&r.i===0){S.pq.intro=true;clearInterval(S.pqT);pqPaint();gamePub();return}if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
+  if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);leagueFlash();pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
 function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
 // every round keeps all the options: with only 6 answers, crossing out the past ones would hand away the last rounds
 function pqOpen(){const Q=S.pq,P=PQ[Q.key];return PQ_OPT[P.set].map(o=>o[0])}
-// one 10-second window with all the text showing: the first 3 seconds are an Ultra Ball, the next 3 a Great Ball, the last 4 a Poké Ball
-let PQ_T=10;const pqBall=Q=>{const e=(Date.now()-Q.t0)/1000;return e<PQ_T*.3?1:e<PQ_T*.6?2:3};
+// one 15-second window with all the text showing: the first third is an Ultra Ball, the next a Great Ball, the last a Poké Ball
+let PQ_T=15;const pqBall=Q=>{const e=(Date.now()-Q.t0)/1000;return e<PQ_T/3?1:e<PQ_T*2/3?2:3};
 function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.t0=Date.now();Q.end=Q.t0+PQ_T*1000;Q.at={};pqPaint();gamePub();pqClock()}
 function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.slide){clearInterval(S.pqT);return}
   if(!Q.revealed&&!Q.done){const n=pqBall(Q);if(n!==Q.stage){Q.stage=n;sfx('sfx-tink');gamePub()}
@@ -2407,14 +2433,17 @@ function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;S.
   gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){const n=Q.at?.[p.id]||g.n||3;Q.scores[p.id]=(Q.scores[p.id]||0)+(4-n);Q.got.push([p.id,n])}});
   sfx('sfx-dex-page-added');pqPaint();gamePub()}
 function pqNext(){const Q=S.pq;if(Q.i<Q.ord.length-1){Q.i++;pqRound();return}Q.done=true;clearInterval(S.pqT);leagueSet(Q.key,Q.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}
-function pqGo(d){const Q=S.pq;if(!Q||d<0||Q.slide!==cur()?.id)return false;if(Q.done||Q.revealed)return false;pqStep();return true}
+function pqGo(d){const Q=S.pq;if(!Q||d<0||Q.slide!==cur()?.id)return false;if(Q.intro){Q.intro=false;pqRound();return true}if(Q.done||Q.revealed)return false;pqStep();return true}
 function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
   const rows=gamePlayers().map(p=>({p,s:Q.scores[p.id]||0,g:S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]})).sort((a,b)=>b.s-a.s);
   const board=`<div class="qboard pqboard"><p class="qbh">SCOREBOARD</p>${rows.map(r=>{let st='';if(Q.done){}else if(Q.revealed){const hit=Q.got.find(x=>x[0]===r.p.id);st=hit?`<img src="img/${QBALL[hit[1]][0]}.webp" alt="">`:'<i class="qx">✗</i>'}else if(r.g)st='<i class="qv">✓</i>';
     return `<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${st}</span><b>${r.s}</b></div>`}).join('')}</div>`;
   if(Q.done){const top=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);
-    cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · RESULTS</p><div class="pqend">${top.length?`<div class="btwin">${top.slice(0,3).map(r=>avFull(r.p,300)).join('')}</div><h2>🏆 ${top.map(r=>esc(r.p.name)).join(' · ')}</h2><p>${top[0].s} ${ll('נק׳','pts')}</p>`:`<h2>${ll('אף אחד לא ניחש הפעם','Nobody guessed this time')}</h2>`}</div>${board}</div>`;return}
+    cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · RESULTS</p><div class="pqend">${top.length?`<div class="btwin">${top.slice(0,3).map(r=>avFull(r.p,300)).join('')}</div><h2>🏆 ${top.map(r=>esc(r.p.name)).join(' · ')}</h2><p>${top[0].s} ${ll('נק׳','pts')}</p><div class="btlist pqrank">${rows.map((r,j)=>`<span>${j+1}. ${avHead(r.p,36)}<b>${esc(r.p.name)}</b> ${r.s}</span>`).join('')}</div>`:`<h2>${ll('אף אחד לא ניחש הפעם','Nobody guessed this time')}</h2>`}</div>${board}</div>`;return}
   const o=pqOpt(P.set,it.k),opts=PQ_OPT[P.set];
+  if(Q.intro){cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
+    <div class="pqfig pqintro"><img src="img/it-poke-ball.webp" alt="" style="width:150px;height:150px;image-rendering:pixelated"><p>${P.set==='stats'?ll('תכף תופיע דמות. איזה סטט בולט אצלה?','A character is about to appear. Which stat stands out?'):ll('תכף תופיע דמות. איך היא התפתחה?','A character is about to appear. How did they evolve?')}</p><p class="pqsm">${ll(`${PQ_T} שניות לכל דמות. הכי מהר = הכי הרבה נקודות.`,`${PQ_T} seconds per character. Fastest = most points.`)}</p></div>
+    <div class="pqopts">${opts.map(x=>`<div class="pqo"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`).join('')}</div>${board}</div>`;return}
   cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(Q.i+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
    <div class="pqfig"><img src="img/${Q.revealed?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg"><p class="pqname">${esc(LL(it.n))}</p>
     <div class="pqh">${it.h.map((h,j)=>`<p class="on">${esc(LL(h))}</p>`).join('')}</div></div>
@@ -2427,6 +2456,7 @@ function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item
   const head=`<p class="eyebrow">${P.eb} · ${G.i+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
   if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')||'—'}</h2><p class="muted" style="margin:6px 0 0">${ll(`צברת ${my} נקודות`,`You scored ${my} points`)}</p></div>`}
   const b=QBALL[G.stage];
+  if(G.intro)return head+`<div class="card center"><p style="margin:0">${ll('מסתכלים על האפשרויות במסך: תכף מתחילים.','Look at the options on the screen: starting in a moment.')}</p></div>`;
   if(G.revealed){const ok=mine&&mine.v===G.ans,o=pqOpt(P.set,G.ans);return head+`<div class="card center qres ${ok?'ok':'no'}"><p style="margin:0 0 4px;font-weight:700">${esc(LL(it.n))}</p><h2 style="margin:4px 0">${pqLab(o)}</h2>${ok?`<img src="img/${QBALL[mine.n][0]}.webp" alt="" style="width:64px;height:64px;image-rendering:pixelated"><p style="margin:4px 0 0"><b>${ll(`צדקת! ${4-mine.n} נק׳`,`Correct! ${4-mine.n} pts`)}</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}</p>`}</div>`}
   return head+`<div class="card qnow"><img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span><b>${esc(LL(it.n))}</b><br>${ll(`ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b>. מהר יותר = כדור טוב יותר.`,`A correct guess now: <b>${b[1]} · ${b[2]} pts</b>. Faster = a better ball.`)}<br><span class="gend" data-end="${G.end}"></span></span></div>
    <div class="qgrid pqgrid">${PQ_OPT[P.set].filter(o=>G.open.includes(o[0])).map(o=>`<button class="qt${mine?.v===o[0]?' on':''}" data-pq="${o[0]}" ${mine?'disabled':''}><img src="img/${o[3]}.webp" alt="" style="width:34px;height:34px;image-rendering:pixelated"><span>${pqLab(o)}</span><small style="font-weight:400;color:var(--mist);font-size:11px">${esc(LL(o[2]))}</small></button>`).join('')}</div>
@@ -2434,6 +2464,7 @@ function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item
 
 // ---------- the evening league: every game hands out league points by rank, so no game outweighs another ----------
 const LEAGUE_GAMES=[['mem',ll('זיכרון','Memory')],['types',ll('מי הסוג?','Types')],['pq-stats',ll('מי הסטט?','Stats')],['pq-evo',ll('איך התפתח?','Evolution')]];
+function leagueFlash(){if(!isScreen())return;setTimeout(()=>{if(!leagueAny())return;$('#lgflash')?.remove();document.body.insertAdjacentHTML('beforeend',`<div id="lgflash" class="lgflash">${leagueBox(true)}</div>`);setTimeout(()=>$('#lgflash')?.classList.add('out'),6500);setTimeout(()=>$('#lgflash')?.remove(),7300)},2500)}
 function leagueSet(game,scores){if(!S.db||!scores)return;S.league={...(S.league||{}),[game]:scores};S.db.doc('stage/league').set({[game]:scores},{merge:true}).catch(()=>{})}
 function leagueRank(sc){const pts={},E=Object.entries(sc||{}).filter(([id,v])=>v>0).sort((a,b)=>b[1]-a[1]);let rank=0,prev=null;
   E.forEach(([id,v],i)=>{if(v!==prev){rank=i;prev=v}pts[id]=[5,3,2][rank]||1});return pts}
@@ -2504,7 +2535,7 @@ function cgHof(){const tr=cgTruth(),n=esc(subjectName()),ps=cgPlayers().filter(p
 // ---------- dress rehearsal: a test room full of bots that answer, play and chat by themselves ----------
 const BOTS_HE=[['אש','self',40],['ברוק','friend',12],['מיסטי','friend',12],['גארי','friend',12],['ג׳סי','friend',12],['ג׳יימס','friend',12]];
 const BOTS_EN=[['Ash','self',40],['Brock','friend',12],['Misty','friend',12],['Gary','friend',12],['Jessie','friend',12],['James','friend',12]];
-const BOT_SAY=[['איזה קטע','No way'],['זה כל כך נכון','So true'],['פיקאצ׳ו, אני בוחר בך!','Pikachu, I choose you!'],['רגע, מה?','Wait, what?'],['חחחח','Haha'],['אני רוצה להיות ליין של דרקון','I want to be a dragon line'],
+const BOT_SAY=[...SAY_POOL.g,...SAY_POOL.tr,...SAY_POOL.r,['איזה קטע','No way'],['זה כל כך נכון','So true'],['פיקאצ׳ו, אני בוחר בך!','Pikachu, I choose you!'],['רגע, מה?','Wait, what?'],['חחחח','Haha'],['אני רוצה להיות ליין של דרקון','I want to be a dragon line'],
  ['מי הביא את הבמבה?','Who brought the snacks?'],['זה הכי הוא','That is SO him'],['אני כבר יודע מה הוא יצא','I already know what he\'ll be'],['שמישהו יעצור את זה','Someone stop this'],['הסטט שלי זה Speed בטוח','My stat is Speed, for sure'],
  ['רגע, אפשר לחזור שקף?','Wait, can we go back a slide?'],['אני ב-HP גבוה הערב','I\'m running on high HP tonight'],['זה סופר אפקטיבי!','It\'s super effective!'],['אני מתפתח עכשיו, אל תפריעו','I\'m evolving right now, don\'t interrupt'],
  ['קלאסי','Classic'],['מאה אחוז','A hundred percent'],['אני לא בוכה, יש לי משהו בעין','I\'m not crying, there\'s something in my eye'],['פרופסור אוק היה גאה','Professor Oak would be proud'],['מי עוד רעב?','Who else is hungry?'],['טוב, זה היה יפה','OK, that was beautiful'],['לא הבנתי כלום ואני מרוצה','Understood nothing and I\'m happy']];
@@ -2518,7 +2549,7 @@ async function rehearseCreate(nm,lang,skip,fast){const taken=new Set((S.roomList
   for(const p of ros)await S.db.raw.doc('joined/'+c+'~'+p.id).set({at:new Date().toISOString(),gender:'m',dev:'bot'});
   RAWSTORE.set('psp-lang:'+c,lang);location.hash='screen='+c;location.reload()}
 // speed: in a fast rehearsal every game clock runs at roughly a third
-function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,4,3);MEM_T=7;BT_T=7;BT_RES=3;PQ_T=6}else{QD.splice(0,3,10,9,8);MEM_T=20;BT_T=20;BT_RES=7;PQ_T=10}}
+function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,4,3);MEM_T=7;BT_T=7;BT_RES=3;PQ_T=6}else{QD.splice(0,3,10,9,8);MEM_T=20;BT_T=20;BT_RES=7;PQ_T=15}}
 async function botFill(){if(S.botFilled||!S.answersLoaded&&!S.answers)return;S.botFilled=true;
   for(const id of botIds()){const cur=S.answers?.[id]?.answers||{};if(Object.keys(cur).length>20)continue;const a={...cur},r=rng('bot-'+id+Date.now()),bias={};
     BANK.items.forEach(it=>{if(it.kind==='bonus'||it.id in a)return;bias[it.dim]??=1+r()*4;a[it.id]=Math.max(1,Math.min(5,Math.round(bias[it.dim]+(r()-.5)*2)))});
@@ -2536,7 +2567,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   // battles: a gut guess, sometimes late
   const G=S.btg;if(G&&it.id==='d-battle'&&G.phase==='guess')B.forEach(id=>once('bt'+G.id+id,1000+Math.random()*BT_T*800,()=>put(id,{['b'+G.id]:Math.random()<.6?S.bt.win:brnd(['a','b'])})));
   // stats / evolution: guess at a random stage, right more often on the later hints
-  const Q=S.pq;if(Q&&it.id===Q.slide&&!Q.revealed&&!Q.done)B.forEach(id=>{if(S.gIn?.[id]?.['p'+Q.key+'-'+Q.i])return;if(Math.random()<.12*Q.stage){const right=Math.random()<.25+.2*Q.stage;put(id,{['p'+Q.key+'-'+Q.i]:{v:right?pqItem().k:brnd(pqOpen()),n:Q.stage}})}});
+  const Q=S.pq;if(Q&&it.id===Q.slide&&!Q.revealed&&!Q.done&&!Q.intro)B.forEach(id=>{if(S.gIn?.[id]?.['p'+Q.key+'-'+Q.i])return;if(Math.random()<.22+.08*Q.stage){const right=Math.random()<.35+.15*Q.stage;put(id,{['p'+Q.key+'-'+Q.i]:{v:right?pqItem().k:brnd(pqOpen()),n:Q.stage}})}});
   // who's that type: guesses go through the real docs, like phones
   if(/^q-/.test(it.id)){const t=it.id.slice(2),n=Math.min(3,BUILD);if(n>0)B.forEach(id=>{if(S.guesses?.[id]?.[t])return;if(Math.random()<.15*n){const g=Math.random()<.2+.25*n?t:brnd(Object.keys(TYPE_HE));S.db.doc('stage/q-'+id).set({[t]:{g,n,at:now}},{merge:true}).catch(()=>{})}})}
   if(it.id==='x-guess')B.forEach(id=>{if(roster().find(p=>p.id===id)?.role==='self')return;once('cg'+id,1500+Math.random()*9000,()=>{const T=Object.keys(TYPE_HE);put(id,{cg:{t:[brnd(T),brnd(T)].filter((x,i,a)=>a.indexOf(x)===i),s:brnd(CG_ST),e:brnd(CG_EV)}})})});
