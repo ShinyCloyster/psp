@@ -410,7 +410,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .mem{background:#F6F1E7;color:#22263A}
 .mti{font-size:60px!important;top:126px!important}
 .mmg{position:absolute;right:100px;top:220px;width:1220px;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:252px;gap:20px;direction:rtl}
-.mmg.six{grid-template-columns:repeat(3,1fr);grid-auto-rows:330px;gap:26px}.mmg.six .mcf.qq p{font-size:30px}.mmg.six .mcf.lens b{font-size:34px}.mmg.six .mtag{font-size:22px}.mmg.six .mcs{font-size:20px}
+.mmg.nine{grid-template-columns:repeat(3,1fr);grid-auto-rows:252px;gap:20px;top:205px}.mmg.nine .mcf.qq p,.mmg.nine .mcf.rr p{font-size:27px}.mmg.nine .mcf.lens b{font-size:32px}.mmg.nine .mcs{font-size:18px}
+.mcf.rr{background:#EAF6EE;border-color:#5BC48A}.mcf.rr p{font-weight:700;color:#161A2E;line-height:1.3}
 .mmc{position:relative;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;font:inherit;color:inherit}
 .mci{position:absolute;inset:0;transition:transform .55s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
 .mmc.up .mci{transform:rotateY(180deg)}
@@ -774,7 +775,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794006879';
+const BUILDV='1794057601';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1757,7 +1758,7 @@ function bindPhone(){
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.pick){S.me=b.dataset.pick;store.set('psp-me',S.me);store.set('psp-eve',String(S.state?.eve||''));S.view='';S.joinSent=false;render();return}
     if(b.dataset.qt){const Q=S.quiz;if(!Q?.type||Q.revealed||!Q.n||(S.myQ||{})[Q.type])return;sfx('sfx-ball-toss');const g={g:b.dataset.qt,n:Q.n,at:Date.now()};S.myQ={...(S.myQ||{}),[Q.type]:g};try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/q-'+S.me).set({[Q.type]:g},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
-    if(b.dataset.mp!=null){const G=S.game;if(G?.g!=='mem'||G.cur!==S.me||G.done)return;const i=+b.dataset.mp;if(!S.mpick||S.mpick.tid!==G.tid)S.mpick={tid:G.tid,picks:[]};const P=S.mpick.picks;if(P.length>=2||P.includes(i)||G.faces?.[i])return;
+    if(b.dataset.mp!=null){const G=S.game;if(G?.g!=='mem'||G.cur!==S.me||G.done)return;const i=+b.dataset.mp;if(!S.mpick||S.mpick.tid!==G.tid)S.mpick={tid:G.tid,picks:[]};const P=S.mpick.picks;if(P.length>=3||P.includes(i)||G.faces?.[i])return;
       P.push(i);sfx('sfx-tink');try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({mk:G.key,tid:G.tid,picks:[...P]},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')));return}
     if(b.dataset.bv){const G=S.game;if(G?.g!=='bt'||G.phase!=='guess'||(S.myG||{})['b'+G.id])return;S.myG={...(S.myG||{}),['b'+G.id]:b.dataset.bv};sfx('sfx-ball-toss');try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['b'+G.id]:b.dataset.bv},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
     if(b.dataset.scn!=null){if(S.game?.g!=='scn'||S.game.revealed)return;const v=+b.dataset.scn;S.myG={...(S.myG||{}),scn:v};sfx('sfx-tink');render();S.db.doc('stage/g-'+S.me).set({scn:v},{merge:true}).catch(()=>toast(ll('לא נשלח','Not sent')));return}
@@ -1869,8 +1870,8 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),16,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
- ['c2',ll('קורס 2','Course 2'),15,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
+const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),17,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+ ['c2',ll('קורס 2','Course 2'),16,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
  ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
  ['c4',ll('קורס 4','Course 4'),23,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
@@ -1919,7 +1920,7 @@ function closingHTML(){
   const n=esc(subjectName()),R=S.R,top=R?.main?.slice(0,5)||[],win=top[0]?.line;
   const im=(src,h,cls='')=>`<img class="cg ${cls}" src="img/${src}.webp" alt="" style="height:${h}px">`;
   const lect=['tr-bill','tr-cynthia','tr-sabrina','tr-giovanni'].map(x=>im(x,190)).join('')+im('tr-oak',195,'oak');
-  const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,205)).join('')+'<span class="cgap"></span>'+['durkheim','marx','weber','popper','kuhn'].map(k=>im('th-'+k,165)).join('');
+  const fr=['monica','ross','chandler','rachel','phoebe','joey','gunther'].map(k=>im('frf-'+k,205)).join('')+'<span class="cgap"></span>'+['durkheim','marx','weber','popper','kuhn'].map(k=>im('th-'+k,198)).join('');
   const tr=ROOM.legacy||!ROOM.code?TR_KEYS.map(k=>im('tr-eri-'+k,k==='family'?200:k==='sport'?180:215)).join(''):[1,2,3,4].map(i=>S.assets?.['tr-'+i]?.data).filter(Boolean).map(d=>`<img class="cg" src="${d}" alt="" style="height:200px">`).join('');
   const ppl=inRoom().filter(p=>p.role!=='self').map(p=>avFull(p,225)).join('');
   const spr=(l,w)=>`<img class="cg mon" src="${spriteURL(sprite(l,l.species.at(-1)))}" alt="" style="width:${w}px;height:${w}px">`,runners=top.slice(1).map(t=>spr(t.line,230));
@@ -2248,14 +2249,14 @@ let MEM_T=20;
 const MEM={
  's-memory':{eb:'MEMORY · PARADIGM GLASSES',ti:['משחק זיכרון: אילו משקפיים שואלים מה?','Memory: which glasses ask what?'],
   pairs:[
-   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'edu',a:['משקפי חינוך','Education glasses'],q:['איך מאלפים אותו להישמע למאמן?','How do we train him to obey his trainer?']},
-   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'med',a:['משקפי רפואה','Medical glasses'],q:['אולי הוא פצוע? שיבדקו אותו במרכז הפוקימונים','Maybe he\'s hurt? Get him checked at the Pokémon Center']},
-   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?']}]},
+   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'edu',a:['משקפי חינוך','Education glasses'],q:['איך מאלפים אותו להישמע למאמן?','How do we train him to obey his trainer?'],r:['עוד אימונים, ופרס על כל הצלחה','More training, and a treat for every success']},
+   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'med',a:['משקפי רפואה','Medical glasses'],q:['אולי הוא פצוע? שיבדקו אותו במרכז הפוקימונים','Maybe he\'s hurt? Get him checked at the Pokémon Center'],r:['בדיקה אצל האחות ג׳וי במרכז הפוקימונים','A check-up with Nurse Joy at the Pokémon Center']},
+   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['משקפי סוציולוגיה','Sociology glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?'],r:['לתת לו ללכת לצד אש, מחוץ לכדור','Let him walk beside Ash, outside the ball']}]},
  'c-memory':{eb:'MEMORY · THREE FATHERS',ti:['משחק זיכרון: איזה הוגה שואל מה?','Memory: which thinker asks what?'],
   pairs:[
-   {s:['קרב פוקימונים','A Pokémon battle'],k:'durkheim',a:['דורקהיים','Durkheim'],q:['אילו כללים משותפים גורמים לשני זרים ללחוץ ידיים בסוף הקרב?','Which shared rules make two strangers shake hands after the battle?']},
-   {s:['קרב פוקימונים','A Pokémon battle'],k:'marx',a:['מרקס','Marx'],q:['הפוקימונים נלחמים, והמאמן מקבל את התג. מי מרוויח מהעבודה?','The Pokémon fight, the trainer gets the badge. Who profits from the work?']},
-   {s:['קרב פוקימונים','A Pokémon battle'],k:'weber',a:['וובר','Weber'],q:['למה כל מאמן נלחם: בשביל התג, בשביל הכבוד, מההתרגשות, או כי ככה נהוג?','Why does each trainer fight: for the badge, for honor, for the thrill, or because that\'s what\'s done?']}]}};
+   {s:['קרב פוקימונים','A Pokémon battle'],k:'durkheim',a:['דורקהיים','Durkheim'],q:['אילו כללים משותפים גורמים לשני זרים ללחוץ ידיים בסוף הקרב?','Which shared rules make two strangers shake hands after the battle?'],r:['לחיצת היד בסוף כל קרב','The handshake at the end of every battle']},
+   {s:['קרב פוקימונים','A Pokémon battle'],k:'marx',a:['מרקס','Marx'],q:['הפוקימונים נלחמים, והמאמן מקבל את התג. מי מרוויח מהעבודה?','The Pokémon fight, the trainer gets the badge. Who profits from the work?'],r:['התג על החזה של המאמן','The badge on the trainer\'s chest']},
+   {s:['קרב פוקימונים','A Pokémon battle'],k:'weber',a:['וובר','Weber'],q:['למה כל מאמן נלחם: בשביל התג, בשביל הכבוד, מההתרגשות, או כי ככה נהוג?','Why does each trainer fight: for the badge, for honor, for the thrill, or because that\'s what\'s done?'],r:['ארבעה מאמנים, ארבע סיבות שונות','Four trainers, four different reasons']}]}};
 // one line per lens / thinker, shown on its card and in the legend, so people remember what each one looks at
 const LENS_TAG={edu:['איך מלמדים אותו?','How do we teach him?'],med:['מה לא תקין אצלו?','What\'s wrong with him?'],soc:['מה מקומו בקבוצה?','What\'s his place in the group?'],
  durkheim:['מה מחבר אותנו?','What holds us together?'],marx:['מי מרוויח, ומי עובד?','Who profits, who works?'],weber:['למה בכלל עושים את זה?','Why do we act at all?']};
@@ -2264,27 +2265,28 @@ const glassSvg=(c,w)=>`<svg viewBox="0 0 100 44" style="width:${w}px;height:auto
 function memCard(key,id){const p=MEM[key].pairs[+id.slice(0,-1)];return {p,kind:id.slice(-1),pair:+id.slice(0,-1)}}
 function memIcon(k,w){return LENS_COL[k]?glassSvg(LENS_COL[k],w):`<img src="img/th-${k}.webp" alt="" style="height:${Math.round(w*1.15)}px;width:auto;image-rendering:pixelated">`}
 function memFace(key,id){const {p,kind}=memCard(key,id);
-  return kind==='a'?`<div class="mcf lens" style="--c:${LENS_COL[p.k]||'#C9A227'}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?120:74)}</div><b>${esc(LL(p.a))}</b><em class="mtag">${esc(LL(LENS_TAG[p.k]))}</em></div>`
-   :`<div class="mcf qq"><i>?</i><p>${esc(LL(p.q))}</p></div>`}
+  if(kind==='a')return `<div class="mcf lens" style="--c:${LENS_COL[p.k]||'#C9A227'}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?120:100)}</div><b>${esc(LL(p.a))}</b></div>`;
+  if(kind==='r')return `<div class="mcf rr"><span class="mcs">${LENS_COL[p.k]?ll('מה עושים?','What do we do?'):ll('במה מסתכלים?','What do we look at?')}</span><p>${esc(LL(p.r))}</p></div>`;
+  return `<div class="mcf qq"><i>?</i><p>${esc(LL(p.q))}</p></div>`}
 function gamePlayers(){const pl=inRoom().filter(p=>!isPresenter(p)),j=pl.filter(p=>S.joined?.has(p.id));return j.length?j:pl}
-function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i+'q'));for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
+function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i+'q',i+'r'));for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
   const pl=gamePlayers().map(p=>p.id),st=Math.floor(Math.random()*Math.max(1,pl.length)),order=pl.slice(st).concat(pl.slice(0,st)),scores={};pl.forEach(id=>scores[id]=0);
   S.mem={key,layout:ids,order,t:0,flips:[],matched:{},scores,started:false,done:false,bonus:false,lock:false,end:0,tid:0,used:{}};
   $('#cv').innerHTML=memHTML();memPaint();gamePub()}
 const memCur=()=>{const M=S.mem;return M&&M.order.length?M.order[M.t%M.order.length]:null};
 function memHTML(){const M=S.mem,set=MEM[M.key];
   return `<div class="st mem"><p class="bteb">${set.eb}</p><h2 class="btti mti">${esc(LL(set.ti))}</h2>
-   <div class="mmg six">${M.layout.map((id,i)=>`<button class="mmc" data-mi="${i}"><div class="mci"><div class="mcb"><img src="img/it-poke-ball.webp" alt=""><b>${i+1}</b></div>${memFace(M.key,id)}</div><span class="mown"></span></button>`).join('')}</div>
+   <div class="mmg nine">${M.layout.map((id,i)=>`<button class="mmc" data-mi="${i}"><div class="mci"><div class="mcb"><img src="img/it-poke-ball.webp" alt=""><b>${i+1}</b></div>${memFace(M.key,id)}</div><span class="mown"></span></button>`).join('')}</div>
    <div class="mside" id="mside"></div></div>`}
 function memPaint(){const M=S.mem;if(!M)return;const cv=$('#cv');if(!cv.querySelector('.mem'))return;
   M.layout.forEach((id,i)=>{const el=cv.querySelector(`.mmc[data-mi="${i}"]`);if(!el)return;const up=M.flips.includes(i)||M.matched[i]!=null;el.classList.toggle('up',up);el.classList.toggle('got',M.matched[i]!=null);
     const o=el.querySelector('.mown'),p=person(M.matched[i]);o.innerHTML=p?avHead(p,44):''});
   const side=$('#mside'),cp=person(memCur()),rows=M.order.map(id=>({p:person(id),s:M.scores[id]||0})).filter(r=>r.p).sort((a,b)=>b.s-a.s);
   const board=`<div class="mscore">${rows.map(r=>`<div class="qr ${r.p.id===memCur()&&M.started&&!M.done?'now':''}">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><b>${r.s}</b></div>`).join('')}</div>`;
-  if(!M.started){side.innerHTML=`<p class="msh">${ll('איך משחקים','HOW TO PLAY')}</p><div class="mrules">${ll(`<p>בכל תור הופכים <b>שני קלפים</b> מהטלפון.</p><p>מצאתם קלף והשאלה שלו? <b>זוג ונקודה</b>.</p><p>${MEM_T} שניות לתור.</p>`,`<p>Each turn, flip <b>two cards</b> from your phone.</p><p>Found a card and its question? <b>A pair and a point</b>.</p><p>${MEM_T} seconds per turn.</p>`)}</div><p class="mgo">${ll('לחיצה, ומתחילים','Click to start')}</p>${memLegend()}`;return}
-  if(M.done){const tops=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);side.innerHTML=`<p class="msh">${ll('סוף המשחק','GAME OVER')}</p>${tops.length?`<div class="mwin"><div style="display:flex;gap:10px;align-items:flex-end">${tops.slice(0,3).map(r=>avFull(r.p,tops.length>1?150:200)).join('')}</div><p>🏆 ${tops.map(r=>esc(r.p.name)).join(' · ')} · ${tops[0].s} ${ll('זוגות','pairs')}</p></div>`:''}${board}`;return}
+  if(!M.started){side.innerHTML=`<p class="msh">${ll('איך משחקים','HOW TO PLAY')}</p><div class="mrules">${ll(`<p>בכל תור הופכים <b>שלושה קלפים</b> מהטלפון.</p><p>משקפיים, השאלה שלהם ומה שהם עושים? <b>שלישייה ונקודה</b>.</p><p>${MEM_T} שניות לתור.</p>`,`<p>Each turn, flip <b>three cards</b> from your phone.</p><p>The glasses, their question and what they do? <b>A set and a point</b>.</p><p>${MEM_T} seconds per turn.</p>`)}</div><p class="mgo">${ll('לחיצה, ומתחילים','Click to start')}</p>${memLegend()}`;return}
+  if(M.done){const tops=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);side.innerHTML=`<p class="msh">${ll('סוף המשחק','GAME OVER')}</p>${tops.length?`<div class="mwin"><div style="display:flex;gap:10px;align-items:flex-end">${tops.slice(0,3).map(r=>avFull(r.p,tops.length>1?150:200)).join('')}</div><p>🏆 ${tops.map(r=>esc(r.p.name)).join(' · ')} · ${tops[0].s} ${ll('שלישיות','sets')}</p></div>`:''}${board}`;return}
   side.innerHTML=`<p class="msh">${M.bonus?ll('תור נוסף!','BONUS TURN!'):ll('התור של','NOW PLAYING')}</p><div class="mturn">${cp?avHead(cp,84):''}<b>${cp?esc(cp.name):ll('מי שליד המסך','Whoever is at the screen')}</b></div>
-   <div class="mclock" id="mclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b></div>${board}${memLegend()}`;memTick()}
+   <div class="mclock" id="mclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b></div>${board}`;memTick()}
 function memLegend(){const P=MEM[S.mem.key].pairs;return `<div class="mleg">${P.map(p=>`<div>${memIcon(p.k,LENS_COL[p.k]?50:32)}<b>${esc(LL(p.a))}</b><span>${esc(LL(LENS_TAG[p.k]))}</span></div>`).join('')}</div>`}
 function memTick(){const M=S.mem,el=$('#mclock');if(!M||!el)return;const l=Math.max(0,(M.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/MEM_T*100}
 function memStart(){const M=S.mem;M.started=true;memTurn();music(null)}
@@ -2293,10 +2295,11 @@ function memTurn(){const M=S.mem;M.flips=[];M.lock=false;M.end=Date.now()+MEM_T*
 function memNext(match){const M=S.mem;M.bonus=false;M.t++;memTurn()}
 function memPick(i,pid){const M=S.mem;if(!M||!M.started||M.done||M.lock)return;if(pid&&pid!==memCur())return;if(M.matched[i]!=null||M.flips.includes(i)||i<0||i>=M.layout.length)return;
   M.flips.push(i);sfx('sfx-tink');memPaint();gamePub();
-  if(M.flips.length===2){M.lock=true;const [a,b]=M.flips,ca=memCard(M.key,M.layout[a]),cb=memCard(M.key,M.layout[b]),ok=ca.pair===cb.pair;
+  const F=M.flips,pr=F.map(j=>memCard(M.key,M.layout[j]).pair),miss=pr.some(x=>x!==pr[0]);
+  if(F.length===3||miss){M.lock=true;const ok=!miss&&F.length===3;
     setTimeout(()=>{if(S.mem!==M)return;const who=memCur();
-      if(ok){M.matched[a]=M.matched[b]=who||'_';if(who)M.scores[who]=(M.scores[who]||0)+1;sfx('sfx-caught-mon');
-        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;leagueSet('mem',M.scores);M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
+      if(ok){F.forEach(j=>M.matched[j]=who||'_');if(who)M.scores[who]=(M.scores[who]||0)+1;sfx('sfx-caught-mon');
+        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;S.memTot=S.memTot||{};S.memTot[M.key]={...M.scores};const sum={};Object.values(S.memTot).forEach(sc=>Object.entries(sc).forEach(([id,v])=>sum[id]=(sum[id]||0)+v));leagueSet('mem',sum);M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
       else sfx('sfx-ball-poof');
       memNext(ok)},ok?1500:2300)}}
 function memIn(){const M=S.mem;if(!M?.started||M.done)return;const pid=memCur();if(!pid)return;const x=S.gIn?.[pid];if(!x||x.mk!==M.key||x.tid!==M.tid)return;
@@ -2344,13 +2347,13 @@ function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='k-scenario'&&!S.s
 function gameView(me){const G=S.game;if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);return ''}
 function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores?.[me.id]||0,mine=G.cur===me.id,cp=person(G.cur);
   const picks=(S.mpick&&S.mpick.tid===G.tid)?S.mpick.picks:[];
-  const head=`<p class="eyebrow">${set.eb}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('משחק זיכרון','Memory')}</h1><b class="qsc">${my} ${ll('זוגות','pairs')}</b></div>`;
-  const grid=`<div class="mpg">${Array.from({length:G.n},(_,i)=>{const f=G.faces?.[i],m=G.matched?.[i]!=null,pk=picks.includes(i);let inner=`<b>${i+1}</b>`;
-     if(f){const c=memCard(G.key,f);inner=c.kind==='a'?`<span class="mpl">${esc(LL(c.p.a))}</span><small>${esc(LL(c.p.s))}</small>`:`<small>${esc(LL(c.p.q))}</small>`}
+  const head=`<p class="eyebrow">${set.eb}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('משחק זיכרון','Memory')}</h1><b class="qsc">${my} ${ll('שלישיות','sets')}</b></div>`;
+  const grid=`<div class="mpg" style="grid-template-columns:repeat(3,1fr)">${Array.from({length:G.n},(_,i)=>{const f=G.faces?.[i],m=G.matched?.[i]!=null,pk=picks.includes(i);let inner=`<b>${i+1}</b>`;
+     if(f){const c=memCard(G.key,f);inner=c.kind==='a'?`<span class="mpl">${esc(LL(c.p.a))}</span><small>${esc(LL(c.p.s))}</small>`:`<small>${esc(LL(c.kind==='r'?c.p.r:c.p.q))}</small>`}
      return `<button class="mpc${f?' up':''}${m?' got':''}${pk&&!f?' pk':''}" data-mp="${i}" ${mine&&!m&&!f&&!G.done?'':'disabled'}>${inner}</button>`}).join('')}</div>`;
   if(!G.started)return head+`<div class="card center"><p style="margin:0">${ll('מסתכלים על המסך: עוד רגע מתחילים.','Watch the screen: starting in a moment.')}</p></div>`+grid;
-  if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')}</h2><p class="muted" style="margin:6px 0 0">${ll(`מצאת ${my} זוגות`,`You found ${my} pairs`)}</p></div>`+grid}
-  return head+(mine?`<div class="card qnow mine"><b style="font-size:20px">${G.bonus?ll('תור נוסף! ','Bonus turn! '):''}${ll('התור שלך: בוחרים שני קלפים','Your turn: pick two cards')}</b><br><span class="gend" data-end="${G.end}"></span></div>`
+  if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')}</h2><p class="muted" style="margin:6px 0 0">${ll(`מצאת ${my} שלישיות`,`You found ${my} sets`)}</p></div>`+grid}
+  return head+(mine?`<div class="card qnow mine"><b style="font-size:20px">${G.bonus?ll('תור נוסף! ','Bonus turn! '):''}${ll('התור שלך: בוחרים שלושה קלפים','Your turn: pick three cards')}</b><br><span class="gend" data-end="${G.end}"></span></div>`
     :`<div class="card qnow">${cp?avHead(cp,36):''}<span>${ll(`עכשיו התור של <b>${esc(cp?.name||'')}</b>`,`Now playing: <b>${esc(cp?.name||'')}</b>`)}<br><span class="gend" data-end="${G.end}"></span></span></div>`)+grid}
 function btPhone(me,G){const v=(S.myG||{})['b'+G.id],my=G.scores?.[me.id]||0,side=(X,k)=>`<button class="bpv${v===k?' on':''}${G.win===k?' win':''}" data-bv="${k}" ${G.phase==='guess'&&!v?'':'disabled'}>
    <span class="bph">${X.spr?`<img src="${X.spr}" alt="">`:''}<span><b>${esc(X.name)}</b><span class="bpt">${X.types.map(t=>`<span style="background:${TYPE_COL[t]}">${TYPE_HE[t]}</span>`).join('')}</span></span></span>
@@ -2504,7 +2507,10 @@ function cgHof(){const tr=cgTruth(),n=esc(subjectName()),ps=cgPlayers().filter(p
 // ---------- dress rehearsal: a test room full of bots that answer, play and chat by themselves ----------
 const BOTS_HE=[['אש','self',40],['ברוק','friend',12],['מיסטי','friend',12],['גארי','friend',12],['ג׳סי','friend',12],['ג׳יימס','friend',12]];
 const BOTS_EN=[['Ash','self',40],['Brock','friend',12],['Misty','friend',12],['Gary','friend',12],['Jessie','friend',12],['James','friend',12]];
-const BOT_SAY=[['איזה קטע','No way'],['זה כל כך נכון','So true'],['פיקאצ׳ו, אני בוחר בך!','Pikachu, I choose you!'],['רגע, מה?','Wait, what?'],['חחחח','Haha'],['אני רוצה להיות ליין של דרקון','I want to be a dragon line']];
+const BOT_SAY=[['איזה קטע','No way'],['זה כל כך נכון','So true'],['פיקאצ׳ו, אני בוחר בך!','Pikachu, I choose you!'],['רגע, מה?','Wait, what?'],['חחחח','Haha'],['אני רוצה להיות ליין של דרקון','I want to be a dragon line'],
+ ['מי הביא את הבמבה?','Who brought the snacks?'],['זה הכי הוא','That is SO him'],['אני כבר יודע מה הוא יצא','I already know what he\'ll be'],['שמישהו יעצור את זה','Someone stop this'],['הסטט שלי זה Speed בטוח','My stat is Speed, for sure'],
+ ['רגע, אפשר לחזור שקף?','Wait, can we go back a slide?'],['אני ב-HP גבוה הערב','I\'m running on high HP tonight'],['זה סופר אפקטיבי!','It\'s super effective!'],['אני מתפתח עכשיו, אל תפריעו','I\'m evolving right now, don\'t interrupt'],
+ ['קלאסי','Classic'],['מאה אחוז','A hundred percent'],['אני לא בוכה, יש לי משהו בעין','I\'m not crying, there\'s something in my eye'],['פרופסור אוק היה גאה','Professor Oak would be proud'],['מי עוד רעב?','Who else is hungry?'],['טוב, זה היה יפה','OK, that was beautiful'],['לא הבנתי כלום ואני מרוצה','Understood nothing and I\'m happy']];
 const isRehearsal=()=>!!S.state?.rehearsal;
 function botIds(){return isRehearsal()?roster().filter(p=>p.bot).map(p=>p.id):[]}
 const brnd=a=>a[Math.floor(Math.random()*a.length)];
@@ -2527,9 +2533,9 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   const put=(id,o)=>{S.gIn=S.gIn||{};S.gIn[id]={...(S.gIn[id]||{}),...o};gameIn()};
   // memory: the bot whose turn it is flips two cards, and half the time it remembers a pair it saw
   const M=S.mem;if(M&&it.id===M.key&&M.started&&!M.done&&!M.lock&&B.includes(memCur()))once('mem'+M.tid,1500+Math.random()*2500,()=>{
-    const free=M.layout.map((c,i)=>i).filter(i=>M.matched[i]==null);let a=brnd(free),b;
-    if(Math.random()<.5){const c=M.layout[a],pair=c.slice(0,-1)+(c.slice(-1)==='a'?'q':'a');b=M.layout.indexOf(pair)}else{do{b=brnd(free)}while(b===a&&free.length>1)}
-    put(memCur(),{mk:M.key,tid:M.tid,picks:[a]});setTimeout(()=>put(memCur(),{mk:M.key,tid:M.tid,picks:[a,b]}),700)});
+    const free=M.layout.map((c,i)=>i).filter(i=>M.matched[i]==null);let a=brnd(free),pk=[a];
+    if(Math.random()<.5){const pr=M.layout[a].slice(0,-1);pk=free.filter(i=>M.layout[i].slice(0,-1)===pr);pk.sort((x,y)=>x===a?-1:y===a?1:0)}else{while(pk.length<3&&pk.length<free.length){const b=brnd(free);if(!pk.includes(b))pk.push(b)}}
+    pk.forEach((x,j)=>setTimeout(()=>put(memCur(),{mk:M.key,tid:M.tid,picks:pk.slice(0,j+1)}),j*700))});
   // battles: a gut guess, sometimes late
   const G=S.btg;if(G&&it.id==='d-battle'&&G.phase==='guess')B.forEach(id=>once('bt'+G.id+id,1000+Math.random()*BT_T*800,()=>put(id,{['b'+G.id]:Math.random()<.6?S.bt.win:brnd(['a','b'])})));
   // stats / evolution: guess at a random stage, right more often on the later hints
@@ -2539,7 +2545,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   if(it.id==='k-scenario'&&!S.scn?.revealed)B.forEach(id=>once('scn'+id,800+Math.random()*6000,()=>put(id,{scn:Math.floor(Math.random()*4)})));
   if(it.id==='x-guess')B.forEach(id=>{if(roster().find(p=>p.id===id)?.role==='self')return;once('cg'+id,1500+Math.random()*9000,()=>{const T=Object.keys(TYPE_HE);put(id,{cg:{t:[brnd(T),brnd(T)].filter((x,i,a)=>a.indexOf(x)===i),s:brnd(CG_ST),e:brnd(CG_EV)}})})});
   // chatter on trainer talks, rounds and breaks
-  if(/^(tr|b|r)\d$/.test(segAt(POS))&&Math.random()<.02){const id=brnd(B),l=brnd(BOT_SAY);S.db.doc('stage/say-'+id).set({t:LL(l),at:now}).catch(()=>{})}}
+  if(/^(tr|b|r)\d$/.test(segAt(POS))&&Math.random()<.09){const id=brnd(B),l=brnd(BOT_SAY);S.db.doc('stage/say-'+id).set({t:LL(l),at:now}).catch(()=>{})}}
 setInterval(()=>{try{botTick()}catch(e){console.warn('bot',e)}},1000);
 // timing report: plan vs. what actually happened, per part (from the deck clock)
 function timingReport(){const D=S.deck||{},log={...(D.log||{})};if(D.seg&&D.segAt)log[D.seg]=(log[D.seg]||0)+(Date.now()-D.segAt)/60000;
