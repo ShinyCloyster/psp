@@ -193,6 +193,13 @@ table.prog th{color:var(--mist);font-weight:500}
 .oakimg{position:absolute;right:230px;top:110px;width:420px;height:420px;image-rendering:pixelated;object-fit:contain;filter:drop-shadow(0 14px 0 rgba(0,0,0,.18))}
 .battle{background:#F6F1E7;color:#22263A}
 .bteb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#E5484D}
+.bti-row{position:absolute;left:128px;right:128px;top:330px;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;direction:rtl}.en .bti-row{direction:ltr}
+.bti-c{position:relative;background:#FFFDF8;border:2px solid #E4DCCB;border-radius:28px;padding:34px 30px 30px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.bti-n{position:absolute;top:-26px;inset-inline-start:26px;width:56px;height:56px;border-radius:50%;background:#E5484D;color:#fff;font:400 24px var(--pixel);display:flex;align-items:center;justify-content:center}
+.bti-h{font-family:var(--display);font-size:46px;color:#161A2E;margin:0}.bti-vs{display:flex;align-items:center;gap:12px;min-height:110px}.bti-vs i{font:400 18px var(--pixel);font-style:normal;color:#E5484D}.bti-vs .tplate{font-size:22px}
+.bti-two{display:flex;flex-direction:column;gap:8px}.bti-st{font-size:58px;letter-spacing:6px}.bti-t{font-size:28px;line-height:1.35;color:#4A4F63;margin:0}
+.bti-how{position:absolute;left:128px;right:128px;top:760px;display:flex;justify-content:center;gap:22px;direction:rtl}.en .bti-how{direction:ltr}.bti-how span{background:#161A2E;color:#F6F1E7;border-radius:40px;padding:16px 28px;font-size:28px}.bti-how b{color:#F2C94C}
+.bti-go{position:absolute;left:0;right:0;top:880px;font-size:22px!important;color:#E5484D!important}
 .btti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400;color:#161A2E}
 .btsub{position:absolute;right:128px;top:236px;font-size:30px;color:#4A4F63}
 .btrow{position:absolute;left:110px;right:110px;top:310px;display:flex;align-items:stretch;gap:30px;direction:rtl}
@@ -477,7 +484,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .np-t img{width:34px;height:34px;object-fit:contain;flex:none}.np-t b{color:var(--gold)}.np-t.tr{flex-direction:column;justify-content:center;gap:2px;text-align:center}.np-t.tr img{image-rendering:pixelated;width:30px;height:30px}
 .np-t.on{filter:none;opacity:1;border-color:rgba(242,201,76,.75);background:#2A3060;color:var(--cream)}
 .np-ck{position:absolute;top:-7px;inset-inline-start:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#161A2E;font:800 12px/20px var(--body);text-align:center;font-style:normal;display:none}.np-t.on .np-ck{display:block}
-.np-host{display:flex;gap:6px;margin:8px 0 0}.np-host input{flex:1}.np-host .np-o{flex:none;width:52px;min-height:0}
+.np-tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 6px}.np-host{display:flex;gap:6px;margin:8px 0 0}.np-host input{flex:1}.np-host .np-o{flex:none;width:52px;min-height:0}
 .np-cnt{display:flex;align-items:center;gap:8px;margin:10px 0 6px}.np-cnt span{flex:1;font-size:14px;color:var(--mist)}.np-cnt .np-o{flex:none;width:44px;min-height:40px;font-size:20px}.np-cnt b{min-width:28px;text-align:center;font-size:20px}.np-names{width:100%;font:15px/1.4 var(--body);background:rgba(255,255,255,.04);color:var(--cream);border:1px solid var(--line);border-radius:14px;padding:10px 14px;resize:vertical;box-sizing:border-box}
 .wsl{display:flex;flex-direction:column;align-items:stretch;gap:0;width:128px;flex:none}.wsl input{width:100%;accent-color:var(--gold);height:30px;margin:0}.wsl b{text-align:center;color:var(--gold);font-size:18px;order:-1}
 .saychs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.saych{border:1px solid var(--line);background:var(--night2);color:var(--cream);border-radius:999px;padding:7px 12px;font:600 13px var(--body);cursor:pointer}.saych:active{transform:scale(.96)}.saych.mix{border-color:var(--gold);color:var(--gold)}
@@ -781,13 +788,13 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794088472';
+const BUILDV='1794103469';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
 function music(name,o={}){
   if(name&&BGM.cur===name){if(BGM.a&&BGM.a.paused&&!BGM.a.ended)BGM.a.play().catch(()=>{});if(BGM.a&&o.vol!=null)fadeAudio(BGM.a,o.vol,700);return}
-  const old=BGM.a;if(old)fadeAudio(old,0,900,()=>old.pause());BGM.cur=name||null;BGM.a=null;clearTimeout(BGM.t);if(!name)return;
+  const old=BGM.a;if(old)fadeAudio(old,0,old.loop?900:3500,()=>old.pause());BGM.cur=name||null;BGM.a=null;clearTimeout(BGM.t);if(!name)return;
   BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+'.mp3?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{BGM.blocked=a});fadeAudio(a,o.vol??.35,1200);
     if(o.then)a.onended=()=>{if(BGM.a===a){BGM.cur=null;music(o.then,{vol:o.vol})}}},o.delay||0)}
 // browsers refuse sound before the first click on the page (e.g. opening straight into a slide): start the waiting track on the first gesture
@@ -936,6 +943,7 @@ function roomsView(){
    <div class="np-host"><input type="text" id="nr-host" placeholder="מי מנחה? (אוק יקרא לו הנכד שלו)" value="${esc(S.nrh||'')}" oninput="S.nrh=this.value"><button class="np-o ${S.nrhg!=='f'?'on':''}" data-nrhg="m" aria-label="מנחה"><span class="np-sym" style="position:static;color:#6390F0">♂</span></button><button class="np-o ${S.nrhg==='f'?'on':''}" data-nrhg="f" aria-label="מנחה"><span class="np-sym" style="position:static;color:#F95587">♀</span></button></div>
    <div class="np-cnt"><span>כמה עונים על הנבדק?</span><button class="np-o" data-nrc="-1">−</button><b>${S.nrc||5}</b><button class="np-o" data-nrc="1">+</button></div>
    <textarea id="nr-names" class="np-names" rows="2" placeholder="השמות שלהם, אם ידועים (לא חובה), מופרדים בפסיק" oninput="S.nrnames=this.value">${esc(S.nrnames||'')}</textarea>
+   <p class="np-h">ארבעת המאמנים <span class="muted" style="font-weight:400">(לא חובה, אפשר גם אחר כך בניהול)</span></p><div class="np-tr">${[0,1,2,3].map(i=>`<input type="text" placeholder="מאמן ${i+1}${i?'':', למשל: צבא'}" value="${esc((S.nrt||[])[i]||'')}" oninput="(S.nrt=S.nrt||[])[${i}]=this.value">`).join('')}</div>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
    <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button>
    <div class="np-reh"><button class="btn ghost small" data-act="rehearse">🎭 חזרה גנרלית עם בוטים</button><button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">⏩ מצב מהיר</button></div>
@@ -958,6 +966,7 @@ function roomsView(){
     if(b.dataset.act==='newroom'){const nm=($('#nr-name')?.value||'').trim();if(!nm){toast('מה השם?');return}
       const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c=Array.from({length:4},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c)||c===LEGACY_ROOM);
       b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null,pre:(()=>{const names=(S.nrnames||'').split(/[,،\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,14);return {n:Math.max(S.nrc||5,names.length),names}})()});
+      for(const [i,t] of (S.nrt||[]).entries()){const v=String(t||'').trim();if(v)await S.db.raw.doc('setup/'+c+'~asset-tr-'+(i+1)).set({label:v}).catch(()=>{})}
       RAWSTORE.set('psp-lang:'+c,S.nrl==='en'?'en':'he');location.hash='screen='+c;location.reload()}}}
 const hexName=n=>Array.from(String(n)).map(c=>c.charCodeAt(0).toString(16)).join('');
 function assetSlot(key,label,data,extra,who){return `<div class="aslot"><div class="aprev">${data?`<img src="${data}" alt="">`:'<span class="muted">אין עדיין</span>'}</div><b>${label}</b>${extra||''}
@@ -1619,13 +1628,18 @@ function setupView(){
 // ----- Professor Oak's intro: everyone meets him once. The subject also names themself and splits the weights. -----
 // slides were written for Eri; adapt the subject's name and grammatical gender at render time
 const TR_KEYS=['dwarf','bneiakiva','family','sport'];
+// Eri's own trainer titles, as they are written in the slides; other rooms get their own titles, or none
+const TR_ERI=[['ביישנות','Shyness'],['מצפה רמון · על אמונה','Mitzpe Ramon · on faith'],['תפקיד · על משפחה','Role · on family'],['ספורט','Sport']];
 function slideHTML(h){
   if(S.setup?.gender==='f')[['שהנבדק קבע','שהנבדקת קבעה'],['הנבדק עצמו','הנבדקת עצמה'],['הנבדק','הנבדקת'],['ערי מספר ','ערי מספרת '],['כשערי ישלח','כשערי תשלח']].forEach(([x,y])=>{h=h.split(x).join(y)});
   const n=subjectName();if(EN){if(n&&n!=='Eri'&&n!=='ערי')h=h.replace(/\bEri(?=[’'\s.,])/g,esc(n))}else if(n&&n!=='ערי')h=h.split('ערי').join(n);
   if(ROOM.code&&!ROOM.legacy){
     TR_KEYS.forEach((k,i)=>{if(!h.includes('tr-eri-'+k+'.webp'))return;const a=S.assets?.['tr-'+(i+1)];
       h=h.replace(new RegExp('img/tr-eri-'+k+'\\.webp','g'),a?.data||'img/tr-silhouette.webp');
-      h=h.replace(/(padding:18px 32px">)([^<]*)(<)/,(m,x,y,z)=>x+'\u202b'+esc(a?.label||ll('המאמן ה־'+(i+1),'Trainer #'+(i+1)))+z)});
+});
+    TR_ERI.forEach((pr,i)=>{const lab=String(S.assets?.['tr-'+(i+1)]?.label||'').trim();pr.forEach(e=>{const E=e.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      if(lab){h=h.replace(new RegExp('>\u202b?'+E+'<','g'),'>\u202b'+esc(lab)+'<');return}
+      h=h.replace(new RegExp(' · <span style="color:#F2C94C">\u202b?'+E+'</span>','g'),'').replace(new RegExp('padding:18px 32px">\u202b?'+E+'<','g'),'padding:18px 32px;display:none"><')})});
     if(S.qr){h=h.split('img/qr-app.webp').join(S.qr).split('סורקים, בוחרים שם, עונים').join('סורקים, או נכנסים עם הקוד '+ROOM.code).split('Scan, pick your name, answer').join('Scan, or join with the code '+ROOM.code)}}
   return h;
 }
@@ -2024,7 +2038,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     slideMusic(it.id);
     quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
-  } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-hof',{vol:.35});sfx('sfx-caught-mon') }
+  } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-badge',{loop:false,vol:.45});sfx('sfx-caught-mon') }
   else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();try{leagueSet('types',quizState().scores);leagueFlash()}catch(e){}quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
   else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
@@ -2040,7 +2054,7 @@ function go(d){
     if(d<0&&BUILD>0){qAutoStop();BUILD--;applyBuilds();quizSync();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
-  if(it.id==='d-battle'&&d>0&&S.btg){const G=S.btg;if(G.phase==='guess'){btgFight();return}if(G.phase==='fight')return;if(G.phase==='result'){btgAfter();return}}
+  if(it.id==='d-battle'&&d>0&&S.btg){const G=S.btg;if(G.phase==='intro'){btgNext();return}if(G.phase==='guess'){btgFight();return}if(G.phase==='fight')return;if(G.phase==='result'){btgAfter();return}}
   if((PQ[it.id]||PQ_ROUND(it.id))&&pqGo(d))return;
   if(MEM[it.id]&&d>0&&S.mem&&!S.mem.done){if(!S.mem.started)memStart();else if(!S.mem.lock)memNext(false);return}
   if(d>0&&!S.gateOk){const ix=id=>SEQ.findIndex(x=>x.id===id),bm=it.kind==='slide'&&it.id.match(/^x-break-(\d)$/),rm=it.kind==='slide'&&it.id.match(/^x-round-(\d)$/);
@@ -2303,7 +2317,7 @@ function memFace(key,id){const {p,kind}=memCard(key,id);
   return `<div class="mcf qq"><i>?</i><p>${esc(LL(p.q))}</p></div>`}
 function gamePlayers(){const pl=inRoom().filter(p=>!isPresenter(p)),j=pl.filter(p=>S.joined?.has(p.id));return j.length?j:pl}
 function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i+'q',i+'r'));for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
-  const pl=gamePlayers().map(p=>p.id),st=Math.floor(Math.random()*Math.max(1,pl.length)),order=pl.slice(st).concat(pl.slice(0,st)),scores={};pl.forEach(id=>scores[id]=0);
+  const pl=gamePlayers().map(p=>p.id),lw=S.memLast&&S.memLast.key!==key?pl.indexOf(S.memLast.who):-1,st=lw>=0?(lw+1)%pl.length:Math.floor(Math.random()*Math.max(1,pl.length)),order=pl.slice(st).concat(pl.slice(0,st)),scores={};pl.forEach(id=>scores[id]=0);
   S.mem={key,layout:ids,order,t:0,flips:[],matched:{},scores,started:false,done:false,bonus:false,lock:false,end:0,tid:0,used:{}};
   $('#cv').innerHTML=memHTML();memPaint();gamePub()}
 const memCur=()=>{const M=S.mem;return M&&M.order.length?M.order[M.t%M.order.length]:null};
@@ -2332,7 +2346,7 @@ function memPick(i,pid){const M=S.mem;if(!M||!M.started||M.done||M.lock)return;i
   if(F.length===3||miss){M.lock=true;const ok=!miss&&F.length===3;
     setTimeout(()=>{if(S.mem!==M)return;const who=memCur();
       if(ok){F.forEach(j=>M.matched[j]=who||'_');if(who)M.scores[who]=(M.scores[who]||0)+1;sfx('sfx-caught-mon');
-        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;S.memTot=S.memTot||{};S.memTot[M.key]={...M.scores};const sum={};Object.values(S.memTot).forEach(sc=>Object.entries(sc).forEach(([id,v])=>sum[id]=(sum[id]||0)+v));leagueSet('mem',sum);leagueFlash();M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
+        if(Object.keys(M.matched).length>=M.layout.length){M.done=true;if(who)S.memLast={key:M.key,who};S.memTot=S.memTot||{};S.memTot[M.key]={...M.scores};const sum={};Object.values(S.memTot).forEach(sc=>Object.entries(sc).forEach(([id,v])=>sum[id]=(sum[id]||0)+v));leagueSet('mem',sum);leagueFlash();M.flips=[];clearInterval(S.memT);memPaint();gamePub();music('mus-victory',{loop:false,vol:.35,delay:600});return}}
       else sfx('sfx-ball-poof');
       memNext(ok)},ok?1500:2300)}}
 function memIn(){const M=S.mem;if(!M?.started||M.done)return;const pid=memCur();if(!pid)return;const x=S.gIn?.[pid];if(!x||x.mk!==M.key||x.tid!==M.tid)return;
@@ -2340,7 +2354,13 @@ function memIn(){const M=S.mem;if(!M?.started||M.done)return;const pid=memCur();
 
 // "who wins?": three battles a set, guesses from the phones, a clock that moves things on by itself
 let BT_T=20,BT_RES=7;
-function btgEnter(){S.btg=S.btg||{set:1,n:0,scores:{},phase:'guess'};const G=S.btg;G.n=0;G.phase='guess';gamePlayers().forEach(p=>{if(G.scores[p.id]==null)G.scores[p.id]=0});btgNext()}
+function btgEnter(){S.btg=S.btg||{set:1,n:0,scores:{},phase:'guess'};const G=S.btg;G.n=0;G.set=1;G.phase='intro';clearInterval(S.btgT);gamePlayers().forEach(p=>{if(G.scores[p.id]==null)G.scores[p.id]=0});$('#cv').innerHTML=btgIntroHTML();gamePub()}
+function btgIntroHTML(){const card=(n,he,en,vs,txtHe,txtEn)=>`<div class="bti-c"><b class="bti-n">${n}</b><p class="bti-h">${ll(he,en)}</p><div class="bti-vs">${vs}</div><p class="bti-t">${ll(txtHe,txtEn)}</p></div>`,P=t=>plateH(t),V='<i>VS</i>';
+  return `<div class="st battle"><p class="bteb" dir="ltr">IT'S A BATTLE! · HOW IT WORKS</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
+   <p class="btsub">${ll('שלושה קרבות בין שני פוקימונים. לא מזל ולא דעה: המספרים של המשחק עצמו מחליטים.','Three battles between two Pokémon. No luck, no opinions: the game\'s own numbers decide.')}</p>
+   <div class="bti-row">${card(1,'סוג מול סוג','Type vs. type',P('water')+V+P('fire'),'יתרון סוג פוגע פי 2.','A type advantage hits twice as hard.')}${card(2,'סוג כפול','A dual type',P('electric')+V+`<span class="bti-two">${P('water')}${P('flying')}</span>`,'הסוג השני יכול לבטל חולשה, או להכפיל אותה.','The second type can cancel a weakness, or double it.')}${card(3,'ומה עם הסטטים?','What about the stats?',`<span class="bti-st">⚔️ 🛡️ ⚡</span>`,'כוח, הגנה ומהירות יכולים לגבור על יתרון הסוג.','Power, defense and speed can beat a type advantage.')}</div>
+   <div class="bti-how"><span>📱 ${ll(`<b>${BT_T} שניות</b> לנחש בטלפון מי ינצח`,`<b>${BT_T} seconds</b> to guess on your phone who wins`)}</span><span>⚔️ ${ll('ואז הקרב רץ על המסך','then the battle plays on screen')}</span><span>🏆 ${ll('ניחוש נכון = נקודה לליגה','Right guess = a league point')}</span></div>
+   <p class="mgo bti-go">${ll('לחיצה = הקרב הראשון','Click = the first battle')}</p></div>`}
 function btgNext(){const G=S.btg;G.n++;G.id=G.set+'-'+G.n;G.phase='guess';G.end=Date.now()+BT_T*1000;battleNew();btgPaint();gamePub();btgClock()}
 function btgClock(){clearInterval(S.btgT);S.btgT=setInterval(()=>{const G=S.btg;if(cur()?.id!=='d-battle'){clearInterval(S.btgT);return}
   const el=$('#gclock');const l=Math.max(0,(G.end-Date.now())/1000);
@@ -2371,6 +2391,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
   else if(it?.id==='x-guess')d={g:'cg'};
   else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',intro:!!Q.intro,key:Q.key,i:Q.i,pos:pqPosOf(Q.key,pqItem().k),n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
+  else if(S.btg&&it?.id==='d-battle'&&S.btg.phase==='intro')d={g:'bt',phase:'intro',scores:S.btg.scores};
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
@@ -2387,7 +2408,7 @@ function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores
   if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')}</h2><p class="muted" style="margin:6px 0 0">${ll(`מצאת ${my} שלישיות`,`You found ${my} sets`)}</p></div>`+grid}
   return head+(mine?`<div class="card qnow mine"><b style="font-size:20px">${G.bonus?ll('תור נוסף! ','Bonus turn! '):''}${ll('התור שלך: בוחרים שלושה קלפים','Your turn: pick three cards')}</b><br><span class="gend" data-end="${G.end}"></span></div>`
     :`<div class="card qnow">${cp?avHead(cp,36):''}<span>${ll(`עכשיו התור של <b>${esc(cp?.name||'')}</b>`,`Now playing: <b>${esc(cp?.name||'')}</b>`)}<br><span class="gend" data-end="${G.end}"></span></span></div>`)+grid}
-function btPhone(me,G){const v=(S.myG||{})['b'+G.id],my=G.scores?.[me.id]||0,side=(X,k)=>`<button class="bpv${v===k?' on':''}${G.win===k?' win':''}" data-bv="${k}" ${G.phase==='guess'&&!v?'':'disabled'}>
+function btPhone(me,G){if(G.phase==='intro')return `<p class="eyebrow">WHO WINS?</p><h1 style="margin:0 0 8px;font-size:26px">${ll('מי ינצח?','Who wins?')}</h1><div class="card center"><p style="margin:0">${ll('מסתכלים על המסך: תכף מתחיל הקרב הראשון. בכל קרב לוחצים כאן על מי שלדעתך ינצח.','Watch the screen: the first battle starts in a moment. In each battle, tap here on who you think will win.')}</p></div>`;const v=(S.myG||{})['b'+G.id],my=G.scores?.[me.id]||0,side=(X,k)=>`<button class="bpv${v===k?' on':''}${G.win===k?' win':''}" data-bv="${k}" ${G.phase==='guess'&&!v?'':'disabled'}>
    <span class="bph">${X.spr?`<img src="${X.spr}" alt="">`:''}<span><b>${esc(X.name)}</b><span class="bpt">${X.types.map(t=>`<span style="background:${TYPE_COL[t]}">${TYPE_HE[t]}</span>`).join('')}</span></span></span>
 </button>`;
   let msg='';if(G.phase==='guess')msg=v?ll(`ניחשת: <b>${esc((v==='a'?G.A:G.B).name)}</b>. מחכים לקרב…`,`Your guess: <b>${esc((v==='a'?G.A:G.B).name)}</b>. Waiting for the battle…`):`<span class="gend" data-end="${G.end}"></span>`;
@@ -3113,7 +3134,7 @@ function renderPanel(){
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
   <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
   <div class="row"><span class="muted grow" style="font-size:13px">שעון הערב: ${S.deck?.t0?'רץ':'יתחיל במעבר מהשקף הראשון'} (מתאפס בשקף הראשון)</span><button class="btn ghost small" data-pa="clock">איפוס השעון</button></div>
-  <details ${isRehearsal()?'open':''}><summary class="muted" style="cursor:pointer">דוח זמנים: תכנון מול בפועל${isRehearsal()?' · 🎭 חזרה גנרלית':''}</summary>${timingReport()}</details>
+  <details><summary class="muted" style="cursor:pointer">דוח זמנים: תכנון מול בפועל${isRehearsal()?' · 🎭 חזרה גנרלית':''}</summary>${timingReport()}</details>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
   <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn ghost small" data-pa="cards">קישורים אישיים</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
   ${S.showCards?`<div class="card" style="margin:8px 0"><div class="row"><b class="grow">קישורים אישיים לכרטיסים (נשמרים גם אחרי איפוס)</b><button class="btn ghost small" data-pa="copyall">העתקת הכול</button></div>${roster().map(r=>{const c=cardCodeFor(r.id);return c?`<div class="row" style="font-size:14px"><span class="grow">${esc(r.name)}</span><code style="direction:ltr">${c.toUpperCase()}</code><a href="${cardLink(c)}" target="_blank" style="color:var(--gold)">פתיחה</a></div>`:''}).join('')}</div>`:''}
