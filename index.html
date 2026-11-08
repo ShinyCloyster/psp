@@ -197,7 +197,7 @@ table.prog th{color:var(--mist);font-weight:500}
 .bti-c{position:relative;background:#FFFDF8;border:2px solid #E4DCCB;border-radius:28px;padding:34px 30px 30px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
 .bti-n{position:absolute;top:-26px;inset-inline-start:26px;width:56px;height:56px;border-radius:50%;background:#E5484D;color:#fff;font:400 24px var(--pixel);display:flex;align-items:center;justify-content:center}
 .bti-h{font-family:var(--display);font-size:46px;color:#161A2E;margin:0}.bti-vs{display:flex;align-items:center;gap:12px;min-height:110px}.bti-vs i{font:400 18px var(--pixel);font-style:normal;color:#E5484D}.bti-vs .tplate{font-size:22px}
-.bti-two{display:flex;flex-direction:column;gap:8px}.bti-st{font-size:58px;letter-spacing:6px}.bti-t{font-size:28px;line-height:1.35;color:#4A4F63;margin:0}
+.bti-x{font-family:var(--display);font-size:92px;font-weight:400;line-height:1;color:#161A2E}.bti-vs i{font-size:20px!important}.bti-st{font-size:58px;letter-spacing:6px}.bti-t{font-size:28px;line-height:1.35;color:#4A4F63;margin:0}
 .bti-how{position:absolute;left:128px;right:128px;top:760px;display:flex;justify-content:center;gap:22px;direction:rtl}.en .bti-how{direction:ltr}.bti-how span{background:#161A2E;color:#F6F1E7;border-radius:40px;padding:16px 28px;font-size:28px}.bti-how b{color:#F2C94C}
 .bti-go{position:absolute;left:0;right:0;top:880px;font-size:22px!important;color:#E5484D!important}
 .btti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400;color:#161A2E}
@@ -516,10 +516,15 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .en .lgbreak{left:auto;right:70px}
 .lgchamp{background:radial-gradient(circle at 50% 35%,#3A2F6B 0%,#161A2E 70%);color:#F6F1E7}
 .lgeb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#F2C94C}.lgti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400}
-.lgpod{position:absolute;right:128px;left:830px;top:280px;bottom:80px;display:flex;align-items:flex-end;justify-content:center;gap:30px}
+.lgpod{position:absolute;right:110px;left:830px;top:250px;bottom:0;display:flex;align-items:flex-end;justify-content:center;gap:22px;direction:ltr}
+.lgs{width:300px;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transform:translateY(50px);animation:lgup .8s cubic-bezier(.2,.8,.3,1.2) forwards}.lgs.r3{animation-delay:.4s}.lgs.r2{animation-delay:1.8s}.lgs.r1{animation-delay:3.3s}
+@keyframes lgup{to{opacity:1;transform:none}}
+.lgav{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:4px}.lgcrown{position:absolute;top:-58px;left:50%;transform:translateX(-50%);font-size:58px;animation:lgbob 1.6s ease-in-out infinite}@keyframes lgbob{50%{transform:translate(-50%,-8px)}}
+.lgs p{font-family:var(--display);font-size:36px;text-align:center;line-height:1.1;margin:4px 0 0;direction:rtl}.lgs.r1 p{font-size:48px;color:#F2C94C}.lgs b{font:400 20px var(--pixel);color:#F2C94C;margin-bottom:8px}
+.lgst{width:100%;border-radius:16px 16px 0 0;display:flex;justify-content:center;padding-top:16px;font:400 54px var(--pixel);color:#161A2E;box-shadow:inset 0 -10px 0 rgba(0,0,0,.15)}.r1 .lgst{height:250px;background:linear-gradient(#FFE27A,#E0A82E)}.r2 .lgst{height:170px;background:linear-gradient(#EEF1F7,#A9B1C4)}.r3 .lgst{height:110px;background:linear-gradient(#F0B98A,#B8723F)}
 .lgp{display:flex;flex-direction:column;align-items:center;gap:6px}.lgp p{font-family:var(--display);font-size:50px}.lgp b{font:400 24px var(--pixel);color:#F2C94C}
 .lgchamp .lgbox{position:absolute;left:70px;top:260px;width:720px}.lgtab{width:100%;border-collapse:collapse;font-size:20px}.lgtab th{font:400 13px var(--pixel);color:#9FA7C7;padding:4px 6px;text-align:center}.lgtab td{padding:5px 6px;text-align:center;border-top:1px solid rgba(255,255,255,.08)}.lgtab td:first-child{text-align:start;white-space:nowrap;font-weight:700}.lgtab td b{color:#F2C94C;font:400 18px var(--pixel)}
-.en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:830px;left:128px}.en .lgchamp .lgbox{left:auto;right:90px}
+.en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:830px;left:110px}.en .lgchamp .lgbox{left:auto;right:90px}
 .scnb{position:absolute;left:70px;bottom:110px;z-index:6;background:rgba(22,26,46,.92);border:3px solid #F2C94C;border-radius:22px;padding:12px 18px;color:#F6F1E7;max-width:620px}
 .scnb p{font-size:22px;font-weight:700;margin-bottom:6px}.scnb div{display:flex;flex-wrap:wrap;gap:6px}.en .scnb{left:auto;right:70px}
 .scnr{position:absolute;inset:0;background:rgba(10,12,24,.55);z-index:20;display:flex;align-items:center;justify-content:center}
@@ -788,7 +793,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794103469';
+const BUILDV='1794104921';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2038,7 +2043,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
     slideMusic(it.id);
     quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
-  } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-badge',{loop:false,vol:.45});sfx('sfx-caught-mon') }
+  } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-badge',{loop:false,vol:.45,delay:3300});sfx('sfx-tink');setTimeout(()=>{if(cur()?.kind==='league')sfx('sfx-tink')},1800);setTimeout(()=>{if(cur()?.kind==='league')sfx('sfx-caught-mon')},3300) }
   else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();try{leagueSet('types',quizState().scores);leagueFlash()}catch(e){}quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
   else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
@@ -2255,7 +2260,7 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
     if(x[k].dmg){hp[o]=Math.max(0,hp[o]-x[k].dmg);const bar=$('#hp-'+o),v=$('#hpv-'+o);if(bar){bar.style.width=(hp[o]/max[o]*100)+'%';bar.style.background=hp[o]/max[o]<.25?'#E4483F':hp[o]/max[o]<.5?'#F2C94C':'#5BC48A'}if(v)v.textContent=hp[o];
       const c=$('#bt-'+o);if(c){c.classList.remove('hit');void c.offsetWidth;c.classList.add('hit')}}
     turn++;if(hp[o]<=0){setTimeout(finish,500);return}setTimeout(step,matchMedia('(prefers-reduced-motion:reduce)').matches?80:650)};
-  const finish=()=>{T.done=true;T.running=false;setTimeout(btgDone,900);if(T.win){sfx('sfx-faint-fall');music('mus-victory',{loop:false,vol:.35,delay:700})}const r=$('#btres');if(!r)return;
+  const finish=()=>{T.done=true;T.running=false;setTimeout(btgDone,900);if(T.win){sfx('sfx-faint-fall');if((S.btg?.n||0)>=3)music('mus-victory',{loop:false,vol:.35,delay:700})}const r=$('#btres');if(!r)return;
     if(!T.win){r.innerHTML=`${ll(`<span>תיקו: אף אחד מהם לא יכול לפגוע בשני.</span>`,`<span>A draw: neither can hurt the other.</span>`)}`}
     else{const W=T.win==='a'?T.A:T.B,L=T.win==='a'?T.B:T.A,xw=T.win==='a'?T.xa:T.xb,xl=T.win==='a'?T.xb:T.xa;$('#bt-'+T.win)?.classList.add('win');
       const why=xw.hits<xl.hits?(xw.m>xl.m?ll('בזכות יתרון הסוג','thanks to the type advantage'):ll('בזכות כוח מול הגנה','thanks to power vs. defense')):ll('כי הוא מהיר יותר ומכה ראשון','because it is faster and strikes first');
@@ -2358,7 +2363,7 @@ function btgEnter(){S.btg=S.btg||{set:1,n:0,scores:{},phase:'guess'};const G=S.b
 function btgIntroHTML(){const card=(n,he,en,vs,txtHe,txtEn)=>`<div class="bti-c"><b class="bti-n">${n}</b><p class="bti-h">${ll(he,en)}</p><div class="bti-vs">${vs}</div><p class="bti-t">${ll(txtHe,txtEn)}</p></div>`,P=t=>plateH(t),V='<i>VS</i>';
   return `<div class="st battle"><p class="bteb" dir="ltr">IT'S A BATTLE! · HOW IT WORKS</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
    <p class="btsub">${ll('שלושה קרבות בין שני פוקימונים. לא מזל ולא דעה: המספרים של המשחק עצמו מחליטים.','Three battles between two Pokémon. No luck, no opinions: the game\'s own numbers decide.')}</p>
-   <div class="bti-row">${card(1,'סוג מול סוג','Type vs. type',P('water')+V+P('fire'),'יתרון סוג פוגע פי 2.','A type advantage hits twice as hard.')}${card(2,'סוג כפול','A dual type',P('electric')+V+`<span class="bti-two">${P('water')}${P('flying')}</span>`,'הסוג השני יכול לבטל חולשה, או להכפיל אותה.','The second type can cancel a weakness, or double it.')}${card(3,'ומה עם הסטטים?','What about the stats?',`<span class="bti-st">⚔️ 🛡️ ⚡</span>`,'כוח, הגנה ומהירות יכולים לגבור על יתרון הסוג.','Power, defense and speed can beat a type advantage.')}</div>
+   <div class="bti-row">${card(1,'סוג מול סוג','Type vs. type','<b dir="ltr" class="bti-x">×2</b>','יתרון סוג פוגע פי 2.','A type advantage hits twice as hard.')}${card(2,'סוג כפול','A dual type',`<b dir="ltr" class="bti-x" style="color:#E5484D">×4</b><i>${ll('או','or')}</i><b dir="ltr" class="bti-x" style="color:#2E9E5B">×0</b>`,'הסוג השני יכול לבטל חולשה, או להכפיל אותה.','The second type can cancel a weakness, or double it.')}${card(3,'ומה עם הסטטים?','What about the stats?',`<span class="bti-st">⚔️ 🛡️ ⚡</span>`,'כוח, הגנה ומהירות יכולים לגבור על יתרון הסוג.','Power, defense and speed can beat a type advantage.')}</div>
    <div class="bti-how"><span>📱 ${ll(`<b>${BT_T} שניות</b> לנחש בטלפון מי ינצח`,`<b>${BT_T} seconds</b> to guess on your phone who wins`)}</span><span>⚔️ ${ll('ואז הקרב רץ על המסך','then the battle plays on screen')}</span><span>🏆 ${ll('ניחוש נכון = נקודה לליגה','Right guess = a league point')}</span></div>
    <p class="mgo bti-go">${ll('לחיצה = הקרב הראשון','Click = the first battle')}</p></div>`}
 function btgNext(){const G=S.btg;G.n++;G.id=G.set+'-'+G.n;G.phase='guess';G.end=Date.now()+BT_T*1000;battleNew();btgPaint();gamePub();btgClock()}
@@ -2511,9 +2516,11 @@ function leagueBox(compact){const T=leagueTable();let rank=0,prev=null;
   return `<div class="lgbox ${compact?'cmp':''}"><p class="lgh">🏆 ${ll('ליגת הערב','THE EVENING LEAGUE')}</p>${T.map((r,i)=>{if(r.pts!==prev){rank=i;prev=r.pts}return `<div class="lgr ${rank===0&&r.pts>0?'top':''}"><i>${r.pts>0?rank+1:'–'}</i>${avHead(r.p,compact?34:40)}<span>${esc(r.p.name)}</span><b>${r.pts}</b></div>`}).join('')}</div>`}
 function leagueOnBreak(id){if(!/^x-break-\d$/.test(id)||!leagueAny())return;const cv=$('#cv'),nurse=cv.querySelector('img[src*="tr-nurse"]');
   if(!$('#facts')&&nurse)nurse.parentElement.style.visibility='hidden';cv.insertAdjacentHTML('beforeend',`<div class="lgbreak ${$('#facts')?'low':''}">${leagueBox(true)}</div>`)}
-function leagueHTML(){const T=leagueTable(),top=T.filter(r=>r.pts===T[0]?.pts&&r.pts>0);
+function leagueHTML(){const T=leagueTable().filter(r=>r.pts>0),lv=[...new Set(T.map(r=>r.pts))].slice(0,3),steps=lv.map((p,i)=>({i,pts:p,rows:T.filter(r=>r.pts===p)}));
+  const step=st=>{const k=st.i,n=st.rows.length,sz=[250,190,160][k]/(n>2?1.7:n>1?1.3:1);
+    return `<div class="lgs r${k+1}"><div class="lgav">${k?'':'<span class="lgcrown">👑</span>'}${st.rows.map(r=>avFull(r.p,Math.round(sz))).join('')}</div><p>${st.rows.map(r=>esc(r.p.name)).join(' · ')}</p><b>${st.pts} ${ll('נק׳','pts')}</b><div class="lgst">${k+1}</div></div>`};
   return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · CHAMPION</p><h2 class="lgti">${ll('אלוף הליגה של הערב','The champion of the evening league')}</h2>
-   <div class="lgpod">${top.length?top.slice(0,3).map(r=>`<div class="lgp">${avFull(r.p,top.length>1?360:440)}<p>${esc(r.p.name)}</p><b>${r.pts} ${ll('נק׳','pts')}</b></div>`).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBreak()}</div>`}
+   <div class="lgpod">${steps.length?[steps[1],steps[0],steps[2]].filter(Boolean).map(step).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBreak()}</div>`}
 function leagueBreak(){const L=S.league||{},G=[...LEAGUE_GAMES.filter(([g])=>Object.values(L[g]||{}).some(v=>v>0)),...(Object.values(L.bt||{}).some(v=>v>0)?[['bt',ll('בונוס קרבות','Battle bonus')]]:[])],T=leagueTable();
   return `<div class="lgbox lgtabw"><p class="lgh">🏆 ${ll('פירוט הניקוד','THE SCORE, GAME BY GAME')}</p><table class="lgtab"><tr><th></th>${G.map(([g,n])=>`<th>${n}</th>`).join('')}<th>${ll('סה״כ','Total')}</th></tr>${T.map(r=>`<tr><td>${avHead(r.p,34)} ${esc(r.p.name)}</td>${G.map(([g])=>`<td>${r.by[g]||'·'}</td>`).join('')}<td><b>${r.pts}</b></td></tr>`).join('')}</table></div>`}
 
