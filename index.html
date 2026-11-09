@@ -201,11 +201,11 @@ table.prog th{color:var(--mist);font-weight:500}
 .oakimg{position:absolute;right:230px;top:110px;width:420px;height:420px;image-rendering:pixelated;object-fit:contain;filter:drop-shadow(0 14px 0 rgba(0,0,0,.18))}
 .battle{background:#F6F1E7;color:#22263A}
 .bteb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#E5484D}
-.bti-row{position:absolute;left:128px;right:128px;top:330px;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;direction:rtl}.en .bti-row{direction:ltr}
-.bti-c{position:relative;background:#FFFDF8;border:2px solid #E4DCCB;border-radius:28px;padding:34px 30px 30px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.bti-row{position:absolute;left:100px;right:100px;top:330px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;direction:rtl}.en .bti-row{direction:ltr}
+.bti-c{position:relative;background:#FFFDF8;border:2px solid #E4DCCB;border-radius:28px;padding:34px 20px 26px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
 .bti-n{position:absolute;top:-26px;inset-inline-start:26px;width:56px;height:56px;border-radius:50%;background:#E5484D;color:#fff;font:400 24px var(--pixel);display:flex;align-items:center;justify-content:center}
-.bti-h{font-family:var(--display);font-size:46px;color:#161A2E;margin:0}.bti-vs{display:flex;align-items:center;gap:12px;min-height:110px}.bti-vs i{font:400 18px var(--pixel);font-style:normal;color:#E5484D}.bti-vs .tplate{font-size:22px}
-.bti-x{font-family:var(--display);font-size:92px;font-weight:400;line-height:1;color:#161A2E}.bti-vs i{font-size:20px!important}.bti-st{font-size:58px;letter-spacing:6px}.bti-t{font-size:28px;line-height:1.35;color:#4A4F63;margin:0}
+.bti-h{font-family:var(--display);font-size:40px;color:#161A2E;margin:0}.bti-vs{display:flex;align-items:center;gap:12px;min-height:110px}.bti-vs i{font:400 18px var(--pixel);font-style:normal;color:#E5484D}.bti-vs .tplate{font-size:22px}
+.bti-x{font-family:var(--display);font-size:92px;font-weight:400;line-height:1;color:#161A2E}.bti-vs i{font-size:20px!important}.bti-st{font-size:58px;letter-spacing:6px}.bti-t{font-size:26px;line-height:1.3;color:#4A4F63;margin:0}
 .bti-how{position:absolute;left:128px;right:128px;top:760px;display:flex;justify-content:center;gap:22px;direction:rtl}.en .bti-how{direction:ltr}.bti-how span{background:#161A2E;color:#F6F1E7;border-radius:40px;padding:16px 28px;font-size:28px}.bti-how b{color:#F2C94C}
 .bti-go{position:absolute;left:0;right:0;top:880px;font-size:22px!important;color:#E5484D!important}
 .btti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400;color:#161A2E}
@@ -537,6 +537,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .shnote{margin:0;text-align:center;font-size:30px;color:#F2C94C;line-height:1.3}.shnote b{font:400 24px var(--pixel);display:block;margin-bottom:6px}
 .awgrid{position:absolute;top:250px;right:90px;left:90px;bottom:44px;display:grid;gap:20px}.awc{display:flex;align-items:center;gap:20px;min-width:0;padding:14px 22px;border-radius:20px;background:rgba(255,255,255,.07);border:2px solid rgba(242,201,76,.35);transition:opacity .4s}.awc.off{opacity:.14}.awc.off>*{visibility:hidden}.awc.subj{background:rgba(242,201,76,.16);border-color:#F2C94C}
 .awm{width:var(--am);height:var(--am);flex:none}.awc.in .awm{animation:awpop .7s cubic-bezier(.2,1.6,.4,1)}@keyframes awpop{from{transform:scale(0) rotate(-30deg)}to{transform:none}}.awt{min-width:0}.awh{font-family:var(--display);font-size:38px;line-height:1.1}.awn{font-size:26px;font-weight:700;margin:6px 0 4px}.awr{font-size:22px;line-height:1.28;color:#C9CFE3}.awgrid.big .awh{font-size:50px}.awgrid.big .awn{font-size:32px}.awgrid.big .awr{font-size:28px}
+.btsp{height:190px;width:320px;display:flex;align-items:flex-end;justify-content:center}.bti.anim{width:auto;height:auto;object-fit:initial;image-rendering:pixelated;--lx:-46px}.bti.anim.lft{--lx:46px;transform:scaleX(-1)}.bti.anim.lft.bk{transform:none}.btc.atk .bti{animation:btatk .4s}@keyframes btatk{0%,100%{translate:0}40%{translate:var(--lx,0)}}
 .en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:830px;left:110px}.en .lgchamp .lgbox{left:auto;right:90px}
 .scnb{position:absolute;left:70px;bottom:110px;z-index:6;background:rgba(22,26,46,.92);border:3px solid #F2C94C;border-radius:22px;padding:12px 18px;color:#F6F1E7;max-width:620px}
 .scnb p{font-size:22px;font-weight:700;margin-bottom:6px}.scnb div{display:flex;flex-wrap:wrap;gap:6px}.en .scnb{left:auto;right:70px}
@@ -806,15 +807,18 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794227512';
+const BUILDV='1794234887';
 // background music: one track at a time, crossfaded
-const BGM={cur:null,a:null};
+const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
 function music(name,o={}){
   if(name&&BGM.cur===name){if(BGM.a&&BGM.a.paused&&!BGM.a.ended)BGM.a.play().catch(()=>{});if(BGM.a&&o.vol!=null)fadeAudio(BGM.a,o.vol,700);return}
-  const old=BGM.a;if(old)fadeAudio(old,0,old.loop?900:3500,()=>old.pause());BGM.cur=name||null;BGM.a=null;clearTimeout(BGM.t);if(!name)return;
-  BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+'.mp3?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{BGM.blocked=a});fadeAudio(a,o.vol??.35,1200);
-    if(o.then)a.onended=()=>{if(BGM.a===a){BGM.cur=null;music(o.then,{vol:o.vol})}}},o.delay||0)}
+  const old=BGM.a;if(old)fadeAudio(old,0,old.loop?900:3500,()=>old.pause());BGM.cur=name||null;BGM.list=o.list||null;BGM.a=null;clearTimeout(BGM.t);if(!name)return;
+  BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+(MUS_OGG.has(name)?'.ogg':'.mp3')+'?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{BGM.blocked=a});fadeAudio(a,o.vol??.35,1200);
+    if(o.then||o.onend)a.onended=()=>{if(BGM.a===a){BGM.cur=null;o.onend?o.onend():music(o.then,{vol:o.vol})}}},o.delay||0)}
+// questionnaire rounds: each opens on its own track; when a track ends the next one starts
+const ROUND_MUS=['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-newbark'];
+function roundMusic(k){const key='r'+k;if(BGM.list===key&&BGM.cur)return;const n=ROUND_MUS.length,play=i=>music(ROUND_MUS[(k-1+i)%n],{loop:false,vol:.25,list:key,onend:()=>play(i+1)});play(0)}
 // browsers refuse sound before the first click on the page (e.g. opening straight into a slide): start the waiting track on the first gesture
 ['pointerdown','keydown','touchend'].forEach(ev=>document.addEventListener(ev,()=>{const a=BGM.blocked;if(a&&BGM.a===a&&a.paused){BGM.blocked=null;a.play().catch(()=>{BGM.blocked=a})}},true));
 const SFX={};function sfx(n){try{let a=SFX[n];if(!a){a=SFX[n]=new Audio(n+'.mp3?v='+BUILDV);a.preload='auto'}a.currentTime=0;a.volume=.7;a.play().catch(()=>{})}catch(e){}}
@@ -1986,7 +1990,7 @@ function closingHTML(){
   </div>`}
 function slideMusic(id){
   if(id==='cover')return music('mus-adventure',{vol:.3});
-  if(/^x-round-/.test(id))return music('mus-newbark',{vol:.25});
+  {const m=id.match(/^x-round-(\d)/);if(m)return roundMusic(+m[1])}
   if(/^x-break-/.test(id))return music('mus-healed',{loop:false,vol:.35,then:'mus-center'});
   if(/^x-part-/.test(id))return music('mus-badge',{loop:false,vol:.4});
   if(id==='h-divider')return music('mus-evolution',{loop:false,vol:.3});
@@ -2237,49 +2241,55 @@ function btAttack(A,D){let best=null;A.t.forEach(t=>{const m=D.t.reduce((x,d)=>x
   const phys=A.atk>=A.spa,At=phys?A.atk:A.spa,Df=phys?D.def:D.spd;
   const dmg=best.m?Math.max(1,Math.floor((Math.floor(22*80*At/Df)/50+2)*1.5*best.m*.925)):0;
   return {...best,phys,dmg,hits:dmg?Math.ceil(D.hp/dmg):Infinity,pct:dmg?Math.min(100,dmg/D.hp*100):0}}
-// the three battles of a set tell a story: 1) a plain type advantage, 2) a second type that changes the picture, 3) type advantage that loses to the stats
-const BT_KIND=['type','dual','surprise'];
+// the four battles of a set tell a story: 1) a plain type advantage, 2) a second type that doubles a weakness, 3) a second type that cancels a weakness, 4) a type advantage that loses to the stats
+const BT_KIND=['type','dual','immune','surprise'];
 function btFits(kind,A,B,xa,xb,win){if(!win||xa.m===xb.m)return false;const adv=xa.m>xb.m?'a':'b';
   if(kind==='type')return A.t.length===1&&B.t.length===1&&Math.max(xa.m,xb.m)>=2&&win===adv;
   if(kind==='dual'){const two=(X,Y,x)=>X.t.length===2&&(CHART[x.type][X.t[0]]??1)!==x.m;return (two(B,A,xa)||two(A,B,xb))&&Math.max(xa.m,xb.m)>=2&&win===adv}
+  if(kind==='immune'){const nul=(X,Y,x)=>x.m===0&&Y.t.length===2&&X.t.some(t=>Y.t.some(d=>(CHART[t][d]??1)>=2));return (nul(A,B,xa)&&win==='b'&&xb.dmg>0)||(nul(B,A,xb)&&win==='a'&&xa.dmg>0)}
   return Math.max(xa.m,xb.m)>=2&&win!==adv}
-// the first set is hand-picked so each battle shows its point cleanly: Blastoise vs. Rapidash (water vs. fire); Raichu vs. Gyarados (flying doubles the weakness to electric); Dugtrio vs. Arcanine (a type advantage that loses to the stats)
-const BT_FIXED=[[9,78],[26,130],[51,59]];
+// the first set is hand-picked so each battle shows its point cleanly: Blastoise vs. Rapidash (water vs. fire); Raichu vs. Gyarados (flying doubles the weakness to electric); Machamp vs. Sableye (ghost cancels the weakness to fighting); Dugtrio vs. Arcanine (a type advantage that loses to the stats)
+const BT_FIXED=[[9,78],[26,130],[68,302],[51,59]];
+const BT_ANIM=new Set([9,78,26,130,68,302,51,59]);
 const btLine=sp=>S.engine.lines.find(l=>l.species.includes(sp)&&!/Alola|Galar|Hisui|Paldea/.test(finalName(l)));
 function btClear(kind,xa,xb,win){const W=win==='a'?xa:xb,L=win==='a'?xb:xa,gap=(L.hits===Infinity?9:L.hits)-W.hits;if(xa.m>=2&&xb.m>=2)return false;return kind==='surprise'?gap>=1&&W.m<=1:gap>=2}
-function battleNew(){music(null);
-  if((S.btg?.set||1)===1){const f=BT_FIXED[((S.btg?.n||1)-1)%3],ln=btLine;if(f&&ln(f[0])&&ln(f[1])){const A=btSide(ln(f[0])),B=btSide(ln(f[1])),xa=btAttack(A,B),xb=btAttack(B,A);let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
-    if(win){S.bt={A,B,xa,xb,win,kind:BT_KIND[((S.btg?.n||1)-1)%3],done:false};$('#cv').innerHTML=battleHTML();return}}}
+function battleNew(){music((S.btg?.n||1)<=2?'mus-wild':'mus-trainer',{vol:.22});
+  if((S.btg?.set||1)===1){const f=BT_FIXED[((S.btg?.n||1)-1)%4],ln=btLine;if(f&&ln(f[0])&&ln(f[1])){const A=btSide(ln(f[0])),B=btSide(ln(f[1])),xa=btAttack(A,B),xb=btAttack(B,A);let win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
+    if(win){S.bt={A,B,xa,xb,win,kind:BT_KIND[((S.btg?.n||1)-1)%4],done:false};$('#cv').innerHTML=battleHTML();return}}}
   const pool=S.engine.lines.filter(l=>!l.legendary&&S.engine.base?.[l.id]&&!['984','985','986','987','988','989','990','991','992','993','994','995','1005','1006','1009','1010','1020','1021','1022','1023'].includes(l.id));
-  const kind=BT_KIND[((S.btg?.n||1)-1)%3],pick=()=>pool[Math.floor(Math.random()*pool.length)];let A,B,xa,xb,win,best=null;
+  const kind=BT_KIND[((S.btg?.n||1)-1)%4],pick=()=>pool[Math.floor(Math.random()*pool.length)];let A,B,xa,xb,win,best=null;
   for(let i=0;i<3000;i++){let a=pick(),b=pick();if(b.id===a.id)continue;A=btSide(a);B=btSide(b);xa=btAttack(A,B);xb=btAttack(B,A);
     win=null;if(xa.hits!==xb.hits)win=xa.hits<xb.hits?'a':'b';else if(xa.hits!==Infinity&&A.spe!==B.spe)win=A.spe>B.spe?'a':'b';
     if(win&&!best)best={A,B,xa,xb,win};if(btFits(kind,A,B,xa,xb,win)&&btClear(kind,xa,xb,win)){best={A,B,xa,xb,win};break}}
   S.bt={...best,kind,done:false};$('#cv').innerHTML=battleHTML();
 }
+// the hand-picked battles are animated; the two sprites face each other, and when the fight starts the one on the left turns its back, like in the games
+function btImg(X,k){const sp=X.l.species.at(-1);if(!BT_ANIM.has(sp))return `<img ${artAttr(X.l)} alt="" class="bti">`;return `<span class="btsp"><img src="anim/${sp}.gif" alt="" class="bti anim${k===(EN?'a':'b')?' lft':''}" data-sp="${sp}" onload="btSize(this)"></span>`}
+function btSize(i){const k=Math.min(3,190/i.naturalHeight,300/i.naturalWidth);i.style.width=Math.round(i.naturalWidth*k)+'px';i.style.height=Math.round(i.naturalHeight*k)+'px'}
 function btCard(X,x,k){const l=X.l,phys=x.phys;
-  return `<div class="btc" id="bt-${k}"><img ${artAttr(l)} alt="" class="bti"><p class="btn2">${esc(finalName(l))}</p><div class="btt">${X.t.map(plateH).join('')}</div>
+  return `<div class="btc" id="bt-${k}">${btImg(X,k)}<p class="btn2">${esc(finalName(l))}</p><div class="btt">${X.t.map(plateH).join('')}</div>
    <div class="bthp"><span>HP</span><div><i id="hp-${k}"></i></div><b id="hpv-${k}">${X.hp}</b></div>
    <div class="btbars">${[['Attack',1],['Defense',2],['Sp. Atk',3],['Sp. Def',4],['Speed',5]].map(([n,i])=>`<i>${n}</i><em><u style="width:${Math.min(100,X.b[i]/1.6)}%;background:${X.b[i]>=100?'#5BC48A':X.b[i]>=70?'#F2C94C':'#F08A5D'}"></u></em><b>${X.b[i]}</b>`).join('')}</div>
    <div class="btx" id="btx-${k}"><p>${ll(`תוקף ב<b style="color:${TYPE_COL[x.type]}">${TYPE_HE[x.type]}</b>: <b>${MULT_HE(x.m)}</b>`,`Attacks with <b style="color:${TYPE_COL[x.type]}">${TYPE_HE[x.type]}</b>: <b>${MULT_HE(x.m)}</b>`)}</p><p>${ll(`${x.dmg?`כל מכה מורידה <b>${Math.round(x.pct)}%</b> מהחיים, כך ש<b>${x.hits===1?'מכה אחת':x.hits+' מכות'}</b> מספיקות לניצחון`:'לא יכול לפגוע בכלל'}`,`${x.dmg?`Each hit takes <b>${Math.round(x.pct)}%</b> of HP, so <b>${x.hits===1?'one hit':x.hits+' hits'}</b> are enough to win`:'Can\'t hit at all'}`)}</p></div></div>`}
 function battleHTML(){const {A,B,xa,xb}=S.bt,first=A.spe>=B.spe?A:B;
-  return `<div class="st battle"><p class="bteb" dir="ltr">IT'S A BATTLE! · ${{type:'BATTLE 1 · TYPE VS. TYPE',dual:'BATTLE 2 · DUAL TYPE',surprise:'BATTLE 3 · WHAT ABOUT THE STATS?'}[S.bt.kind]}</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
-   <p class="btsub"><b>${ll({type:'קרב 1: סוג מול סוג.',dual:'קרב 2: סוג כפול.',surprise:'קרב 3: ומה עם הסטטים?'}[S.bt.kind],{type:'Battle 1: type vs. type.',dual:'Battle 2: a dual type.',surprise:'Battle 3: what about the stats?'}[S.bt.kind])}</b> ${ll(`נחשו בטלפון מי ינצח: ${BT_T} שניות.`,`Guess on your phone who wins: ${BT_T} seconds.`)}</p>
+  return `<div class="st battle"><p class="bteb" dir="ltr">IT'S A BATTLE! · ${{type:'BATTLE 1 · TYPE VS. TYPE',dual:'BATTLE 2 · A DOUBLED WEAKNESS',immune:'BATTLE 3 · A CANCELLED WEAKNESS',surprise:'BATTLE 4 · WHAT ABOUT THE STATS?'}[S.bt.kind]}</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
+   <p class="btsub"><b>${ll({type:'קרב 1: סוג מול סוג.',dual:'קרב 2: סוג כפול מכפיל חולשה.',immune:'קרב 3: סוג כפול מבטל חולשה.',surprise:'קרב 4: ומה עם הסטטים?'}[S.bt.kind],{type:'Battle 1: type vs. type.',dual:'Battle 2: a dual type doubles a weakness.',immune:'Battle 3: a dual type cancels a weakness.',surprise:'Battle 4: what about the stats?'}[S.bt.kind])}</b> ${ll(`נחשו בטלפון מי ינצח: ${BT_T} שניות.`,`Guess on your phone who wins: ${BT_T} seconds.`)}</p>
    <div class="btrow">${btCard(A,xa,'a')}<div class="btvs"><div class="gclock" id="gclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div><b>VS</b><small id="btfirst"><bdi>${esc(finalName(first.l))}</bdi> ${ll(`מהיר יותר ותוקף ראשון`,`is faster and attacks first`)}</small></div>${btCard(B,xb,'b')}</div>
    <div class="btres" id="btres"></div><div class="btboard" id="btboard"></div></div>`}
 function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
-  document.querySelectorAll('.btx').forEach(e=>e.classList.add('show'));$('#btfirst')?.classList.add('show');
+  document.querySelectorAll('.btx').forEach(e=>e.classList.add('show'));$('#btfirst')?.classList.add('show');document.querySelectorAll('.bti.anim.lft').forEach(i=>{i.src='anim/back/'+i.dataset.sp+'.gif';i.classList.add('bk')});
   const order=T.A.spe>=T.B.spe?['a','b']:['b','a'],hp={a:T.A.hp,b:T.B.hp},max={a:T.A.hp,b:T.B.hp},x={a:T.xa,b:T.xb};let turn=0;
   const step=()=>{const k=order[turn%2],o=k==='a'?'b':'a';
     if(x.a.dmg===0&&x.b.dmg===0||turn>40){finish();return}
+    {const ac=$('#bt-'+k);if(ac){ac.classList.remove('atk');void ac.offsetWidth;ac.classList.add('atk')}}
     if(x[k].dmg){hp[o]=Math.max(0,hp[o]-x[k].dmg);const bar=$('#hp-'+o),v=$('#hpv-'+o);if(bar){bar.style.width=(hp[o]/max[o]*100)+'%';bar.style.background=hp[o]/max[o]<.25?'#E4483F':hp[o]/max[o]<.5?'#F2C94C':'#5BC48A'}if(v)v.textContent=hp[o];
       const c=$('#bt-'+o);if(c){c.classList.remove('hit');void c.offsetWidth;c.classList.add('hit')}}
     turn++;if(hp[o]<=0){setTimeout(finish,500);return}setTimeout(step,matchMedia('(prefers-reduced-motion:reduce)').matches?80:650)};
-  const finish=()=>{T.done=true;T.running=false;setTimeout(btgDone,900);if(T.win){sfx('sfx-faint-fall');if((S.btg?.n||0)>=3)music('mus-victory',{loop:false,vol:.35,delay:700})}const r=$('#btres');if(!r)return;
+  const finish=()=>{T.done=true;T.running=false;setTimeout(btgDone,900);if(T.win){sfx('sfx-faint-fall');if((S.btg?.n||0)>=4)music('mus-victory',{loop:false,vol:.35,delay:700})}const r=$('#btres');if(!r)return;
     if(!T.win){r.innerHTML=`${ll(`<span>תיקו: אף אחד מהם לא יכול לפגוע בשני.</span>`,`<span>A draw: neither can hurt the other.</span>`)}`}
     else{const W=T.win==='a'?T.A:T.B,L=T.win==='a'?T.B:T.A,xw=T.win==='a'?T.xa:T.xb,xl=T.win==='a'?T.xb:T.xa;$('#bt-'+T.win)?.classList.add('win');
-      const why=xw.hits<xl.hits?(xw.m>xl.m?ll('בזכות יתרון הסוג','thanks to the type advantage'):ll('בזכות כוח מול הגנה','thanks to power vs. defense')):ll('כי הוא מהיר יותר ומכה ראשון','because it is faster and strikes first');
-      const les={type:'',dual:ll(' הסוג השני שינה את התמונה.',' The second type changed the picture.'),surprise:ll(' יתרון הסוג לא הספיק.',' The type advantage wasn\'t enough.')}[T.kind]||'';
+      const why=xl.m===0?ll('כי היריב לא יכול לפגוע בו בכלל','because its opponent can\'t hurt it at all'):xw.hits<xl.hits?(xw.m>xl.m?ll('בזכות יתרון הסוג','thanks to the type advantage'):ll('בזכות כוח מול הגנה','thanks to power vs. defense')):ll('כי הוא מהיר יותר ומכה ראשון','because it is faster and strikes first');
+      const les={type:'',dual:ll(' הסוג השני הכפיל את החולשה.',' The second type doubled the weakness.'),immune:ll(' הסוג השני ביטל את החולשה.',' The second type cancelled the weakness.'),surprise:ll(' יתרון הסוג לא הספיק.',' The type advantage wasn\'t enough.')}[T.kind]||'';
       r.innerHTML=`<span>🏆 <bdi>${esc(finalName(W.l))}</bdi> ${ll(`מנצח, ${why}.`,`wins, ${why}.`)}${les}</span>`}
     r.classList.add('show')};
   step();
@@ -2377,31 +2387,33 @@ let BT_T=20,BT_RES=7;
 function btgEnter(){S.btg=S.btg||{set:1,n:0,scores:{},phase:'guess'};const G=S.btg;G.n=0;G.set=1;G.phase='intro';clearInterval(S.btgT);gamePlayers().forEach(p=>{if(G.scores[p.id]==null)G.scores[p.id]=0});$('#cv').innerHTML=btgIntroHTML();gamePub()}
 function btgIntroHTML(){const card=(n,he,en,vs,txtHe,txtEn)=>`<div class="bti-c"><b class="bti-n">${n}</b><p class="bti-h">${ll(he,en)}</p><div class="bti-vs">${vs}</div><p class="bti-t">${ll(txtHe,txtEn)}</p></div>`,P=t=>plateH(t),V='<i>VS</i>';
   return `<div class="st battle"><p class="bteb" dir="ltr">IT'S A BATTLE! · HOW IT WORKS</p>${ll(`<h2 class="btti">הכי מתמטי: מי מנצח בקרב?</h2>`,`<h2 class="btti">The most mathematical: who wins the battle?</h2>`)}
-   <p class="btsub">${ll('שלושה קרבות בין שני פוקימונים. לא מזל ולא דעה: המספרים של המשחק עצמו מחליטים.','Three battles between two Pokémon. No luck, no opinions: the game\'s own numbers decide.')}</p>
-   <div class="bti-row">${card(1,'סוג מול סוג','Type vs. type','<b dir="ltr" class="bti-x">×2</b>','יתרון סוג פוגע פי 2.','A type advantage hits twice as hard.')}${card(2,'סוג כפול','A dual type',`<b dir="ltr" class="bti-x" style="color:#E5484D">×4</b><i>${ll('או','or')}</i><b dir="ltr" class="bti-x" style="color:#2E9E5B">×0</b>`,'הסוג השני יכול לבטל חולשה, או להכפיל אותה.','The second type can cancel a weakness, or double it.')}${card(3,'ומה עם הסטטים?','What about the stats?',`<span class="bti-st">⚔️ 🛡️ ⚡</span>`,'כוח, הגנה ומהירות יכולים לגבור על יתרון הסוג.','Power, defense and speed can beat a type advantage.')}</div>
+   <p class="btsub">${ll('ארבעה קרבות בין שני פוקימונים. לא מזל ולא דעה: המספרים של המשחק עצמו מחליטים.','Four battles between two Pokémon. No luck, no opinions: the game\'s own numbers decide.')}</p>
+   <div class="bti-row">${card(1,'סוג מול סוג','Type vs. type','<b dir="ltr" class="bti-x">×2</b>','יתרון סוג פוגע פי 2.','A type advantage hits twice as hard.')}${card(2,'חולשה כפולה','A doubled weakness','<b dir="ltr" class="bti-x" style="color:#E5484D">×4</b>','הסוג השני יכול להכפיל חולשה.','The second type can double a weakness.')}${card(3,'חולשה מבוטלת','A cancelled weakness','<b dir="ltr" class="bti-x" style="color:#2E9E5B">×0</b>','הסוג השני יכול לבטל חולשה לגמרי.','The second type can cancel a weakness altogether.')}${card(4,'ומה עם הסטטים?','What about the stats?',`<span class="bti-st">⚔️ 🛡️ ⚡</span>`,'כוח, הגנה ומהירות יכולים לגבור על יתרון הסוג.','Power, defense and speed can beat a type advantage.')}</div>
    <div class="bti-how"><span>📱 ${ll(`<b>${BT_T} שניות</b> לנחש בטלפון מי ינצח`,`<b>${BT_T} seconds</b> to guess on your phone who wins`)}</span><span>⚔️ ${ll('ואז הקרב רץ על המסך','then the battle plays on screen')}</span><span>🏆 ${ll('ניחוש נכון = נקודה לליגה','Right guess = a league point')}</span></div>
    <p class="mgo bti-go">${ll('לחיצה = הקרב הראשון','Click = the first battle')}</p></div>`}
-function btgNext(){const G=S.btg;G.n++;G.id=G.set+'-'+G.n;G.phase='guess';G.end=Date.now()+BT_T*1000;battleNew();btgPaint();gamePub();btgClock()}
+function btgNext(){const G=S.btg;G.n++;G.id=G.set+'-'+G.n;G.phase='guess';G.end=Date.now()+BT_T*1000;battleNew();document.querySelectorAll('.bti.anim.lft').forEach(i=>{new Image().src='anim/back/'+i.dataset.sp+'.gif'});btgPaint();gamePub();btgClock()}
 function btgClock(){clearInterval(S.btgT);S.btgT=setInterval(()=>{const G=S.btg;if(cur()?.id!=='d-battle'){clearInterval(S.btgT);return}
   const el=$('#gclock');const l=Math.max(0,(G.end-Date.now())/1000);
-  if(el){el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/(G.phase==='guess'?BT_T:BT_RES)*100;el.querySelector('span').textContent=G.phase==='guess'?ll('לנחש בטלפון','guess on your phone'):G.n<3?ll('הקרב הבא','next battle'):ll('הטבלה','standings')}
+  if(el){el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/(G.phase==='guess'?BT_T:BT_RES)*100;el.querySelector('span').textContent=G.phase==='guess'?ll('לנחש בטלפון','guess on your phone'):G.n<4?ll('הקרב הבא','next battle'):ll('הטבלה','standings')}
   if(G.phase==='guess'&&Date.now()>G.end)btgFight()},250)}
 function btgFight(){const G=S.btg;if(G.phase!=='guess')return;G.phase='fight';$('#gclock')?.classList.add('off');gamePub();battleRun()}
+// everybody guessed: no point watching the clock run out (only the battles work this way)
+function btgAllIn(){const G=S.btg;if(!G||G.phase!=='guess'||G.allId===G.id)return;const pl=gamePlayers();if(!pl.length||!pl.every(p=>S.gIn?.[p.id]?.['b'+G.id]))return;G.allId=G.id;const id=G.id;setTimeout(()=>{if(G.phase==='guess'&&G.id===id&&cur()?.id==='d-battle')btgFight()},1000)}
 function btgDone(){const G=S.btg;if(!G||G.phase!=='fight')return;G.phase='result';const win=S.bt.win;G.right=[];
   gamePlayers().forEach(p=>{const v=S.gIn?.[p.id]?.['b'+G.id];if(v&&v===win){G.scores[p.id]=(G.scores[p.id]||0)+1;G.right.push(p.id)}});
-  btgPaint();gamePub();const r=$('#btres');if(r)r.insertAdjacentHTML('beforeend',`<small class="btnext">${G.n<3?ll('לחיצה = הקרב הבא','Click = next battle'):ll('לחיצה = הטבלה','Click = the standings')}</small>`)}
-function btgAfter(){const G=S.btg;if(G.n<3){btgNext();return}G.phase='table';leagueSet('bt',G.scores);clearInterval(S.btgT);btgPaint();gamePub()}
+  btgPaint();gamePub();const r=$('#btres');if(r)r.insertAdjacentHTML('beforeend',`<small class="btnext">${G.n<4?ll('לחיצה = הקרב הבא','Click = next battle'):ll('לחיצה = הטבלה','Click = the standings')}</small>`)}
+function btgAfter(){const G=S.btg;if(G.n<4){btgNext();return}G.phase='table';leagueSet('bt',G.scores);clearInterval(S.btgT);btgPaint();gamePub()}
 function btgMore(){const G=S.btg;G.set++;G.n=0;btgNext()}
 function btgBoard(){const G=S.btg,rows=gamePlayers().map(p=>({p,s:G.scores[p.id]||0})).sort((a,b)=>b.s-a.s);
   return rows.map(r=>{const v=S.gIn?.[r.p.id]?.['b'+G.id];let st='';if(G.phase==='result')st=G.right?.includes(r.p.id)?'<i class="qv">✓</i>':'<i class="qx">✗</i>';else if(v)st='<i class="qv">•</i>';
     return `<div class="qr">${avHead(r.p,40)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${st}</span><b>${r.s}</b></div>`}).join('')}
-function btgPaint(){const G=S.btg;if(!G)return;const b=$('#btboard');if(b)b.innerHTML=`<p class="qbh">${ll(`קרב ${G.n}/3`,`BATTLE ${G.n}/3`)}</p>`+btgBoard();
+function btgPaint(){const G=S.btg;if(!G)return;const b=$('#btboard');if(b)b.innerHTML=`<p class="qbh">${ll(`קרב ${G.n}/4`,`BATTLE ${G.n}/4`)}</p>`+btgBoard();
   $('#bttable')?.remove();
   if(G.phase==='table'){const rows=gamePlayers().map(p=>({p,s:G.scores[p.id]||0})).sort((a,b)=>b.s-a.s),top=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);
-    $('#cv').insertAdjacentHTML('beforeend',`<div id="bttable" class="bttable"><div class="card"><p class="bteb2">STANDINGS · ${G.set*3} ${ll('קרבות','BATTLES')}</p>
+    $('#cv').insertAdjacentHTML('beforeend',`<div id="bttable" class="bttable"><div class="card"><p class="bteb2">STANDINGS · ${G.set*4} ${ll('קרבות','BATTLES')}</p>
      ${top.length?`<div class="btwin">${top.slice(0,3).map(r=>avFull(r.p,170)).join('')}</div><h3>🏆 ${top.map(r=>esc(r.p.name)).join(' · ')}</h3>`:`<h3>${ll('אף אחד עוד לא ניחש נכון','Nobody guessed right yet')}</h3>`}
      <div class="btlist">${rows.map(r=>`<span>${avHead(r.p,36)}<b>${esc(r.p.name)}</b> ${r.s}</span>`).join('')}</div>
-     <div class="row" style="gap:16px;justify-content:center"><button class="btn" onclick="event.stopPropagation();btgMore()">${ll('⚔️ עוד 3 קרבות','⚔️ 3 more battles')}</button></div><p class="muted" style="margin:0">${ll('או חץ קדימה, וממשיכים','or press next to move on')}</p></div></div>`);
+     <div class="row" style="gap:16px;justify-content:center"><button class="btn" onclick="event.stopPropagation();btgMore()">${ll('⚔️ עוד 4 קרבות','⚔️ 4 more battles')}</button></div><p class="muted" style="margin:0">${ll('או חץ קדימה, וממשיכים','or press next to move on')}</p></div></div>`);
     if(top.length)music('mus-victory',{loop:false,vol:.35})}}
 function btgSide(X){return {name:finalName(X.l),types:X.t,st:X.b.slice(0,6),spr:(()=>{try{return spriteURL(sprite(X.l,X.l.species.at(-1)))}catch(e){return ''}})()}}
 
@@ -2414,7 +2426,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   else if(S.btg&&it?.id==='d-battle'&&S.btg.phase==='intro')d={g:'bt',phase:'intro',scores:S.btg.scores};
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
-function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint()}}
+function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}}
 
 // ----- phone side -----
 function gameView(me){const G=S.game;if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);return ''}
@@ -2434,8 +2446,8 @@ function btPhone(me,G){if(G.phase==='intro')return `<p class="eyebrow">WHO WINS?
   let msg='';if(G.phase==='guess')msg=v?ll(`ניחשת: <b>${esc((v==='a'?G.A:G.B).name)}</b>. מחכים לקרב…`,`Your guess: <b>${esc((v==='a'?G.A:G.B).name)}</b>. Waiting for the battle…`):`<span class="gend" data-end="${G.end}"></span>`;
   else if(G.phase==='fight')msg=ll('הקרב רץ על המסך…','The battle is on the screen…');
   else if(G.phase==='table')msg=ll('הטבלה על המסך','The standings are on the screen');
-  else if(G.win){const ok=v===G.win;msg=(ok?ll('<b>צדקת! +1</b>','<b>Correct! +1</b>'):v?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.'))+(G.n<3?`<br><small class="muted">${ll('מחכים לקרב הבא…','Waiting for the next battle…')}</small>`:'')}
-  return `<p class="eyebrow">WHO WINS? · ${ll(`קרב ${G.n}/3`,`BATTLE ${G.n}/3`)}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('מי ינצח?','Who wins?')}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>
+  else if(G.win){const ok=v===G.win;msg=(ok?ll('<b>צדקת! +1</b>','<b>Correct! +1</b>'):v?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.'))+(G.n<4?`<br><small class="muted">${ll('מחכים לקרב הבא…','Waiting for the next battle…')}</small>`:'')}
+  return `<p class="eyebrow">WHO WINS? · ${ll(`קרב ${G.n}/4`,`BATTLE ${G.n}/4`)}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('מי ינצח?','Who wins?')}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>
    <div class="card qnow" style="display:block">${msg}${G.kind==='surprise'&&G.phase==='guess'?`<br><small class="muted">${ll('רמז: הפעם שווה להציץ גם בסטטים שעל המסך.','Hint: this time, glance at the stats on the screen too.')}</small>`:''}</div><div class="bpg">${side(G.A,'a')}<span class="bpvs">VS</span>${side(G.B,'b')}</div>
    <button class="btn ghost small" data-act="tchart" style="margin-top:10px">${S.tchart?ll('הסתרת טבלת הסוגים','Hide the type chart'):ll('📊 טבלת הסוגים','📊 Type chart')}</button>${S.tchart?typeChartH([...G.A.types,...G.B.types]):''}`}
 function typeChartH(hl){const T=Object.keys(TYPE_HE),h=new Set(hl);
@@ -2516,14 +2528,11 @@ function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item
    ${mine?`<p class="muted center" style="font-size:14px">${ll(`ניחשת <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. מחכים לחשיפה…`,`You guessed <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. Waiting for the reveal…`)}</p>`:''}`}
 
 // ---------- the evening league: every game hands out league points by rank, so no game outweighs another ----------
-const LEAGUE_GAMES=[['mem',ll('זיכרון','Memory')],['types',ll('מי הסוג?','Types')],['pq-stats',ll('מי הסטט?','Stats')],['pq-evo',ll('איך התפתח?','Evolution')]];
+const LEAGUE_GAMES=[['mem',ll('זיכרון','Memory')],['bt',ll('קרבות','Battles')],['types',ll('מי הסוג?','Types')],['pq-stats',ll('מי הסטט?','Stats')],['pq-evo',ll('איך התפתח?','Evolution')]];
 function leagueFlash(){if(!isScreen())return;setTimeout(()=>{if(!leagueAny())return;$('#lgflash')?.remove();document.body.insertAdjacentHTML('beforeend',`<div id="lgflash" class="lgflash">${leagueBox(true)}</div>`);setTimeout(()=>$('#lgflash')?.classList.add('out'),6500);setTimeout(()=>$('#lgflash')?.remove(),7300)},2500)}
 function leagueSet(game,scores){if(!S.db||!scores)return;S.league={...(S.league||{}),[game]:scores};S.db.doc('stage/league').set({[game]:scores},{merge:true}).catch(()=>{})}
-function leagueRank(sc){const pts={},E=Object.entries(sc||{}).filter(([id,v])=>v>0).sort((a,b)=>b[1]-a[1]);let rank=0,prev=null;
-  E.forEach(([id,v],i)=>{if(v!==prev){rank=i;prev=v}pts[id]=[5,3,2][rank]||1});return pts}
 function leagueTable(){const L=S.league||{},T={};gamePlayers().forEach(p=>T[p.id]={p,pts:0,by:{}});
-  LEAGUE_GAMES.forEach(([g])=>{const r=leagueRank(L[g]);Object.entries(r).forEach(([id,v])=>{if(T[id]){T[id].pts+=v;T[id].by[g]=v}})});
-  const bt=L.bt||{},bmax=Math.max(0,...Object.values(bt));if(bmax>0)Object.entries(bt).forEach(([id,v])=>{if(v===bmax&&T[id]){T[id].pts+=1;T[id].by.bt=1}});
+  LEAGUE_GAMES.forEach(([g])=>Object.entries(L[g]||{}).forEach(([id,v])=>{if(T[id]&&v>0){T[id].pts+=v;T[id].by[g]=v}}));
   Object.entries(L.guess||{}).forEach(([id,v])=>{if(T[id]&&v>0){T[id].pts+=v;T[id].by.guess=v}});
   return Object.values(T).sort((a,b)=>b.pts-a.pts||a.p.name.localeCompare(b.p.name))}
 const leagueAny=()=>Object.keys(S.league||{}).some(k=>Object.values(S.league[k]||{}).some(v=>v>0));
@@ -2536,7 +2545,7 @@ function leagueHTML(){const T=leagueTable().filter(r=>r.pts>0),lv=[...new Set(T.
     return `<div class="lgs r${k+1}"><div class="lgav">${k?'':'<span class="lgcrown">👑</span>'}${st.rows.map(r=>avFull(r.p,Math.round(sz))).join('')}</div><p>${st.rows.map(r=>esc(r.p.name)).join(' · ')}</p><b>${st.pts} ${ll('נק׳','pts')}</b><div class="lgst">${k+1}</div></div>`};
   return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · CHAMPION</p><h2 class="lgti">${ll('אלוף הליגה של הערב','The champion of the evening league')}</h2>
    <div class="lgpod">${steps.length?[steps[1],steps[0],steps[2]].filter(Boolean).map(step).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBreak()}</div>`}
-function leagueBreak(){const L=S.league||{},G=[...LEAGUE_GAMES.filter(([g])=>Object.values(L[g]||{}).some(v=>v>0)),...(Object.values(L.bt||{}).some(v=>v>0)?[['bt',ll('בונוס קרבות','Battle bonus')]]:[])],T=leagueTable();
+function leagueBreak(){const L=S.league||{},G=LEAGUE_GAMES.filter(([g])=>Object.values(L[g]||{}).some(v=>v>0)),T=leagueTable();
   return `<div class="lgbox lgtabw"><p class="lgh">🏆 ${ll('פירוט הניקוד','THE SCORE, GAME BY GAME')}</p><table class="lgtab"><tr><th></th>${G.map(([g,n])=>`<th>${n}</th>`).join('')}<th>${ll('סה״כ','Total')}</th></tr>${T.map(r=>`<tr><td>${avHead(r.p,34)} ${esc(r.p.name)}</td>${G.map(([g])=>`<td>${r.by[g]||'·'}</td>`).join('')}<td><b>${r.pts}</b></td></tr>`).join('')}</table></div>`}
 
 // ---------- "who knows them best?": the party scenario, live, no points ----------
