@@ -532,6 +532,11 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .lgst{width:100%;border-radius:16px 16px 0 0;display:flex;justify-content:center;padding-top:16px;font:400 54px var(--pixel);color:#161A2E;box-shadow:inset 0 -10px 0 rgba(0,0,0,.15)}.r1 .lgst{height:250px;background:linear-gradient(#FFE27A,#E0A82E)}.r2 .lgst{height:170px;background:linear-gradient(#EEF1F7,#A9B1C4)}.r3 .lgst{height:110px;background:linear-gradient(#F0B98A,#B8723F)}
 .lgp{display:flex;flex-direction:column;align-items:center;gap:6px}.lgp p{font-family:var(--display);font-size:50px}.lgp b{font:400 24px var(--pixel);color:#F2C94C}
 .lgchamp .lgbox{position:absolute;left:70px;top:260px;width:720px}.lgtab{width:100%;border-collapse:collapse;font-size:20px}.lgtab th{font:400 13px var(--pixel);color:#9FA7C7;padding:4px 6px;text-align:center}.lgtab td{padding:5px 6px;text-align:center;border-top:1px solid rgba(255,255,255,.08)}.lgtab td:first-child{text-align:start;white-space:nowrap;font-weight:700}.lgtab td b{color:#F2C94C;font:400 18px var(--pixel)}
+.shwrap{position:relative;display:inline-block;line-height:0}.shinyin{animation:shinyin 1.1s ease-out}@keyframes shinyin{0%{filter:brightness(4) saturate(0)}100%{filter:brightness(1) saturate(1) drop-shadow(0 20px 30px rgba(0,0,0,.45))}}
+.shsp{position:absolute;color:#F2C94C;font-style:normal;font-size:54px;line-height:1;opacity:0;animation:shsp 1.4s ease-out 2}.shsp.s1{top:-10px;left:-34px}.shsp.s2{top:30px;right:-44px;animation-delay:.25s}.shsp.s3{bottom:20px;left:-48px;animation-delay:.5s}.shsp.s4{bottom:-6px;right:-26px;animation-delay:.75s}@keyframes shsp{0%{opacity:0;transform:scale(.3) rotate(0)}40%{opacity:1;transform:scale(1.15) rotate(40deg)}100%{opacity:0;transform:scale(.5) rotate(90deg)}}
+.shnote{margin:0;text-align:center;font-size:30px;color:#F2C94C;line-height:1.3}.shnote b{font:400 24px var(--pixel);display:block;margin-bottom:6px}
+.awgrid{position:absolute;top:250px;right:90px;left:90px;bottom:44px;display:grid;gap:20px}.awc{display:flex;align-items:center;gap:20px;min-width:0;padding:14px 22px;border-radius:20px;background:rgba(255,255,255,.07);border:2px solid rgba(242,201,76,.35);transition:opacity .4s}.awc.off{opacity:.14}.awc.off>*{visibility:hidden}.awc.subj{background:rgba(242,201,76,.16);border-color:#F2C94C}
+.awm{width:var(--am);height:var(--am);flex:none}.awc.in .awm{animation:awpop .7s cubic-bezier(.2,1.6,.4,1)}@keyframes awpop{from{transform:scale(0) rotate(-30deg)}to{transform:none}}.awt{min-width:0}.awh{font-family:var(--display);font-size:38px;line-height:1.1}.awn{font-size:26px;font-weight:700;margin:6px 0 4px}.awr{font-size:22px;line-height:1.28;color:#C9CFE3}.awgrid.big .awh{font-size:50px}.awgrid.big .awn{font-size:32px}.awgrid.big .awr{font-size:28px}
 .en .lgeb,.en .lgti{right:auto;left:128px}.en .lgpod{right:830px;left:110px}.en .lgchamp .lgbox{left:auto;right:90px}
 .scnb{position:absolute;left:70px;bottom:110px;z-index:6;background:rgba(22,26,46,.92);border:3px solid #F2C94C;border-radius:22px;padding:12px 18px;color:#F6F1E7;max-width:620px}
 .scnb p{font-size:22px;font-weight:700;margin-bottom:6px}.scnb div{display:flex;flex-wrap:wrap;gap:6px}.en .scnb{left:auto;right:70px}
@@ -801,7 +806,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794106453';
+const BUILDV='1794227512';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null};
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1936,7 +1941,7 @@ const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;let label='';
   if(it.id==='d-battle')label=ll('הכי מתמטי: מי מנצח בקרב?','The most mathematical: who wins the battle?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
-  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
+  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
   if(POS===0){t0=null;log={}}else if(!t0)t0=now;
   if(D.seg&&D.seg!==seg&&D.segAt&&POS>0&&D.t0)log[D.seg]=(log[D.seg]||0)+(now-D.segAt)/60000;
@@ -2033,7 +2038,7 @@ function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur(
     el.querySelector('b').textContent=left>0?mmss(left):'0:00';el.classList.toggle('over',left<=0);
     el.querySelector('span').textContent=seg[0]==='r'?(left>0?ll('זמן לסבב','round time'):(seg==='r4'?ll('מחכים לכולם, כולל מיו','waiting for everyone, Mew too'):ll('מי שלא סיים, ממשיך בהפסקה','if you\'re not done, keep going in the break'))):(left>0?ll('עד סוף ההפסקה','until the break ends'):ll('חוזרים למקומות','back to your seats'))};
   tick();S.segT=setInterval(tick,1000)}
-function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ[POS]?.kind==='hof'||SEQ[POS]?.id==='closing')?'none':''}
+function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ[POS]?.kind==='hof'||SEQ[POS]?.kind==='awards'||SEQ[POS]?.id==='closing')?'none':''}
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   const cv=$('#cv');
   if(it.kind==='slide'){
@@ -2054,6 +2059,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge');if(rb)rb.style.display=(SEQ
   } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-badge',{loop:false,vol:.45,delay:3300});sfx('sfx-tink');setTimeout(()=>{if(cur()?.kind==='league')sfx('sfx-tink')},1800);setTimeout(()=>{if(cur()?.kind==='league')sfx('sfx-caught-mon')},3300) }
   else if(it.kind==='quizwin'){ cv.innerHTML=quizWinHTML();try{leagueSet('types',quizState().scores);leagueFlash()}catch(e){}quizSync();music('mus-victory',{loop:false,vol:.35});sfx('sfx-caught-mon') }
   else if(it.kind==='live'){ cv.innerHTML=liveHTML(it.k); }
+  else if(it.kind==='awards'){ try{computeResult()}catch(e){}S.awList=awardsBuild();if(!S.awList.length){POS+=atEnd?-1:1;return show(true,atEnd)}S.awI=atEnd?S.awList.length:0;cv.innerHTML=awardsHTML();awardsPaint();music('mus-hof',{vol:.22}) }
   else if(it.kind==='hof'){ HOF=atEnd?HOF_STEPS.length-1:0;SUB=0; computeResult(); renderHof(); }
   screenOverlay();deckPub();gamePub();
 }
@@ -2067,6 +2073,7 @@ function go(d){
     if(d<0&&BUILD>0){qAutoStop();BUILD--;applyBuilds();quizSync();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
+  if(it.kind==='awards'&&awardStep(d))return;
   if(it.id==='d-battle'&&d>0&&S.btg){const G=S.btg;if(G.phase==='intro'){btgNext();return}if(G.phase==='guess'){btgFight();return}if(G.phase==='fight')return;if(G.phase==='result'){btgAfter();return}}
   if((PQ[it.id]||PQ_ROUND(it.id))&&pqGo(d))return;
   if(MEM[it.id]&&d>0&&S.mem&&!S.mem.done){if(!S.mem.started)memStart();else if(!S.mem.lock)memNext(false);return}
@@ -2293,7 +2300,7 @@ function pqShuffle(){S.pqPos={};const seed=String(ROOM.code||'')+String(S.state?
     const items=ord.flatMap(p=>[SEQ[p.a],SEQ[p.a+1]]);if(pairs.every(p=>p.a>=start&&p.a<start+pairs.length*2))SEQ.splice(start,items.length,...items);S.pqPos[key]=ord.map(p=>p.k)})}
 const pqPosOf=(key,k)=>{const o=S.pqPos?.[key];const i=o?o.indexOf(k):-1;return i>=0?i:PQ[key].items.findIndex(x=>x.k===k)};
 function leagueSpot(){const last=['pq-evo','pq-stats','quizwin','c-memory','s-memory'].map(id=>SEQ.findIndex(x=>x.id===id)).reduce((a,b)=>Math.max(a,b),-1);if(last>=0)SEQ.splice(last+1,0,{kind:'league',id:'league'})}
-function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});pqShuffle();leagueSpot()}
+function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});SEQ.push({kind:'slide',i,id:s.id});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});pqShuffle();leagueSpot()}
 function skipSync(){if(!isScreen()||!S.slides||!SEQ.length)return;const k=JSON.stringify([...skipSet()].sort());if(k===S.skipKey)return;const id=cur()?.id,old=SEQ.slice(0,POS+1).map(x=>x.id);buildSeq();
   let p=SEQ.findIndex(x=>x.id===id);if(p<0){p=0;old.forEach(o=>{const j=SEQ.findIndex(x=>x.id===o);if(j>=0)p=j})}POS=p;HOF=0;SUB=0;show(true)}
 function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
@@ -2629,6 +2636,47 @@ function timingReport(){const D=S.deck||{},log={...(D.log||{})};if(D.seg&&D.segA
   let tp=0,ta=0;const rows=PLAN.map(p=>{const a=log[p[0]];tp+=p[2];if(a!=null)ta+=a;return `<tr><td>${esc(p[1])}</td><td>${p[2]}</td><td>${a!=null?mmss(a):'–'}</td><td style="color:${a==null?'var(--mist)':a>p[2]+1?'#FF8A80':a<p[2]-1?'var(--ok)':'var(--cream)'}">${a!=null?(a>p[2]?'+':'')+mmss(a-p[2]):''}</td></tr>`}).join('');
   return `<table class="prog"><thead><tr><th>חלק</th><th>תכנון</th><th>בפועל</th><th>פער</th></tr></thead><tbody>${rows}<tr><td><b>סה"כ</b></td><td><b>${tp}</b></td><td><b>${mmss(ta)}</b></td><td></td></tr></tbody></table>`}
 
+// ---------- reveal extras: the Pokémon's cry, an earned shiny ----------
+const linePid=l=>{const sp=l.species.at(-1);return S.engine.spr[l.id+':'+sp]||String(sp)};
+function revealPreload(){const p=linePid(S.R.main[0].line);S.cry=new Audio('cries/'+p+'.ogg?v='+BUILDV);S.cry.preload='auto';S.cry.load();if(shinyOn())new Image().src='shiny/'+p+'.webp'}
+function revealCry(){if(cur()?.kind!=='hof'||HOF_STEPS[HOF]!=='reveal'||!S.cry)return;S.cry.volume=.6;S.cry.play().catch(()=>{})}
+// Pearson between two raters over the dims both answered
+function scoreCorr(a,b){const x=[],y=[];['types','stats','evo'].forEach(L=>Object.keys(a[L]||{}).forEach(d=>{if(b[L]&&d in b[L]){x.push(+a[L][d]);y.push(+b[L][d])}}));if(x.length<8)return null;
+  const avg=v=>v.reduce((s,q)=>s+q,0)/v.length,mx=avg(x),my=avg(y);let sxy=0,sx=0,sy=0;x.forEach((q,i)=>{sxy+=(q-mx)*(y[i]-my);sx+=(q-mx)**2;sy+=(y[i]-my)**2});return sx&&sy?sxy/Math.sqrt(sx*sy):null}
+function groupAgree(fr){let s=0,c=0;fr.forEach((a,i)=>fr.slice(i+1).forEach(b=>{const r=scoreCorr(a.scores,b.scores);if(r!=null){s+=r;c++}}));return c?s/c:null}
+// about the top 10% of friend groups in the pilot data (eve/). One subject so far: revisit after more evenings
+const SHINY_CUT=n=>n<3?Infinity:n===3?.41:n===4?.38:n===5?.35:.32;
+function shinyOn(){const fr=(S.R?.raters||[]).filter(r=>r.role!=='self'),a=groupAgree(fr);return a!=null&&a>=SHINY_CUT(fr.length)}
+// ---------- the badge ceremony: one badge per person, earned from the answers and the league (icons: img/mark-*.png) ----------
+function awardsBuild(){
+  const R=S.R,ppl=inRoom().filter(p=>!isPresenter(p)),sid=subjId(),n=esc(subjectName());if(!R||!ppl.length)return [];
+  const rs=(R.raters||[]).filter(r=>ppl.some(p=>p.id===r.pid)),self=rs.find(r=>r.role==='self'),fr=rs.filter(r=>r.role!=='self');
+  const vals=r=>['types','stats','evo'].flatMap(L=>Object.values(r.scores[L]||{}).map(Number)),avg=v=>v.reduce((s,q)=>s+q,0)/(v.length||1),sd=v=>{const m=avg(v);return Math.sqrt(avg(v.map(q=>(q-m)**2)))};
+  const by=f=>Object.fromEntries(fr.map(r=>[r.pid,f(r)]).filter(x=>x[1]!=null&&x[0]!==sid));
+  const pos=o=>Object.fromEntries(Object.entries(o||{}).filter(([id,v])=>v>0&&id!==sid));
+  const L=S.league||{},ms=(S.state?.mew?.statements||[]).find(m=>m.lineId===R.main[0]?.line.id);
+  const LIST=[
+   ['intellectual','תג המומחיות','The Expert Badge',gs(`התשובות הכי קרובות למה ש${n} ענה על עצמו`,`התשובות הכי קרובות למה ש${n} ענתה על עצמה`),`Answers closest to how ${n} sees ${gs('himself','herself')}`,self?by(r=>scoreCorr(r.scores,self.scores)):{}],
+   ['vigor','תג האליפות','The Champion Badge','הכי הרבה נקודות בליגה של הערב','Most points in the evening league',pos(Object.fromEntries(leagueTable().map(r=>[r.p.id,r.pts])))],
+   ['crafty','תג העין החדה','The Sharp Eye Badge','התשובות הכי שונות משל כל השאר','Answers unlike anyone else\'s',fr.length>2?by(r=>{const c=fr.filter(o=>o!==r).map(o=>scoreCorr(r.scores,o.scores)).filter(x=>x!=null);return c.length?-avg(c):null}):{}],
+   ['absent-minded','תג הזיכרון','The Memory Badge','התוצאה הכי גבוהה במשחק הזיכרון','Top score in the memory game',pos(L.mem)],
+   ['ferocious','תג הלוחמים','The Fighter Badge','הכי הרבה ניחושים נכונים בקרבות','Most correct calls in the battles',pos(L.bt)],
+   ['dawn','תג החזון','The Vision Badge','בחירה בהיגד של הפוקימון המנצח','Picked the winning Pokémon\'s statement',ms?by(r=>S.answers[r.pid]?.mew===ms.id?1:null):{}],
+   ['joyful','תג הלב הרחב','The Big Heart Badge',`הציונים הכי נדיבים ל${n}`,`The most generous scores for ${n}`,by(r=>avg(vals(r)))],
+   ['scowling','תג הכנות','The Honesty Badge','הציונים הכי קשוחים של הערב','The toughest scores of the evening',by(r=>-avg(vals(r)))],
+   ['intense','תג האש','The Fire Badge','הכי הרבה תשובות חד משמעיות','The most clear-cut answers',by(r=>sd(vals(r)))],
+   ['calmness','תג השלווה','The Calm Badge','התשובות הכי מאוזנות','The most balanced answers',by(r=>-sd(vals(r)))]];
+  const FALL=[['smiley','תג החברות','The Friendship Badge','ערב כזה לא קורה בלי חברים','An evening like this needs friends'],['upbeat','תג האווירה','The Good Vibes Badge','בלי האנרגיה הזו הערב היה אחר','The evening needed this energy'],['uncommon','תג החבורה','The Crew Badge','חלק מהחבורה של הערב','Part of this evening\'s crew']];
+  const friends=ppl.filter(p=>p.id!==sid),used=new Set(),out=[],card=(p,a)=>({p,mark:a[0],t:ll(a[1],a[2]),why:ll(a[3],a[4])});
+  LIST.forEach(a=>{const c=friends.filter(p=>!used.has(p.id)&&a[5][p.id]!=null).sort((x,y)=>a[5][y.id]-a[5][x.id]||x.name.localeCompare(y.name))[0];if(c){used.add(c.id);out.push(card(c,a))}});
+  friends.filter(p=>!used.has(p.id)).forEach((p,i)=>out.push(card(p,FALL[i%FALL.length])));
+  const subj=ppl.find(p=>p.id===sid);if(subj)out.push({...card(subj,['destiny','תג הגורל','The Destiny Badge',`הערב הזה היה כולו בשביל ${n}`,`This whole evening was for ${n}`]),subj:true});
+  return out}
+function awardsHTML(){const A=S.awList,k=A.length,cols=k<=3?k:k<=6?3:4,rows=Math.ceil(k/cols),am=k>8?84:k>6?112:150;
+  return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · BADGES</p><h2 class="lgti">${ll('טקס התגים','The Badge Ceremony')}</h2>
+   <div class="awgrid${k<=6?' big':''}" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);--am:${am}px">${A.map((a,i)=>`<div class="awc${a.subj?' subj':''}" data-aw="${i}"><img class="awm" src="img/mark-${a.mark}.png" alt=""><div class="awt"><p class="awh">${a.t}</p><p class="awn">${avHead(a.p,40)} ${esc(a.p.name)}</p><p class="awr">${a.why}</p></div></div>`).join('')}</div></div>`}
+function awardsPaint(){document.querySelectorAll('.awc').forEach(el=>{const on=+el.dataset.aw<S.awI;el.classList.toggle('off',!on);el.classList.toggle('in',on&&+el.dataset.aw===S.awI-1)})}
+function awardStep(d){if(d>0){if(S.awI>=S.awList.length)return false;S.awI++;awardsPaint();sfx(S.awList[S.awI-1].subj?'sfx-caught-mon':'sfx-dex-page-added');return true}if(S.awI>0){S.awI--;awardsPaint();return true}return false}
 // ---------- Hall of Fame ----------
 function hofStep(d){
   S.hofDir=d;const step=HOF_STEPS[HOF];
@@ -2639,6 +2687,7 @@ function hofStep(d){
     if(step==='stats'&&SUB===0){SUB=1;$('#radar')?.classList.add('grow');$('#statside')?.classList.add('show');return true}
     if(step==='evo'&&SUB<5){SUB++;revealEvo();return true}
     if(step==='ball'){openBall();return true}
+    if(step==='reveal'&&SUB===0&&shinyOn()){SUB=1;renderHof();sfx('sfx-shooting-star');return true}
     if(OAK_STEPS.includes(step)){if(S.oakTyping){oakFinish();return true}if(S.oakPage<S.oakPages.length-1){S.oakPage++;oakGo();return true}}
     if(HOF<HOF_STEPS.length-1){HOF++;SUB=0;renderHof();return true}
     return false;
@@ -2687,9 +2736,9 @@ function renderHof(){
     h=`<div class="st"><div class="center"><p style="font-family:var(--pixel);font-size:26px;color:var(--gold)">600 LINES · 1 POKÉ BALL</p>${ll(`<div class="big">מי מסתתר בפוקבול של ${n}?</div>`,`<div class="big">Who\'s hiding in ${n}\'s Poké Ball?</div>`)}<div class="ball wobble" id="bigball" style="--s:300px"></div></div></div>`;
   }
   else if(step==='reveal'){
-    const t=R.main[0],l=t.line,last=l.species.length-1,types=l.stage_types[last];
+    const t=R.main[0],l=t.line,last=l.species.length-1,types=l.stage_types[last],shy=SUB>0&&shinyOn();
     const ent=dexEntry(l);
-    h=`<div class="st"><div class="center" style="gap:10px;padding:30px 0"><p class="lead" style="margin:0">${ll(`${n} ${gs('הוא','היא')}…`,`${n} is…`)}</p><img ${artAttr(l)} alt="${esc(finalName(l))}" style="width:240px;height:240px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))">
+    h=`<div class="st"><div class="center" style="gap:10px;padding:30px 0">${shy?`<p class="shnote"><b dir="ltr">✦ SHINY ✦</b>${ll(`החברים של ${n} ראו ${gs('אותו','אותה')} כמעט אותו דבר. זה קורה לעתים רחוקות, וזה הופך את הפוקימון לשייני.`,`${n}'s friends saw ${gs('him','her')} almost the same way. That's rare, and it turns the Pokémon shiny.`)}</p>`:`<p class="lead" style="margin:0">${ll(`${n} ${gs('הוא','היא')}…`,`${n} is…`)}</p>`}<span class="shwrap">${shy?'<i class="shsp s1">✦</i><i class="shsp s2">✦</i><i class="shsp s3">✦</i><i class="shsp s4">✦</i>':''}<img ${shy?`class="shinyin" src="shiny/${linePid(l)}.webp"`:artAttr(l)} alt="${esc(finalName(l))}" style="width:240px;height:240px;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45))"></span>
     <div class="big">${esc(finalName(l))}</div><div style="display:flex;gap:16px;justify-content:center">${types.map(plateH).join('')}</div>
     ${l.species.length>1?`<div style="display:flex;gap:26px;align-items:flex-end;direction:ltr">${l.species.map((s,i)=>`${i?'<span style="color:var(--gold);font-size:40px;padding-bottom:40px">→</span>':''}<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><img class="pix" src="${spriteURL(sprite(l,s))}" alt="" style="width:96px;height:96px"><span style="font-size:20px;color:var(--mist)">${esc(l.name.split(' → ')[i])}</span></div>`).join('')}</div>`:''}
     <p class="pct">${(t.rank*100).toFixed(1)}% MATCH</p>${mewSelfNote(l)}
@@ -2719,7 +2768,7 @@ function renderHof(){
     h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="${ll(`פרופסור אוק`,`Professor Oak`)}"><img class="oakmon" ${artAttr(l)} alt="">${oakBox()}</div>`;
   }
   cv.innerHTML=h;deckPub();
-  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music('mus-enter-hall',{vol:.15});else music('mus-hof',{vol:.28,delay:step==='reveal'?2600:0});
+  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music('mus-enter-hall',{vol:.15});else music('mus-hof',{vol:.28,delay:step==='reveal'?4300:0});
   if(step==='types')layoutTypes(false);
   if(OAK_STEPS.includes(step)&&S.oakPages)oakGo();
 }
@@ -2945,9 +2994,9 @@ function statSide(R){
 }
 function revealEvo(){const el=$('#ev'+(SUB-1));if(el)el.classList.remove('off');if(SUB===5){const m=$('#evmean');if(m)m.style.opacity=1}}
 function openBall(){
-  const ball=$('#bigball');if(!ball||S.opening)return;S.opening=true;ball.className='ball shake';sfx('sfx-ball-toss');
+  const ball=$('#bigball');if(!ball||S.opening)return;S.opening=true;revealPreload();ball.className='ball shake';sfx('sfx-ball-toss');
   setTimeout(()=>{sfx('sfx-ball-poof');setTimeout(()=>sfx('sfx-caught-mon'),550);const f=document.createElement('div');f.className='flash';document.body.append(f);setTimeout(()=>f.remove(),1000);
-    S.opening=false;HOF=HOF_STEPS.indexOf('reveal');renderHof();publishResult();
+    S.opening=false;HOF=HOF_STEPS.indexOf('reveal');renderHof();publishResult();setTimeout(revealCry,3100);
   },matchMedia('(prefers-reduced-motion:reduce)').matches?50:3300);
 }
 async function publishResult(){
