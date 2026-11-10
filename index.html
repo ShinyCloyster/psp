@@ -291,6 +291,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .saybtn{position:fixed;left:14px;bottom:84px;z-index:31;width:58px;height:58px;border-radius:50%;border:0;background:var(--gold);font-size:28px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
 .sayov{position:fixed;inset:0;z-index:40;background:rgba(10,12,24,.7);display:flex;align-items:flex-end;padding:14px}.sayov .card{width:100%}
 .sayov textarea{width:100%;font:500 18px var(--body);border-radius:12px;padding:10px;background:var(--night);color:var(--cream);border:2px solid var(--line);margin-bottom:8px;resize:none}
+.saystack{position:absolute;left:40px;bottom:80px;z-index:9;display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:1000px}.sayc{display:flex;align-items:center;gap:14px;animation:sayin .45s}.sayc.out{animation:sayout .45s forwards}.saybox2{background:#F8F8F8;color:#202830;border:6px solid #303840;border-radius:16px;box-shadow:inset 0 0 0 4px #F8F8F8,inset 0 0 0 8px #6890B0;padding:14px 26px 16px;max-width:880px}.saybox2 .sayname{display:block;font:700 22px var(--body);color:#6890B0}.saybox2 p{margin:2px 0 0;font:700 32px var(--body);line-height:1.3}
 .sayb{position:absolute;left:40px;bottom:70px;z-index:9;display:flex;align-items:flex-end;gap:10px;animation:sayin .45s}.sayb.out{animation:sayout .45s forwards}
 @keyframes sayin{from{transform:translateY(40px);opacity:0}}@keyframes sayout{to{transform:translateY(40px);opacity:0}}
 .sayfig .avf{filter:drop-shadow(0 8px 0 rgba(0,0,0,.25))}
@@ -434,7 +435,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .mcb{background:radial-gradient(circle at 50% 40%,#2C3260,#161A2E 75%);border:4px solid #3A4170;box-shadow:0 8px 0 rgba(22,26,46,.25)}
 .mcb img{width:96px;height:96px;image-rendering:pixelated;opacity:.92}.mcb b{font:400 26px var(--pixel);color:#F2C94C}
 .mcf{transform:rotateY(180deg);background:#FFFDF8;border:4px solid #E4DCCB;padding:16px 18px;text-align:center;box-shadow:0 8px 0 rgba(22,26,46,.12)}
-.mcf.lens{border-top:14px solid var(--c);gap:5px}.mcf.lens b{font-size:28px;line-height:1.1;color:#161A2E}.mtag{font-style:normal;font-size:19px;color:#5A5F73}
+.mcf.lens{border-top:14px solid var(--c);gap:5px}.mcf.pc{border-top:14px solid var(--c)}.mcf.pc.qq i{color:var(--c)}.mcf.lens b{font-size:28px;line-height:1.1;color:#161A2E}.mtag{font-style:normal;font-size:19px;color:#5A5F73}
 .mleg{display:flex;flex-direction:column;gap:6px;border-top:2px solid rgba(255,255,255,.12);padding-top:12px}.mleg div{display:grid;grid-template-columns:54px auto 1fr;gap:10px;align-items:center;font-size:19px}.mleg div>:first-child{justify-self:center}.mleg b{font-size:19px;white-space:nowrap}.mleg span{color:#C9CCE0}
 .mcs{font-size:17px;line-height:1.2;color:#5A5F73;background:#EFE8D8;border-radius:10px;padding:4px 10px}
 .mico{display:flex;align-items:center;justify-content:center;min-height:90px}
@@ -809,7 +810,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794329030';
+const BUILDV='1794333231';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1251,7 +1252,7 @@ function sayOpen(){$('#sayov')?.remove();document.body.insertAdjacentHTML('befor
   <textarea id="saytxt" maxlength="${SAYMAX}" rows="2" ${ll(`placeholder="או לכתוב משהו משלך…"`,`placeholder="Or write your own…"`)}></textarea><div class="row" style="justify-content:space-between;align-items:center"><span class="muted" id="saycnt">0/${SAYMAX}</span><span class="row" style="gap:8px"><button class="btn ghost small" ${ll(`data-act="sayclose">ביטול</button><button class="btn small" data-act="saysend">שליחה</button>`,`data-act="sayclose">Cancel</button><button class="btn small" data-act="saysend">Send</button>`)}</span></div></div></div>`);
   const ov=$('#sayov'),ta=$('#saytxt');ta.focus();ta.oninput=()=>{$('#saycnt').textContent=ta.value.length+'/'+SAYMAX};
   ov.onclick=e=>{const b=e.target.closest('button');if(e.target===ov||b?.dataset.act==='sayclose'){ov.remove();return}if(b?.dataset.act==='saymix'){$('#saychs').innerHTML=sayChips();return}if(b?.dataset.sq){ta.value=b.dataset.sq;saySend();return}if(b?.dataset.act==='saysend')saySend()}}
-function saySend(){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date.now()-(S.saidAt||0)<12000){toast(ll('רגע, אפשר שוב בעוד כמה שניות','Wait, you can send again in a few seconds'));return}S.saidAt=Date.now();$('#sayov')?.remove();sfx('sfx-a');
+function saySend(){const t=($('#saytxt')?.value||'').trim();if(!t)return;if(Date.now()-(S.saidAt||0)<1500)return;S.saidAt=Date.now();$('#sayov')?.remove();sfx('sfx-a');
   S.db.doc('stage/say-'+S.me).set({t:t.slice(0,SAYMAX),at:Date.now()}).then(()=>toast(ll('נשלח למסך!','Sent to the screen!'))).catch(()=>toast(ll('לא נשלח','Not sent')))}
 // ----- personal take-home card (closing slide): your answers vs the subject's own -----
 const CODE_ABC='abcdefghjkmnpqrstuvwxyz23456789';
@@ -2034,10 +2035,12 @@ function quizWinHTML(){const Q=quizState(),rows=Q.players.map(p=>({p,sc:Q.scores
    <div class="qpod">${ord.map(r=>{const first=r===top[0];return `<div class="qps ${first?'first':''}">${avFull(r.p,first?460:340)}<p class="qpn">${esc(r.p.name)}</p>${ll(`<p class="qpp">${r.sc} נק׳</p>`,`<p class="qpp">${r.sc} pts</p>`)}<div class="qpb">${[1,2,3].map(n=>r.b[n]?`<span><img src="img/${QBALL[n][0]}.webp" alt="">×${r.b[n]}</span>`:'').join('')}</div></div>`}).join('')}</div></div></div>`}
 // participants' speech bubbles on the screen (trainer talks, rounds, breaks)
 function sayIn(pid,d){S.sayLast=S.sayLast||{};if(!S.sayInit){S.sayLast[pid]=d.at;return}if(!d?.at||d.at<=(S.sayLast[pid]||0))return;S.sayLast[pid]=d.at;
-  if(!/^(tr|b|r)\d$/.test(segAt(POS)))return;S.sayQ=S.sayQ||[];S.sayQ.push({pid,t:String(d.t||'').slice(0,SAYMAX)});if(!S.saying)sayNext()}
-function sayNext(){const m=S.sayQ.shift();if(!m){S.saying=false;return}S.saying=true;const p=person(m.pid);if(!p){sayNext();return}
-  $('#sayb')?.remove();$('#cv').insertAdjacentHTML('beforeend',`<div id="sayb" class="sayb"><div class="sayfig">${avFull(p,300)}</div><div class="saybox"><span class="sayname">${esc(p.name)}</span><p>${esc(m.t)}</p></div></div>`);sfx('sfx-a');
-  const ms=Math.min(10000,3200+m.t.length*90);setTimeout(()=>{const el=$('#sayb');if(el){el.classList.add('out');setTimeout(()=>{el.remove();sayNext()},450)}else sayNext()},ms)}
+  if(!/^(tr|b|r)\d$/.test(segAt(POS)))return;sayShow(pid,String(d.t||'').slice(0,SAYMAX))}
+// comments stack: the newest goes on top, the earlier ones stay below it for a while, up to four at once
+function sayShow(pid,t){const p=person(pid);if(!p)return;let st=$('#saystack');if(!st){$('#cv').insertAdjacentHTML('beforeend','<div id="saystack" class="saystack"></div>');st=$('#saystack')}
+  const el=document.createElement('div');el.className='sayc';el.innerHTML=`${avHead(p,72)}<div class="saybox2"><span class="sayname">${esc(p.name)}</span><p>${esc(t)}</p></div>`;st.prepend(el);sfx('sfx-a');
+  while(st.children.length>4)st.lastElementChild.remove();
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),450)},Math.min(16000,7000+t.length*90))}
 function segTimer(){clearInterval(S.segT);$('#segclock')?.remove();const it=cur();if(!it)return;const seg=segAt(POS);if(!/^[rb]\d$/.test(seg)||it.kind==='hof')return;
   $('#cv').insertAdjacentHTML('beforeend','<div id="segclock" class="segclock"><b></b><span></span></div>');
   const tick=()=>{const el=$('#segclock');if(!el||!S.deck?.segAt)return;const p=planOf(seg),left=p[2]-(Date.now()-S.deck.segAt)/60000;
@@ -2306,12 +2309,17 @@ function battleRun(){const T=S.bt;if(T.running)return;T.running=true;
 
 // ---------- Lake of Rage: everybody swims on the big screen, each from their own phone. Three blue Gyarados, the question, then the red one. The screen runs the game; a phone only says which way to go ----------
 // the map is the real Lake of Rage inside a Switch: grass you can walk on, water you swim in, trees and cliffs that block. One letter per 16-px cell of img/lake.webp: w water, g ground, s shore you can cross, # blocked
-const LK={sw:[1800,814],scr:[330,92,1343,700],img:[1335,698],cell:16,sp:300,gsp:240,map:["gg####g###g####gg################################################wwwwwwssgggg#######", "g####ggg##gg##ggg################################################wwwwwwwsgggg#######", "####ggg###g####g#################################################wwwwwwwsgggg#######", "####gg################################################g#######w#wwwwwwwwsgggg#######", "#####g################################################g#####wwwwwwwwwwwwsgggg#######", "#####g################################################s#####wwwwwwwwwwww#sss########", "####gg################################################s#####wwwwwwwwwwww#sss########", "####ggg######################g###g####g########g######wwwwwwwwwwwwwwwwwwwwww########", "g####gg#####################ggg#g#####s########s#####wwwwwwwwwwwwwwwwwwwwwww########", "#g####g##################gggggggg#####s########s#####wwwwwwwwwwwwwwwwwwwwwww########", "#########################gggggggg###wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "#########################ggggggggsswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "#########################ggggggggsswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "#########################ggggggggsswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "######g########g##########sssssss##wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "######s########s##########sssssss#wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "######s########s##########wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "######s########s#########wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww########gg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww##############gg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww###############gg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww################g", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww###############gg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#####g#########gg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#########gg###ggg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#######gggggggggg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww##############ggggggggg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww################gggggggg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww################gggggggg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww###############ggggggggg", "#####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww###############gggggg##g", "####wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww################gggg####", "###wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww################ggg#####", "###wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww###############gggg#####", "###wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#sssss##########g###ggggg#####", "###wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwssgggggg####gg##ggg#ggggggg####", "###wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwssgggggg#####gggggggggggggg####", "###ww##wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwssg#gggg####gggggggggggggg#ggg#", "########wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#######g#####ggggggggggggg###g##", "#########wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww##########gggggggggggggggggg#######", "###########wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww##########ggggggggggggggggg########", "############wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww##########gggggggg##gg###ggg#######", "############wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww##########ggggggg#########gg#######", "####g#######www############wwww###wwwwwwwwwwwwwww#########ggggggg###########gg###g##"]},lkSec=()=>S.fastOn?7:20;
-(()=>{const sk=LK.sw[0]/2000,[sx,sy,sw,sh]=LK.scr;LK.x=Math.round((1920-LK.sw[0])/2+sx*sk);LK.y=Math.round(196+sy*sk);LK.w=Math.round(sw*sk);LK.h=Math.round(sh*sk);LK.k=LK.w/LK.img[0];LK.c=LK.cell*LK.k;LK.gd=Math.round(74*LK.k);
-  // s = a thin rim between grass and water (at most 3 cells across), where you can step in or out; thick cliffs and trees stay blocked
-  LK.m=LK.map.map(r=>r.split(''))})();
-const lkCell=(x,y)=>LK.m[Math.floor((y-LK.y)/LK.c)]?.[Math.floor((x-LK.x)/LK.c)]||'#',lkOk=(x,y)=>lkCell(x,y)!=='#',lkWet=(x,y)=>lkCell(x,y)==='w';
-const lkCells=t=>{const o=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c===t)o.push([LK.x+(x+.5)*LK.c,LK.y+(y+.5)*LK.c])}));return o};
+const LK={sw:[1800,814],scr:[330,92,1343,700],img:[1335,698],tile:[36.8,27.45,-30.3,-24.05],sp:5.5,gsp:4.2,map:["gg###########################wwwsg####", "###g#g#g#####################wwwggg###", "###g#########################wwwggg###", "########################g##wwwwwsg####", "########################s##wwwww#s####", "###g#########g#g#g######wwwwwwwwww####", "############ggg##s######wwwwwwwwww####", "############gggswwwwwwwwwwwwwwwwww####", "############gggswwwwwwwwwwwwwwwwww####", "############sss#wwwwwwwwwwwwwwwwww####", "############wwwwwwwwwwwwwwwwwwwwww####", "###wwwwwwwwwwwwwwwwwwwwwwwwwwwwww#####", "###wwwwwwwwwwwwwwwwwwwwwwwwwww########", "###wwwwwwwwwwwwwwwwwwwwwwwwwww########", "###wwwwwwwwwwwwwwwwwwwwwwwwwww######g#", "###wwwwwwwwwwwwwwwwwwwwwwwwwww###gggg#", "###wwwwwwwwwwwwwwwwwwwwwwww#######ggg#", "###wwwwwwwwwwwwwwwwwwwwwwww#######ggg#", "###wwwwwwwwwwwwwwwwwwwwwwww#######gg##", "##wwwwwwwwwwwwwwwwwwwwwwwww#######g###", "##wwwwwwwwwwwwwwwwwwwwwwwww######gg###", "##wwwwwwwwwwwwwwwwwwwwwwggg##g#g#gg###", "##w#wwwwwwwwwwwwwwwwwwwwg#g##gggggg###", "#####wwwwwwwwwwwwwwwww#####ggggggg####", "#####wwwwwwwwwwwwwwwww#####ggggggg####", "######wwwwwwwwwwwwwwww#####gg####g####", "##g###w######w##wwwwww####ggg#########"]},lkSec=()=>S.fastOn?7:20;
+(()=>{const sk=LK.sw[0]/2000,[sx,sy,sw,sh]=LK.scr;LK.x=Math.round((1920-LK.sw[0])/2+sx*sk);LK.y=Math.round(196+sy*sk);LK.w=Math.round(sw*sk);LK.h=Math.round(sh*sk);LK.k=LK.w/LK.img[0];LK.gd=Math.round(74*LK.k);
+  const[tw,th,ox,oy]=LK.tile;LK.tw=tw*LK.k;LK.th=th*LK.k;LK.ox=LK.x+ox*LK.k;LK.oy=LK.y+oy*LK.k;LK.m=LK.map.map(r=>r.split(''));
+  // which tiles you can reach from the water: a patch of grass shut in by trees does not count
+  const R=LK.m.length,C=LK.m[0].length,seen=LK.m.map(r=>r.map(()=>0)),q=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c==='w'){seen[y][x]=1;q.push([x,y])}}));
+  while(q.length){const[x,y]=q.pop();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=y+dy;if(a<0||b<0||a>=C||b>=R||seen[b][a]||LK.m[b][a]==='#')continue;seen[b][a]=1;q.push([a,b])}}LK.reach=seen})();
+// one tile per step, like the game: g grass, w water, s a one-tile bank you step off from, # trees and cliffs
+const lkT=(x,y)=>[Math.floor((x-LK.ox)/LK.tw),Math.floor((y-LK.oy)/LK.th)],lkC=(tx,ty)=>[LK.ox+(tx+.5)*LK.tw,LK.oy+(ty+.5)*LK.th],lkAt=(tx,ty)=>LK.m[ty]?.[tx]||'#';
+const lkIn=(tx,ty)=>{const[x,y]=lkC(tx,ty);return x>LK.x+LK.tw*.3&&x<LK.x+LK.w-LK.tw*.3&&y>LK.y+LK.th*.3&&y<LK.y+LK.h-LK.th*.3};
+const lkCell=(x,y)=>{const[a,b]=lkT(x,y);return lkAt(a,b)},lkOk=(x,y)=>lkCell(x,y)!=='#',lkWet=(x,y)=>lkCell(x,y)==='w';
+const lkCells=t=>{const o=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c===t&&lkIn(x,y))o.push(lkC(x,y))}));return o};
 const TRIO={'s-lake':0,'s-science':0,'s-why':1,'s-theory':1,'s-paradigm':2,'s-fairy':2};
 function trioHTML(i){return `<div class="trio">${[['מדע','Science'],['תיאוריה','Theory'],['פרדיגמה','Paradigm']].map((t,j)=>`<span class="${j===i?'on':j<i?'done':''}"><b>${j+1}</b>${LL(t)}</span>`).join('<i></i>')}</div>`}
 function lkPpl(){return gamePlayers()}
@@ -2320,8 +2328,8 @@ const LK_MINI=40,lkAv=p=>{const v=S.gIn?.[p.id]?.av;return v!=null&&v>=0&&v<LK_M
 function lakeAuto(){const used=new Set(lkPpl().map(p=>S.gIn?.[p.id]?.av).filter(v=>v!=null));lkPpl().forEach(p=>{if(S.gIn?.[p.id]?.av!=null)return;const free=[...Array(LK_MINI).keys()].filter(i=>!used.has(i)),v=free.length?free[Math.floor(Math.random()*free.length)]:Math.floor(Math.random()*LK_MINI);used.add(v);S.gIn=S.gIn||{};S.gIn[p.id]={...(S.gIn[p.id]||{}),av:v};S.db.doc('stage/g-'+p.id).set({av:v},{merge:true}).catch(()=>{})})}
 function lakeEnter(){let L=S.lake;if(!L){const pl=lkPpl();L=S.lake={sid:(Date.now()%1e9)|0,phase:'free',seen:0,got:{},pos:{},gy:null,qEnd:0};
     // everyone starts on the grass by the shore, spread out; when there is no such grass, in the water
-    const sh=lkCells('s'),open=([x,y])=>{for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(lkCell(x+dx*LK.c,y+dy*LK.c)!=='g')return false;return true},land=lkCells('g').filter(q=>open(q)&&sh.some(([a,b])=>Math.hypot(a-q[0],b-q[1])<LK.c*5)).sort((a,b)=>a[0]-b[0]),spots=land.length>=3?land:lkCells('w');
-    const took=[];pl.forEach(p=>{let q=spots[0],bd=-1;spots.forEach(c=>{const m=took.length?Math.min(...took.map(t=>Math.hypot(t[0]-c[0],t[1]-c[1]))):Math.random();if(m>bd){bd=m;q=c}});took.push(q);L.pos[p.id]={x:q[0],y:q[1],f:1}})}
+    const land=lkCells('g').filter(([x,y])=>{const[a,b]=lkT(x,y);if(!LK.reach[b]?.[a]||y<LK.y+LK.th*1.6)return false;for(let d=1;d<=3;d++)for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]])if(lkAt(a+dx*d,b+dy*d)==='w')return true;return false}),spots=land.length>=3?land:lkCells('w');
+   const took=[];pl.forEach(p=>{let q=spots[0],bd=-1;spots.forEach(c=>{const m=took.length?Math.min(...took.map(t=>Math.hypot(t[0]-c[0],t[1]-c[1]))):Math.random();if(m>bd){bd=m;q=c}});took.push(q);L.pos[p.id]={x:q[0],y:q[1],f:1}})}
   $('#cv').innerHTML=lakeHTML();if(L.phase==='done'){lakeDone();gamePub();return}
   if(L.phase==='free'){music('mus-surfing',{vol:.22});lakeBox(ll('תזיזו את הדמות מהטלפון. לחיצה שולחת אותה לכיוון הזה, עד הלחיצה הבאה.','Move your character from your phone. A tap sends it that way until the next tap.'),1)}
   lakeRun();gamePub()}
@@ -2332,10 +2340,10 @@ function lakeBox(t,he){const b=$('#lkbox');if(!b)return;b.style.display=t?'':'no
 function lkPhase(ph,box,he,ms,next){const L=S.lake;L.phase=ph;clearTimeout(L.to);lakeBox(box,he);if(ms)L.to=setTimeout(next,ms);gamePub()}
 function lkCount(){const L=S.lake,c=$('#lkc');if(c)c.textContent=L.seen?'GYARADOS SEEN: '+L.seen:''}
 function lkSpawn(red){const L=S.lake,a=Math.random()*6.28,g=$('#lkg'),W=lkCells('w');let best=W[0],bd=-1;for(let i=0;i<24;i++){const q=W[Math.floor(Math.random()*W.length)],m=Math.min(...lkPpl().map(p=>Math.hypot(q[0]-L.pos[p.id].x,q[1]-L.pos[p.id].y)));if(m>bd){bd=m;best=q}}
-  L.gy={x:best[0],y:best[1],vx:Math.cos(a)*LK.gsp,vy:Math.sin(a)*LK.gsp,red,t:performance.now()};if(g){g.style.backgroundImage=`url(img/gy-${red?'red-':''}sheet.png)`;g.style.display=''}L.seen++;lkCount();try{const c=new Audio('cries/130.ogg?v='+BUILDV);c.volume=.7;c.play().catch(()=>{})}catch(e){}}
+  L.gy={x:best[0],y:best[1],dx:0,dy:1,red,t:performance.now()};if(g){g.style.backgroundImage=`url(img/gy-${red?'red-':''}sheet.png)`;g.style.display=''}L.seen++;lkCount();try{const c=new Audio('cries/130.ogg?v='+BUILDV);c.volume=.7;c.play().catch(()=>{})}catch(e){}}
 function lakeAppear(){const L=S.lake;lkSpawn(false);lkPhase('appear','Wild GYARADOS appeared!',0,1700,()=>{L.until=Date.now()+lkSec()*1000;lkPhase('chase','',0)})}
 function lkEnd(who){const L=S.lake,red=L.gy?.red,g=$('#lkg');L.gy=null;if(g)g.style.display='none';if(who){L.got[who]=(L.got[who]||0)+1;sfx('sfx-caught-mon')}const nm=who?esc(person(who)?.name||''):'';
-  if(red){if(who)L.redBy=who;lkPhase('rafter',who?`${nm} caught the red GYARADOS!`:'The red GYARADOS fled!',0,3000,lakeFinish);return}
+  if(red){if(who){L.redBy=who;leagueSet('red',{[who]:1})}lkPhase('rafter',who?`${nm} caught the red GYARADOS!`:'The red GYARADOS fled!',0,3000,lakeFinish);return}
   lkPhase('after',who?`${nm} caught it!`:'GYARADOS fled!',0,S.fastOn?1500:4000,lakeNext)}
 function lakeNext(){const L=S.lake;if(L.seen<3)lakeAppear();else lakeAsk()}
 function lakeAsk(){const L=S.lake;L.qEnd=Date.now()+PQ_T*1000;L.allQ=false;lkPhase('q','',1);lakeIn()}
@@ -2346,18 +2354,23 @@ function lakeRed(){const L=S.lake;L.votes=lkVotes();music(null);$('#lkw')?.class
 function lakeFinish(){lkPhase('done','',0);music(null);lakeDone()}
 function lakeDone(){const L=S.lake,v=L.votes||{y:0,n:0},el=$('#lkdone');lakeBox('');S.lakeRes={seen:Math.max(0,L.seen-1),y:v.y,n:v.n};if(el){el.style.display='flex';el.innerHTML=`<img src="anim/shiny-130.gif" alt=""><h3>${ll('גיאראדוס אדום אחד הספיק.','One red Gyarados was enough.')}</h3><p>${ll(`ראיתם ${S.lakeRes.seen} כחולים. ${v.y} מכם אמרו שכולם כחולים, ${v.n} אמרו שלא.`,`You saw ${S.lakeRes.seen} blue ones. ${v.y} of you said all of them are blue, ${v.n} said not.`)}</p>`}}
 function lakeGo(d){const L=S.lake;if(!L||d<0)return false;switch(L.phase){case'free':lakeBox('');lakeAuto();lakeAppear();return true;case'appear':case'chase':lkEnd(null);return true;case'after':clearTimeout(L.to);lakeNext();return true;case'q':lakeRed();return true;case'rwait':case'rappear':return true;case'rchase':lkEnd(null);return true;case'rafter':clearTimeout(L.to);lakeFinish();return true;default:return false}}
-function lakeRun(){const L=S.lake;let last=performance.now();const step=t=>{if(S.lake!==L||cur()?.kind!=='lake')return;const dt=Math.min(.05,(t-last)/1000);last=t;const still=L.phase==='q'||L.phase==='rwait'||L.phase==='done';
+function lakeRun(){const L=S.lake;let last=performance.now();const step=t=>{if(S.lake!==L||cur()?.kind!=='lake')return;const dt=Math.min(.05,(t-last)/1000);last=t;const still=L.phase==='q'||L.phase==='rwait'||L.phase==='done',D4=[[1,0],[-1,0],[0,1],[0,-1]];
+  const walk=(X,sp)=>{if(!X.to)return;X.k+=sp*dt;const c=lkC(...X.to);if(X.k>=1){X.x=c[0];X.y=c[1];X.to=null}else{X.x=X.from[0]+(c[0]-X.from[0])*X.k;X.y=X.from[1]+(c[1]-X.from[1])*X.k}};
   lkPpl().forEach(p=>{const P=L.pos[p.id],src=lkAv(p),e0=$('#lkp-'+p.id);if(e0)e0.style.display=src?'':'none';if(!P||!src)return;const m=S.mv?.[p.id],d=m&&m.s===L.sid?m.d:null;
-    if(!still&&d){const dx=d==='l'?-1:d==='r'?1:0,dy=d==='u'?-1:d==='d'?1:0,nx=P.x+dx*LK.sp*dt,ny=P.y+dy*LK.sp*dt;if(dx)P.f=-dx;if(lkOk(nx,P.y))P.x=nx;if(lkOk(P.x,ny))P.y=ny}
-    const e=$('#lkp-'+p.id);if(e){e.style.transform=`translate(${Math.round(P.x-LK.x)}px,${Math.round(P.y-LK.y)}px)`;e.classList.toggle('sw',lkWet(P.x,P.y));e.classList.toggle('mv',!still&&!!d);const im=e.querySelector('img');if(im.dataset.s!==src){im.src=src;im.dataset.s=src}im.style.transform=P.f<0?'scaleX(-1)':''}});
-  const G=L.gy;if(G){let nd=1e9,nx=0,ny=0,who=null;lkPpl().forEach(p=>{if(!lkAv(p))return;const P=L.pos[p.id],dx=G.x-P.x,dy=G.y-P.y,di=Math.hypot(dx,dy);if(di<nd){nd=di;nx=dx;ny=dy;who=p.id}});
-    if(Math.random()<dt*.9){const a=Math.random()*6.28;G.vx=Math.cos(a)*LK.gsp;G.vy=Math.sin(a)*LK.gsp}
-    if(nd<330&&nd>0){G.vx+=nx/nd*1300*dt;G.vy+=ny/nd*1300*dt}
-    const v=Math.hypot(G.vx,G.vy)||1,k=LK.gsp/v;G.vx*=k;G.vy*=k;
-    // Gyarados stays in the water: blocked one way, it turns
-    let gx=G.x+G.vx*dt,gy=G.y+G.vy*dt;if(!lkWet(gx,gy)){if(lkWet(G.x-G.vx*dt,gy))G.vx=-G.vx;else if(lkWet(gx,G.y-G.vy*dt))G.vy=-G.vy;else{G.vx=-G.vx;G.vy=-G.vy}gx=G.x;gy=G.y}G.x=gx;G.y=gy;
-    const g=$('#lkg');if(g){const row=Math.abs(G.vx)>Math.abs(G.vy)?(G.vx<0?1:2):(G.vy>0?0:3),fr=Math.floor(t/150)%4;g.style.transform=`translate(${Math.round(G.x-LK.x)}px,${Math.round(G.y-LK.y)}px) translate(-50%,-62%)`;g.style.backgroundPosition=`${-fr*LK.gd}px ${-row*LK.gd}px`}
-    if(L.phase==='chase'||L.phase==='rchase'){if(nd<52){lkEnd(who)}else if(Date.now()>L.until)lkEnd(null)}}
+    if(!P.to){const[tx,ty]=lkT(P.x,P.y);[P.x,P.y]=lkC(tx,ty);if(!still&&d){const dx=d==='l'?-1:d==='r'?1:0,dy=d==='u'?-1:d==='d'?1:0;if(dx)P.f=-dx;if((dx||dy)&&lkAt(tx+dx,ty+dy)!=='#'&&lkIn(tx+dx,ty+dy)){P.to=[tx+dx,ty+dy];P.from=[P.x,P.y];P.k=0}}}
+    walk(P,LK.sp);
+    const e=$('#lkp-'+p.id);if(e){e.style.transform=`translate(${Math.round(P.x-LK.x)}px,${Math.round(P.y-LK.y+LK.th*.38)}px)`;e.classList.toggle('sw',lkWet(P.x,P.y));e.classList.toggle('mv',!!P.to);const im=e.querySelector('img');if(im.dataset.s!==src){im.src=src;im.dataset.s=src}im.style.transform=P.f<0?'scaleX(-1)':''}});
+  const G=L.gy;if(G){
+    if(!G.to){const[tx,ty]=lkT(G.x,G.y);[G.x,G.y]=lkC(tx,ty);let near=null,nd=1e9;lkPpl().forEach(p=>{if(!lkAv(p))return;const P=L.pos[p.id],di=Math.hypot(P.x-G.x,P.y-G.y);if(di<nd){nd=di;near=P}});
+      // Gyarados keeps to the water: it runs from whoever comes close, and otherwise mostly keeps going the same way
+      const opts=D4.filter(([dx,dy])=>lkAt(tx+dx,ty+dy)==='w'&&lkIn(tx+dx,ty+dy));
+      if(opts.length){let pk;if(near&&nd<LK.tw*6)pk=opts.map(o=>{const c=lkC(tx+o[0],ty+o[1]);return[Math.hypot(c[0]-near.x,c[1]-near.y)+Math.random()*LK.tw*.8,o]}).sort((a,b)=>b[0]-a[0])[0][1];
+        else{const fw=opts.find(o=>o[0]===G.dx&&o[1]===G.dy);pk=fw&&Math.random()<.75?fw:opts[Math.floor(Math.random()*opts.length)]}
+        G.dx=pk[0];G.dy=pk[1];G.to=[tx+pk[0],ty+pk[1]];G.from=[G.x,G.y];G.k=0}}
+    walk(G,LK.gsp);
+    const g=$('#lkg');if(g){const row=G.dx?(G.dx<0?1:2):(G.dy>0?0:3),fr=Math.floor(t/150)%4;g.style.transform=`translate(${Math.round(G.x-LK.x)}px,${Math.round(G.y-LK.y)}px) translate(-50%,-62%)`;g.style.backgroundPosition=`${-fr*LK.gd}px ${-row*LK.gd}px`}
+    // caught: a player on Gyarados's tile or any tile touching it
+    if(L.phase==='chase'||L.phase==='rchase'){const[gx,gy]=lkT(G.x,G.y);const who=lkPpl().find(p=>{if(!lkAv(p))return false;const[a,b]=lkT(L.pos[p.id].x,L.pos[p.id].y);return Math.max(Math.abs(a-gx),Math.abs(b-gy))<=1});if(who)lkEnd(who.id);else if(Date.now()>L.until)lkEnd(null)}}
   if(L.phase==='q'){const q=$('#lkq'),l=Math.max(0,(L.qEnd-Date.now())/1000);if(q)q.textContent=Math.ceil(l);if(l<=0)lakeRed()}
   requestAnimationFrame(step)};requestAnimationFrame(step)}
 function lakeSci(){const el=$('#lksci'),R=S.lakeRes;if(el&&R)el.textContent=ll(`‫${R.y} מכם הימרו עליה`,`${R.y} of you backed it`)}
@@ -2428,14 +2441,16 @@ const MEM={
 const LENS_TAG={edu:['איך מלמדים אותו?','How do we teach him?'],med:['מה לא תקין אצלו?','What\'s wrong with him?'],soc:['מה מקומו בקבוצה?','What\'s his place in the group?'],
  durkheim:['מה מחבר אותנו?','What holds us together?'],marx:['מי מרוויח, ומי עובד?','Who profits, who works?'],weber:['למה בכלל עושים את זה?','Why do we act at all?']};
 const LENS_COL={edu:'#6390F0',med:'#F95587',soc:'#7AC74C'};
+// each set of three cards (who, the question, the answer) shares one colour, so a wrong set shows at a glance
+const PAIR_COL={...LENS_COL,durkheim:'#6390F0',marx:'#C22E28',weber:'#7A5BC9'},pairStyle=k=>{const c=PAIR_COL[k]||'#C9A227';return `--c:${c};border-color:${c};background:color-mix(in srgb,${c} 14%,#FFFDF8)`};
 const glassSvg=(c,w)=>`<svg viewBox="0 0 100 44" style="width:${w}px;height:auto"><circle cx="24" cy="22" r="17" fill="${c}" fill-opacity=".35" stroke="#161A2E" stroke-width="6"/><circle cx="76" cy="22" r="17" fill="${c}" fill-opacity=".35" stroke="#161A2E" stroke-width="6"/><path d="M41 20 Q50 12 59 20" fill="none" stroke="#161A2E" stroke-width="6"/></svg>`;
 function memCard(key,id){const p=MEM[key].pairs[+id.slice(0,-1)];return {p,kind:id.slice(-1),pair:+id.slice(0,-1)}}
 const LENS_SPR={edu:'tr-oak',med:'tr-nurse',soc:'tr-ash'};
 function memIcon(k,w){return LENS_SPR[k]?`<img src="img/${LENS_SPR[k]}.webp" alt="" style="height:${Math.round(w*1.1)}px;width:auto;image-rendering:pixelated">`:`<img src="img/th-${k}.webp" alt="" style="height:${Math.round(w*1.15)}px;width:auto;image-rendering:pixelated">`}
 function memFace(key,id){const {p,kind}=memCard(key,id);
-  if(kind==='a')return `<div class="mcf lens" style="--c:${LENS_COL[p.k]||'#C9A227'}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?120:100)}</div><b>${esc(LL(p.a))}</b></div>`;
-  if(kind==='r')return `<div class="mcf rr"><span class="mcs">${LENS_COL[p.k]?ll('מה עושים?','What do we do?'):ll('במה מסתכלים?','What do we look at?')}</span><p>${esc(LL(p.r))}</p></div>`;
-  return `<div class="mcf qq"><i>?</i><p>${esc(LL(p.q))}</p></div>`}
+  if(kind==='a')return `<div class="mcf lens" style="${pairStyle(p.k)}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?120:100)}</div><b>${esc(LL(p.a))}</b></div>`;
+  if(kind==='r')return `<div class="mcf rr pc" style="${pairStyle(p.k)}"><span class="mcs">${LENS_COL[p.k]?ll('מה עושים?','What do we do?'):ll('במה מסתכלים?','What do we look at?')}</span><p>${esc(LL(p.r))}</p></div>`;
+  return `<div class="mcf qq pc" style="${pairStyle(p.k)}"><i>?</i><p>${esc(LL(p.q))}</p></div>`}
 function gamePlayers(){const pl=inRoom().filter(p=>!isPresenter(p)),j=pl.filter(p=>S.joined?.has(p.id));return j.length?j:pl}
 function memNew(key){const ids=[];MEM[key].pairs.forEach((p,i)=>ids.push(i+'a',i+'q',i+'r'));for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
   const pl=gamePlayers().map(p=>p.id),lw=S.memLast&&S.memLast.key!==key?pl.indexOf(S.memLast.who):-1,st=lw>=0?(lw+1)%pl.length:Math.floor(Math.random()*Math.max(1,pl.length)),order=pl.slice(st).concat(pl.slice(0,st)),scores={};pl.forEach(id=>scores[id]=0);
@@ -2455,7 +2470,7 @@ function memPaint(){const M=S.mem;if(!M)return;const cv=$('#cv');if(!cv.querySel
   if(M.done){const tops=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);side.innerHTML=`<p class="msh">${ll('סוף המשחק','GAME OVER')}</p>${tops.length?`<div class="mwin"><div style="display:flex;gap:10px;align-items:flex-end">${tops.slice(0,3).map(r=>avFull(r.p,tops.length>1?150:200)).join('')}</div><p>🏆 ${tops.map(r=>esc(r.p.name)).join(' · ')} · ${tops[0].s} ${ll('שלישיות','sets')}</p></div>`:''}${board}`;return}
   side.innerHTML=`<p class="msh">${M.bonus?ll('תור נוסף!','BONUS TURN!'):ll('התור של','NOW PLAYING')}</p><div class="mturn">${cp?avHead(cp,84):''}<b>${cp?esc(cp.name):ll('מי שליד המסך','Whoever is at the screen')}</b></div>
    <div class="mclock" id="mclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b></div>${board}`;memTick()}
-function memLegend(){const P=MEM[S.mem.key].pairs;return `<div class="mleg">${P.map(p=>`<div>${memIcon(p.k,LENS_COL[p.k]?50:32)}<b>${esc(LL(p.a))}</b><span>${esc(LL(LENS_TAG[p.k]))}</span></div>`).join('')}</div>`}
+function memLegend(){const P=MEM[S.mem.key].pairs;return `<div class="mleg">${P.map(p=>`<div style="border-inline-start:8px solid ${PAIR_COL[p.k]||'#C9A227'};padding-inline-start:10px;border-radius:4px">${memIcon(p.k,LENS_COL[p.k]?50:32)}<b>${esc(LL(p.a))}</b><span>${esc(LL(LENS_TAG[p.k]))}</span></div>`).join('')}</div>`}
 function memTick(){const M=S.mem,el=$('#mclock');if(!M||!el)return;const l=Math.max(0,(M.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/MEM_T*100}
 function memStart(){const M=S.mem;M.started=true;memTurn();music(null)}
 function memTurn(){const M=S.mem;M.flips=[];M.lock=false;M.end=Date.now()+MEM_T*1000;M.tid=Date.now();memPaint();gamePub();
@@ -2762,6 +2777,7 @@ function awardsBuild(){
   const pos=o=>Object.fromEntries(Object.entries(o||{}).filter(([id,v])=>v>0&&id!==sid));
   const L=S.league||{},ms=(S.state?.mew?.statements||[]).find(m=>m.lineId===R.main[0]?.line.id);
   const LIST=[
+   ['rage','תג אגם הזעם','The Lake of Rage Badge','מי שתפס את הגיאראדוס האדום','Caught the red Gyarados',pos(L.red)],
    ['intellectual','תג המומחיות','The Expert Badge',gs(`התשובות הכי קרובות למה ש${n} ענה על עצמו`,`התשובות הכי קרובות למה ש${n} ענתה על עצמה`),`Answers closest to how ${n} sees ${gs('himself','herself')}`,self?by(r=>scoreCorr(r.scores,self.scores)):{}],
    ['vigor','תג האליפות','The Champion Badge','הכי הרבה נקודות בליגה של הערב','Most points in the evening league',pos(Object.fromEntries(leagueTable().map(r=>[r.p.id,r.pts])))],
    ['crafty','תג העין החדה','The Sharp Eye Badge','התשובות הכי שונות משל כל השאר','Answers unlike anyone else\'s',fr.length>2?by(r=>{const c=fr.filter(o=>o!==r).map(o=>scoreCorr(r.scores,o.scores)).filter(x=>x!=null);return c.length?-avg(c):null}):{}],
