@@ -248,6 +248,8 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .evodn{position:absolute;left:50%;top:40%;width:102px;height:90px;margin-left:-51px;background:url(img/dn-mail.webp) 0 0 no-repeat;image-rendering:pixelated;animation:evofly 2.2s ease-in forwards}
 @keyframes evofly{from{transform:translate(-40vw,30vh) scale(1.6)}to{transform:translate(50vw,-60vh) scale(.6)}}
 #evotxt{min-height:96px}
+.restart{order:99;align-self:center;background:none;border:0;color:var(--mist);opacity:.7;text-decoration:underline;font-size:13px;margin-top:10px}
+#lcol{display:flex;flex-direction:column}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -352,6 +354,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,120):ms));
 
 // remembered per person and language: seen the intro, and the answer
 const KEY=ROLE==='f'?'psp-invite:'+LANG+':f:'+BY+':'+NAME:'psp-invite:'+LANG+':'+NAME;
+if(Q.get('reset')){try{Object.keys(localStorage).filter(k=>k.startsWith('psp-invite')).forEach(k=>localStorage.removeItem(k))}catch(e){}Q.delete('reset');history.replaceState(null,'',location.pathname+(Q.toString()?'?'+Q.toString():''))}
 const mem=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}};
 
@@ -428,7 +431,8 @@ function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').cl
   page=mem.ans==='yes'?3:0;renderLetter()}
 function renderLetter(){
   const tabs=TABS();
-  $('#lcol').innerHTML=`<nav class="tabs"><button class="tarr" id="tprev" aria-label="prev">${AR_PREV}</button><div class="tmid"><b id="tname"></b><div class="dots">${tabs.map((t,i)=>`<button class="dot" data-p="${i}" aria-label="${esc(t)}"></button>`).join('')}</div></div><button class="tarr" id="tnext" aria-label="next">${AR_NEXT}</button></nav><div id="pg"></div>`;
+  $('#lcol').innerHTML=`<button class="restart" id="restart">${H('restart')}</button><nav class="tabs"><button class="tarr" id="tprev" aria-label="prev">${AR_PREV}</button><div class="tmid"><b id="tname"></b><div class="dots">${tabs.map((t,i)=>`<button class="dot" data-p="${i}" aria-label="${esc(t)}"></button>`).join('')}</div></div><button class="tarr" id="tnext" aria-label="next">${AR_NEXT}</button></nav><div id="pg"></div>`;
+  $('#restart').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
   $('#tprev').onclick=()=>goPage(page-1);$('#tnext').onclick=()=>goPage(page+1);
   document.querySelectorAll('.dot').forEach(d=>d.onclick=()=>goPage(+d.dataset.p));
   // swipe between pages (in Hebrew the next page comes from the left)

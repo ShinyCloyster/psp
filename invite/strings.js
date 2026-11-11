@@ -258,6 +258,7 @@ window.INV_TEXT = {
     faqBack: 'עוד שאלות',
     backToAnswer: 'חזרה לתשובה',
     changeAnswer: 'לשנות תשובה',
+    restart: 'להתחיל את ההזמנה מההתחלה',
   },
   en: {
     title: 'PSP · You’ve got mail',
@@ -497,5 +498,6 @@ window.INV_TEXT = {
     faqBack: 'More questions',
     backToAnswer: 'Back to my answer',
     changeAnswer: 'Change my answer',
+    restart: 'Start the invitation over',
   },
 };
