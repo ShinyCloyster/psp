@@ -250,6 +250,51 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 #evotxt{min-height:96px}
 .restart{order:99;align-self:center;background:none;border:0;color:var(--mist);opacity:.7;text-decoration:underline;font-size:13px;margin-top:10px}
 #lcol{display:flex;flex-direction:column}
+/* navigation */
+.steps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;margin:0 -4px}
+.steps::-webkit-scrollbar{display:none}
+.steps button{flex:none;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:2px solid var(--line);border-radius:20px;padding:7px 12px 7px 10px;color:var(--mist);font:500 15px/1 var(--body)}
+.steps button b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--cream);font:400 10px/1 var(--pixel)}
+.steps button.done b{background:var(--ok);color:#0b2b17}
+.steps button.on{background:var(--cream);border-color:var(--gold);color:#1E2238;font-weight:700}
+.steps button.on b{background:var(--red);color:#fff}
+.pnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.prevbtn{background:none;border:2px solid var(--line);color:var(--mist);border-radius:12px;padding:11px 14px;font:500 16px/1 var(--body)}
+.ghostbtn{background:none;border:2px solid var(--gold);color:var(--gold);border-radius:12px;padding:10px 14px;font:700 15px/1 var(--body)}
+.ptitle{font:400 30px/1.15 var(--display);margin:4px 0 0;color:var(--cream)}
+.psum{margin:0;font:600 14px/1.5 var(--body);color:var(--gold)}
+.plead,.hint2{margin:0;font-size:16px;line-height:1.5;color:var(--mist)}
+.hint2{text-align:center;font-size:15px}
+.hint2.dark{color:#6A6F8A;margin-top:12px}
+/* the route */
+.mapbtns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.stopbox .sof{display:block;font-size:13px;color:#6A6F8A;margin-bottom:2px}
+.stopbox .stt{display:block;font-size:18px;color:#1E2238;margin-bottom:4px}
+.slist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.slist button{width:100%;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:2px solid transparent;border-radius:10px;padding:6px 10px;color:var(--mist);text-align:start}
+.slist button.seen{color:var(--cream)}
+.slist button.on{border-color:var(--gold);background:rgba(242,201,76,.12)}
+.slist .si{width:30px;height:30px;display:grid;place-items:center;flex:none;font-size:18px}
+.slist .si img{width:30px;height:30px;object-fit:contain;filter:grayscale(1) brightness(.5)}
+.slist button.seen .si img{filter:none}
+.slist .st{display:flex;flex-direction:column;gap:2px}
+.slist .st b{font-size:15px}.slist .st small{font-size:12px;opacity:.7}
+/* the team */
+.howto{margin:0;padding:0;list-style:none;counter-reset:h;display:flex;flex-direction:column;gap:6px}
+.howto li{counter-increment:h;position:relative;padding-inline-start:34px;color:var(--cream);font-size:15px;line-height:1.45}
+.howto li::before{content:counter(h);position:absolute;inset-inline-start:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#1E2238;display:grid;place-items:center;font:400 10px/1 var(--pixel)}
+.addf label{display:block;font-weight:700;font-size:16px;margin:14px 0 6px}
+.addf label:first-child{margin-top:0}
+.gsel button{width:auto;padding:10px 22px;font:600 17px/1 var(--body)}
+.how{display:flex;flex-direction:column;gap:8px}
+.hw{display:flex;flex-direction:column;gap:3px;text-align:start;background:#fff;border:3px solid #9FA7C7;border-radius:12px;padding:10px 12px;color:#1E2238}
+.hw b{font-size:16px}.hw small{font-size:13px;color:#6A6F8A;line-height:1.4}
+.hw.on{border-color:var(--gold);background:#FFF4CC}
+#howbox:empty{display:none}
+#howbox{margin-top:4px}
+.prevl{margin:14px 0 6px;font-size:14px;color:#6A6F8A}
+.msgprev{white-space:pre-wrap;word-break:break-all;background:#DCF8C6;color:#1E2238;border-radius:10px 10px 10px 2px;padding:10px 12px;font-size:14px;line-height:1.45;direction:auto}
+.party h2 small{font:500 14px/1 var(--body);color:#6A6F8A}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -429,30 +474,30 @@ let page=0,ans='ask',faqI=-1,taps=0;
 const pickT=v=>fill(pick(v));
 function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').classList.add('hide');show('letter');skipBtn.classList.add('hide');mus(true);if(!skipped)sfx('page',.6);mem.seen=1;save();
   page=mem.ans==='yes'?3:0;renderLetter()}
+// the pages, in story order: what this is, the evening's route, what to prepare, the decision;
+// after yes also your card, and for the subject the team
+function PAGES(){const P=[['letter',pLetter,()=>{}],['route',pMap,bindMap],['prep',pBag,bindBag],['decide',pDex,bindAnswer]];
+  if(mem.ans==='yes'){P.push(['card',pCard,bindCard]);if(ROLE==='s')P.push(['team',pParty,bindParty])}return P}
+const pageIdx=k=>PAGES().findIndex(x=>x[0]===k);
 function renderLetter(){
-  const tabs=TABS();
-  $('#lcol').innerHTML=`<button class="restart" id="restart">${H('restart')}</button><nav class="tabs"><button class="tarr" id="tprev" aria-label="prev">${AR_PREV}</button><div class="tmid"><b id="tname"></b><div class="dots">${tabs.map((t,i)=>`<button class="dot" data-p="${i}" aria-label="${esc(t)}"></button>`).join('')}</div></div><button class="tarr" id="tnext" aria-label="next">${AR_NEXT}</button></nav><div id="pg"></div>`;
+  $('#lcol').innerHTML=`<nav class="steps" id="steps"></nav><div id="pg"></div><div class="pnav" id="pnav"></div><button class="restart" id="restart">${H('restart')}</button>`;
   $('#restart').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
-  $('#tprev').onclick=()=>goPage(page-1);$('#tnext').onclick=()=>goPage(page+1);
-  document.querySelectorAll('.dot').forEach(d=>d.onclick=()=>goPage(+d.dataset.p));
-  // swipe between pages (in Hebrew the next page comes from the left)
-  let x0=null;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
-  pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)<60)return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
-  goPage(page,true)}
-function TABS(){const t=TL('tabs');return ROLE==='s'&&mem.ans==='yes'?[...t,T('partyTab')]:t}
-function goPage(i,first){const n=TABS().length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);
-  $('#tname').textContent=TABS()[i];document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k===i));
-  $('#tprev').style.visibility=i?'':'hidden';$('#tnext').style.visibility=i<n-1?'':'hidden';
-  const pg=$('#pg');pg.innerHTML=[pCard,pMap,pBag,pDex,pParty][i]()+(i<n-1?`<button class="nextbtn" id="nextbtn">${H('next')} ${AR_NEXT}</button>`:'');
-  pg.className=first?'':(dir>0?'in-next':'in-prev');$('#letter').scrollTo(0,0);
-  if($('#nextbtn'))$('#nextbtn').onclick=()=>goPage(page+1);
-  [bindCard,bindMap,bindBag,bindAnswer,bindParty][i]()}
-// ---- page 1: a short letter and the trainer card, with your character ----
-const MINI_N=77;
-function cardFig(){if(mem.av==='custom')return '<span class="cust">?</span>';const src=typeof mem.av==='number'?`../img/mini/${mem.av}.png`:(G==='f'?'../img/ow-girl.png':'../img/ow-boy.png');return `<img class="px" src="${src}" alt="">`}
-function pCard(){
-  const id=String(Math.abs([...NAME].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7))%100000).padStart(5,'0'),lit=mem.badges||0;
-  return `<article class="paper">
+  // swipe: in Hebrew the next page comes from the left, in English from the right
+  let x0=null,y0=0;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx))return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
+  goPage(Math.min(page,PAGES().length-1),true)}
+function goPage(i,first){const P=PAGES(),n=P.length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);stopPlay();
+  const st=$('#steps');st.innerHTML=P.map(([k],j)=>`<button data-p="${j}" class="${j===i?'on':''}${j<i?' done':''}"><b>${j+1}</b>${esc(T('tab_'+k))}</button>`).join('');
+  st.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>goPage(+b.dataset.p));
+  const on=st.querySelector('.on');if(on)st.scrollLeft+=on.getBoundingClientRect().left-st.getBoundingClientRect().left-(st.clientWidth-on.clientWidth)/2;
+  const pg=$('#pg');pg.innerHTML=P[i][1]();pg.className=first?'':(dir>0?'in-next':'in-prev');
+  $('#pnav').innerHTML=(i>0?`<button class="prevbtn" id="prevbtn">${AR_PREV} ${H('prev')}</button>`:'<span></span>')+(i<n-1?`<button class="nextbtn" id="nextbtn">${esc(T('nextTo').replace('{x}',T('tab_'+P[i+1][0])))} ${AR_NEXT}</button>`:'');
+  if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(page-1);if($('#nextbtn'))$('#nextbtn').onclick=()=>goPage(page+1);
+  $('#letter').scrollTo(0,0);P[i][2]()}
+const ptitle=k=>`<h1 class="ptitle">${H(k)}</h1>`;
+
+// ---- 1. the letter ----
+function pLetter(){return `<article class="paper">
     <img class="stamp px" src="img/seal.png" alt="">
     <p class="kick">${H('letterKicker')}</p>
     <h1>${H('letterTitle')}</h1>
@@ -461,55 +506,42 @@ function pCard(){
     ${DATE||PLACE?`<p class="whn">${DATE?`<b>${H('when')}:</b> ${esc(DATE)}`:''}${DATE&&PLACE?'<br>':''}${PLACE?`<b>${H('where')}:</b> ${esc(PLACE)}`:''}</p>`:''}
     <p class="sign">${H('letterSign')}</p>
     ${PS?`<div class="ps"><b>${H('psLabel')}:</b> ${esc(PS)}</div>`:''}
-  </article>
-  <section class="tcard${mem.ans==='yes'?' ok':''}">
-    <div class="tchead"><span>${esc(T('cardHead'))}</span><span>IDNo.${id}</span></div>
-    <div class="tcbody"><div class="tcrows">
-      <div><span>NAME</span><b class="nm">${esc(NAME)}</b></div>
-      <div><span>POKéDEX</span><b>???</b></div>
-      <div><span>TIME</span><b>${esc(T('saveTime'))}</b></div>
-      <div><span>DATE</span><b class="nm">${esc(DATE||T('dateTbd'))}</b></div></div>
-      <button class="tcfig" id="tcfig">${cardFig()}<i>${H(mem.av!=null?'cardChange':'cardPick')}</i></button></div>
-    <p class="tcbl">${H('cardBadges')}</p>
-    <div class="tcbadges">${[1,2,3,4,5,6,7,8].map(n=>`<img src="../img/badge-${n}.webp" alt="" class="${lit>=n?'on':''}">`).join('')}</div>
-    ${mem.ans==='yes'?'<b class="approved">APPROVED</b>':''}
-  </section>
-  <div id="picker" class="blk hide"></div>`}
-function bindCard(){$('#tcfig').onclick=()=>{const pk=$('#picker');if(!pk.classList.contains('hide')){pk.classList.add('hide');return}sfx('a',.5);
-  pk.innerHTML=`<h2>${H('cardPick')}</h2><p class="muted">${H('cardPickHint')}</p><div class="pgrid"><button data-av="custom" class="custt${mem.av==='custom'?' on':''}"><span>?</span><i>${H('customTile')}</i></button>${Array.from({length:MINI_N},(_,i)=>`<button data-av="${i}" class="${mem.av===i?'on':''}"><img class="px" src="../img/mini/${i}.png" alt=""></button>`).join('')}</div><div id="custbox"></div>`;
-  pk.classList.remove('hide');custBox();pk.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});
-  pk.querySelectorAll('[data-av]').forEach(bt=>bt.onclick=()=>{const v=bt.dataset.av;mem.av=v==='custom'?'custom':+v;save();sfx('tink',.6);
-    pk.querySelectorAll('[data-av]').forEach(x=>x.classList.toggle('on',x===bt));$('#tcfig').innerHTML=cardFig()+`<i>${H('cardChange')}</i>`;custBox()})}}
-function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.innerHTML='';return}const l=wa(T('customWaMsg'));
-  c.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px">${H('customText')}${l?`<br><a class="wa" href="${l}" target="_blank" rel="noopener">${H('customWa')}</a>`:''}</div>`}
+  </article><p class="hint2">${H('letterNext')}</p>`}
 
-// ---- page 2: the Town Map. The evening is the route through Kanto, badge by badge; Dragonite flies you from stop to stop ----
+// ---- 2. the route: the evening is the badge route through Kanto; Dragonite flies you from stop to stop ----
 const STOPS=[[44,94],[44,38],[124,30],[124,78],[100,54],[108,101],[124,54],[44,117],[44,70],[28,30]];
-let stop=0,flying=null;
+let stop=0,flying=null,playing=false;
 const MZ=()=>{const w=Math.min(innerWidth,460)-40;return w>=344?2:w/172};
-function pMap(){const z=MZ();
-  return `<p class="maplead">${H('mapLead')}</p>
+function pMap(){const z=MZ(),SS=TXR('stops')||[];
+  return `${ptitle('routeTitle')}<p class="psum">${H('routeSum')}</p><p class="plead">${H('routeHow')}</p>
   <div class="tmap" id="tmap" style="width:${172*z}px;height:${128*z}px"><img class="px" src="img/townmap.png" alt="">
     ${STOPS.map(([x,y],i)=>`<i class="mk" id="mk${i}" style="left:${x*z}px;top:${y*z}px"></i>`).join('')}<i class="dnic" id="dnic"></i></div>
   <div class="gbp-box stopbox" id="stopbox"></div>
-  <div class="mapbtns"><button class="nextbtn" id="mapgo"></button></div>`}
-function bindMap(){stop=0;placeIc(STOPS[0]);stopInfo(0,true);$('#mapgo').onclick=()=>{if(flying)return;if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0);return}fly(stop,stop+1)}}
+  <div class="mapbtns"><button class="nextbtn" id="mapgo"></button><button class="ghostbtn" id="mapplay">${H('routePlay')}</button></div>
+  <ol class="slist">${SS.map((x,i)=>`<li><button data-s="${i}"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.c))}</small></span></button></li>`).join('')}</ol>`}
+function bindMap(){stop=0;placeIc(STOPS[0]);stopInfo(0,true);
+  $('#mapgo').onclick=()=>{if(flying)return;stopPlay();if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0);return}fly(stop,stop+1)};
+  $('#mapplay').onclick=()=>{if(playing){stopPlay();return}playing=true;$('#mapplay').innerHTML=H('routeStopPlay');if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0)}const next=()=>{if(!playing)return;if(stop>=STOPS.length-1){stopPlay();return}fly(stop,stop+1,()=>setTimeout(next,RM?300:1100))};next()};
+  document.querySelectorAll('.slist [data-s]').forEach(b=>b.onclick=()=>{if(flying)return;stopPlay();const i=+b.dataset.s;if(i===stop)return;fly(stop,i);$('#tmap').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
+function stopPlay(){playing=false;const b=$('#mapplay');if(b)b.innerHTML=H('routePlay')}
 function placeIc([x,y],flip){const z=MZ(),d=$('#dnic');if(!d)return;d.style.left=x*z+'px';d.style.top=y*z+'px';if(flip!=null)d.style.setProperty('--fx',flip?-1:1)}
-function fly(a,b){const A=STOPS[a],B=STOPS[b],t0=performance.now(),T0=RM?1:900,d=$('#dnic');sfx('toss',.35);d.classList.add('fly');
-  flying=requestAnimationFrame(function step(t){const k=Math.min(1,(t-t0)/T0),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,h=Math.hypot(B[0]-A[0],B[1]-A[1])*.35+8;
+function fly(a,b,then){const A=STOPS[a],B=STOPS[b],t0=performance.now(),T0=RM?1:900,d=$('#dnic');if(!d)return;sfx('toss',.35);d.classList.add('fly');
+  flying=requestAnimationFrame(function step(t){if(!$('#dnic')){flying=null;return}const k=Math.min(1,(t-t0)/T0),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,h=Math.hypot(B[0]-A[0],B[1]-A[1])*.35+8;
     placeIc([A[0]+(B[0]-A[0])*e,A[1]+(B[1]-A[1])*e-Math.sin(Math.PI*e)*h],B[0]<A[0]);
-    if(k<1)flying=requestAnimationFrame(step);else{flying=null;d.classList.remove('fly');stop=b;stopInfo(b)}})}
-function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8;document.querySelectorAll('.mk').forEach((m,k)=>{m.classList.toggle('seen',k<=i);m.classList.toggle('now',k===i)});
+    if(k<1)flying=requestAnimationFrame(step);else{flying=null;d.classList.remove('fly');stop=b;stopInfo(b);then&&then()}})}
+function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8,n=STOPS.length;
+  document.querySelectorAll('.mk').forEach((m,k)=>{m.classList.toggle('seen',k<=i);m.classList.toggle('now',k===i)});
+  document.querySelectorAll('.slist [data-s]').forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('seen',k<=i)});
   if(badge&&(mem.badges||0)<i){mem.badges=i;save()}
-  $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<b>${esc(pickT(S.c))} · ${esc(pickT(S.t))}</b><br>${esc(pickT(S.d))}`;
-  $('#mapgo').textContent=i>=STOPS.length-1?T('mapAgain'):`${T('mapNext')} ${AR_NEXT}`;
-  if(!first)sfx(badge?'tink':(i===STOPS.length-1?'page':'a'),.6)}
+  $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<small class="sof">${esc(T('stopOf').replace('{i}',i+1).replace('{n}',n))} · ${esc(pickT(S.c))}</small><b class="stt">${esc(pickT(S.t))}</b>${esc(pickT(S.d))}`;
+  $('#mapgo').textContent=i>=n-1?T('routeAgain'):`${T('mapNext')} ${AR_NEXT}`;
+  if(!first)sfx(badge?'tink':(i===n-1?'page':'a'),.6)}
 
-// ---- page 3: the bag, like the game's: pick an item, its description shows in the box below ----
+// ---- 3. what to prepare: the bag, like the game's: pick an item, its description shows below ----
 let bagI=0;
 const BAG=()=>ROLE==='f'?[['phone','bagPhone','bagPhoneText',null],['ball','f_bagQ','f_bagQText','f_bagQMore'],['friends','f_bagTeam','f_bagTeamText',null]]:[['ball','bagTrainers','bagTrainersText','bagTrainersMore'],['friends','bagFriends','bagFriendsText','bagFriendsMore'],['phone','bagPhone','bagPhoneText',null]];
-function pBag(){const items=BAG().map(([ic,t])=>[ic,H(t)]);
-  return `<section class="blk bagg"><h2>${H('bagTitle')}</h2><div class="bagl">${items.map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${t}</b>${ic==='ball'&&ROLE==='s'?'<em>×4</em>':''}</button>`).join('')}</div></section>
+function pBag(){return `${ptitle('prepTitle')}<p class="plead">${H('prepLead')}</p>
+  <section class="blk bagg"><div class="bagl">${BAG().map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${H(t)}</b>${ic==='ball'&&ROLE==='s'?'<em>×4</em>':''}</button>`).join('')}</div></section>
   <div class="gbp-box bagd" id="bagd"></div>`}
 function bagIcon(ic){return ic==='ball'?`<span class="ball" style="--s:30px;display:block"></span>`:ic==='phone'?'<span class="phone"></span>':`<span class="friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</span>`}
 function bindBag(){const show=i=>{bagI=i;document.querySelectorAll('.bagl button').forEach((b,k)=>b.classList.toggle('on',k===i));
@@ -517,10 +549,33 @@ function bindBag(){const show=i=>{bagI=i;document.querySelectorAll('.bagl button
     $('#bagd').innerHTML=`<b class="q">${H(t)}</b>${H(d)}${m?`<ul>${TL(m).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`};
   document.querySelectorAll('.bagl button').forEach(b=>b.onclick=()=>{sfx('a',.4);show(+b.dataset.b)});show(bagI)}
 
-// ---- page 4: an empty Pokédex entry, Oak's notes, and the answer ----
-function pDex(){return `<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
+// ---- 4. the decision: an empty Pokédex entry, Oak's notes, and the answer ----
+function pDex(){return `${ptitle('decideTitle')}<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
   <details class="blk notes ndet"><summary><h2>${H('notesTitle')}</h2></summary><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>
   ${pAnswer()}`}
+
+// ---- 5. (after yes) your card, and your character ----
+const MINI_N=77;
+function cardFig(){if(mem.av==='custom')return '<span class="cust">?</span>';const src=typeof mem.av==='number'?`../img/mini/${mem.av}.png`:(G==='f'?'../img/ow-girl.png':'../img/ow-boy.png');return `<img class="px" src="${src}" alt="">`}
+function pCard(){const id=String(Math.abs([...NAME].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7))%100000).padStart(5,'0'),lit=mem.badges||0;
+  return `${ptitle('cardTitle')}<p class="plead">${H('cardLead')}</p>
+  <section class="tcard ok">
+    <div class="tchead"><span>${esc(T('cardHead'))}</span><span>IDNo.${id}</span></div>
+    <div class="tcbody"><div class="tcrows">
+      <div><span>NAME</span><b class="nm">${esc(NAME)}</b></div>
+      <div><span>POKéDEX</span><b>???</b></div>
+      <div><span>TIME</span><b>${esc(T('saveTime'))}</b></div>
+      <div><span>DATE</span><b class="nm">${esc(DATE||T('dateTbd'))}</b></div></div>
+      <div class="tcfig" id="tcfig">${cardFig()}</div></div>
+    <p class="tcbl">${H('cardBadges')}</p>
+    <div class="tcbadges">${[1,2,3,4,5,6,7,8].map(n=>`<img src="../img/badge-${n}.webp" alt="" class="${lit>=n?'on':''}">`).join('')}</div>
+    <b class="approved">APPROVED</b>
+  </section>
+  <div class="blk"><div class="pgrid"><button data-av="custom" class="custt${mem.av==='custom'?' on':''}"><span>?</span><i>${H('customTile')}</i></button>${Array.from({length:MINI_N},(_,i)=>`<button data-av="${i}" class="${mem.av===i?'on':''}"><img class="px" src="../img/mini/${i}.png" alt=""></button>`).join('')}</div><div id="custbox"></div></div>`}
+function bindCard(){custBox();document.querySelectorAll('[data-av]').forEach(bt=>bt.onclick=()=>{const v=bt.dataset.av;mem.av=v==='custom'?'custom':+v;save();sfx('tink',.6);
+    document.querySelectorAll('[data-av]').forEach(x=>x.classList.toggle('on',x===bt));$('#tcfig').innerHTML=cardFig();custBox();if(v!=='custom')$('.tcard').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
+function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.innerHTML='';return}const l=wa(T('customWaMsg'));
+  c.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px;margin-top:10px">${H('customText')}${l?`<br><a class="wa" href="${l}" target="_blank" rel="noopener">${H('customWa')}</a>`:''}</div>`}
 
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
 function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
@@ -531,9 +586,9 @@ function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b
 function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
   if(mem.ans==='yes'){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
     w.innerHTML=`<section class="blk res"><p class="savedtag">${H('saved')}</p><h2>${H('todoTitle')}</h2>
-      <ol class="todo">${(TXR('todo')||[]).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${ROLE==='s'&&i===4?`<button class="nextbtn toteam">${H('teamBtn')} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
+      <ol class="todo">${(TXR('todo')||[]).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.go?`<button class="nextbtn togo" data-go="${x.go}">${H(x.go==='card'?'goCard':'goTeam')} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
       <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
-    w.querySelectorAll('.toteam').forEach(b=>b.onclick=()=>goPage(4));
+    w.querySelectorAll('.togo').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
     $('#chg').onclick=()=>{delete mem.ans;save();ans='ask';page=3;renderLetter()}}
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
@@ -566,33 +621,43 @@ function openUrl(u){const w=window.open(u,'_blank');if(!w)location.href=u}
 function shareFriend(f,done){const text=friendText(f);
   if(navigator.share){navigator.share({text}).then(done).catch(()=>{})}
   else{(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{toast(T('copied'));done()}).catch(()=>{prompt('',text);done()})}}
-function slot(f,i){if(!f)return `<button class="pslot empty" data-add="1"><span>${H('partyEmpty')}</span></button>`;
+function slot(f,i){if(!f)return `<div class="pslot empty"><span>${H('partyEmpty')}</span></div>`;
   return `<div class="pslot"><span class="pic"><img class="px" src="../img/ow-${f.g==='f'?'girl':'boy'}.png" alt=""></span><div class="pnm"><b>${esc(f.n)}</b><small class="${f.sent?'ok':''}">${H(f.sent?'stSent':'stNew')}</small></div><div class="pbtns"><button data-rs="${i}">${H('resend')}</button><button data-rm="${i}" class="x" aria-label="${esc(T('remove'))}">✕</button></div></div>`}
+let addHow='';
 function pParty(){const P=party(),pc=P.slice(6);
-  return `<section class="blk party"><h2>${H('partyTitle')}</h2><p class="muted">${H('partyLead')}</p>
+  return `${ptitle('partyTitle')}<p class="plead">${H('partyLead')}</p>
+  <ol class="howto">${TL('partyHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+  <section class="blk addf" id="addf">
+    <label for="fname">${H('addNameL')}</label><input id="fname" type="text" maxlength="30" autocomplete="off" placeholder="${esc(T('addNamePh'))}">
+    <label>${H('addGL')}</label><div class="gsel"><button data-g="m" class="${addG==='m'?'on':''}">${H('boy')}</button><button data-g="f" class="${addG==='f'?'on':''}">${H('girl')}</button></div>
+    <label>${H('addHowL')}</label>
+    <div class="how"><button class="hw${addHow==='wa'?' on':''}" data-h="wa"><b>${H('howWa')}</b><small>${H('howWaD')}</small></button><button class="hw${addHow==='me'?' on':''}" data-h="me"><b>${H('howMe')}</b><small>${H('howMeD')}</small></button></div>
+    <div id="howbox"></div>
+    <p class="prevl">${H('previewL')}</p><div class="msgprev" id="msgprev"></div>
+  </section>
+  <section class="blk party"><h2>${H('partySlots')} <small>${esc(T('partyCount').replace('{n}',P.length))}</small></h2>
     <div class="pslots">${[0,1,2,3,4,5].map(i=>slot(P[i],i)).join('')}</div>
     ${pc.length?`<div class="billpc"><b>${H('billPc')}</b><p>${H('billLead')}</p><div class="pslots">${pc.map((f,k)=>slot(f,k+6)).join('')}</div></div>`:''}
-    <p class="pcount">${esc(T('partyCount').replace('{n}',P.length))}</p>
-    <div class="mapbtns"><button class="nextbtn" id="addbtn">${H('partyAdd')}</button></div></section>
-  <div id="addbox"></div><p class="maplead">${H('partyNext')}</p>`}
-function bindParty(){const rer=()=>{$('#pg').innerHTML=pParty();bindParty()};
-  $('#addbtn').onclick=()=>addForm();document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addForm());
+    <p class="hint2 dark">${H('partyNext')}</p></section>`}
+function bindParty(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').innerHTML=pParty();bindParty();$('#letter').scrollTop=y};
+  const nm=()=>($('#fname').value||'').trim().slice(0,30);
+  const preview=()=>{const f={n:nm()||T('friendNamePh'),g:addG};$('#msgprev').textContent=(()=>{try{return decodeURI(friendText(f))}catch(e){return friendText(f)}})();
+    const hb=$('#howbox');const lbl=k=>esc(T(k).replace('{f}',nm()||T('friendNamePh')));
+    if(addHow==='wa'){if(!$('#fphone'))hb.innerHTML=`<label for="fphone">${H('addPhoneL')}</label><input id="fphone" type="tel" inputmode="tel" autocomplete="off" dir="ltr" placeholder="05X-XXXXXXX"><button class="wa wbtn" id="fsend"></button>`;$('#fsend').textContent=T('sendWa').replace('{f}',nm()||T('friendNamePh'))}
+    else if(addHow==='me'){if(!$('#fsend')||$('#fphone'))hb.innerHTML=`<button class="nextbtn wbtn" id="fsend"></button>`;$('#fsend').textContent=T('sendMe').replace('{f}',nm()||T('friendNamePh'))}
+    else hb.innerHTML='';
+    if($('#fsend'))$('#fsend').onclick=send};
+  const send=()=>{const n=nm();if(!n){const i=$('#fname');i.placeholder=T('addNeedName');i.classList.add('bad');i.focus();i.scrollIntoView({block:'center'});return}
+    const f={n,g:addG,sent:0};
+    if(addHow==='wa'){let d=($('#fphone').value||'').replace(/\D/g,'');if(d.startsWith('0'))d='972'+d.slice(1);openUrl(wa(friendText(f),d.length>=9?d:''));f.sent=1;party().push(f);save();done(f)}
+    else{party().push(f);save();shareFriend(f,()=>{f.sent=1;save();rer()});done(f)}};
+  const done=f=>{sfx('tink',.6);toast(T('sentTo').replace('{f}',f.n));addHow='';rer()};
+  $('#fname').oninput=()=>{$('#fname').classList.remove('bad');preview()};
+  document.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;document.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x));preview()});
+  document.querySelectorAll('.how [data-h]').forEach(x=>x.onclick=()=>{addHow=x.dataset.h;document.querySelectorAll('.how [data-h]').forEach(y=>y.classList.toggle('on',y===x));preview();$('#howbox').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})});
   document.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{const f=party()[+b.dataset.rs];shareFriend(f,()=>{f.sent=1;save();rer()})});
-  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rm,f=party()[i];if(!confirm(`${T('remove')}: ${f.n}?`))return;party().splice(i,1);save();sfx('a',.4);rer()})}
-function addForm(){const b=$('#addbox');sfx('a',.5);
-  b.innerHTML=`<section class="blk addf"><h2>${H('addTitle')}</h2>
-    <div class="arow"><input id="fname" type="text" maxlength="30" autocomplete="off" placeholder="${esc(T('addName'))}"><div class="gsel"><button data-g="m" class="${addG==='m'?'on':''}" aria-label="m">♂</button><button data-g="f" class="${addG==='f'?'on':''}" aria-label="f">♀</button></div></div>
-    <input id="fphone" type="tel" inputmode="tel" autocomplete="off" placeholder="${esc(T('addPhone'))}" dir="ltr">
-    <button class="wa wbtn" id="fwa">${H('addWa')}</button>
-    <div class="arow2"><button class="linkbtn" id="fshare">${H('addShare')}</button><button class="linkbtn" id="fcancel">${H('addCancel')}</button></div></section>`;
-  b.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});setTimeout(()=>$('#fname')?.focus(),300);
-  b.querySelectorAll('[data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;b.querySelectorAll('[data-g]').forEach(y=>y.classList.toggle('on',y===x))});
-  const take=()=>{const n=($('#fname').value||'').trim().slice(0,30);if(!n){const i=$('#fname');i.placeholder=T('addNeedName');i.classList.add('bad');i.focus();return null}const f={n,g:addG,sent:0};party().push(f);save();return f};
-  const finish=()=>{sfx('tink',.6);b.innerHTML='';goPage(4,true)};
-  $('#fwa').onclick=()=>{const f=take();if(!f)return;let d=($('#fphone').value||'').replace(/\D/g,'');if(d.startsWith('0'))d='972'+d.slice(1);
-    openUrl(wa(friendText(f),d.length>=9?d:''));f.sent=1;save();finish()};
-  $('#fshare').onclick=()=>{const f=take();if(!f)return;shareFriend(f,()=>{f.sent=1;save()});finish()};
-  $('#fcancel').onclick=()=>{b.innerHTML=''}}
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rm,f=party()[i];if(!confirm(`${T('remove')}: ${f.n}?`))return;party().splice(i,1);save();sfx('a',.4);rer()});
+  preview()}
 
 // ---------- 7. saving: "What? Your invitation is evolving!" ----------
 function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');
