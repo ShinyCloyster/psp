@@ -138,6 +138,17 @@ button{font:inherit;cursor:pointer}
 .nextbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #8a6a14}
 .paper .whn{background:rgba(242,201,76,.25);border-radius:6px;padding:8px 10px}
 .paper .ps{margin-top:14px;padding-top:12px;border-top:2px dashed #C9CEE4;font-size:16px;line-height:1.55;white-space:pre-line}
+.bag .it{flex-wrap:wrap}.bag .it>div:not(.ic){flex:1;min-width:0}
+.more{flex-basis:100%;margin-top:2px}
+.more summary{display:inline-flex;align-items:center;gap:6px;list-style:none;cursor:pointer;color:#E4483F;font-weight:700;font-size:15px;padding:4px 0}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:'▾';font-size:13px;transition:transform .2s}
+.more[open] summary::after{transform:rotate(180deg)}
+.more ul{margin:6px 0 2px;padding:10px 12px;list-style:none;background:#EEF1FA;border-radius:8px}
+.more li{position:relative;padding-inline-start:16px;margin:0 0 7px;font-size:15px;line-height:1.5;color:#2A2E45}
+.more li:last-child{margin-bottom:0}
+.more li::before{content:'▸';position:absolute;inset-inline-start:0;color:#6A8CC8}
+[dir=rtl] .more li::before{content:'◂'}
 /* the answer */
 .savedtag{display:inline-block;background:var(--ok);color:#0b2b17;border-radius:8px;padding:4px 10px;font-weight:700;margin:0 0 10px!important}
 .todo{margin:0;padding:0;list-style:none;counter-reset:t;text-align:start}
@@ -336,10 +347,12 @@ function pLetter(){
     <div class="row"><span>POKéDEX</span><b>151</b></div>
     <div class="row"><span>TIME</span><b>${esc(T('saveTime'))}</b></div>${when}</section>`}
 function pBag(){return `<section class="blk bag"><h2>${H('bagTitle')}</h2>
-    <div class="it"><div class="ic"><span class="ball" style="--s:${Z*12}px;display:block"></span></div><div><b>${H('bagTrainers')}</b><div class="slots">${'<div class="slot"></div>'.repeat(4)}</div><span>${H('bagTrainersText')}</span></div></div>
+    <div class="it"><div class="ic"><span class="ball" style="--s:${Z*12}px;display:block"></span></div><div><b>${H('bagTrainers')}</b><div class="slots">${'<div class="slot"></div>'.repeat(4)}</div><span>${H('bagTrainersText')}</span></div>${more('bagTrainersMore')}</div>
     <div class="it"><div class="ic"><span class="phone"></span></div><div><b>${H('bagPhone')}</b><span>${H('bagPhoneText')}</span></div></div>
-    <div class="it"><div class="ic friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</div><div><b>${H('bagFriends')}</b><span>${H('bagFriendsText')}</span></div></div>
+    <div class="it"><div class="ic friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</div><div><b>${H('bagFriends')}</b><span>${H('bagFriendsText')}</span></div>${more('bagFriendsMore')}</div>
   </section>`}
+// "what does it mean?": opens a short list under an item in the bag
+function more(k){return `<details class="more"><summary>${H('bagMore')}</summary><ul>${TL(k).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`}
 function pNotes(){return `<section class="blk notes"><h2>${H('notesTitle')}</h2><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></section>`}
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
 function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
