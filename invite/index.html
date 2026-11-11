@@ -81,10 +81,12 @@ button{font:inherit;cursor:pointer}
 #hstage{position:relative;flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 #beam{position:absolute;bottom:calc(var(--z)*5px);width:calc(var(--z)*70px);height:calc(var(--z)*96px);clip-path:polygon(38% 100%,62% 100%,100% 0,0 0);background:linear-gradient(0deg,rgba(111,195,232,.55),rgba(111,195,232,.06));transform-origin:50% 100%;transform:scaleY(0);transition:transform .7s ease-out}
 #beam.on{transform:scaleY(1)}
+#scan{position:absolute;bottom:calc(var(--z)*5px);width:calc(var(--z)*70px);height:calc(var(--z)*96px);clip-path:polygon(38% 100%,62% 100%,100% 0,0 0);background:repeating-linear-gradient(0deg,rgba(22,26,46,.42) 0 2px,transparent 2px 5px);z-index:2;pointer-events:none;opacity:0;transition:opacity .6s .4s;animation:scanmove 1.6s linear infinite}
+#scan.on{opacity:1}
+@keyframes scanmove{to{background-position:0 -10px}}
 #oak{position:relative;width:calc(var(--z)*33px);height:calc(var(--z)*73px);margin-bottom:calc(var(--z)*12px);opacity:0;transition:opacity .6s .5s}
 #oak.on{opacity:1}
 #oak img{width:100%;height:100%;display:block;filter:sepia(1) hue-rotate(160deg) saturate(2.6) brightness(1.15);opacity:.88}
-#oak::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(22,26,46,.38) 0 2px,transparent 2px 5px);mix-blend-mode:multiply}
 #oak.on{animation:jitter 2.4s steps(1) infinite}
 @keyframes jitter{0%,100%{transform:none;filter:none}8%{transform:translateX(calc(var(--z)*1px))}10%{transform:none}46%{transform:translateX(calc(var(--z)*-1px));opacity:.7}48%{transform:none;opacity:1}72%{transform:skewX(4deg)}73%{transform:none}}
 #disc{width:calc(var(--z)*20px);height:calc(var(--z)*7px);display:block}
@@ -119,6 +121,43 @@ button{font:inherit;cursor:pointer}
 .notes li{position:relative;padding-inline-start:20px;margin:0 0 10px;font-size:16px;line-height:1.5}
 .notes li::before{content:'▸';position:absolute;inset-inline-start:0;color:#E4483F}
 [dir=rtl] .notes li::before{content:'◂'}
+/* pages */
+.tabs{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#F8F8F8;color:#1E2238;border:4px solid #2A2E45;border-radius:10px;box-shadow:inset 0 0 0 3px #F8F8F8,inset 0 0 0 6px #6A8CC8;padding:8px 6px}
+.tarr{background:none;border:0;color:#E4483F;font-size:20px;padding:6px 12px}
+.tmid{display:flex;flex-direction:column;align-items:center;gap:6px}
+.tmid b{font:400 22px/1 var(--display)}
+.dots{display:flex;gap:8px}
+.dot{width:10px;height:10px;padding:0;border-radius:50%;border:2px solid #2A2E45;background:transparent}
+.dot.on{background:#E4483F;border-color:#E4483F}
+#pg{display:flex;flex-direction:column;gap:18px}
+#pg.in-next{animation:inn .28s ease-out}#pg.in-prev{animation:inp .28s ease-out}
+@keyframes inn{from{transform:translateX(calc(var(--d,1)*-24px));opacity:0}}
+@keyframes inp{from{transform:translateX(calc(var(--d,1)*24px));opacity:0}}
+[dir=ltr] #pg{--d:-1}
+.nextbtn{align-self:center;background:var(--gold);color:#1E2238;border:0;border-radius:12px;padding:12px 26px;font:700 18px/1 var(--body);box-shadow:0 4px 0 #8a6a14}
+.nextbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #8a6a14}
+.paper .whn{background:rgba(242,201,76,.25);border-radius:6px;padding:8px 10px}
+.paper .ps{margin-top:14px;padding-top:12px;border-top:2px dashed #C9CEE4;font-size:16px;line-height:1.55;white-space:pre-line}
+/* the answer */
+.savedtag{display:inline-block;background:var(--ok);color:#0b2b17;border-radius:8px;padding:4px 10px;font-weight:700;margin:0 0 10px!important}
+.todo{margin:0;padding:0;list-style:none;counter-reset:t;text-align:start}
+.todo li{counter-increment:t;position:relative;padding:10px 0 10px;padding-inline-start:40px;border-top:2px dashed #C9CEE4}
+.todo li:first-child{border-top:0}
+.todo li::before{content:counter(t);position:absolute;inset-inline-start:0;top:10px;width:28px;height:28px;border-radius:50%;background:#E4483F;color:#fff;display:grid;place-items:center;font:400 12px/1 var(--pixel)}
+.todo b{display:block;font-size:17px}
+.todo span{display:block;font-size:15px;line-height:1.5;color:#4A4F6A}
+.todo .wa{margin-top:8px}
+.conf h2{font-size:22px}
+.conf-l{margin:0;padding:0;list-style:none;text-align:start}
+.conf-l li{position:relative;padding-inline-start:22px;margin:0 0 8px;font-size:16px;line-height:1.5}
+.conf-l li::before{content:'✓';position:absolute;inset-inline-start:0;color:var(--ok);font-weight:700}
+.faqm>button{font-size:17px;padding:11px 12px;border-top:1px dashed #C9CEE4}
+.faqm>button:first-child{border-top:0}
+.faqm>button::before{opacity:.35}
+.oakq{display:flex;align-items:flex-end;gap:10px}
+.oakq img{width:66px;flex:none;filter:drop-shadow(0 4px 0 rgba(0,0,0,.3))}
+.oakq .gbp-box{min-height:0;padding-bottom:16px;font-size:17px}
+.oakq .q{display:block;color:#3B4AA0;margin-bottom:6px}
 /* the Poké Ball (from the evening's .ball) */
 .bwrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 0 4px;text-align:center}
 .bwrap p{margin:0;font:400 24px/1.3 var(--display);color:var(--cream)}
@@ -139,7 +178,7 @@ html[lang=he] #start .sub,html[lang=he] .lkbox .hint,html[lang=he] .paper .kick,
 html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15px}html[lang=he] .paper .kick{font-size:13px}html[lang=he] .save .t{font-size:18px;font-weight:700}html[lang=he] .bwrap small{font-size:14px}
 @media (prefers-reduced-motion:reduce){
   #start .ps,.lkbox .hint,.gbp-tri{animation:none}
-  #oak.on,.ball.wobble,.paper,#env .wrap{animation:none}
+  #oak.on,.ball.wobble,.paper,#env .wrap,#scan{animation:none}
   #dn.land,#beam,#oak{transition:none}
 }
 </style>
@@ -163,7 +202,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
 <div id="env" class="hide"><div class="wrap"><img id="envimg" src="img/envelope.png" alt="" class="px"><button class="seal" id="seal"><img src="img/seal.png" alt="" class="px"></button></div><div class="lkbox" style="width:auto" id="envbox"></div></div>
 
 <section class="scene hide" id="holo">
-  <div id="hstage"><div id="beam"></div><div id="oak"><img src="img/oak.png" alt=""></div><img id="disc" src="img/disc.png" alt="" class="px"></div>
+  <div id="hstage"><div id="beam"></div><div id="scan"></div><div id="oak"><img src="img/oak.png" alt=""></div><img id="disc" src="img/disc.png" alt="" class="px"></div>
   <div class="gbp-box" id="oakbox"><span id="oaktxt"></span><i class="gbp-tri" id="oaktri">▼</i></div>
 </section>
 
@@ -248,49 +287,92 @@ $('#seal').addEventListener('click',async e=>{e.stopPropagation();if(sealDone)re
 
 // ---------- 4. Oak's hologram ----------
 const LINES=TL('oak');let li=0,typing=null,full='';
-async function holo(){show('holo');clearInterval(dnT);mus(true);sfx('tink',.5);await wait(300);$('#beam').classList.add('on');$('#oak').classList.add('on');await wait(900);say(0)}
+async function holo(){show('holo');clearInterval(dnT);mus(true);sfx('tink',.5);await wait(300);$('#beam').classList.add('on');$('#scan').classList.add('on');$('#oak').classList.add('on');await wait(900);say(0)}
 function say(i){li=i;full=LINES[i]||'';const t=$('#oaktxt');$('#oaktri').style.visibility='hidden';clearInterval(typing);
   if(RM){t.textContent=full;$('#oaktri').style.visibility='';return}
   let n=0;t.textContent='';typing=setInterval(()=>{n++;t.textContent=full.slice(0,n);if(n>=full.length){clearInterval(typing);typing=null;$('#oaktri').style.visibility=''}},32)}
 $('#holo').addEventListener('click',()=>{if(scene!=='holo')return;if(typing){clearInterval(typing);typing=null;$('#oaktxt').textContent=full;$('#oaktri').style.visibility='';return}
   sfx('a',.5);if(li<LINES.length-1)say(li+1);else toLetter(false)});
 
-// ---------- 5. the letter ----------
-function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').classList.add('hide');show('letter');skipBtn.classList.add('hide');if(scene==='letter')mus(true);if(!skipped)sfx('page',.6);mem.seen=1;save();renderLetter()}
+// ---------- 5. the letter, in pages (like the pockets of the bag) ----------
+const DATE=(()=>{const d=Q.get('date')||'';if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return '';try{return new Date(d+'T12:00:00').toLocaleDateString(LANG==='he'?'he-IL':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}catch(e){return d}})();
+const PLACE=(Q.get('place')||'').trim().slice(0,80), PS=(Q.get('ps')||'').trim().slice(0,500);
+const RTL=LANG==='he', AR_NEXT=RTL?'◀':'▶', AR_PREV=RTL?'▶':'◀';
+const wa=text=>CFG.wa?`https://wa.me/${encodeURIComponent(CFG.wa)}?text=${encodeURIComponent(text)}`:'';
+let page=0,ans='ask',faqI=-1,taps=0;
+function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').classList.add('hide');show('letter');skipBtn.classList.add('hide');mus(true);if(!skipped)sfx('page',.6);mem.seen=1;save();
+  page=mem.ans==='yes'?3:0;renderLetter()}
 function renderLetter(){
-  $('#lcol').innerHTML=`
-  <article class="paper">
+  const tabs=TL('tabs');
+  $('#lcol').innerHTML=`<nav class="tabs"><button class="tarr" id="tprev" aria-label="prev">${AR_PREV}</button><div class="tmid"><b id="tname"></b><div class="dots">${tabs.map((t,i)=>`<button class="dot" data-p="${i}" aria-label="${esc(t)}"></button>`).join('')}</div></div><button class="tarr" id="tnext" aria-label="next">${AR_NEXT}</button></nav><div id="pg"></div>`;
+  $('#tprev').onclick=()=>goPage(page-1);$('#tnext').onclick=()=>goPage(page+1);
+  document.querySelectorAll('.dot').forEach(d=>d.onclick=()=>goPage(+d.dataset.p));
+  // swipe between pages (in Hebrew the next page comes from the left)
+  let x0=null;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+  pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)<60)return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
+  goPage(page,true)}
+function goPage(i,first){const n=TL('tabs').length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);
+  $('#tname').textContent=TL('tabs')[i];document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k===i));
+  $('#tprev').style.visibility=i?'':'hidden';$('#tnext').style.visibility=i<n-1?'':'hidden';
+  const pg=$('#pg');pg.innerHTML=[pLetter,pBag,pNotes,pAnswer][i]()+(i<n-1?`<button class="nextbtn" id="nextbtn">${H('next')} ${AR_NEXT}</button>`:'');
+  pg.className=first?'':(dir>0?'in-next':'in-prev');$('#letter').scrollTo(0,0);
+  if($('#nextbtn'))$('#nextbtn').onclick=()=>goPage(page+1);
+  if(i===n-1)bindAnswer()}
+function pLetter(){
+  const when=`<div class="row"><span>DATE</span><b class="nm">${esc(DATE||T('dateTbd'))}</b></div>`;
+  return `<article class="paper">
     <img class="stamp px" src="img/seal.png" alt="">
     <p class="kick">${H('letterKicker')}</p>
     <h1>${H('letterTitle')}</h1>
     <p class="to">${H('letterTo')}</p>
     ${TL('letter').map(p=>`<p>${esc(p)}</p>`).join('')}
+    ${DATE||PLACE?`<p class="whn">${DATE?`<b>${H('when')}:</b> ${esc(DATE)}`:''}${DATE&&PLACE?'<br>':''}${PLACE?`<b>${H('where')}:</b> ${esc(PLACE)}`:''}</p>`:''}
     <p class="sign">${H('letterSign')}</p>
+    ${PS?`<div class="ps"><b>${H('psLabel')}:</b> ${esc(PS)}</div>`:''}
   </article>
   <section class="blk save"><p class="t">${esc(T('saveTitle'))}</p>
     <div class="row"><span>PLAYER</span><b class="nm">${esc(NAME)}</b></div>
     <div class="row"><span>BADGES</span><b>8</b></div>
     <div class="row"><span>POKéDEX</span><b>151</b></div>
-    <div class="row"><span>TIME</span><b>${esc(T('saveTime'))}</b></div></section>
-  <section class="blk bag"><h2>${H('bagTitle')}</h2>
+    <div class="row"><span>TIME</span><b>${esc(T('saveTime'))}</b></div>${when}</section>`}
+function pBag(){return `<section class="blk bag"><h2>${H('bagTitle')}</h2>
     <div class="it"><div class="ic"><span class="ball" style="--s:${Z*12}px;display:block"></span></div><div><b>${H('bagTrainers')}</b><div class="slots">${'<div class="slot"></div>'.repeat(4)}</div><span>${H('bagTrainersText')}</span></div></div>
     <div class="it"><div class="ic"><span class="phone"></span></div><div><b>${H('bagPhone')}</b><span>${H('bagPhoneText')}</span></div></div>
     <div class="it"><div class="ic friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</div><div><b>${H('bagFriends')}</b><span>${H('bagFriendsText')}</span></div></div>
-  </section>
-  <section class="blk notes"><h2>${H('notesTitle')}</h2><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></section>
-  <div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div>
-  <div id="menuwrap"></div>`;
-  let taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
+  </section>`}
+function pNotes(){return `<section class="blk notes"><h2>${H('notesTitle')}</h2><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></section>`}
+// ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
+function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
+function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
     setTimeout(()=>{b.classList.remove('shake');if(!RM)b.classList.add('wobble')},1150);
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
   renderMenu()}
-function renderMenu(){const w=$('#menuwrap');
-  if(mem.ans==='yes'){w.innerHTML=`<section class="blk res"><h2>${H('yesTitle')}</h2><p>${H('yesText')}</p><p style="color:#6A6F8A">${H('yesNext')}</p><button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;$('#chg').onclick=()=>{delete mem.ans;save();renderMenu()};return}
-  if(mem.ans==='later'){const wa=CFG.wa?`https://wa.me/${encodeURIComponent(CFG.wa)}?text=${encodeURIComponent(T('waMsg'))}`:'';
-    w.innerHTML=`<section class="blk res"><h2>${H('laterTitle')}</h2><p>${H('laterText')}</p>${wa?`<a class="wa" href="${wa}" target="_blank" rel="noopener">${H('laterWa')}</a>`:''}<br><button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;$('#chg').onclick=()=>{delete mem.ans;save();renderMenu()};return}
-  w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes">${H('menuYes')}</button><button id="mlater">${H('menuLater')}</button></div>`;
-  $('#myes').onclick=()=>{mem.ans='yes';save();mus(false);sfx('caught',.8);renderMenu()};
-  $('#mlater').onclick=()=>{mem.ans='later';save();sfx('a',.5);renderMenu()}}
+const pickT=v=>fill(pick(v));
+function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
+  if(mem.ans==='yes'){const link=wa(T('waYes'));
+    w.innerHTML=`<section class="blk res"><p class="savedtag">${H('saved')}</p><h2>${H('todoTitle')}</h2>
+      <ol class="todo">${(TX.todo||[]).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol>
+      <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
+    $('#chg').onclick=()=>{delete mem.ans;save();ans='ask';renderMenu(true)}}
+  else if(ans==='confirm'){
+    w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
+      <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
+    $('#csave').onclick=()=>{mem.ans='yes';save();mus(false);sfx('caught',.8);renderMenu(true)};
+    $('#cask').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
+  else if(ans==='faq'){const F=TX.faq||[],link=wa(T('waMsg'));
+    w.innerHTML=faqI<0
+      ?`<section class="blk res"><h2>${H('laterTitle')}</h2><p>${H('faqLead')}</p></section><div class="gbp-menu faqm" role="menu">${F.map((x,i)=>`<button data-q="${i}">${esc(pickT(x.q))}</button>`).join('')}</div>
+        <section class="blk res"><p>${H('laterText')}</p>${link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('laterWa')}</a>`:''}<br><button class="linkbtn" id="back">${H('backToAnswer')}</button></section>`
+      :`<div class="oakq"><img class="px" src="img/oak.png" alt=""><div class="gbp-box"><b class="q">${esc(pickT(F[faqI].q))}</b>${esc(pickT(F[faqI].a))}</div></div>
+        <div class="gbp-menu" role="menu"><button id="fmore">${H('faqBack')}</button><button id="back">${H('backToAnswer')}</button></div>`;
+    w.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{faqI=+b.dataset.q;sfx('a',.5);renderMenu(true)});
+    if($('#fmore'))$('#fmore').onclick=()=>{faqI=-1;renderMenu(true)};
+    $('#back').onclick=()=>{ans='ask';renderMenu(true)}}
+  else{
+    w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes">${H('menuYes')}</button><button id="mlater">${H('menuLater')}</button></div>`;
+    $('#myes').onclick=()=>{ans='confirm';sfx('a',.5);renderMenu(true)};
+    $('#mlater').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
+  if(scroll)w.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
 
 // returning visitors who already answered still start at PRESS START (the sound needs a tap), and can skip
 })();
