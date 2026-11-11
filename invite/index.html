@@ -169,6 +169,85 @@ button{font:inherit;cursor:pointer}
 .oakq img{width:66px;flex:none;filter:drop-shadow(0 4px 0 rgba(0,0,0,.3))}
 .oakq .gbp-box{min-height:0;padding-bottom:16px;font-size:17px}
 .oakq .q{display:block;color:#3B4AA0;margin-bottom:6px}
+/* page 1: the trainer card */
+.tcard{position:relative;background:linear-gradient(160deg,#5DA9E9,#3A78C8);border:4px solid #1E2238;border-radius:14px;box-shadow:inset 0 0 0 4px #9CD0F8,0 10px 24px rgba(0,0,0,.45);padding:12px 14px 14px;color:#fff;direction:ltr}
+.tchead{display:flex;justify-content:space-between;font:400 11px/1 var(--pixel);text-shadow:0 2px 0 #1E3A70;margin-bottom:12px}
+.tcbody{display:flex;gap:12px;align-items:stretch}
+.tcrows{flex:1;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.92);border-radius:8px;padding:10px 12px;color:#1E2238}
+.tcrows div{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:400 10px/1.3 var(--pixel)}
+.tcrows b{font:400 11px/1.3 var(--pixel);color:#3B4AA0}
+.tcrows b.nm{font:700 16px/1.2 var(--body);unicode-bidi:plaintext;text-align:end}
+.tcfig{flex:none;width:96px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;background:rgba(255,255,255,.18);border:2px dashed rgba(255,255,255,.7);border-radius:10px;padding:6px 4px;color:#fff}
+.tcfig img{zoom:3}
+.tcfig i{font:500 12px/1.2 var(--body);font-style:normal;text-align:center}
+.cust{display:grid;place-items:center;width:58px;height:70px;font:400 30px/1 var(--pixel);color:#fff;background:rgba(30,34,56,.35);border-radius:8px}
+.tcbl{margin:12px 0 6px;font:500 13px/1.3 var(--body);text-align:center;direction:rtl}
+html[lang=en] .tcbl{direction:ltr}
+.tcbadges{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;background:rgba(30,34,56,.35);border-radius:10px;padding:6px}
+.tcbadges img{width:100%;aspect-ratio:1;object-fit:contain;filter:grayscale(1) brightness(.35);opacity:.6}
+.tcbadges img.on{filter:none;opacity:1;animation:pop .4s ease-out}
+.approved{position:absolute;inset-inline-end:10px;bottom:56px;transform:rotate(-10deg);font:400 14px/1 var(--pixel);color:#E4483F;border:3px solid #E4483F;border-radius:6px;padding:6px 8px;background:rgba(255,255,255,.85)}
+.blk h2+.muted,.muted{color:#6A6F8A;font-size:14px;margin:-6px 0 10px}
+.pgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;max-height:330px;overflow-y:auto;padding:2px}
+.pgrid button{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:62px;background:#EEF1FA;border:2px solid transparent;border-radius:10px;padding:3px 0}
+.pgrid button.on{border-color:var(--gold);background:#FFF4CC}
+.pgrid img{zoom:2}
+.pgrid .custt{grid-column:1/-1;min-height:46px;background:#2A2E45;color:#fff;flex-direction:row;align-items:center;gap:10px;justify-content:center}.pgrid .custt.on{background:#3B4AA0}
+.pgrid .custt span{font:400 16px/1 var(--pixel)}
+.pgrid .custt i{font:600 16px/1 var(--body);font-style:normal}
+/* page 2: the town map */
+.maplead{margin:0;text-align:center;color:var(--mist);font-size:15px;line-height:1.5}
+.tmap{position:relative;align-self:center;border:4px solid #2A2E45;border-radius:8px;box-shadow:0 0 0 3px #9FA7C7,0 10px 24px rgba(0,0,0,.45);box-sizing:content-box;overflow:hidden;direction:ltr}
+.tmap>img{width:100%;height:100%;display:block}
+.mk{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid transparent;box-sizing:border-box}
+.mk.seen{border-color:var(--gold)}
+.mk.now{border-color:#fff;box-shadow:0 0 0 3px var(--gold);animation:pulse 1.2s ease-in-out infinite}
+.dnic{position:absolute;width:32px;height:32px;margin:-26px 0 0 -16px;background:url(img/dn-icon.png) 0 0/64px 32px;image-rendering:pixelated;transform:scaleX(calc(var(--fx,1)*-1));animation:dnf .3s steps(1) infinite;pointer-events:none;z-index:2}
+@keyframes dnf{50%{background-position:-32px 0}}
+.stopbox{min-height:0;padding-bottom:16px}
+.stopbox .sbadge{float:inline-end;width:40px;height:40px;object-fit:contain;margin:0 0 4px 8px}
+.mapbtns{display:flex;justify-content:center}
+/* page 3: the bag */
+.bagl{display:flex;flex-direction:column;gap:4px}
+.bagl button{display:flex;align-items:center;gap:12px;background:none;border:0;border-radius:8px;padding:8px 6px;text-align:start;color:#1E2238}
+.bagl button::before{content:'▶';font-size:12px;color:#E4483F;opacity:0}
+[dir=rtl] .bagl button::before{content:'◀'}
+.bagl button.on{background:#EEF1FA}
+.bagl button.on::before{opacity:1}
+.bagl .bi{width:62px;display:flex;justify-content:center}
+.bagl b{flex:1;font-size:17px}
+.bagl em{font:400 11px/1 var(--pixel);font-style:normal;color:#6A6F8A}
+.bagl .friends{display:flex}.bagl .friends img{margin-inline-start:-6px}
+.bagd{min-height:0;padding-bottom:16px;font-size:16px}
+.bagd .q{display:block;color:#3B4AA0;margin-bottom:4px}
+.bagd ul{margin:10px 0 0;padding:0;list-style:none}
+.bagd li{position:relative;padding-inline-start:16px;margin:0 0 7px;font-size:15px;line-height:1.5}
+.bagd li::before{content:'▸';position:absolute;inset-inline-start:0;color:#6A8CC8}
+[dir=rtl] .bagd li::before{content:'◂'}
+/* page 4: the Pokédex */
+.dex{background:#D8343C;border:4px solid #1E2238;border-radius:16px;padding:14px;box-shadow:inset 0 0 0 4px #F06A6F,0 10px 24px rgba(0,0,0,.45)}
+.dexscr{display:flex;gap:12px;background:#CFE9C4;border:4px solid #1E2238;border-radius:8px;padding:12px;color:#1E3A1E;direction:ltr}
+.dexsil{flex:none;width:92px;height:92px;display:grid;place-items:center;background:#9CC28E;border-radius:6px;font:400 40px/1 var(--pixel);color:#1E3A1E}
+.dexinfo{display:flex;flex-direction:column;gap:6px;font:400 10px/1.4 var(--pixel)}
+.dexinfo .dno{font:400 14px/1 var(--pixel)}
+.dexinfo .dnm{font:700 18px/1.2 var(--body);unicode-bidi:plaintext}
+html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
+.dexdesc{margin:12px 0 0;background:#F8F8F8;color:#1E2238;border-radius:8px;padding:10px 12px;font-size:16px;line-height:1.5}
+.ndet summary{list-style:none;cursor:pointer}.ndet summary::-webkit-details-marker{display:none}
+.ndet summary h2{display:flex;justify-content:space-between;align-items:center;margin:0}
+.ndet summary h2::after{content:'▾';font-size:16px;color:#E4483F}
+.ndet[open] summary h2{margin-bottom:12px}
+/* the evolution */
+#evo{position:fixed;inset:0;z-index:50;background:var(--night);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:30px;padding:16px 16px max(28px,env(safe-area-inset-bottom))}
+#evostage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;width:100%}
+.evoa{width:calc(76px*var(--z));height:calc(50px*var(--z))}
+.evob.mini{width:min(300px,80vw);padding:10px 12px 12px}
+.evob .tcbody{align-items:center;justify-content:space-between;background:rgba(255,255,255,.92);border-radius:8px;padding:10px;color:#1E2238}
+.evob .tcbody img{zoom:3}.evob .nm{font:700 20px/1.2 var(--body)}
+.sil{filter:brightness(0) invert(1)}
+.evodn{position:absolute;left:50%;top:40%;width:102px;height:90px;margin-left:-51px;background:url(img/dn-mail.webp) 0 0 no-repeat;image-rendering:pixelated;animation:evofly 2.2s ease-in forwards}
+@keyframes evofly{from{transform:translate(-40vw,30vh) scale(1.6)}to{transform:translate(50vw,-60vh) scale(.6)}}
+#evotxt{min-height:96px}
 /* the Poké Ball (from the evening's .ball) */
 .bwrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 0 4px;text-align:center}
 .bwrap p{margin:0;font:400 24px/1.3 var(--display);color:var(--cream)}
@@ -189,7 +268,7 @@ html[lang=he] #start .sub,html[lang=he] .lkbox .hint,html[lang=he] .paper .kick,
 html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15px}html[lang=he] .paper .kick{font-size:13px}html[lang=he] .save .t{font-size:18px;font-weight:700}html[lang=he] .bwrap small{font-size:14px}
 @media (prefers-reduced-motion:reduce){
   #start .ps,.lkbox .hint,.gbp-tri{animation:none}
-  #oak.on,.ball.wobble,.paper,#env .wrap,#scan{animation:none}
+  #oak.on,.ball.wobble,.paper,#env .wrap,#scan,.mk.now,.dnic,.evodn,.tcbadges img.on{animation:none}
   #dn.land,#beam,#oak{transition:none}
 }
 </style>
@@ -218,6 +297,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
 </section>
 
 <section id="letter" class="hide"><div class="col" id="lcol"></div></section>
+<div id="evo" class="hide"><div id="evostage"></div><div class="gbp-box" id="evotxt"></div></div>
 
 <script>
 (()=>{
@@ -311,6 +391,7 @@ const PLACE=(Q.get('place')||'').trim().slice(0,80), PS=(Q.get('ps')||'').trim()
 const RTL=LANG==='he', AR_NEXT=RTL?'◀':'▶', AR_PREV=RTL?'▶':'◀';
 const wa=text=>CFG.wa?`https://wa.me/${encodeURIComponent(CFG.wa)}?text=${encodeURIComponent(text)}`:'';
 let page=0,ans='ask',faqI=-1,taps=0;
+const pickT=v=>fill(pick(v));
 function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').classList.add('hide');show('letter');skipBtn.classList.add('hide');mus(true);if(!skipped)sfx('page',.6);mem.seen=1;save();
   page=mem.ans==='yes'?3:0;renderLetter()}
 function renderLetter(){
@@ -325,12 +406,15 @@ function renderLetter(){
 function goPage(i,first){const n=TL('tabs').length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);
   $('#tname').textContent=TL('tabs')[i];document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k===i));
   $('#tprev').style.visibility=i?'':'hidden';$('#tnext').style.visibility=i<n-1?'':'hidden';
-  const pg=$('#pg');pg.innerHTML=[pLetter,pBag,pNotes,pAnswer][i]()+(i<n-1?`<button class="nextbtn" id="nextbtn">${H('next')} ${AR_NEXT}</button>`:'');
+  const pg=$('#pg');pg.innerHTML=[pCard,pMap,pBag,pDex][i]()+(i<n-1?`<button class="nextbtn" id="nextbtn">${H('next')} ${AR_NEXT}</button>`:'');
   pg.className=first?'':(dir>0?'in-next':'in-prev');$('#letter').scrollTo(0,0);
   if($('#nextbtn'))$('#nextbtn').onclick=()=>goPage(page+1);
-  if(i===n-1)bindAnswer()}
-function pLetter(){
-  const when=`<div class="row"><span>DATE</span><b class="nm">${esc(DATE||T('dateTbd'))}</b></div>`;
+  [bindCard,bindMap,bindBag,bindAnswer][i]()}
+// ---- page 1: a short letter and the trainer card, with your character ----
+const MINI_N=77;
+function cardFig(){if(mem.av==='custom')return '<span class="cust">?</span>';const src=typeof mem.av==='number'?`../img/mini/${mem.av}.png`:(G==='f'?'../img/ow-girl.png':'../img/ow-boy.png');return `<img class="px" src="${src}" alt="">`}
+function pCard(){
+  const id=String(Math.abs([...NAME].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7))%100000).padStart(5,'0'),lit=mem.badges||0;
   return `<article class="paper">
     <img class="stamp px" src="img/seal.png" alt="">
     <p class="kick">${H('letterKicker')}</p>
@@ -341,26 +425,71 @@ function pLetter(){
     <p class="sign">${H('letterSign')}</p>
     ${PS?`<div class="ps"><b>${H('psLabel')}:</b> ${esc(PS)}</div>`:''}
   </article>
-  <section class="blk save"><p class="t">${esc(T('saveTitle'))}</p>
-    <div class="row"><span>PLAYER</span><b class="nm">${esc(NAME)}</b></div>
-    <div class="row"><span>BADGES</span><b>8</b></div>
-    <div class="row"><span>POKéDEX</span><b>151</b></div>
-    <div class="row"><span>TIME</span><b>${esc(T('saveTime'))}</b></div>${when}</section>`}
-function pBag(){return `<section class="blk bag"><h2>${H('bagTitle')}</h2>
-    <div class="it"><div class="ic"><span class="ball" style="--s:${Z*12}px;display:block"></span></div><div><b>${H('bagTrainers')}</b><div class="slots">${'<div class="slot"></div>'.repeat(4)}</div><span>${H('bagTrainersText')}</span></div>${more('bagTrainersMore')}</div>
-    <div class="it"><div class="ic"><span class="phone"></span></div><div><b>${H('bagPhone')}</b><span>${H('bagPhoneText')}</span></div></div>
-    <div class="it"><div class="ic friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</div><div><b>${H('bagFriends')}</b><span>${H('bagFriendsText')}</span></div>${more('bagFriendsMore')}</div>
-  </section>`}
-// "what does it mean?": opens a short list under an item in the bag
-function more(k){return `<details class="more"><summary>${H('bagMore')}</summary><ul>${TL(k).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`}
-function pNotes(){return `<section class="blk notes"><h2>${H('notesTitle')}</h2><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></section>`}
+  <section class="tcard${mem.ans==='yes'?' ok':''}">
+    <div class="tchead"><span>TRAINER CARD</span><span>IDNo.${id}</span></div>
+    <div class="tcbody"><div class="tcrows">
+      <div><span>NAME</span><b class="nm">${esc(NAME)}</b></div>
+      <div><span>POKéDEX</span><b>???</b></div>
+      <div><span>TIME</span><b>${esc(T('saveTime'))}</b></div>
+      <div><span>DATE</span><b class="nm">${esc(DATE||T('dateTbd'))}</b></div></div>
+      <button class="tcfig" id="tcfig">${cardFig()}<i>${H(mem.av!=null?'cardChange':'cardPick')}</i></button></div>
+    <p class="tcbl">${H('cardBadges')}</p>
+    <div class="tcbadges">${[1,2,3,4,5,6,7,8].map(n=>`<img src="../img/badge-${n}.webp" alt="" class="${lit>=n?'on':''}">`).join('')}</div>
+    ${mem.ans==='yes'?'<b class="approved">APPROVED</b>':''}
+  </section>
+  <div id="picker" class="blk hide"></div>`}
+function bindCard(){$('#tcfig').onclick=()=>{const pk=$('#picker');if(!pk.classList.contains('hide')){pk.classList.add('hide');return}sfx('a',.5);
+  pk.innerHTML=`<h2>${H('cardPick')}</h2><p class="muted">${H('cardPickHint')}</p><div class="pgrid"><button data-av="custom" class="custt${mem.av==='custom'?' on':''}"><span>?</span><i>${H('customTile')}</i></button>${Array.from({length:MINI_N},(_,i)=>`<button data-av="${i}" class="${mem.av===i?'on':''}"><img class="px" src="../img/mini/${i}.png" alt=""></button>`).join('')}</div><div id="custbox"></div>`;
+  pk.classList.remove('hide');custBox();pk.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});
+  pk.querySelectorAll('[data-av]').forEach(bt=>bt.onclick=()=>{const v=bt.dataset.av;mem.av=v==='custom'?'custom':+v;save();sfx('tink',.6);
+    pk.querySelectorAll('[data-av]').forEach(x=>x.classList.toggle('on',x===bt));$('#tcfig').innerHTML=cardFig()+`<i>${H('cardChange')}</i>`;custBox()})}}
+function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.innerHTML='';return}const l=wa(T('customWaMsg'));
+  c.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px">${H('customText')}${l?`<br><a class="wa" href="${l}" target="_blank" rel="noopener">${H('customWa')}</a>`:''}</div>`}
+
+// ---- page 2: the Town Map. The evening is the route through Kanto, badge by badge; Dragonite flies you from stop to stop ----
+const STOPS=[[44,94],[44,38],[124,30],[124,78],[100,54],[108,101],[124,54],[44,117],[44,70],[28,30]];
+let stop=0,flying=null;
+const MZ=()=>{const w=Math.min(innerWidth,460)-40;return w>=344?2:w/172};
+function pMap(){const z=MZ();
+  return `<p class="maplead">${H('mapLead')}</p>
+  <div class="tmap" id="tmap" style="width:${172*z}px;height:${128*z}px"><img class="px" src="img/townmap.png" alt="">
+    ${STOPS.map(([x,y],i)=>`<i class="mk" id="mk${i}" style="left:${x*z}px;top:${y*z}px"></i>`).join('')}<i class="dnic" id="dnic"></i></div>
+  <div class="gbp-box stopbox" id="stopbox"></div>
+  <div class="mapbtns"><button class="nextbtn" id="mapgo"></button></div>`}
+function bindMap(){stop=0;placeIc(STOPS[0]);stopInfo(0,true);$('#mapgo').onclick=()=>{if(flying)return;if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0);return}fly(stop,stop+1)}}
+function placeIc([x,y],flip){const z=MZ(),d=$('#dnic');if(!d)return;d.style.left=x*z+'px';d.style.top=y*z+'px';if(flip!=null)d.style.setProperty('--fx',flip?-1:1)}
+function fly(a,b){const A=STOPS[a],B=STOPS[b],t0=performance.now(),T0=RM?1:900,d=$('#dnic');sfx('toss',.35);d.classList.add('fly');
+  flying=requestAnimationFrame(function step(t){const k=Math.min(1,(t-t0)/T0),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,h=Math.hypot(B[0]-A[0],B[1]-A[1])*.35+8;
+    placeIc([A[0]+(B[0]-A[0])*e,A[1]+(B[1]-A[1])*e-Math.sin(Math.PI*e)*h],B[0]<A[0]);
+    if(k<1)flying=requestAnimationFrame(step);else{flying=null;d.classList.remove('fly');stop=b;stopInfo(b)}})}
+function stopInfo(i,first){const S=(TX.stops||[])[i]||{},badge=i>=1&&i<=8;document.querySelectorAll('.mk').forEach((m,k)=>{m.classList.toggle('seen',k<=i);m.classList.toggle('now',k===i)});
+  if(badge&&(mem.badges||0)<i){mem.badges=i;save()}
+  $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<b>${esc(pickT(S.c))} · ${esc(pickT(S.t))}</b><br>${esc(pickT(S.d))}`;
+  $('#mapgo').textContent=i>=STOPS.length-1?T('mapAgain'):`${T('mapNext')} ${AR_NEXT}`;
+  if(!first)sfx(badge?'tink':(i===STOPS.length-1?'page':'a'),.6)}
+
+// ---- page 3: the bag, like the game's: pick an item, its description shows in the box below ----
+let bagI=0;
+function pBag(){const items=[['ball',H('bagTrainers')],['friends',H('bagFriends')],['phone',H('bagPhone')]];
+  return `<section class="blk bagg"><h2>${H('bagTitle')}</h2><div class="bagl">${items.map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${t}</b>${i===0?'<em>×4</em>':''}</button>`).join('')}</div></section>
+  <div class="gbp-box bagd" id="bagd"></div>`}
+function bagIcon(ic){return ic==='ball'?`<span class="ball" style="--s:30px;display:block"></span>`:ic==='phone'?'<span class="phone"></span>':`<span class="friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</span>`}
+function bindBag(){const show=i=>{bagI=i;document.querySelectorAll('.bagl button').forEach((b,k)=>b.classList.toggle('on',k===i));
+    const [t,d,m]=[['bagTrainers','bagTrainersText','bagTrainersMore'],['bagFriends','bagFriendsText','bagFriendsMore'],['bagPhone','bagPhoneText',null]][i];
+    $('#bagd').innerHTML=`<b class="q">${H(t)}</b>${H(d)}${m?`<ul>${TL(m).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`};
+  document.querySelectorAll('.bagl button').forEach(b=>b.onclick=()=>{sfx('a',.4);show(+b.dataset.b)});show(bagI)}
+
+// ---- page 4: an empty Pokédex entry, Oak's notes, and the answer ----
+function pDex(){return `<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
+  <details class="blk notes ndet"><summary><h2>${H('notesTitle')}</h2></summary><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>
+  ${pAnswer()}`}
+
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
 function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
 function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
     setTimeout(()=>{b.classList.remove('shake');if(!RM)b.classList.add('wobble')},1150);
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
   renderMenu()}
-const pickT=v=>fill(pick(v));
 function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
   if(mem.ans==='yes'){const link=wa(T('waYes'));
     w.innerHTML=`<section class="blk res"><p class="savedtag">${H('saved')}</p><h2>${H('todoTitle')}</h2>
@@ -370,7 +499,7 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
-    $('#csave').onclick=()=>{mem.ans='yes';save();mus(false);sfx('caught',.8);renderMenu(true)};
+    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();renderMenu(true)})};
     $('#cask').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
   else if(ans==='faq'){const F=TX.faq||[],link=wa(T('waMsg'));
     w.innerHTML=faqI<0
@@ -387,6 +516,23 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
     $('#mlater').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
   if(scroll)w.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
 
+
+// ---------- 7. saving: "What? Your invitation is evolving!" ----------
+function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');
+  stage.innerHTML=`<img class="px evoa" src="img/envelope.png" alt=""><div class="evob tcard mini"><div class="tchead"><span>TRAINER CARD</span></div><div class="tcbody"><b class="nm">${esc(NAME)}</b>${cardFig()}</div></div>`;
+  const ea=stage.querySelector('.evoa'),eb=stage.querySelector('.evob');eb.style.display='none';
+  let ev=null;const say=t=>{box.textContent=t};
+  say(T('evoSaving')+'\n'+T('evoDont'));sfx('page',.6);
+  const go=async()=>{await wait(1600);say(T('evoWhat'));
+    if(soundOn){try{ev=new Audio('../mus-evolution.mp3');ev.volume=.5;ev.play().catch(()=>{})}catch(e){}}
+    if(!RM){ea.classList.add('sil');eb.classList.add('sil');let gap=420,show=false;const t0=performance.now();
+      while(performance.now()-t0<3600){show=!show;ea.style.display=show?'none':'';eb.style.display=show?'':'none';await wait(gap);gap=Math.max(70,gap*.82)}}
+    ea.style.display='none';eb.style.display='';eb.classList.remove('sil');const f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(()=>f.remove(),800);
+    sfx('caught',.8);say(T('evoDone'));await wait(2600);say(T('evoFly'));
+    const fl=document.createElement('div');fl.className='evodn';stage.appendChild(fl);fl.style.backgroundSize=`${DN.cols*DN.fw}px ${Math.ceil(DN.n/DN.cols)*DN.fh}px`;
+    await wait(2200);if(ev){const v0=ev.volume;for(let k=10;k>=0;k--){ev.volume=v0*k/10;await wait(60)}ev.pause()}
+    o.classList.add('hide');mus(true);done()};
+  go()}
 // returning visitors who already answered still start at PRESS START (the sound needs a tap), and can skip
 })();
 </script>
