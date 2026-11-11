@@ -248,6 +248,35 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .evodn{position:absolute;left:50%;top:40%;width:102px;height:90px;margin-left:-51px;background:url(img/dn-mail.webp) 0 0 no-repeat;image-rendering:pixelated;animation:evofly 2.2s ease-in forwards}
 @keyframes evofly{from{transform:translate(-40vw,30vh) scale(1.6)}to{transform:translate(50vw,-60vh) scale(.6)}}
 #evotxt{min-height:96px}
+/* page 5: the team */
+.party .muted{margin:-4px 0 12px}
+.pslots{display:flex;flex-direction:column;gap:6px}
+.pslot{display:flex;align-items:center;gap:10px;background:#EEF1FA;border:3px solid #6A8CC8;border-radius:12px;padding:6px 10px;min-height:58px;color:#1E2238;text-align:start}
+.pslot.empty{justify-content:center;border-style:dashed;border-color:#B9BDD6;background:none;color:#8A8FA8;font:500 15px/1 var(--body);width:100%}
+.pslot .pic{width:46px;display:flex;justify-content:center}
+.pslot .pic img{zoom:2;filter:grayscale(1) brightness(.75)}
+.pnm{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.pnm b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pnm small{font-size:13px;color:#8A8FA8}.pnm small.ok{color:#2E8B57;font-weight:700}
+.pbtns{display:flex;gap:6px}
+.pbtns button{background:#fff;border:2px solid #B9BDD6;border-radius:8px;padding:6px 8px;font-size:13px;color:#2A2E45}
+.pbtns .x{color:#E4483F}
+.billpc{margin-top:14px;background:#DDEBE3;border:3px solid #4E8C6A;border-radius:12px;padding:10px}
+.billpc>b{display:block;font:400 11px/1.4 var(--pixel);color:#2E5E44;margin-bottom:4px}
+html[lang=he] .billpc>b{font:700 16px/1.3 var(--body)}
+.billpc p{margin:0 0 8px;font-size:14px;line-height:1.45;color:#2E5E44}
+.pcount{text-align:center;color:#6A6F8A;margin:12px 0 10px;font-size:14px}
+.addf h2{margin-bottom:10px}
+.addf input{width:100%;font:500 18px/1.2 var(--body);padding:12px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;color:#1E2238}
+.addf input.bad{border-color:#E4483F}
+.arow{display:flex;gap:8px;margin-bottom:10px}
+.gsel{display:flex;gap:6px}
+.gsel button{width:48px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;font-size:22px;color:#6A6F8A}
+.gsel button.on{border-color:var(--gold);background:#FFF4CC;color:#1E2238}
+.wbtn{display:block;width:100%;margin-top:10px;border:0;text-align:center;font-size:17px}
+.arow2{display:flex;justify-content:space-between;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:80;background:#1E2238;color:#fff;border:2px solid var(--gold);border-radius:12px;padding:10px 16px;font-size:15px;max-width:90vw;text-align:center}
+.toteam{margin-top:10px}
 /* the Poké Ball (from the evening's .ball) */
 .bwrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 0 4px;text-align:center}
 .bwrap p{margin:0;font:400 24px/1.3 var(--display);color:var(--cream)}
@@ -304,22 +333,25 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
 const Q=new URLSearchParams(location.search);
 const LANG=Q.get('lang')==='en'?'en':'he', G=Q.get('g')==='f'?'f':'m';
 const TX=(window.INV_TEXT||{})[LANG]||{}, CFG=window.INV_CFG||{};
+const ROLE=Q.get('r')==='f'?'f':'s', BY=(Q.get('by')||'').trim().slice(0,40), BG=Q.get('bg')==='f'?'f':'m';
+// a friend sees the f_ version of a text when there is one
+const RK=k=>ROLE==='f'&&TX['f_'+k]!==undefined?'f_'+k:k, TXR=k=>TX[RK(k)];
 const HOST=(CFG.host||{})[LANG]||'';
 const pick=v=>v&&typeof v==='object'&&!Array.isArray(v)?(v[G]??v.m??''):v;
 let NAME=(Q.get('to')||'').trim().slice(0,40);
 if(!NAME)NAME=pick(TX.defaultName)||'';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fill=s=>String(s??'').replace(/\{name\}/g,NAME).replace(/\{host\}/g,HOST);
-const T=k=>fill(pick(TX[k]));                       // plain text
+const fill=s=>String(s??'').replace(/\{s:([^|}]*)\|([^}]*)\}/g,(m,a,b)=>BG==='f'?b:a).replace(/\{name\}/g,NAME).replace(/\{host\}/g,HOST).replace(/\{by\}/g,BY);
+const T=k=>fill(pick(TXR(k)));                       // plain text
 const H=k=>esc(T(k)).replace(/\n/g,'<br>');         // as HTML
-const TL=k=>(TX[k]||[]).map(v=>fill(pick(v)));      // a list
+const TL=k=>(TXR(k)||[]).map(v=>fill(pick(v)));      // a list
 document.documentElement.lang=LANG;document.documentElement.dir=LANG==='he'?'rtl':'ltr';document.title=TX.title||document.title;
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,120):ms));
 
 // remembered per person and language: seen the intro, and the answer
-const KEY='psp-invite:'+LANG+':'+NAME;
+const KEY=ROLE==='f'?'psp-invite:'+LANG+':f:'+BY+':'+NAME:'psp-invite:'+LANG+':'+NAME;
 const mem=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}};
 
@@ -389,13 +421,13 @@ $('#holo').addEventListener('click',()=>{if(scene!=='holo')return;if(typing){cle
 const DATE=(()=>{const d=Q.get('date')||'';if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return '';try{return new Date(d+'T12:00:00').toLocaleDateString(LANG==='he'?'he-IL':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}catch(e){return d}})();
 const PLACE=(Q.get('place')||'').trim().slice(0,80), PS=(Q.get('ps')||'').trim().slice(0,500);
 const RTL=LANG==='he', AR_NEXT=RTL?'◀':'▶', AR_PREV=RTL?'▶':'◀';
-const wa=text=>CFG.wa?`https://wa.me/${encodeURIComponent(CFG.wa)}?text=${encodeURIComponent(text)}`:'';
+const wa=(text,num)=>{const n=num===undefined?CFG.wa:num;return n||num===''?`https://wa.me/${n?encodeURIComponent(n):''}?text=${encodeURIComponent(text)}`:''};
 let page=0,ans='ask',faqI=-1,taps=0;
 const pickT=v=>fill(pick(v));
 function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').classList.add('hide');show('letter');skipBtn.classList.add('hide');mus(true);if(!skipped)sfx('page',.6);mem.seen=1;save();
   page=mem.ans==='yes'?3:0;renderLetter()}
 function renderLetter(){
-  const tabs=TL('tabs');
+  const tabs=TABS();
   $('#lcol').innerHTML=`<nav class="tabs"><button class="tarr" id="tprev" aria-label="prev">${AR_PREV}</button><div class="tmid"><b id="tname"></b><div class="dots">${tabs.map((t,i)=>`<button class="dot" data-p="${i}" aria-label="${esc(t)}"></button>`).join('')}</div></div><button class="tarr" id="tnext" aria-label="next">${AR_NEXT}</button></nav><div id="pg"></div>`;
   $('#tprev').onclick=()=>goPage(page-1);$('#tnext').onclick=()=>goPage(page+1);
   document.querySelectorAll('.dot').forEach(d=>d.onclick=()=>goPage(+d.dataset.p));
@@ -403,13 +435,14 @@ function renderLetter(){
   let x0=null;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
   pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)<60)return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
   goPage(page,true)}
-function goPage(i,first){const n=TL('tabs').length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);
-  $('#tname').textContent=TL('tabs')[i];document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k===i));
+function TABS(){const t=TL('tabs');return ROLE==='s'&&mem.ans==='yes'?[...t,T('partyTab')]:t}
+function goPage(i,first){const n=TABS().length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);
+  $('#tname').textContent=TABS()[i];document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k===i));
   $('#tprev').style.visibility=i?'':'hidden';$('#tnext').style.visibility=i<n-1?'':'hidden';
-  const pg=$('#pg');pg.innerHTML=[pCard,pMap,pBag,pDex][i]()+(i<n-1?`<button class="nextbtn" id="nextbtn">${H('next')} ${AR_NEXT}</button>`:'');
+  const pg=$('#pg');pg.innerHTML=[pCard,pMap,pBag,pDex,pParty][i]()+(i<n-1?`<button class="nextbtn" id="nextbtn">${H('next')} ${AR_NEXT}</button>`:'');
   pg.className=first?'':(dir>0?'in-next':'in-prev');$('#letter').scrollTo(0,0);
   if($('#nextbtn'))$('#nextbtn').onclick=()=>goPage(page+1);
-  [bindCard,bindMap,bindBag,bindAnswer][i]()}
+  [bindCard,bindMap,bindBag,bindAnswer,bindParty][i]()}
 // ---- page 1: a short letter and the trainer card, with your character ----
 const MINI_N=77;
 function cardFig(){if(mem.av==='custom')return '<span class="cust">?</span>';const src=typeof mem.av==='number'?`../img/mini/${mem.av}.png`:(G==='f'?'../img/ow-girl.png':'../img/ow-boy.png');return `<img class="px" src="${src}" alt="">`}
@@ -426,7 +459,7 @@ function pCard(){
     ${PS?`<div class="ps"><b>${H('psLabel')}:</b> ${esc(PS)}</div>`:''}
   </article>
   <section class="tcard${mem.ans==='yes'?' ok':''}">
-    <div class="tchead"><span>TRAINER CARD</span><span>IDNo.${id}</span></div>
+    <div class="tchead"><span>${esc(T('cardHead'))}</span><span>IDNo.${id}</span></div>
     <div class="tcbody"><div class="tcrows">
       <div><span>NAME</span><b class="nm">${esc(NAME)}</b></div>
       <div><span>POKéDEX</span><b>???</b></div>
@@ -462,7 +495,7 @@ function fly(a,b){const A=STOPS[a],B=STOPS[b],t0=performance.now(),T0=RM?1:900,d
   flying=requestAnimationFrame(function step(t){const k=Math.min(1,(t-t0)/T0),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,h=Math.hypot(B[0]-A[0],B[1]-A[1])*.35+8;
     placeIc([A[0]+(B[0]-A[0])*e,A[1]+(B[1]-A[1])*e-Math.sin(Math.PI*e)*h],B[0]<A[0]);
     if(k<1)flying=requestAnimationFrame(step);else{flying=null;d.classList.remove('fly');stop=b;stopInfo(b)}})}
-function stopInfo(i,first){const S=(TX.stops||[])[i]||{},badge=i>=1&&i<=8;document.querySelectorAll('.mk').forEach((m,k)=>{m.classList.toggle('seen',k<=i);m.classList.toggle('now',k===i)});
+function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8;document.querySelectorAll('.mk').forEach((m,k)=>{m.classList.toggle('seen',k<=i);m.classList.toggle('now',k===i)});
   if(badge&&(mem.badges||0)<i){mem.badges=i;save()}
   $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<b>${esc(pickT(S.c))} · ${esc(pickT(S.t))}</b><br>${esc(pickT(S.d))}`;
   $('#mapgo').textContent=i>=STOPS.length-1?T('mapAgain'):`${T('mapNext')} ${AR_NEXT}`;
@@ -470,17 +503,18 @@ function stopInfo(i,first){const S=(TX.stops||[])[i]||{},badge=i>=1&&i<=8;docume
 
 // ---- page 3: the bag, like the game's: pick an item, its description shows in the box below ----
 let bagI=0;
-function pBag(){const items=[['ball',H('bagTrainers')],['friends',H('bagFriends')],['phone',H('bagPhone')]];
-  return `<section class="blk bagg"><h2>${H('bagTitle')}</h2><div class="bagl">${items.map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${t}</b>${i===0?'<em>×4</em>':''}</button>`).join('')}</div></section>
+const BAG=()=>ROLE==='f'?[['phone','bagPhone','bagPhoneText',null],['ball','f_bagQ','f_bagQText','f_bagQMore'],['friends','f_bagTeam','f_bagTeamText',null]]:[['ball','bagTrainers','bagTrainersText','bagTrainersMore'],['friends','bagFriends','bagFriendsText','bagFriendsMore'],['phone','bagPhone','bagPhoneText',null]];
+function pBag(){const items=BAG().map(([ic,t])=>[ic,H(t)]);
+  return `<section class="blk bagg"><h2>${H('bagTitle')}</h2><div class="bagl">${items.map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${t}</b>${ic==='ball'&&ROLE==='s'?'<em>×4</em>':''}</button>`).join('')}</div></section>
   <div class="gbp-box bagd" id="bagd"></div>`}
 function bagIcon(ic){return ic==='ball'?`<span class="ball" style="--s:30px;display:block"></span>`:ic==='phone'?'<span class="phone"></span>':`<span class="friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</span>`}
 function bindBag(){const show=i=>{bagI=i;document.querySelectorAll('.bagl button').forEach((b,k)=>b.classList.toggle('on',k===i));
-    const [t,d,m]=[['bagTrainers','bagTrainersText','bagTrainersMore'],['bagFriends','bagFriendsText','bagFriendsMore'],['bagPhone','bagPhoneText',null]][i];
+    const [,t,d,m]=BAG()[i];
     $('#bagd').innerHTML=`<b class="q">${H(t)}</b>${H(d)}${m?`<ul>${TL(m).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`};
   document.querySelectorAll('.bagl button').forEach(b=>b.onclick=()=>{sfx('a',.4);show(+b.dataset.b)});show(bagI)}
 
 // ---- page 4: an empty Pokédex entry, Oak's notes, and the answer ----
-function pDex(){return `<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
+function pDex(){return `<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
   <details class="blk notes ndet"><summary><h2>${H('notesTitle')}</h2></summary><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>
   ${pAnswer()}`}
 
@@ -491,17 +525,18 @@ function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
   renderMenu()}
 function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
-  if(mem.ans==='yes'){const link=wa(T('waYes'));
+  if(mem.ans==='yes'){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
     w.innerHTML=`<section class="blk res"><p class="savedtag">${H('saved')}</p><h2>${H('todoTitle')}</h2>
-      <ol class="todo">${(TX.todo||[]).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol>
+      <ol class="todo">${(TXR('todo')||[]).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${ROLE==='s'&&i===4?`<button class="nextbtn toteam">${H('teamBtn')} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
       <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
-    $('#chg').onclick=()=>{delete mem.ans;save();ans='ask';renderMenu(true)}}
+    w.querySelectorAll('.toteam').forEach(b=>b.onclick=()=>goPage(4));
+    $('#chg').onclick=()=>{delete mem.ans;save();ans='ask';page=3;renderLetter()}}
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
-    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();renderMenu(true)})};
+    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();page=3;renderLetter();setTimeout(()=>$('#menuwrap')?.scrollIntoView({block:'start'}),50)})};
     $('#cask').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
-  else if(ans==='faq'){const F=TX.faq||[],link=wa(T('waMsg'));
+  else if(ans==='faq'){const F=TXR('faq')||[],link=wa(T('waMsg'));
     w.innerHTML=faqI<0
       ?`<section class="blk res"><h2>${H('laterTitle')}</h2><p>${H('faqLead')}</p></section><div class="gbp-menu faqm" role="menu">${F.map((x,i)=>`<button data-q="${i}">${esc(pickT(x.q))}</button>`).join('')}</div>
         <section class="blk res"><p>${H('laterText')}</p>${link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('laterWa')}</a>`:''}<br><button class="linkbtn" id="back">${H('backToAnswer')}</button></section>`
@@ -517,9 +552,47 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
   if(scroll)w.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
 
 
+// ---------- 8. the subject's team (stage 2): six slots like the game's party; everyone past six goes to Bill's PC ----------
+const party=()=>mem.party||(mem.party=[]);
+let addG='m';
+function friendLink(f){const q=new URLSearchParams({to:f.n,g:f.g});if(LANG!=='he')q.set('lang',LANG);q.set('r','f');q.set('by',NAME);q.set('bg',G);['date','place'].forEach(k=>{if(Q.get(k))q.set(k,Q.get(k))});return location.origin+location.pathname+'?'+q.toString()}
+const friendText=f=>fill(pick(TX.friendMsg)).replace('{f}',f.n)+'\n'+friendLink(f);
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
+function openUrl(u){const w=window.open(u,'_blank');if(!w)location.href=u}
+function shareFriend(f,done){const text=friendText(f);
+  if(navigator.share){navigator.share({text}).then(done).catch(()=>{})}
+  else{(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{toast(T('copied'));done()}).catch(()=>{prompt('',text);done()})}}
+function slot(f,i){if(!f)return `<button class="pslot empty" data-add="1"><span>${H('partyEmpty')}</span></button>`;
+  return `<div class="pslot"><span class="pic"><img class="px" src="../img/ow-${f.g==='f'?'girl':'boy'}.png" alt=""></span><div class="pnm"><b>${esc(f.n)}</b><small class="${f.sent?'ok':''}">${H(f.sent?'stSent':'stNew')}</small></div><div class="pbtns"><button data-rs="${i}">${H('resend')}</button><button data-rm="${i}" class="x" aria-label="${esc(T('remove'))}">✕</button></div></div>`}
+function pParty(){const P=party(),pc=P.slice(6);
+  return `<section class="blk party"><h2>${H('partyTitle')}</h2><p class="muted">${H('partyLead')}</p>
+    <div class="pslots">${[0,1,2,3,4,5].map(i=>slot(P[i],i)).join('')}</div>
+    ${pc.length?`<div class="billpc"><b>${H('billPc')}</b><p>${H('billLead')}</p><div class="pslots">${pc.map((f,k)=>slot(f,k+6)).join('')}</div></div>`:''}
+    <p class="pcount">${esc(T('partyCount').replace('{n}',P.length))}</p>
+    <div class="mapbtns"><button class="nextbtn" id="addbtn">${H('partyAdd')}</button></div></section>
+  <div id="addbox"></div><p class="maplead">${H('partyNext')}</p>`}
+function bindParty(){const rer=()=>{$('#pg').innerHTML=pParty();bindParty()};
+  $('#addbtn').onclick=()=>addForm();document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addForm());
+  document.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{const f=party()[+b.dataset.rs];shareFriend(f,()=>{f.sent=1;save();rer()})});
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rm,f=party()[i];if(!confirm(`${T('remove')}: ${f.n}?`))return;party().splice(i,1);save();sfx('a',.4);rer()})}
+function addForm(){const b=$('#addbox');sfx('a',.5);
+  b.innerHTML=`<section class="blk addf"><h2>${H('addTitle')}</h2>
+    <div class="arow"><input id="fname" type="text" maxlength="30" autocomplete="off" placeholder="${esc(T('addName'))}"><div class="gsel"><button data-g="m" class="${addG==='m'?'on':''}" aria-label="m">♂</button><button data-g="f" class="${addG==='f'?'on':''}" aria-label="f">♀</button></div></div>
+    <input id="fphone" type="tel" inputmode="tel" autocomplete="off" placeholder="${esc(T('addPhone'))}" dir="ltr">
+    <button class="wa wbtn" id="fwa">${H('addWa')}</button>
+    <div class="arow2"><button class="linkbtn" id="fshare">${H('addShare')}</button><button class="linkbtn" id="fcancel">${H('addCancel')}</button></div></section>`;
+  b.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});setTimeout(()=>$('#fname')?.focus(),300);
+  b.querySelectorAll('[data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;b.querySelectorAll('[data-g]').forEach(y=>y.classList.toggle('on',y===x))});
+  const take=()=>{const n=($('#fname').value||'').trim().slice(0,30);if(!n){const i=$('#fname');i.placeholder=T('addNeedName');i.classList.add('bad');i.focus();return null}const f={n,g:addG,sent:0};party().push(f);save();return f};
+  const finish=()=>{sfx('tink',.6);b.innerHTML='';goPage(4,true)};
+  $('#fwa').onclick=()=>{const f=take();if(!f)return;let d=($('#fphone').value||'').replace(/\D/g,'');if(d.startsWith('0'))d='972'+d.slice(1);
+    openUrl(wa(friendText(f),d.length>=9?d:''));f.sent=1;save();finish()};
+  $('#fshare').onclick=()=>{const f=take();if(!f)return;shareFriend(f,()=>{f.sent=1;save()});finish()};
+  $('#fcancel').onclick=()=>{b.innerHTML=''}}
+
 // ---------- 7. saving: "What? Your invitation is evolving!" ----------
 function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');
-  stage.innerHTML=`<img class="px evoa" src="img/envelope.png" alt=""><div class="evob tcard mini"><div class="tchead"><span>TRAINER CARD</span></div><div class="tcbody"><b class="nm">${esc(NAME)}</b>${cardFig()}</div></div>`;
+  stage.innerHTML=`<img class="px evoa" src="img/envelope.png" alt=""><div class="evob tcard mini"><div class="tchead"><span>${esc(T('cardHead'))}</span></div><div class="tcbody"><b class="nm">${esc(NAME)}</b>${cardFig()}</div></div>`;
   const ea=stage.querySelector('.evoa'),eb=stage.querySelector('.evob');eb.style.display='none';
   let ev=null;const say=t=>{box.textContent=t};
   say(T('evoSaving')+'\n'+T('evoDont'));sfx('page',.6);
