@@ -814,7 +814,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794397761';
+const BUILDV='1794401566';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -974,24 +974,25 @@ function roomsView(){
    <textarea id="nr-names" class="np-names" rows="2" placeholder="השמות שלהם, אם ידועים (לא חובה), מופרדים בפסיק" oninput="S.nrnames=this.value">${esc(S.nrnames||'')}</textarea>
    <p class="np-h">ארבעת המאמנים <span class="muted" style="font-weight:400">(לא חובה, אפשר גם אחר כך בניהול)</span></p><div class="np-tr">${[0,1,2,3].map(i=>`<input type="text" placeholder="מאמן ${i+1}${i?'':', למשל: צבא'}" value="${esc((S.nrt||[])[i]||'')}" oninput="(S.nrt=S.nrt||[])[${i}]=this.value">`).join('')}</div>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
-   <button class="btn np-go" data-act="newroom">⚡ יצירת חדר</button>
-   <div class="np-reh"><button class="btn ghost small" data-act="rehearse">🎭 חזרה גנרלית עם בוטים</button><button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">⏩ מצב מהיר</button></div>
-   <p class="muted" style="font-size:12px;margin:6px 0 0">חזרה גנרלית: חדר בדיקה עם 6 בוטים שעונים, משחקים ומדברים לבד. את השקפים מעבירים כרגיל, ובפאנל המארח יש דוח זמנים.</p></div>
+   <div class="np-reh"><button class="np-o ${S.nrr?'on':''}" data-nrr="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrr?'☑':'☐'} 🎭 חזרה גנרלית עם בוטים</button>${S.nrr?`<button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrf?'☑':'☐'} ⏩ מצב מהיר</button>`:''}</div>
+   <p class="muted" style="font-size:12px;margin:6px 0 10px">חזרה גנרלית: חדר בדיקה עם 6 בוטים שעונים, משחקים ומדברים לבד. את השקפים מעבירים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
+   <button class="btn np-go" data-act="newroom">${S.nrr?'🎭 פתיחת חדר חזרה גנרלית':'⚡ יצירת חדר'}</button></div>
   ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🎭 חזרה גנרלית'+(r.fast?' ⏩':''):''}</p>
    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.nrg){S.nrg=b.dataset.nrg;roomsView();return}
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
     if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
+    if(b.dataset.nrr){S.nrr=!S.nrr;roomsView();return}
     if(b.dataset.nrhg){S.nrhg=b.dataset.nrhg;roomsView();return}
     if(b.dataset.nrc){S.nrc=Math.max(1,Math.min(14,(S.nrc||5)+(+b.dataset.nrc)));roomsView();return}
-    if(b.dataset.act==='rehearse'){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf);return}
     if(b.dataset.del){if(!confirm('למחוק את חדר הבדיקה '+b.dataset.del+'?'))return;await S.db.raw.doc('state/'+b.dataset.del).delete().catch(()=>{});await S.db.raw.doc('setup/'+b.dataset.del).delete().catch(()=>{});toast('נמחק');return}
     if(b.dataset.plan){S.planOpen=S.planOpen===b.dataset.plan?null:b.dataset.plan;roomsView();return}
     if(b.dataset.pk){const [tgt,k]=b.dataset.pk.split('|');if(tgt==='nrs'){const a=new Set(S.nrs||[]);a.has(k)?a.delete(k):a.add(k);S.nrs=[...a];roomsView();return}
       const code=tgt.slice(3),r=(S.roomList||[]).find(x=>x.code===code);if(!r)return;const a=new Set(r.skip||[]);a.has(k)?a.delete(k):a.add(k);r.skip=[...a];roomsView();
       await S.db.raw.doc('state/'+(code===LEGACY_ROOM?'main':code)).set({skip:r.skip},{merge:true}).catch(()=>toast('לא נשמר'));return}
     if(b.dataset.copy){const u=b.dataset.copy;(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור:',u));return}
+    if(b.dataset.act==='newroom'&&S.nrr){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf);return}
     if(b.dataset.act==='newroom'){const nm=($('#nr-name')?.value||'').trim();if(!nm){toast('מה השם?');return}
       const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c=Array.from({length:4},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c)||c===LEGACY_ROOM);
       b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null,pre:(()=>{const names=(S.nrnames||'').split(/[,،\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,14);return {n:Math.max(S.nrc||5,names.length),names}})()});
@@ -1207,6 +1208,7 @@ function render(){
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
   if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">${ll(`לא ${esc(person(S.me).name)}? החלפת שם`,`Not ${esc(person(S.me).name)}? Switch name`)}</button>`);
+  if(randLeft())app.querySelector('.col').insertAdjacentHTML('afterbegin',`<button class="btn ghost small" data-act="randfill" style="margin-bottom:10px;border-style:dashed">${ll(`🎲 חזרה גנרלית: לענות בשבילי באקראי (${randLeft()})`,`🎲 Rehearsal: answer for me at random (${randLeft()})`)}</button>`);
   if(!S.remoteMode&&S.state&&person(S.me)&&!person(S.me).remote&&!(S.intro?.live)&&/^(tr|b|r)\d$/.test(S.deck?.seg||''))app.insertAdjacentHTML('beforeend',`<button class="saybtn" data-act="say">💬</button>`);
   if(!S.remoteMode&&S.state&&S.deck?.t0&&!(S.intro?.live)&&!isPresenter(person(S.me))&&person(S.me)?.role==='self')app.insertAdjacentHTML('beforeend',`<div class="rcmini tonly"><span class="rmn"></span><span class="rml"></span><b class="rmt" style="font:400 15px var(--pixel)"></b></div>`);
   if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><b class="rmt" style="font:400 13px var(--pixel)"></b><button data-act="ctlnext">◀</button></div>`);
@@ -1834,6 +1836,7 @@ function bindPhone(){
     if(b.dataset.pq){const G=S.game;if(G?.g!=='pq'||G.revealed||G.done)return;const k='p'+G.key+'-'+G.i;if((S.myG||{})[k])return;const g={v:b.dataset.pq,n:G.stage};S.myG={...(S.myG||{}),[k]:g};sfx('sfx-ball-toss');try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({[k]:g},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
     if(b.dataset.act==='tchart'){S.tchart=!S.tchart;render();return}
     if(b.dataset.act==='say'){sayOpen();return}
+    if(b.dataset.act==='randfill'){randFill();return}
     if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
@@ -1939,10 +1942,10 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),10,'cover'],['c1',ll('קורס 1','Course 1'),15,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
- ['c2',ll('קורס 2','Course 2'),16,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
- ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
- ['c4',ll('קורס 4','Course 4'),23,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
+const PLAN=[['open',ll('פתיחה','Opening'),7,'cover'],['c1',ll('קורס 1','Course 1'),28,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),6,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+ ['c2',ll('קורס 2','Course 2'),17,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),6,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),5,'x-break-2'],
+ ['c3',ll('קורס 3','Course 3'),28,'x-part-3'],['b3',ll('הפסקה 3','Break 3'),3,'x-break-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3','Round 3'),6,'x-round-3'],
+ ['c4',ll('קורס 4','Course 4'),21,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['r4',ll('סבב 4 ומיו','Round 4 and Mew'),8,'x-round-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
 const planOf=k=>PLAN.find(x=>x[0]===k);
@@ -2794,6 +2797,12 @@ async function botFill(){if(S.botFilled||!S.answersLoaded&&!S.answers)return;S.b
   for(const id of botIds()){const cur=S.answers?.[id]?.answers||{};if(Object.keys(cur).length>20)continue;const a={...cur},r=rng('bot-'+id+Date.now()),bias={};
     BANK.items.forEach(it=>{if(it.kind==='bonus'||it.id in a)return;bias[it.dim]??=1+r()*4;a[it.id]=Math.max(1,Math.min(5,Math.round(bias[it.dim]+(r()-.5)*2)))});
     await S.db.doc('answers/'+id).set({answers:a,mew:'',demo:true,at:new Date().toISOString()},{merge:true}).catch(()=>{})}}
+// what this phone still owes in a rehearsal: unanswered questions in the open rounds, or Mew's vote
+function randLeft(){if(!isRehearsal()||S.remoteMode||!S.me||!person(S.me))return 0;const a=myDoc().answers||{},P=planFor(S.me),o=Math.min(4,S.state?.open||0);let n=0;for(let k=0;k<o;k++)n+=countIds(P.rounds[k])-answeredIn(P.rounds[k],a);const m=S.state?.mew;if(!n&&m?.status==='ready'&&m.statements?.length&&!myDoc().mew)n=1;return n}
+function randFill(){if(!randLeft())return;const d=myDoc(),a=d.answers=d.answers||{},P=planFor(S.me),o=Math.min(4,S.state?.open||0),r=rng('me-'+S.me+Date.now()),bias={},dim={};BANK.items.forEach(it=>dim[it.id]=it.dim);
+  for(let k=0;k<o;k++)P.rounds[k].forEach(u=>u.ids.forEach(id=>{if(id in a)return;bias[dim[id]]??=1+r()*4;a[id]=Math.max(1,Math.min(5,Math.round(bias[dim[id]]+(r()-.5)*2)))}));
+  const m=S.state?.mew;if(m?.status==='ready'&&m.statements?.length&&!d.mew&&answeredIn(P.rounds.flat(),a)>=countIds(P.rounds.flat()))d.mew=m.statements[Math.floor(r()*m.statements.length)].id;
+  sfx('sfx-tink');saveMine();toast(ll('מולא באקראי','Filled at random'));render()}
 function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=cur(),B=botIds(),now=Date.now();if(!it||!B.length)return;S.botAt=S.botAt||{};
   const once=(k,ms,fn)=>{if(S.botAt[k]==null)S.botAt[k]=now+ms;else if(S.botAt[k]>0&&now>=S.botAt[k]){S.botAt[k]=-1;fn()}};
   if((S.state?.open||0)>0)botFill();
