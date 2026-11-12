@@ -351,6 +351,23 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .slist.plain .sb{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border-radius:10px;padding:8px 10px;color:var(--cream)}
 .slist.plain .si img{filter:none}
 .slist.plain .st small{font-size:13px;opacity:.75;line-height:1.4}
+.nextbtn.glow{animation:pulse 1.1s ease-in-out infinite;box-shadow:0 0 0 4px rgba(242,201,76,.45),0 4px 0 #8a6a14;font-size:19px;padding:15px 26px}
+.ckbar{position:relative;height:30px;border-radius:15px;background:#DDE1EE;overflow:hidden;margin:4px 0 14px}
+.ckfill{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--ok),#8EE0B0);border-radius:15px;transition:width .6s}
+[dir=rtl] .ckfill{inset:0 0 0 auto}
+.ckbar b{position:relative;display:block;text-align:center;line-height:30px;font-size:15px;color:#14532D}
+.cklist{list-style:none;margin:0;padding:0;text-align:start}
+.cklist li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px dashed #C9CEE4}
+.cklist li:first-child{border-top:0}
+.ckm{flex:none;width:34px;height:34px;border-radius:50%;border:3px solid #9FA7C7;display:grid;place-items:center;font:700 11px/1 var(--body);color:#6A6F8A}
+.cklist li.done .ckm{background:var(--ok);border-color:var(--ok);color:#fff;font-size:16px}
+.cklist li.part .ckm{border-color:var(--gold);color:#8a6a14}
+.cklist li.done b{color:#6A6F8A;text-decoration:line-through;font-weight:500}
+.cklist b{display:block;font-size:16px}.cklist small{display:block;color:#6A6F8A;font-size:13px;margin-top:2px}
+.cklist .togo,.cklist .tellbtn{margin-top:6px;padding:7px 12px;font-size:14px}
+.trb label{display:block;font-weight:700;margin-bottom:6px}
+.trb input,.trb textarea{width:100%;font:500 16px/1.4 var(--body);padding:10px 12px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;color:#1E2238}
+.trb textarea{margin-top:8px;resize:vertical}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -474,9 +491,14 @@ let Z=scale();addEventListener('resize',()=>{Z=scale();sizeEnv()});
 // sound: nothing plays before the first tap
 const SND={cry:'snd/dn-cry.mp3',a:'../sfx-a.mp3',tink:'../sfx-tink.mp3',poof:'../sfx-ball-poof.mp3',caught:'../sfx-caught-mon.mp3',denied:'../sfx-denied.mp3',page:'../sfx-dex-page-added.mp3',toss:'../sfx-ball-toss.mp3'};
 const A={};let soundOn=(()=>{try{return localStorage.getItem('psp-invite-snd')!=='0'}catch(e){return true}})(),music=null;
-function unlock(){Object.entries(SND).forEach(([k,src])=>{if(A[k])return;const a=new Audio(src);a.preload='auto';A[k]=a;a.muted=true;const p=a.play();if(p&&p.then)p.then(()=>{a.pause();a.currentTime=0;a.muted=false}).catch(()=>{a.muted=false})});
+let AC=null;const BUF={};
+function unlock(){try{if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();const b=AC.createBuffer(1,1,22050),s0=AC.createBufferSource();s0.buffer=b;s0.connect(AC.destination);s0.start(0);
+    Object.entries(SND).forEach(([k,src])=>fetch(src).then(r=>r.arrayBuffer()).then(x=>new Promise((ok,no)=>AC.decodeAudioData(x,ok,no))).then(d=>{BUF[k]=d}).catch(()=>{}))}
+  if(AC.state==='suspended')AC.resume()}catch(e){}
   if(!music){music=new Audio('snd/lab.mp3');music.loop=true;music.volume=.3;music.muted=true;const p=music.play();if(p&&p.then)p.then(()=>{music.pause();music.muted=false}).catch(()=>{music.muted=false})}}
-function sfx(k,vol){if(!soundOn||!A[k])return;try{const a=A[k];a.volume=vol??.8;a.currentTime=0;a.play().catch(()=>{})}catch(e){}}
+function sfx(k,vol){if(!soundOn||!AC||!BUF[k])return;try{if(AC.state==='suspended')AC.resume();const s1=AC.createBufferSource(),g=AC.createGain();g.gain.value=vol??.8;s1.buffer=BUF[k];s1.connect(g);g.connect(AC.destination);s1.start(0)}catch(e){}}
+// wait (briefly) for a sound that may still be loading, then play it
+async function sfxSoon(k,vol){for(let i=0;i<16&&!BUF[k];i++)await new Promise(r=>setTimeout(r,60));sfx(k,vol)}
 function mus(on){if(!music)return;if(on&&soundOn){music.play().catch(()=>{})}else music.pause()}
 const sndBtn=$('#snd');sndBtn.setAttribute('aria-pressed',soundOn);sndBtn.title=T('sound');
 sndBtn.onclick=e=>{e.stopPropagation();soundOn=!soundOn;sndBtn.setAttribute('aria-pressed',soundOn);try{localStorage.setItem('psp-invite-snd',soundOn?'1':'0')}catch(x){}if(!soundOn&&music)music.pause();else if(scene==='holo'||scene==='letter')mus(true)};
@@ -511,9 +533,9 @@ $('#start').addEventListener('click',begin);$('#start').addEventListener('keydow
 // a short anime cut: Dragonite over the sea, then flying with the bag; skipped when motion is reduced or the clip won't play
 async function clip(src,ms,cap){const c=$('#cut'),v=$('#cutv');if(RM||!c)return;$('#cutt').textContent=cap||'';v.src=src;v.loop=true;c.classList.remove('hide');
   let ok=true;try{await v.play()}catch(e){ok=false}if(ok)await wait(ms);c.classList.add('out');await wait(350);c.classList.add('hide');c.classList.remove('out');v.pause()}
-async function arrive(){show('arrive');await clip('vid/dn-sea.mp4',2000,T('enRoute'));await clip('vid/dn-fly.mp4',1800,T('enRoute'));dnSheet('img/dn-fly.webp');dnRun();
+async function arrive(){show('arrive');if(!RM)sfxSoon('cry',.9);await clip('vid/dn-sea.mp4',2000,T('enRoute'));await clip('vid/dn-fly.mp4',1800,T('enRoute'));dnSheet('img/dn-fly.webp');dnRun();
   const sh=$('#shadow'),dn=$('#dn');
-  if(!RM){sh.style.backgroundImage='url(img/dn-fly.webp)';sh.style.backgroundSize=`${DN.cols*DN.fw*Z*2}px ${Math.ceil(DN.n/DN.cols)*DN.fh*Z*2}px`;sh.style.backgroundPosition='0 0';sh.classList.add('go');await wait(250);sfx('cry',.9);await wait(1100);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
+  if(!RM){sh.style.backgroundImage='url(img/dn-fly.webp)';sh.style.backgroundSize=`${DN.cols*DN.fw*Z*2}px ${Math.ceil(DN.n/DN.cols)*DN.fh*Z*2}px`;sh.style.backgroundPosition='0 0';sh.classList.add('go');await wait(1350);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
   else{dn.classList.add('down');sfx('cry',.9)}
   $('#ground').classList.add('on');if(!RM)dust();
   await wait(500);dnSheet('img/dn-mail.webp');sfx('tink',.6);
@@ -557,12 +579,12 @@ function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').cl
 // the pages, in story order: what this is, the evening's route, what to prepare, the decision;
 // after yes also your card, and for the subject the team
 function PAGES(){const P=[['letter',pLetter,()=>{}],['route',pMap,bindMap],['prep',pBag,bindBag],['decide',pDex,bindAnswer]];
-  if(mem.ans==='yes'){if(hasDates()&&!REMOTE)P.push(['dates',pDates,bindDates]);P.push(['card',pCard,bindCard]);if(ROLE==='s')P.push(['team',pParty,bindParty])}return P}
+  if(mem.ans==='yes'){if(hasDates()&&!REMOTE)P.push(['dates',pDates,bindDates]);P.push(['card',pCard,bindCard]);if(ROLE==='s'){P.push(['trainers',pTrainers,bindTrainers]);P.push(['team',pParty,bindParty])}}return P}
 const pageIdx=k=>PAGES().findIndex(x=>x[0]===k);
 function renderLetter(){
   $('#lcol').innerHTML=`<nav class="steps" id="steps"></nav><div id="pg"></div><p class="locknote" id="locknote"></p><div class="pnav" id="pnav"></div><button class="restart" id="restart">${H('restart')}</button>`;
-  $('#restart').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
-  $('#lcol').addEventListener('click',e=>{if(e.target.id==='notme'){delete mem.me;save();location.reload()}});
+  $('#restart').onclick=()=>{if(!confirm(T('restartAsk')))return;try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
+  $('#lcol').addEventListener('click',e=>{if(e.target.id==='notme'&&confirm(T('restartAsk'))){delete mem.me;save();location.reload()}});
   // swipe: in Hebrew the next page comes from the left, in English from the right
   let x0=null,y0=0;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
   pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx))return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
@@ -609,10 +631,10 @@ function pMap(){const SS=TXR('stops')||[];
   <div class="mapbtns"><button class="nextbtn" id="mapgo"></button><button class="ghostbtn" id="mapplay">${H('routePlay')}</button></div>
   <ol class="slist">${SS.map((x,i)=>`<li><button data-s="${i}"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.c))}</small></span></button></li>`).join('')}</ol>`}
 function bindMap(){if(ROLE==='f'){if(!mem.routeDone){mem.routeDone=1;save()}navBar();return}stop=0;placeIc(STOPS[0]);city(0);stopInfo(0,true);
-  $('#mapgo').onclick=()=>{if(flying)return;stopPlay();if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0);return}fly(stop,stop+1)};
-  $('#mapplay').onclick=()=>{if(playing){stopPlay();return}playing=true;$('#mapplay').innerHTML=H('routeStopPlay');if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0)}const next=()=>{if(!playing)return;if(stop>=STOPS.length-1){stopPlay();return}fly(stop,stop+1,()=>setTimeout(next,RM?300:1100))};next()};
+  $('#mapgo').onclick=()=>{if(flying)return;stopPlay();if(stop>=STOPS.length-1){goPage(page+1);return}fly(stop,stop+1)};
+  $('#mapplay').onclick=()=>{if(playing){stopPlay();return}playing=true;$('#mapplay').innerHTML=H('routeStopPlay');if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);city(0);stopInfo(0)}const next=()=>{if(!playing)return;if(stop>=STOPS.length-1){stopPlay();return}fly(stop,stop+1,()=>stop>=STOPS.length-1?stopPlay():setTimeout(next,RM?300:1100))};next()};
   document.querySelectorAll('.slist [data-s]').forEach(b=>b.onclick=()=>{if(flying)return;stopPlay();const i=+b.dataset.s;if(i===stop)return;fly(stop,i);$('#tmap').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
-function stopPlay(){playing=false;const b=$('#mapplay');if(b)b.innerHTML=H('routePlay')}
+function stopPlay(){playing=false;const b=$('#mapplay');if(b)b.innerHTML=H(stop>=STOPS.length-1?'routeAgain':'routePlay')}
 function placeIc([x,y],flip,lift){const o=$('#bmo'),d=$('#dnic');if(!o||!d)return;o.style.transform=`translate(${Math.round(VW()/2-x)}px,${Math.round(VH()/2-y)}px)`;d.style.marginTop=`${-26-(lift||0)}px`;if(flip!=null)d.style.setProperty('--fx',flip?-1:1)}
 // arriving: the city, sharp and at its own size, zooms in over the overview; leaving: it fades out
 function city(i){const c=$('#bmc');if(!c)return;c.classList.remove('in');c.onload=()=>{void c.offsetWidth;c.classList.add('in')};c.src=`img/city-${i}.webp`}
@@ -627,7 +649,8 @@ function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8,n=
   if(badge&&(mem.badges||0)<i){mem.badges=i;save()}
   if(i===n-1&&!mem.routeDone){mem.routeDone=1;save();navBar()}
   $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<small class="sof">${esc(T('stopOf').replace('{i}',i+1).replace('{n}',n))} · ${esc(pickT(S.c))}</small><b class="stt">${esc(pickT(S.t))}</b>${esc(pickT(S.d))}`;
-  $('#mapgo').textContent=i>=n-1?T('routeAgain'):`${T('mapNext')} ${AR_NEXT}`;
+  const end=i>=n-1,mg=$('#mapgo');mg.textContent=end?`${T('nextTo').replace('{x}',T('tab_prep'))} ${AR_NEXT}`:`${T('mapNext')} ${AR_NEXT}`;mg.classList.toggle('glow',end);
+  if(!playing)$('#mapplay').innerHTML=H(end?'routeAgain':'routePlay');if(end&&!first)setTimeout(()=>$('.mapbtns')?.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'}),400);
   if(!first)sfx(badge?'tink':(i===n-1?'page':'a'),.6)}
 
 // ---- 3. what to prepare: the bag, like the game's: pick an item, its description shows below ----
@@ -681,7 +704,11 @@ function bindAnswer(){taps=0;bindChips(()=>{const d=$('.dearly');if(d)d.outerHTM
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
   renderMenu()}
 function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
-  if(mem.ans==='yes'){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
+  if(mem.ans==='yes'&&ROLE==='s'){
+    w.innerHTML=`<section class="blk res"><p class="savedtag">${H('saved')}</p><h2>${H('ckTitle')}</h2>${checklistHTML()}<button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
+    w.querySelectorAll('.togo').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));w.querySelector('.tellbtn')?.addEventListener('click',()=>{mem.told=1;save();setTimeout(()=>renderMenu(),800)});
+    $('#chg').onclick=()=>{delete mem.ans;mem.declined=1;save();dbSync({ans:'no'});ans='ask';page=3;renderLetter()}}
+  else if(mem.ans==='yes'){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
     w.innerHTML=`<section class="blk res"><p class="savedtag">${H('saved')}</p><h2>${H('todoTitle')}</h2>
       <ol class="todo">${(TXR('todo')||[]).filter(x=>!(x.go==='dates'&&!hasDates())).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.go&&pageIdx(x.go)>=0?`<button class="nextbtn togo" data-go="${x.go}">${H({card:'goCard',team:'goTeam',dates:'goDates'}[x.go])} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
       <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
@@ -782,6 +809,7 @@ async function watchFile(){const iid=ROLE==='s'?(mem.iidMade&&mem.iid):IID;const
   teamUn=db.doc('invites/'+iid).onSnapshot(d=>{const had=hasDates();FILE=d.exists?d.data():null;const t=(FILE&&FILE.team)||{},yes=Object.keys(t).filter(k=>t[k]&&t[k].ans==='yes');
     if(ROLE==='s'&&teamSeen&&yes.some(k=>!teamSeen.has(k))){sfx('caught',.7);const k=yes.find(k=>!teamSeen.has(k));toast(fill(pickG(TX.joined,t[k].g)).replace('{f}',t[k].n))}
     teamSeen=new Set(yes);TEAM=t;if(scene!=='letter')return;const cur=PAGES()[page];if(had!==hasDates()&&$('#steps'))navBar();
+    if(cur&&cur[0]==='decide'&&mem.ans==='yes'&&ROLE==='s'&&$('.cklist'))renderMenu();
     if(cur&&cur[0]==='decide'&&$('.dearly')){$('.dearly').outerHTML=datesEarly();bindChips(()=>{$('.dearly').outerHTML=datesEarly();bindAnswer()})}
     if(cur&&cur[0]==='decide'&&!$('.dearly')&&hasDates()&&!REMOTE&&$('#menuwrap')){$('#menuwrap').parentElement.querySelector('.bwrap')?.insertAdjacentHTML('beforebegin',datesEarly());bindAnswer()}
     if(cur&&(cur[0]==='team'||cur[0]==='dates')){const y=$('#letter').scrollTop;$('#pg').innerHTML=cur[1]();cur[2]();$('#letter').scrollTop=y}},e=>console.warn('file',e))}
@@ -806,6 +834,27 @@ function bindChips(redo){document.querySelectorAll('.dchips [data-d]').forEach(b
   if(ROLE==='s'){mem.sd=m;FILE&&(FILE.sd=m);save();dbSubject({sd:m})}else{mem.dates=m;if(TEAM&&TEAM[FKEY])TEAM[FKEY].d=m;save();dbFriend()}
   const y=$('#letter').scrollTop;redo();$('#letter').scrollTop=y})}
 function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()})}
+
+// ---------- 11. the subject's checklist (after yes): what's done before the evening, and what's left ----------
+function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],I=[];
+  const add=(k,frac,go,extra)=>I.push({k,frac:Math.max(0,Math.min(1,frac)),go,extra});
+  add('ck_yes',1);add('ck_tell',mem.told?1:0,null,'tell');add('ck_av',mem.av!=null?1:0,'card');
+  if(hasDates())add('ck_dates',myDates().length?1:0,'dates');
+  add('ck_invite',P.length/4,'team');add('ck_confirm',P.length?yes.length/Math.max(4,P.length):0,'team');
+  add('ck_sprites',yes.length?yes.filter(f=>T0[f.k].av!=null).length/yes.length:0,'team');
+  if(hasDates())add('ck_date',FILE&&FILE.date?1:0,'dates');
+  add('ck_trainers',tr.filter(x=>x&&x.t&&x.t.trim()).length/4,'trainers');add('ck_notes',tr.filter(x=>x&&x.n&&x.n.trim()).length/4,'trainers');
+  return I}
+function checklistHTML(){const I=checklist(),pct=Math.round(I.reduce((a,x)=>a+x.frac,0)/I.length*100),link=wa(T('waYes'));
+  return `<div class="ckbar"><div class="ckfill" style="width:${pct}%"></div><b>${esc(T('ckOf').replace('{p}',pct))}</b></div>
+  <ul class="cklist">${I.map(x=>`<li class="${x.frac>=1?'done':x.frac>0?'part':''}"><span class="ckm">${x.frac>=1?'✓':x.frac>0?Math.round(x.frac*100)+'%':''}</span><div><b>${H(x.k)}</b>${x.k==='ck_confirm'||x.k==='ck_sprites'?`<small>${esc(ckCount(x.k))}</small>`:''}
+    ${x.frac<1&&x.extra==='tell'&&link?`<a class="wa tellbtn" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.frac<1&&x.go&&pageIdx(x.go)>=0?`<button class="ghostbtn togo" data-go="${x.go}">${H({card:'goCard',team:'goTeam',dates:'goDates',trainers:'goTrainers'}[x.go])} ${AR_NEXT}</button>`:''}</div></li>`).join('')}</ul>`}
+function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes');return k==='ck_confirm'?T('ckConfirmN').replace('{a}',yes.length).replace('{b}',P.length):T('ckSpritesN').replace('{a}',yes.filter(f=>T0[f.k].av!=null).length).replace('{b}',yes.length)}
+// the trainers page: four names and a few points on each (kept on this phone only)
+function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx');
+  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p>${[0,1,2,3].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
+    <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}"><textarea id="trn${i}" data-i="${i}" data-f="n" rows="3" maxlength="600" placeholder="${esc(T('trNotesPh'))}">${esc((tr[i]||{}).n||'')}</textarea></section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
+function bindTrainers(){document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(save,400)})}
 
 // ---------- 7. saving: "What? Your invitation is evolving!" ----------
 function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');
