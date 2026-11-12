@@ -815,7 +815,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794471554';
+const BUILDV='1794472961';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -994,6 +994,7 @@ function roomsView(){
   const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
   const st=r=>(r.status==='closed'||(r.code===LEGACY_ROOM&&r.status!=='open'))?'נסגר · תוצאות זמינות':r.revealed?'אחרי החשיפה':r.open?'ערב פעיל':'פתוח, טרם התחיל';
   app.innerHTML=`<div class="col"><p class="eyebrow">PSP · ROOMS</p><h1>החדרים שלך</h1>
+  ${invitesCard()}
   <div class="card np"><p class="eyebrow" style="margin:0">NEW ROOM</p><h2 style="margin:2px 0 12px">חדר חדש</h2>
    <input type="text" id="nr-name" class="np-name" placeholder="על מי הערב?" value="${esc(S.nrn||'')}" oninput="S.nrn=this.value">
    <div class="np-opts"><div class="np-seg"><button class="np-o ${S.nrg!=='f'?'on':''}" data-nrg="m" aria-label="בן"><img src="img/ow-boy.png" alt=""><span class="np-sym" style="color:#6390F0">♂</span></button><button class="np-o ${S.nrg==='f'?'on':''}" data-nrg="f" aria-label="בת"><img src="img/ow-girl.png" alt=""><span class="np-sym" style="color:#F95587">♀</span></button></div>
@@ -1006,7 +1007,6 @@ function roomsView(){
    <div class="np-reh"><button class="np-o ${S.nrr?'on':''}" data-nrr="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrr?'☑':'☐'} 🎭 חזרה גנרלית עם בוטים</button>${S.nrr?`<button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrf?'☑':'☐'} ⏩ מצב מהיר</button>`:''}</div>
    <p class="muted" style="font-size:12px;margin:6px 0 10px">חזרה גנרלית: חדר בדיקה עם 6 בוטים שעונים, משחקים ומדברים לבד. את השקפים מעבירים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
    <button class="btn np-go" data-act="newroom">${S.nrr?'🎭 פתיחת חדר חזרה גנרלית':'⚡ יצירת חדר'}</button></div>
-  ${invitesCard()}
   ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🎭 חזרה גנרלית'+(r.fast?' ⏩':''):''}</p>
    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;

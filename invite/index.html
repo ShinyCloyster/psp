@@ -342,6 +342,15 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .tmap>img.bmc,.bmc{position:absolute;left:50%;top:50%;width:440px;height:330px;max-width:none;margin:-165px 0 0 -220px;opacity:0;transform:scale(.25);transition:opacity .25s,transform .25s;pointer-events:none}
 .tmap>img.bmc.in,.bmc.in{opacity:1;transform:scale(1);transition:opacity .5s ease-out,transform .7s cubic-bezier(.2,.8,.3,1)}
 .bigm .dnic{left:50%;top:50%;z-index:3;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
+#cut{position:absolute;left:16px;right:16px;top:12%;z-index:30;display:flex;flex-direction:column;align-items:center;gap:12px;transition:opacity .35s}
+#cut.out{opacity:0}
+#cut video{width:min(100%,460px);border-radius:14px;border:4px solid #1E2238;box-shadow:0 0 0 3px var(--gold),0 14px 40px rgba(0,0,0,.6);background:#000}
+#cut p{margin:0;font:700 20px/1.3 var(--body);color:var(--cream);text-shadow:0 2px 0 #161A2E}
+.evov{width:min(86vw,420px);border-radius:14px;border:4px solid #1E2238;box-shadow:0 0 0 3px var(--gold)}
+.dearly .muted{margin:-4px 0 10px}
+.slist.plain .sb{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border-radius:10px;padding:8px 10px;color:var(--cream)}
+.slist.plain .si img{filter:none}
+.slist.plain .st small{font-size:13px;opacity:.75;line-height:1.4}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -413,6 +422,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
 <section class="scene hide" id="who" style="justify-content:center;gap:12px;overflow-y:auto"></section>
 <section class="scene hide" id="arrive">
   <div id="shadow"></div>
+  <div id="cut" class="hide"><video id="cutv" muted playsinline preload="auto"></video><p id="cutt"></p></div>
   <div id="dnwrap"><div style="display:flex;flex-direction:column;align-items:center"><div id="dn" class="px"><button class="hit" id="dnhit" aria-label="envelope"></button></div><div id="ground"></div></div></div>
   <div class="lkbox hide" id="arrbox"></div>
 </section>
@@ -498,7 +508,10 @@ function choose(n,g,k,r){NAME=n;G=g;FKEY=k;REMOTE=!!r;mem.me={n,g,k,r:r?1:0};sav
 $('#start').addEventListener('click',begin);$('#start').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')begin()});
 
 // ---------- 2. Dragonite arrives ----------
-async function arrive(){show('arrive');dnSheet('img/dn-fly.webp');dnRun();
+// a short anime cut: Dragonite over the sea, then flying with the bag; skipped when motion is reduced or the clip won't play
+async function clip(src,ms,cap){const c=$('#cut'),v=$('#cutv');if(RM||!c)return;$('#cutt').textContent=cap||'';v.src=src;v.loop=true;c.classList.remove('hide');
+  let ok=true;try{await v.play()}catch(e){ok=false}if(ok)await wait(ms);c.classList.add('out');await wait(350);c.classList.add('hide');c.classList.remove('out');v.pause()}
+async function arrive(){show('arrive');await clip('vid/dn-sea.mp4',2000,T('enRoute'));await clip('vid/dn-fly.mp4',1800,T('enRoute'));dnSheet('img/dn-fly.webp');dnRun();
   const sh=$('#shadow'),dn=$('#dn');
   if(!RM){sh.style.backgroundImage='url(img/dn-fly.webp)';sh.style.backgroundSize=`${DN.cols*DN.fw*Z*2}px ${Math.ceil(DN.n/DN.cols)*DN.fh*Z*2}px`;sh.style.backgroundPosition='0 0';sh.classList.add('go');await wait(250);sfx('cry',.9);await wait(1100);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
   else{dn.classList.add('down');sfx('cry',.9)}
@@ -589,12 +602,13 @@ let stop=0,flying=null,playing=false;
 // the camera: a window on the map; Dragonite stays in the middle and the map moves under him
 const VW=()=>Math.min(352,Math.min(innerWidth,460)-36),VH=()=>Math.round(VW()*.75);
 function pMap(){const SS=TXR('stops')||[];
+  if(ROLE==='f')return `${ptitle('routeTitle')}<p class="psum">${H('routeSum')}</p><p class="plead">${H('f_routeHow')}</p><ol class="slist plain">${SS.map((x,i)=>`<li><div class="sb"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.d))}</small></span></div></li>`).join('')}</ol>`;
   return `${ptitle('routeTitle')}<p class="psum">${H('routeSum')}</p><p class="plead">${H('routeHow')}</p>
   <div class="tmap bigm" id="tmap" style="width:${VW()}px;height:${VH()}px"><div class="bmo" id="bmo"><img src="img/kanto-ov.webp" alt=""></div><img class="bmc px" id="bmc" alt=""><i class="dnic" id="dnic"></i></div>
   <div class="gbp-box stopbox" id="stopbox"></div>
   <div class="mapbtns"><button class="nextbtn" id="mapgo"></button><button class="ghostbtn" id="mapplay">${H('routePlay')}</button></div>
   <ol class="slist">${SS.map((x,i)=>`<li><button data-s="${i}"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.c))}</small></span></button></li>`).join('')}</ol>`}
-function bindMap(){stop=0;placeIc(STOPS[0]);city(0);stopInfo(0,true);
+function bindMap(){if(ROLE==='f'){if(!mem.routeDone){mem.routeDone=1;save()}navBar();return}stop=0;placeIc(STOPS[0]);city(0);stopInfo(0,true);
   $('#mapgo').onclick=()=>{if(flying)return;stopPlay();if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0);return}fly(stop,stop+1)};
   $('#mapplay').onclick=()=>{if(playing){stopPlay();return}playing=true;$('#mapplay').innerHTML=H('routeStopPlay');if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);stopInfo(0)}const next=()=>{if(!playing)return;if(stop>=STOPS.length-1){stopPlay();return}fly(stop,stop+1,()=>setTimeout(next,RM?300:1100))};next()};
   document.querySelectorAll('.slist [data-s]').forEach(b=>b.onclick=()=>{if(flying)return;stopPlay();const i=+b.dataset.s;if(i===stop)return;fly(stop,i);$('#tmap').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
@@ -631,9 +645,10 @@ function bindBag(){const show=i=>{bagI=i;const seen=mem.prepSeen||(mem.prepSeen=
   document.querySelectorAll('.bagl button').forEach(b=>b.onclick=()=>{sfx('a',.4);show(+b.dataset.b)});show(bagI)}
 
 // ---- 4. the decision: an empty Pokédex entry, Oak's notes, and the answer ----
+function datesEarly(){if(!hasDates()||REMOTE)return '';const mine=myDates();return `<section class="blk dearly"><h2>${H('datesEarlyT')}</h2><p class="muted">${H('datesEarly')}</p><div class="dchips">${FILE.dates.map(d=>`<button data-d="${d}" class="${mine.includes(d)?'on':''}${FILE.date===d?' set':''}">${mine.includes(d)?'✓ ':''}${esc(fmtD(d))}</button>`).join('')}</div></section>`}
 function pDex(){return `${ptitle('decideTitle')}<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
   <details class="blk notes ndet"><summary><h2>${H('notesTitle')}</h2></summary><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>
-  ${pAnswer()}`}
+  ${datesEarly()}${pAnswer()}`}
 
 // ---- 5. (after yes) your card, and your character ----
 const MINI_N=77;
@@ -661,7 +676,7 @@ function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.in
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
 const wobbleS=()=>2.6;
 function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
-function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
+function bindAnswer(){taps=0;bindChips(()=>{const d=$('.dearly');if(d)d.outerHTML=datesEarly();bindAnswer()});$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
     setTimeout(()=>{b.classList.remove('shake');if(!RM){b.classList.add('wobble');b.style.animationDuration=wobbleS()+'s'}},1150);
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
   renderMenu()}
@@ -671,7 +686,7 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
       <ol class="todo">${(TXR('todo')||[]).filter(x=>!(x.go==='dates'&&!hasDates())).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.go&&pageIdx(x.go)>=0?`<button class="nextbtn togo" data-go="${x.go}">${H({card:'goCard',team:'goTeam',dates:'goDates'}[x.go])} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
       <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
     w.querySelectorAll('.togo').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
-    $('#chg').onclick=()=>{delete mem.ans;save();dbSync({ans:'no'});ans='ask';page=3;renderLetter()}}
+    $('#chg').onclick=()=>{delete mem.ans;mem.declined=1;save();dbSync({ans:'no'});ans='ask';page=3;renderLetter()}}
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
@@ -758,7 +773,7 @@ async function dbSubject(change){if(ROLE!=='s')return;if(!mem.iid){mem.iid=rid(1
     await ref.update({at:now(),...change})}catch(e){console.warn('invite',e)}}
 // a friend: write my answer and character into the subject's file
 async function dbFriend(){const db=await dbReady;if(!db||ROLE!=='f'||!IID||!FKEY)return;
-  try{await db.doc('invites/'+IID).set({team:{[FKEY]:{n:NAME,g:G,ans:mem.ans==='yes'?'yes':'no',av:mem.av??null,d:mem.dates||[],r:REMOTE?1:0,at:now()}}},{merge:true})}catch(e){console.warn('rsvp',e)}}
+  try{await db.doc('invites/'+IID).set({team:{[FKEY]:{n:NAME,g:G,ans:mem.ans==='yes'?'yes':mem.declined?'no':'inv',av:mem.av??null,d:mem.dates||[],r:REMOTE?1:0,at:now()}}},{merge:true})}catch(e){console.warn('rsvp',e)}}
 const dbSync=change=>ROLE==='f'?dbFriend():dbSubject(change);
 // the subject's team page listens to the file: a friend who says yes fills their slot, with their character and a sound
 let TEAM=null,teamSeen=null,teamUn=null;
@@ -767,6 +782,8 @@ async function watchFile(){const iid=ROLE==='s'?(mem.iidMade&&mem.iid):IID;const
   teamUn=db.doc('invites/'+iid).onSnapshot(d=>{const had=hasDates();FILE=d.exists?d.data():null;const t=(FILE&&FILE.team)||{},yes=Object.keys(t).filter(k=>t[k]&&t[k].ans==='yes');
     if(ROLE==='s'&&teamSeen&&yes.some(k=>!teamSeen.has(k))){sfx('caught',.7);const k=yes.find(k=>!teamSeen.has(k));toast(fill(pickG(TX.joined,t[k].g)).replace('{f}',t[k].n))}
     teamSeen=new Set(yes);TEAM=t;if(scene!=='letter')return;const cur=PAGES()[page];if(had!==hasDates()&&$('#steps'))navBar();
+    if(cur&&cur[0]==='decide'&&$('.dearly')){$('.dearly').outerHTML=datesEarly();bindChips(()=>{$('.dearly').outerHTML=datesEarly();bindAnswer()})}
+    if(cur&&cur[0]==='decide'&&!$('.dearly')&&hasDates()&&!REMOTE&&$('#menuwrap')){$('#menuwrap').parentElement.querySelector('.bwrap')?.insertAdjacentHTML('beforebegin',datesEarly());bindAnswer()}
     if(cur&&(cur[0]==='team'||cur[0]==='dates')){const y=$('#letter').scrollTop;$('#pg').innerHTML=cur[1]();cur[2]();$('#letter').scrollTop=y}},e=>console.warn('file',e))}
 const pickG=(v,g)=>v&&typeof v==='object'&&!Array.isArray(v)?(v[g]??v.m??''):v;
 if(ROLE==='s'){if(mem.ans==='yes'&&!mem.iidMade)dbSubject();else watchFile()}else if(IID&&(!GROUP||mem.me))watchFile()
@@ -785,9 +802,10 @@ function pDates(){if(!hasDates())return `${ptitle('datesTitle')}<p class="plead"
   <section class="blk"><h2>${H('datesTable')}</h2><div class="dtabw"><table class="dtab"><tr><th></th>${D.map(d=>`<th class="${all(d)?'all':''}${FILE.date===d?' set':''}">${esc(fmtD(d))}</th>`).join('')}</tr>
     ${P.map(x=>`<tr class="${x.me?'me':''}"><td>${esc(x.n)}</td>${D.map(d=>`<td class="${all(d)?'all':''}">${x.d.includes(d)?'✓':'·'}</td>`).join('')}</tr>`).join('')}</table></div>
     ${D.some(all)?`<p class="dall">⭐ ${H('datesAll')} ${D.filter(all).map(d=>esc(fmtD(d))).join(' · ')}</p>`:''}</section>`}
-function bindDates(){document.querySelectorAll('.dchips [data-d]').forEach(b=>b.onclick=()=>{const d=b.dataset.d,m=[...myDates()],i=m.indexOf(d);if(i>=0)m.splice(i,1);else m.push(d);m.sort();sfx('a',.4);
+function bindChips(redo){document.querySelectorAll('.dchips [data-d]').forEach(b=>b.onclick=()=>{const d=b.dataset.d,m=[...myDates()],i=m.indexOf(d);if(i>=0)m.splice(i,1);else m.push(d);m.sort();sfx('a',.4);
   if(ROLE==='s'){mem.sd=m;FILE&&(FILE.sd=m);save();dbSubject({sd:m})}else{mem.dates=m;if(TEAM&&TEAM[FKEY])TEAM[FKEY].d=m;save();dbFriend()}
-  const y=$('#letter').scrollTop;$('#pg').innerHTML=pDates();bindDates();$('#letter').scrollTop=y})}
+  const y=$('#letter').scrollTop;redo();$('#letter').scrollTop=y})}
+function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()})}
 
 // ---------- 7. saving: "What? Your invitation is evolving!" ----------
 function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');
@@ -801,8 +819,8 @@ function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.
       while(performance.now()-t0<3600){show=!show;ea.style.display=show?'none':'';eb.style.display=show?'':'none';await wait(gap);gap=Math.max(70,gap*.82)}}
     ea.style.display='none';eb.style.display='';eb.classList.remove('sil');const f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(()=>f.remove(),800);
     sfx('caught',.8);say(T('evoDone'));await wait(2600);say(T('evoFly'));
-    const fl=document.createElement('div');fl.className='evodn';stage.appendChild(fl);fl.style.backgroundSize=`${DN.cols*DN.fw}px ${Math.ceil(DN.n/DN.cols)*DN.fh}px`;
-    await wait(2200);if(ev){const v0=ev.volume;for(let k=10;k>=0;k--){ev.volume=v0*k/10;await wait(60)}ev.pause()}
+    if(!RM){stage.innerHTML='<video class="evov" src="vid/dn-fly.mp4" muted playsinline autoplay loop></video>';const ev2=stage.querySelector('video');try{await ev2.play()}catch(e){}}
+    await wait(2600);if(ev){const v0=ev.volume;for(let k=10;k>=0;k--){ev.volume=v0*k/10;await wait(60)}ev.pause()}
     o.classList.add('hide');mus(true);done()};
   go()}
 // returning visitors who already answered still start at PRESS START (the sound needs a tap), and can skip
