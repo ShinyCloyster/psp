@@ -15,6 +15,12 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#161A2E">
 <link rel="icon" href="../favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PSP">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Secular+One&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
@@ -413,6 +419,7 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .dsets{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.dset{flex:1 1 140px;display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:3px solid #9FA7C7;border-radius:12px;padding:10px 8px;font:700 16px var(--body);color:#1E2238}
 .dset small{font:500 12px var(--body);color:#6A6F8A}.dset.all{border-color:var(--gold)}.dset.on{background:#E3F6EA;border-color:var(--ok)}
 .simb{background:#EFE7FF!important;text-align:center}.simb h2{margin:0 0 6px}.simb p{font-size:15px;margin:0 0 10px}
+.instb h2{margin:0 0 6px}.instb p{font-size:15px;margin:0 0 10px}.insthow{margin:0 0 8px;padding-inline-start:22px}.insthow li{margin:4px 0;font-size:15px}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -567,13 +574,14 @@ function begin(){if(scene!=='start')return;unlock();if(mem.seen)skipBtn.classLis
 async function pickWho(){scene='who';['start','arrive','holo'].forEach(x=>$('#'+x).classList.add('hide'));const w=$('#who');w.classList.remove('hide');
   w.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px"><b class="q">${H('pickTitle')}</b>${H('pickLead')}</div><div class="gbp-menu" id="whol"><p class="muted" style="margin:10px 14px">${H('pickLoading')}</p></div>`;
   let team={};try{const db=await dbReady;if(db){const d=await db.doc('invites/'+IID).get();if(d.exists)team=d.data().team||{}}}catch(e){console.warn('pick',e)}
+  const QK=(Q.get('k')||'').replace(/[^a-z0-9]/g,'');if(QK&&team[QK]&&team[QK].n){const v=team[QK];choose(v.n,v.g==='f'?'f':'m',QK,!!v.r);return}
   const L=Object.entries(team).filter(([k,v])=>v&&v.n&&v.ans!=='removed').sort((a,b)=>String(a[1].n).localeCompare(String(b[1].n)));
   $('#whol').innerHTML=L.map(([k,v])=>`<button data-k="${esc(k)}">${esc(v.n)} ${v.g==='f'?'♀':'♂'}${v.ans==='yes'?' ✓':''}${v.r?` · ${H('remoteTag')}`:''}</button>`).join('')+`<button data-k="">${H('pickOther')}</button>`;
   $('#whol').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{sfx('a',.5);const k=b.dataset.k;if(k){const v=team[k];choose(v.n,v.g==='f'?'f':'m',k,!!v.r);return}
     let g='m';w.insertAdjacentHTML('beforeend',`<div class="blk addf" style="margin-top:12px;width:min(100%,460px)"><label for="pname">${H('pickName')}</label><input id="pname" maxlength="30" autocomplete="off"><div class="gsel" style="margin-top:10px"><button data-g="m" class="on">${H('boy')}</button><button data-g="f">${H('girl')}</button></div><button class="nextbtn wbtn" id="pgo">${H('pickGo')} ${AR_NEXT}</button></div>`);
     w.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{g=x.dataset.g;w.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x))});$('#pname').focus();
     $('#pgo').onclick=()=>{const n=($('#pname').value||'').trim().slice(0,30);if(!n){$('#pname').classList.add('bad');return}choose(n,g,rid(8))}})}
-function choose(n,g,k,r){NAME=n;G=g;FKEY=k;REMOTE=!!r;mem.me={n,g,k,r:r?1:0};save();watchFile();$('#who').classList.add('hide');arrive()}
+function choose(n,g,k,r){NAME=n;G=g;FKEY=k;REMOTE=!!r;mem.me={n,g,k,r:r?1:0};save();keepUrl();watchFile();$('#who').classList.add('hide');arrive()}
 $('#start').addEventListener('click',begin);$('#start').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')begin()});
 
 // ---------- 2. Dragonite arrives ----------
@@ -841,6 +849,12 @@ const FB_CONFIG={apiKey:"AIzaSyDw2P3ZnpxVQaYOWdKGJqRaHYDcg4m6EJo",authDomain:"ps
 const rid=n=>Array.from(crypto.getRandomValues(new Uint8Array(n)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');
 const IID=ROLE==='f'?GIID:'';let FKEY=ROLE==='f'?(Q.get('k')||'').replace(/[^a-z0-9]/g,'').slice(0,12):'';
 if(GROUP&&mem.me){NAME=mem.me.n;G=mem.me.g;FKEY=mem.me.k;REMOTE=!!mem.me.r}
+// the link in the address bar always says who this is, so a home-screen icon (or another browser) opens as the same person
+function keepUrl(){try{const q=new URLSearchParams(location.search);let ch=false;
+  if(ROLE==='s'&&mem.iidMade&&mem.iid&&q.get('i')!==mem.iid){q.set('i',mem.iid);ch=true}
+  if(GROUP&&mem.me&&mem.me.k&&q.get('k')!==mem.me.k){q.set('k',mem.me.k);ch=true}
+  if(ch)history.replaceState(null,'',location.pathname+'?'+q.toString().replace(/\+/g,'%20')+location.hash)}catch(e){}}
+keepUrl();
 // a subject link made by the host already carries its invitation file (with the dates)
 if(ROLE==='s'&&GIID&&!mem.iid){mem.iid=GIID;mem.iidMade=1;save()}
 const dbReady=new Promise(res=>{const go=async()=>{try{if(!window.firebase)return res(null);if(!firebase.apps.length)firebase.initializeApp(FB_CONFIG);const a=firebase.auth();
@@ -850,7 +864,7 @@ const now=()=>new Date().toISOString();
 // the subject: create the file on yes (or mark it again), keep the answer and the character up to date
 async function dbSubject(change){if(ROLE!=='s')return;if(!mem.iid){mem.iid=rid(16);save()}const db=await dbReady;if(!db)return;
   try{const ref=db.doc('invites/'+mem.iid);
-    if(!mem.iidMade){await ref.set({subject:NAME,g:G,lang:LANG,at:now(),ans:mem.ans==='yes'?'yes':'no',team:{},...(mem.av!=null?{av:mem.av}:{})});mem.iidMade=1;save();watchTeam();return}
+    if(!mem.iidMade){await ref.set({subject:NAME,g:G,lang:LANG,at:now(),ans:mem.ans==='yes'?'yes':'no',team:{},...(mem.av!=null?{av:mem.av}:{})});mem.iidMade=1;save();keepUrl();watchTeam();return}
     await ref.update({at:now(),...change})}catch(e){console.warn('invite',e)}}
 // a friend: write my answer and character into the subject's file
 async function dbFriend(){const db=await dbReady;if(!db||ROLE!=='f'||!IID||!FKEY)return;
@@ -862,12 +876,21 @@ const watchTeam=()=>watchFile();
 async function watchFile(){const iid=ROLE==='s'?(mem.iidMade&&mem.iid):IID;const db=await dbReady;if(!db||!iid||teamUn)return;
   teamUn=db.doc('invites/'+iid).onSnapshot(d=>{const had=hasDates();FILE=d.exists?d.data():null;const t=(FILE&&FILE.team)||{},yes=Object.keys(t).filter(k=>t[k]&&t[k].ans==='yes');
     if(ROLE==='s'&&teamSeen&&yes.some(k=>!teamSeen.has(k))){sfx('caught',.7);const k=yes.find(k=>!teamSeen.has(k));toast(fill(pickG(TX.joined,t[k].g)).replace('{f}',t[k].n))}
-    teamSeen=new Set(yes);TEAM=t;if(scene!=='letter')return;const cur=PAGES()[page];if(had!==hasDates()&&$('#steps'))navBar();
+    teamSeen=new Set(yes);TEAM=t;restoreFromFile();if(scene!=='letter')return;const cur=PAGES()[page];if(had!==hasDates()&&$('#steps'))navBar();
     testBar();watchEve();
     if(cur&&cur[0]==='hub'&&!$('.locp .locs')&&!(locMode&&$('.locp'))){$('#pg').innerHTML=pHub();bindHub()}
     if(cur&&cur[0]==='decide'&&$('.dearly')){$('.dearly').outerHTML=datesEarly();bindChips(()=>{$('.dearly').outerHTML=datesEarly();bindAnswer()})}
     if(cur&&cur[0]==='decide'&&!$('.dearly')&&hasDates()&&!REMOTE&&$('#menuwrap')){$('#menuwrap').parentElement.querySelector('.bwrap')?.insertAdjacentHTML('beforebegin',datesEarly());bindAnswer()}
     if(cur&&(cur[0]==='team'||cur[0]==='dates')){const y=$('#letter').scrollTop;$('#pg').innerHTML=cur[1]();cur[2]();$('#letter').scrollTop=y}},e=>console.warn('file',e))}
+
+let restored=false;
+function restoreFromFile(){if(restored||!FILE)return;restored=true;let ch=false;
+  if(ROLE==='s'){if(!mem.ans&&FILE.ans==='yes'){mem.ans='yes';ch=true}if(mem.av==null&&FILE.av!=null){mem.av=FILE.av;ch=true}if(!mem.sd&&Array.isArray(FILE.sd))mem.sd=FILE.sd;
+    if(Array.isArray(FILE.tr)&&!(mem.trainers||[]).some(x=>x&&x.t)){mem.trainers=FILE.tr.map(t=>({t:t||''}));ch=true}
+    if(!(mem.party||[]).length){const L=Object.entries(FILE.team||{}).filter(([k,v])=>v&&v.n&&v.ans!=='removed').map(([k,v])=>({n:v.n,g:v.g==='f'?'f':'m',k,...(v.r?{r:1}:{})}));if(L.length){mem.party=L;ch=true}}}
+  else{const me=(FILE.team||{})[FKEY];if(me){if(!mem.ans&&me.ans==='yes'){mem.ans='yes';ch=true}if(mem.av==null&&me.av!=null){mem.av=me.av;ch=true}if(!mem.dates&&Array.isArray(me.d))mem.dates=me.d}}
+  if(ch&&mem.ans==='yes'){mem.seen=1;mem.prepDone=1;mem.routeDone=1;mem.told=mem.told||1;if(mem.party&&mem.party.length)mem.sentAll=mem.sentAll||1}
+  if(ch){save();if(mem.seen)skipBtn.classList.remove('hide');if(scene==='letter'){page=0;renderLetter()}}}
 const pickG=(v,g)=>v&&typeof v==='object'&&!Array.isArray(v)?(v[g]??v.m??''):v;
 if(ROLE==='s'){if(mem.ans==='yes'&&!mem.iidMade)dbSubject();else watchFile()}else if(IID&&(!GROUP||mem.me))watchFile()
 
@@ -990,6 +1013,15 @@ function eveBlock(){if(!FILE||!FILE.room||(EVE&&EVE.revealed))return '';const ba
 function dexDone(){const r=EVE&&EVE.revealed&&EVE.result;if(!r)return '';const sd=r.spriteData||'',src=sd?(/^(data:|https?:)/.test(sd)?sd:'../'+sd):'',ty=Array.isArray(r.types)?r.types.join(' / '):String(r.types||'');
   return `<section class="dex done"><div class="dexscr"><div class="dexsil">${src?`<img src="${src}" alt="">`:'★'}</div><div class="dexinfo"><b class="dno">PSP</b><b class="dnm">${esc(r.finalName||'')}</b>${ty?`<span>${H('dexType')}: ${esc(ty)}</span>`:''}<span>${esc(ROLE==='s'?NAME:BY)}</span></div></div><p class="dexdesc">${H('dexDoneT')}</p></section>`}
 
+let BIP=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();BIP=e;$('#instgo')?.classList.remove('hide');$('#instman')?.classList.add('hide')});
+const STANDALONE=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function instBlock(){if(STANDALONE()||mem.instNo)return '';
+  return `<section class="blk instb"><h2>📲 ${H('instT')}</h2><p>${H('instLead')}</p>${IOS?`<ol class="insthow"><li>${H('instIos1')}</li><li>${H('instIos2')}</li></ol><p class="muted">${H('instIos3')}</p>`
+    :`<button class="nextbtn wbtn${BIP?'':' hide'}" id="instgo">${H('instBtn')}</button><p class="muted${BIP?' hide':''}" id="instman">${H('instAndroid')}</p>`}<button class="linkbtn" id="instno">${H('instNo')}</button></section>`}
+function bindInst(){$('#instgo')?.addEventListener('click',async()=>{if(!BIP)return;BIP.prompt();try{const r=await BIP.userChoice;if(r&&r.outcome==='accepted'){mem.instNo=1;save();$('.instb')?.remove()}}catch(e){}BIP=null});
+  $('#instno')?.addEventListener('click',()=>{mem.instNo=1;save();$('.instb')?.remove()})}
+
 function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],tiles=[];
   const tile=(k,ic,sub,done)=>tiles.push(`<button class="hubt${done?' done':''}" data-go="${k}"><span class="hi">${ic}</span><b>${H('tab_'+k)}</b><small>${esc(sub)}</small></button>`);
   tile('card',`<span class="hav">${cardFig()}</span>`,mem.av!=null?'✓':T('hubPick'),mem.av!=null);
@@ -1003,9 +1035,10 @@ function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
   ${pickFirst?wwBlock():''}<div class="hubg">${hubTiles()}</div>
   ${pickFirst?'':wwBlock()}${ROLE==='f'?crewRow():''}
   ${ROLE==='s'?`<section class="blk">${checklistHTML()}</section>`:`<section class="blk"><ol class="todo">${(TXR('todo')||[]).filter(x=>!x.go).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol></section>`}
+  ${instBlock()}
   <div class="hubl">${ROLE==='s'?`<button class="ghostbtn" data-go="route">🗺 ${H('routeTitle')}</button>`:''}<button class="ghostbtn" data-go="letter">✉ ${H('hubLetter')}</button></div>
   <button class="linkbtn" id="chg">${H('changeAnswer')}</button>`}
-function bindHub(){bindWW();$('#simgo')?.addEventListener('click',()=>{mem.simDay=1;save();sfx('caught',.7);$('#pg').innerHTML=pHub();bindHub();$('#letter').scrollTop=0});document.querySelectorAll('#pg [data-go]').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
+function bindHub(){bindWW();bindInst();$('#simgo')?.addEventListener('click',()=>{mem.simDay=1;save();sfx('caught',.7);$('#pg').innerHTML=pHub();bindHub();$('#letter').scrollTop=0});document.querySelectorAll('#pg [data-go]').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
   document.querySelector('#pg .tellbtn')?.addEventListener('click',()=>{mem.told=1;save();setTimeout(()=>{if(PAGES()[page][0]==='hub'){$('#pg').innerHTML=pHub();bindHub()}},800)});
   $('#chg').onclick=()=>{delete mem.ans;mem.declined=1;save();dbSync({ans:'no'});ans='ask';page=PAGES().length-1;renderLetter()}}
 
