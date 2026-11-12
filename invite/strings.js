@@ -140,7 +140,10 @@ window.INV_TEXT = {
     resend: 'לשלוח שוב',
     remove: 'הסרה',
     friendMsg: 'היי {f}! דרגונייט בדרך אליך עם הזמנה ממני. כדאי לפתוח כשיש דקה וסאונד:',
-    partyNext: 'בשלב הבא: כשחבר יאשר, הדמות שבחר תופיע כאן במשבצת שלו.',
+    partyNext: 'כשחבר מאשר, הדמות שבחר מופיעה כאן במשבצת שלו, בזמן אמת.',
+    stYes: { m: 'אישר ✓', f: 'אישרה ✓' },
+    stNo: { m: 'עוד מתלבט', f: 'עוד מתלבטת' },
+    joined: { m: '{f} הצטרף לצוות!', f: '{f} הצטרפה לצוות!' },
 
     // ===== stage 2: the friend's invitation (a field researcher) =====
     f_oak: [
@@ -424,7 +427,10 @@ window.INV_TEXT = {
     resend: 'Send again',
     remove: 'Remove',
     friendMsg: 'Hi {f}! Dragonite is on its way to you with an invitation from me. Open it when you have a minute and sound on:',
-    partyNext: 'Next: when a friend says yes, the character they chose will appear in their slot here.',
+    partyNext: 'When a friend says yes, the character they chose appears in their slot here, live.',
+    stYes: 'Said yes ✓',
+    stNo: 'Still deciding',
+    joined: '{f} joined the team!',
     f_oak: [
       'Hello there, {name}! Welcome to the world of PSP.',
       'My name is Oak! People call me the Pokémon Prof!',

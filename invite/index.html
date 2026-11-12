@@ -17,6 +17,9 @@
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Secular+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
 <script src="config.js"></script>
 <script src="strings.js"></script>
 <style>
@@ -309,6 +312,9 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .pslot.empty{justify-content:center;border-style:dashed;border-color:#B9BDD6;background:none;color:#8A8FA8;font:500 15px/1 var(--body);width:100%}
 .pslot .pic{width:46px;display:flex;justify-content:center}
 .pslot .pic img{zoom:2;filter:grayscale(1) brightness(.75)}
+.pslot.yes{background:#FFF8DD;border-color:var(--gold);animation:pop .4s ease-out}.pslot.yes .pic img{filter:none}
+.pnm small.yes{color:#2E8B57;font-weight:700}
+.cust.sm{width:34px;height:40px;font-size:16px}
 .pnm{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
 .pnm b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pnm small{font-size:13px;color:#8A8FA8}.pnm small.ok{color:#2E8B57;font-weight:700}
@@ -581,7 +587,7 @@ function pCard(){const id=String(Math.abs([...NAME].reduce((h,c)=>(h*31+c.charCo
     <b class="approved">APPROVED</b>
   </section>
   <div class="blk"><div class="pgrid"><button data-av="custom" class="custt${mem.av==='custom'?' on':''}"><span>?</span><i>${H('customTile')}</i></button>${Array.from({length:MINI_N},(_,i)=>`<button data-av="${i}" class="${mem.av===i?'on':''}"><img class="px" src="../img/mini/${i}.png" alt=""></button>`).join('')}</div><div id="custbox"></div></div>`}
-function bindCard(){custBox();document.querySelectorAll('[data-av]').forEach(bt=>bt.onclick=()=>{const v=bt.dataset.av;mem.av=v==='custom'?'custom':+v;save();sfx('tink',.6);
+function bindCard(){custBox();document.querySelectorAll('[data-av]').forEach(bt=>bt.onclick=()=>{const v=bt.dataset.av;mem.av=v==='custom'?'custom':+v;save();dbSync({av:mem.av});sfx('tink',.6);
     document.querySelectorAll('[data-av]').forEach(x=>x.classList.toggle('on',x===bt));$('#tcfig').innerHTML=cardFig();custBox();if(v!=='custom')$('.tcard').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
 function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.innerHTML='';return}const l=wa(T('customWaMsg'));
   c.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px;margin-top:10px">${H('customText')}${l?`<br><a class="wa" href="${l}" target="_blank" rel="noopener">${H('customWa')}</a>`:''}</div>`}
@@ -599,11 +605,11 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
       <ol class="todo">${(TXR('todo')||[]).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.go?`<button class="nextbtn togo" data-go="${x.go}">${H(x.go==='card'?'goCard':'goTeam')} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
       <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
     w.querySelectorAll('.togo').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
-    $('#chg').onclick=()=>{delete mem.ans;save();ans='ask';page=3;renderLetter()}}
+    $('#chg').onclick=()=>{delete mem.ans;save();dbSync({ans:'no'});ans='ask';page=3;renderLetter()}}
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
-    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();page=3;renderLetter();setTimeout(()=>$('#menuwrap')?.scrollIntoView({block:'start'}),50)})};
+    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();dbSync({ans:'yes'});page=3;renderLetter();setTimeout(()=>$('#menuwrap')?.scrollIntoView({block:'start'}),50)})};
     $('#cask').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
   else if(ans==='faq'){const F=TXR('faq')||[],link=wa(T('waMsg'));
     w.innerHTML=faqI<0
@@ -624,7 +630,7 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
 // ---------- 8. the subject's team (stage 2): six slots like the game's party; everyone past six goes to Bill's PC ----------
 const party=()=>mem.party||(mem.party=[]);
 let addG='m';
-function friendLink(f){const q=new URLSearchParams({to:f.n,g:f.g});q.set('r','f');q.set('by',NAME);q.set('bg',G);['date','place'].forEach(k=>{if(Q.get(k))q.set(k,Q.get(k))});return location.origin+location.pathname.replace(/en\/?$/,'')+(LANG==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
+function friendLink(f){if(!f.k){f.k=rid(8);save()}const q=new URLSearchParams({to:f.n,g:f.g});q.set('r','f');q.set('by',NAME);q.set('bg',G);if(mem.iid){q.set('i',mem.iid);q.set('k',f.k)}['date','place'].forEach(k=>{if(Q.get(k))q.set(k,Q.get(k))});return location.origin+location.pathname.replace(/en\/?$/,'')+(LANG==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
 const friendText=f=>fill(pick(TX.friendMsg)).replace('{f}',f.n)+'\n'+friendLink(f);
 function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function openUrl(u){const w=window.open(u,'_blank');if(!w)location.href=u}
@@ -632,7 +638,9 @@ function shareFriend(f,done){const text=friendText(f);
   if(navigator.share){navigator.share({text}).then(done).catch(()=>{})}
   else{(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{toast(T('copied'));done()}).catch(()=>{prompt('',text);done()})}}
 function slot(f,i){if(!f)return `<div class="pslot empty"><span>${H('partyEmpty')}</span></div>`;
-  return `<div class="pslot"><span class="pic"><img class="px" src="../img/ow-${f.g==='f'?'girl':'boy'}.png" alt=""></span><div class="pnm"><b>${esc(f.n)}</b><small class="${f.sent?'ok':''}">${H(f.sent?'stSent':'stNew')}</small></div><div class="pbtns"><button data-rs="${i}">${H('resend')}</button><button data-rm="${i}" class="x" aria-label="${esc(T('remove'))}">✕</button></div></div>`}
+  const r=TEAM&&f.k&&TEAM[f.k],yes=r&&r.ans==='yes',av=r&&r.av,pic=av==='custom'?'<span class="cust sm">?</span>':`<img class="px" src="${typeof av==='number'?`../img/mini/${av}.png`:`../img/ow-${f.g==='f'?'girl':'boy'}.png`}" alt="">`;
+  const stt=yes?esc(pickG(TX.stYes,f.g)):r&&r.ans==='no'?esc(pickG(TX.stNo,f.g)):H(f.sent?'stSent':'stNew');
+  return `<div class="pslot${yes?' yes':''}"><span class="pic">${pic}</span><div class="pnm"><b>${esc(f.n)}</b><small class="${yes?'yes':f.sent?'ok':''}">${stt}</small></div><div class="pbtns"><button data-rs="${i}">${H('resend')}</button><button data-rm="${i}" class="x" aria-label="${esc(T('remove'))}">✕</button></div></div>`}
 let addHow='';
 function pParty(){const P=party(),pc=P.slice(6);
   return `${ptitle('partyTitle')}<p class="plead">${H('partyLead')}</p>
@@ -668,6 +676,33 @@ function bindParty(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').inne
   document.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{const f=party()[+b.dataset.rs];shareFriend(f,()=>{f.sent=1;save();rer()})});
   document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rm,f=party()[i];if(!confirm(`${T('remove')}: ${f.n}?`))return;party().splice(i,1);save();sfx('a',.4);rer()});
   preview()}
+
+// ---------- 9. the database (stage 3): the subject's yes opens an invitation file (invites/<id>); each friend's answer is written into it ----------
+// Only names, genders, answers and the chosen characters are stored; never phone numbers. The id is long and random: only links that carry it can reach the file.
+const FB_CONFIG={apiKey:"AIzaSyDw2P3ZnpxVQaYOWdKGJqRaHYDcg4m6EJo",authDomain:"psp-evening.firebaseapp.com",projectId:"psp-evening",storageBucket:"psp-evening.firebasestorage.app",messagingSenderId:"634212710488",appId:"1:634212710488:web:ada5fc839089791ce5f22d"};
+const rid=n=>Array.from(crypto.getRandomValues(new Uint8Array(n)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');
+const IID=ROLE==='f'?(Q.get('i')||'').replace(/[^a-z0-9]/g,'').slice(0,24):'',FKEY=ROLE==='f'?(Q.get('k')||'').replace(/[^a-z0-9]/g,'').slice(0,12):'';
+const dbReady=new Promise(res=>{const go=async()=>{try{if(!window.firebase)return res(null);if(!firebase.apps.length)firebase.initializeApp(FB_CONFIG);const a=firebase.auth();
+    await new Promise(r=>{const un=a.onAuthStateChanged(u=>{un();r(u)})});if(!a.currentUser)await a.signInAnonymously();res(firebase.firestore())}catch(e){console.warn('db',e);res(null)}};
+  if(document.readyState==='complete')go();else addEventListener('load',go)});
+const now=()=>new Date().toISOString();
+// the subject: create the file on yes (or mark it again), keep the answer and the character up to date
+async function dbSubject(change){if(ROLE!=='s')return;if(!mem.iid){mem.iid=rid(16);save()}const db=await dbReady;if(!db)return;
+  try{const ref=db.doc('invites/'+mem.iid);
+    if(!mem.iidMade){await ref.set({subject:NAME,g:G,lang:LANG,at:now(),ans:mem.ans==='yes'?'yes':'no',team:{},...(mem.av!=null?{av:mem.av}:{})});mem.iidMade=1;save();watchTeam();return}
+    await ref.update({at:now(),...change})}catch(e){console.warn('invite',e)}}
+// a friend: write my answer and character into the subject's file
+async function dbFriend(){const db=await dbReady;if(!db||ROLE!=='f'||!IID||!FKEY)return;
+  try{await db.doc('invites/'+IID).set({team:{[FKEY]:{n:NAME,g:G,ans:mem.ans==='yes'?'yes':'no',av:mem.av??null,at:now()}}},{merge:true})}catch(e){console.warn('rsvp',e)}}
+const dbSync=change=>ROLE==='f'?dbFriend():dbSubject(change);
+// the subject's team page listens to the file: a friend who says yes fills their slot, with their character and a sound
+let TEAM=null,teamSeen=null,teamUn=null;
+async function watchTeam(){const db=await dbReady;if(!db||ROLE!=='s'||!mem.iidMade||teamUn)return;
+  teamUn=db.doc('invites/'+mem.iid).onSnapshot(d=>{const t=(d.exists&&d.data().team)||{},yes=Object.keys(t).filter(k=>t[k]&&t[k].ans==='yes');
+    if(teamSeen&&yes.some(k=>!teamSeen.has(k))){sfx('caught',.7);const k=yes.find(k=>!teamSeen.has(k));toast(fill(pickG(TX.joined,t[k].g)).replace('{f}',t[k].n))}
+    teamSeen=new Set(yes);TEAM=t;if(PAGES()[page]&&PAGES()[page][0]==='team'){const y=$('#letter').scrollTop;$('#pg').innerHTML=pParty();bindParty();$('#letter').scrollTop=y}},e=>console.warn('team',e))}
+const pickG=(v,g)=>v&&typeof v==='object'&&!Array.isArray(v)?(v[g]??v.m??''):v;
+if(ROLE==='s'&&mem.ans==='yes'){if(!mem.iidMade)dbSubject();else watchTeam()}
 
 // ---------- 7. saving: "What? Your invitation is evolving!" ----------
 function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');

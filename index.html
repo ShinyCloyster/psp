@@ -815,7 +815,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794466529';
+const BUILDV='1794467322';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -959,6 +959,15 @@ function planPick(sk,tgt){const on=k=>!sk.includes(k);
   const nc=8-sk.filter(x=>x[0]==='c').length,nt=4-sk.filter(x=>x[0]==='t').length,m=planMinutes(sk);
   return `<div class="np-plan">${[1,2,3,4].map(p=>`<div class="np-part"><span class="np-pl">PKMN ${p}01</span><div class="np-row">${tile('c'+(2*p-1),`img/badge-${2*p-1}.webp`,`<span><b>${2*p-1}</b> ${COURSE_NAMES[2*p-2][0]}</span>`)}${tile('c'+2*p,`img/badge-${2*p}.webp`,`<span><b>${2*p}</b> ${COURSE_NAMES[2*p-1][0]}</span>`)}${tile('t'+p,'img/tr-silhouette.webp',`<span>מאמן ${p}</span>`,'tr')}</div></div>`).join('')}
    <p class="np-sum">${nc} קורסים · ${nt} מאמנים · כ-${Math.floor(m/60)}:${String(m%60).padStart(2,'0')} שעות</p><p class="muted" style="font-size:12px;margin:0">סבבי השאלות וההיכל תמיד נשארים. רק המארח יכול לשנות את זה.</p></div>`}
+// invitations from /invite/ (host only): who said yes, and who of their team did; a click copies them into the new room card
+function invitesCard(){
+  if(!S.invSub&&S.db?.raw){S.invSub=true;S.db.raw.collection('invites').onSnapshot(q=>{S.invites=q.docs.map(d=>({id:d.id,...clone(d.data())})).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));if(isScreen()&&!ROOM.code)roomsView()},()=>{})}
+  const L=S.invites||[];if(!L.length)return '';
+  return `<div class="card"><p class="eyebrow" style="margin:0">INVITATIONS</p><h2 style="margin:2px 0 4px">הזמנות</h2><p class="muted" style="margin:0 0 10px;font-size:13px">מי קיבל הזמנה מדרגונייט, ומי מהצוות שלו אישר.</p>
+   ${L.map(v=>{const T=Object.values(v.team||{}),yes=T.filter(x=>x&&x.ans==='yes');return `<div style="border-top:1px solid var(--line);padding:10px 0">
+     <div class="row" style="gap:8px"><b class="grow">${esc(v.subject||'')} ${v.g==='f'?'♀':'♂'}${v.lang==='en'?' · English':''}</b><span class="muted" style="font-size:13px">${v.ans==='yes'?'✓ אמר כן':'עוד לא'} · ${String(v.at||'').slice(0,10)}</span></div>
+     <p class="muted" style="margin:4px 0 8px;font-size:14px">${T.length?T.map(x=>`${esc(x.n||'')} ${x.ans==='yes'?'✓':'…'}`).join(' · '):'עוד אף אחד מהצוות לא ענה'}${T.length?` (${yes.length}/${T.length} אישרו)`:''}</p>
+     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost small" data-inv="${esc(v.id)}">לחדר חדש עם השמות</button><button class="btn ghost small" data-invdel="${esc(v.id)}">מחיקה</button></div></div>`}).join('')}</div>`}
 function roomsView(){
   const app=$('#app');app.hidden=false;
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
@@ -978,6 +987,7 @@ function roomsView(){
    <div class="np-reh"><button class="np-o ${S.nrr?'on':''}" data-nrr="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrr?'☑':'☐'} 🎭 חזרה גנרלית עם בוטים</button>${S.nrr?`<button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrf?'☑':'☐'} ⏩ מצב מהיר</button>`:''}</div>
    <p class="muted" style="font-size:12px;margin:6px 0 10px">חזרה גנרלית: חדר בדיקה עם 6 בוטים שעונים, משחקים ומדברים לבד. את השקפים מעבירים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
    <button class="btn np-go" data-act="newroom">${S.nrr?'🎭 פתיחת חדר חזרה גנרלית':'⚡ יצירת חדר'}</button></div>
+  ${invitesCard()}
   ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🎭 חזרה גנרלית'+(r.fast?' ⏩':''):''}</p>
    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
@@ -985,6 +995,9 @@ function roomsView(){
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
     if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
     if(b.dataset.nrr){S.nrr=!S.nrr;roomsView();return}
+    if(b.dataset.inv){const v=(S.invites||[]).find(x=>x.id===b.dataset.inv);if(!v)return;const names=Object.values(v.team||{}).filter(x=>x&&x.ans==='yes').map(x=>x.n);
+      S.nrn=v.subject||'';S.nrg=v.g==='f'?'f':'m';S.nrl=v.lang==='en'?'en':'he';S.nrnames=names.join(', ');S.nrc=Math.max(1,Math.min(14,names.length||S.nrc||5));roomsView();window.scrollTo(0,0);toast('הפרטים הועתקו לחדר החדש');return}
+    if(b.dataset.invdel){if(!confirm('למחוק את ההזמנה של '+((S.invites||[]).find(x=>x.id===b.dataset.invdel)?.subject||'')+'?'))return;await S.db.raw.doc('invites/'+b.dataset.invdel).delete().catch(()=>toast('לא נמחק'));return}
     if(b.dataset.nrhg){S.nrhg=b.dataset.nrhg;roomsView();return}
     if(b.dataset.nrc){S.nrc=Math.max(1,Math.min(14,(S.nrc||5)+(+b.dataset.nrc)));roomsView();return}
     if(b.dataset.del){if(!confirm('למחוק את חדר הבדיקה '+b.dataset.del+'?'))return;await S.db.raw.doc('state/'+b.dataset.del).delete().catch(()=>{});await S.db.raw.doc('setup/'+b.dataset.del).delete().catch(()=>{});toast('נמחק');return}
