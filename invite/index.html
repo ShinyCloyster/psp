@@ -397,6 +397,16 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .sugg input[type=text]{width:100%;font:500 17px/1.2 var(--body);padding:10px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;color:#1E2238;margin:12px 0 4px}
 .wa.disabled{opacity:.4}
 .crw{display:flex;flex-wrap:wrap;gap:10px}.cm{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px}.cm img{zoom:1.5}.cm small{font-size:12px;color:#2A2E45}.cm.star small{font-weight:700;color:#B8860B}
+#testbar{position:fixed;top:0;left:0;right:0;z-index:80;background:#7B4FD6;color:#fff;text-align:center;font:700 13px/1 var(--body);padding:6px 8px;pointer-events:none}
+.locp h3{margin:0;font:400 22px/1.2 var(--display);color:#1E2238}.locp>p{margin:4px 0 10px;font-size:14px}
+.locb{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;width:100%;text-align:start;background:#fff;border:3px solid #9FA7C7;border-radius:12px;padding:10px 12px;margin-bottom:8px;color:#1E2238}
+.locb span{grid-row:1/3;font-size:26px}.locb b{font-size:17px}.locb small{font-size:13px;color:#6A6F8A}.locb.on{border-color:var(--gold);background:#FFF8E1}
+.locs input{width:100%;font:500 17px/1.2 var(--body);padding:10px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;color:#1E2238}
+#locres{display:flex;flex-direction:column;gap:6px;margin:8px 0}.locr{text-align:start;background:#EEF0F8;border:0;border-radius:10px;padding:10px 12px;font:500 15px var(--body);color:#1E2238}
+.locsel{font-weight:700;color:#2E8B57;margin:6px 0}.lockmsg{font-weight:700;color:#B03A2E;margin:6px 0}
+.fakeb{background:#EFE7FF!important}.fakeb p{margin:0 0 8px;font-size:14px;color:#3B2A6B}
+.eveb{text-align:center}.eveb a.nextbtn{text-decoration:none;display:block}.eveb h2{margin:0 0 8px}.eveb p{font-size:15px}
+.dex.done .dexsil img{width:84px;height:84px;object-fit:contain;image-rendering:pixelated}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -730,7 +740,7 @@ function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.in
 
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
 const wobbleS=()=>2.6;
-function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
+function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
 function bindDecide(){bindBag();bindAnswer()}
 function bindAnswer(){taps=0;bindChips(()=>{const d=$('.dearly');if(d)d.outerHTML=datesEarly();bindAnswer()});$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
     setTimeout(()=>{b.classList.remove('shake');if(!RM){b.classList.add('wobble');b.style.animationDuration=wobbleS()+'s'}},1150);
@@ -789,6 +799,7 @@ function teamList(){const mine=party().map(f=>({...f,mine:1})),keys=new Set(mine
 function pParty(){const P=teamList(),pc=P.slice(6);
   return `${ptitle('partyTitle')}<p class="plead">${H('partyLead')}</p>
   <ol class="howto">${TL('partyHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+  ${TEST()?`<section class="blk fakeb"><p>${H('fakeLead')}</p><button class="ghostbtn wbtn" id="fakef">🎲 ${H('fakeAdd')}</button></section>`:''}
   <section class="blk addf" id="addf">
     <label for="fname">${H('addNameL')}</label><input id="fname" type="text" maxlength="30" autocomplete="off" placeholder="${esc(T('addNamePh'))}">
     <label>${H('addGL')}</label><div class="gsel"><button data-g="m" class="${addG==='m'?'on':''}">${H('boy')}</button><button data-g="f" class="${addG==='f'?'on':''}">${H('girl')}</button></div>
@@ -800,7 +811,7 @@ function pParty(){const P=teamList(),pc=P.slice(6);
     ${pc.length?`<div class="billpc"><b>${H('billPc')}</b><p>${H('billLead')}</p><div class="pslots">${pc.map((f,k)=>slot(f,k+6)).join('')}</div></div>`:''}
     <p class="hint2 dark">${H('partyNext')}</p></section>
   <section class="blk addf sendall"><h2>${H('sendAllTitle')}</h2><p class="muted">${H('sendAllLead')}</p>
-    ${P.length?`<p class="prevl">${H('sendAllPrev')}</p><div class="msgprev">${esc((()=>{try{return decodeURI(groupText())}catch(e){return groupText()}})())}</div>
+    ${FILE&&!FILE.loc?`<p class="lockmsg">🔒 ${H('locFirst')}</p><button class="ghostbtn wbtn" id="gohub">${H('locGo')}</button>`:P.length?`<p class="prevl">${H('sendAllPrev')}</p><div class="msgprev">${esc((()=>{try{return decodeURI(groupText())}catch(e){return groupText()}})())}</div>
     <a class="wa wbtn" id="swa" href="${wa(groupText(),'')}" target="_blank" rel="noopener">${H('sendAllWa')}</a><button class="ghostbtn wbtn" id="sshare">${H('sendAllShare')}</button>`:`<p class="hint2 dark">${H('sendAllNeed')}</p>`}
   </section>`}
 // the subject's list goes into the invitation file too, so the group link can show it
@@ -812,6 +823,7 @@ function bindParty(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').inne
   document.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;document.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x))});
   document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const L=party(),i=L.findIndex(f=>f.k===b.dataset.rm),f=L[i];if(!f||!confirm(`${T('remove')}: ${f.n}?`))return;L.splice(i,1);save();dbRoster(f,'removed');sfx('a',.4);rer()});
   if($('#swa'))$('#swa').addEventListener('click',()=>{mem.sentAll=1;save();toast(T('sentAll'))});
+  $('#gohub')?.addEventListener('click',()=>goPage(0));$('#fakef')?.addEventListener('click',()=>{fakeFriends();rer()});
   if($('#sshare'))$('#sshare').onclick=()=>shareText(groupText(),()=>{mem.sentAll=1;save();toast(T('sentAll'))});
   if(!mem.iidMade)dbSubject()}
 
@@ -843,7 +855,8 @@ async function watchFile(){const iid=ROLE==='s'?(mem.iidMade&&mem.iid):IID;const
   teamUn=db.doc('invites/'+iid).onSnapshot(d=>{const had=hasDates();FILE=d.exists?d.data():null;const t=(FILE&&FILE.team)||{},yes=Object.keys(t).filter(k=>t[k]&&t[k].ans==='yes');
     if(ROLE==='s'&&teamSeen&&yes.some(k=>!teamSeen.has(k))){sfx('caught',.7);const k=yes.find(k=>!teamSeen.has(k));toast(fill(pickG(TX.joined,t[k].g)).replace('{f}',t[k].n))}
     teamSeen=new Set(yes);TEAM=t;if(scene!=='letter')return;const cur=PAGES()[page];if(had!==hasDates()&&$('#steps'))navBar();
-    if(cur&&cur[0]==='hub'&&!$('.sugg[open]')){$('#pg').innerHTML=pHub();bindHub()}
+    testBar();watchEve();
+    if(cur&&cur[0]==='hub'&&!$('.locp .locs')&&!(locMode&&$('.locp'))){$('#pg').innerHTML=pHub();bindHub()}
     if(cur&&cur[0]==='decide'&&$('.dearly')){$('.dearly').outerHTML=datesEarly();bindChips(()=>{$('.dearly').outerHTML=datesEarly();bindAnswer()})}
     if(cur&&cur[0]==='decide'&&!$('.dearly')&&hasDates()&&!REMOTE&&$('#menuwrap')){$('#menuwrap').parentElement.querySelector('.bwrap')?.insertAdjacentHTML('beforebegin',datesEarly());bindAnswer()}
     if(cur&&(cur[0]==='team'||cur[0]==='dates')){const y=$('#letter').scrollTop;$('#pg').innerHTML=cur[1]();cur[2]();$('#letter').scrollTop=y}},e=>console.warn('file',e))}
@@ -872,7 +885,7 @@ function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()})}
 // ---------- 11. the subject's checklist (after yes): what's done before the evening, and what's left ----------
 function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],I=[];
   const add=(k,frac,go,extra)=>I.push({k,frac:Math.max(0,Math.min(1,frac)),go,extra});
-  add('ck_yes',1);add('ck_tell',mem.told?1:0,null,'tell');add('ck_av',mem.av!=null?1:0,'card');
+  add('ck_yes',1);add('ck_tell',mem.told?1:0,null,'tell');if(FILE)add('ck_place',FILE.loc?1:0);add('ck_av',mem.av!=null?1:0,'card');
   if(hasDates())add('ck_dates',myDates().length?1:0,'dates');
   add('ck_invite',P.length/4,'team');add('ck_confirm',P.length?yes.length/Math.max(4,P.length):0,'team');
   add('ck_sprites',yes.length?yes.filter(f=>T0[f.k].av!=null).length/yes.length:0,'team');
@@ -888,10 +901,10 @@ function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
 function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx');
   return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p>${[0,1,2,3].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
     <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}"><textarea id="trn${i}" data-i="${i}" data-f="n" rows="3" maxlength="600" placeholder="${esc(T('trNotesPh'))}">${esc((tr[i]||{}).n||'')}</textarea></section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
-function bindTrainers(){document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(save,400)})}
+function bindTrainers(){document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(()=>{save();if(ROLE==='s'&&FILE)dbSubject({tr:(mem.trainers||[]).map(x=>String((x&&x.t)||'').trim().slice(0,40))})},600)})}
 
 // ---------- 12. the menu after yes: one screen to come back to; big tiles open each task ----------
-function placeNow(){return PLACE||(typeof FILE!=='undefined'&&FILE&&FILE.place)||(CFG.place&&CFG.place[LANG])||''}
+function placeNow(){return (typeof FILE!=='undefined'&&FILE&&FILE.loc&&FILE.loc.a)||PLACE||(typeof FILE!=='undefined'&&FILE&&FILE.place)||(CFG.place&&CFG.place[LANG])||''}
 const mapsUrl=p=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p);
 function evDate(){const d=FILE&&FILE.date;if(!d)return null;const [a,b]=String(d).split('T'),[y,m,dd]=a.split('-').map(Number),[h,mi]=(b||'20:00').split(':').map(Number);return new Date(y,m-1,dd,h,mi)}
 const utc=t=>t.toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
@@ -901,16 +914,62 @@ function wwBlock(){if(REMOTE)return '';const pl=placeNow(),s=evDate(),cd=cdText(
   const g=s?`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(calTitle())}&dates=${utc(s)}/${utc(new Date(s.getTime()+3*36e5))}&location=${encodeURIComponent(pl)}`:'';
   return `<section class="blk ww">${cd?`<div class="cd"><span class="ball wobble" style="--s:26px"></span><b>${esc(cd)}</b></div>`:''}
   ${s?`<p><b>${H('whenT')}:</b> ${esc(fmtD(FILE.date,true))}</p><div class="wwb"><a class="ghostbtn" href="${g}" target="_blank" rel="noopener">${H('calBtn')}</a><button class="linkbtn" id="ics">${H('calIcs')}</button></div>`:''}
-  ${pl?`<p><b>${H('where')}:</b> ${esc(pl)}</p><div class="wwb"><a class="ghostbtn" id="mapsb" href="${mapsUrl(pl)}" target="_blank" rel="noopener">${H('mapsBtn')}</a></div>`:''}
-  ${ROLE==='s'?`<details class="sugg"><summary>${H('placeOther')}</summary><p>${H('placeRules')}</p>${['placeC1','placeC2','placeC3'].map(k=>`<label class="chk"><input type="checkbox" class="pc"> ${H(k)}</label>`).join('')}<input id="pladdr" type="text" maxlength="80" autocomplete="off" placeholder="${esc(T('placePh'))}"><a class="wa disabled" id="plsend" href="#" target="_blank" rel="noopener">${H('placeSend')}</a></details>`:''}</section>`}
+  ${ROLE==='s'&&FILE&&(!FILE.loc||locEdit)?locPick():pl?`<p><b>${H('where')}:</b> ${esc(pl)}</p><div class="wwb"><a class="ghostbtn" id="mapsb" href="${mapsUrl(pl)}" target="_blank" rel="noopener">${H('mapsBtn')}</a>${ROLE==='s'&&FILE?`<button class="linkbtn" id="locchg">${H('locChange')}</button>`:''}</div>`:''}
+</section>`}
 function bindWW(){$('#ics')?.addEventListener('click',()=>{const s=evDate();if(!s)return;const e=new Date(s.getTime()+3*36e5),pl=placeNow().replace(/[,;]/g,'\\$&');
     const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//PSP//invite//EN','BEGIN:VEVENT','UID:'+(mem.iid||IID||'psp')+'-'+utc(s)+'@psp','DTSTAMP:'+utc(new Date()),'DTSTART:'+utc(s),'DTEND:'+utc(e),'SUMMARY:'+calTitle(),...(pl?['LOCATION:'+pl]:[]),'END:VEVENT','END:VCALENDAR'].join('\r\n');
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='psp.ics';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500)});
-  const b=$('#plsend');if(!b)return;const sv=()=>{const a=($('#pladdr').value||'').trim(),ok=!!a&&[...document.querySelectorAll('.sugg .pc')].every(c=>c.checked);b.classList.toggle('disabled',!ok);b.href=ok?wa(T('placeMsg').replace('{a}',a)):'#'};
-  document.querySelectorAll('.sugg .pc').forEach(c=>c.onchange=sv);$('#pladdr').oninput=sv;b.onclick=e=>{if(b.classList.contains('disabled')){e.preventDefault();toast(T('placeNeed'))}}}
+  bindLoc()}
 function crewRow(){const t=TEAM||{},Y=Object.values(t).filter(x=>x&&x.ans==='yes');if(!FILE)return '';
   const fig=(av,g)=>av==='custom'?'<span class="cust sm">🎨</span>':`<img class="px" src="${typeof av==='number'?`../img/mini/${av}.png`:`../img/ow-${g==='f'?'girl':'boy'}.png`}" alt="">`;
   return `<section class="blk crew"><h2>${H('crewT')}</h2><div class="crw"><span class="cm star">${fig(FILE.av,BG)}<small>★ ${esc(BY)}</small></span>${Y.map(x=>`<span class="cm">${fig(x.av,x.g)}<small>${esc(x.n)}</small></span>`).join('')}</div></section>`}
+
+// where: Eyal's home, or another place that must be in Tel Aviv (the search only shows Tel Aviv addresses), with a big TV and room for everyone
+let locEdit=false,locMode=null,locSel=null,locChk=[0,0],locT=null;
+const locOk=()=>locMode==='home'||(locMode==='other'&&!!locSel&&locChk[0]&&locChk[1]);
+function locPick(){return `<div class="locp"><h3>${H('locT')}</h3><p class="muted">${H('locLead')}</p>
+  <button class="locb${locMode==='home'?' on':''}" data-loc="home"><span>🏠</span><b>${H('locHome')}</b><small>${esc((CFG.place&&CFG.place[LANG])||'')}</small></button>
+  <button class="locb${locMode==='other'?' on':''}" data-loc="other"><span>📍</span><b>${H('locOther')}</b><small>${H('locOtherSub')}</small></button>
+  ${locMode==='other'?`<div class="locs"><input id="locq" type="text" maxlength="60" autocomplete="off" placeholder="${esc(T('placePh'))}" value="${esc(locSel?locSel.q||'':'')}"><div id="locres"></div>
+    ${locSel?`<p class="locsel">📍 ${esc(locSel.a)}</p>${['placeC2','placeC3'].map((k,i)=>`<label class="chk"><input type="checkbox" class="lc" data-i="${i}" ${locChk[i]?'checked':''}> ${H(k)}</label>`).join('')}`:''}</div>`:''}
+  ${locMode?`<button class="nextbtn wbtn" id="locok" ${locOk()?'':'disabled'}>${H('locSave')}</button>`:''}</div>`}
+function reloc(){const w=$('.ww');if(!w)return;w.outerHTML=wwBlock();bindWW()}
+async function locSearch(q){const box=$('#locres');if(!box)return;if(q.length<3){box.innerHTML='';return}
+  const u='https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&bounded=1&viewbox=34.74,32.15,34.86,32.02&accept-language='+(LANG==='he'?'he':'en')+'&q='+encodeURIComponent(q);
+  let r=[];try{r=await (await fetch(u)).json()}catch(e){}if(!Array.isArray(r))r=[];
+  const L=r.filter(x=>{const a=x.address||{};return /תל[\s־-]?אביב|Tel[\s-]?Aviv/i.test([a.city,a.town,a.municipality,a.county].join(' '))}).map(x=>{const a=x.address||{},st=[a.road||a.pedestrian||a.footway||x.name,a.house_number].filter(Boolean).join(' ');
+    return {a:(st||x.name||'')+(LANG==='he'?', תל אביב':', Tel Aviv'),lat:+x.lat,lon:+x.lon,q}}).filter((x,i,A)=>x.a.length>10&&A.findIndex(y=>y.a===x.a)===i).slice(0,6);
+  if(!$('#locres'))return;$('#locres').innerHTML=L.length?L.map((x,i)=>`<button class="locr" data-i="${i}">${esc(x.a)}</button>`).join(''):`<p class="muted">${H('locNone')}</p>`;
+  document.querySelectorAll('.locr').forEach(b=>b.onclick=()=>{locSel=L[+b.dataset.i];sfx('a',.4);reloc()})}
+function bindLoc(){$('#locchg')?.addEventListener('click',()=>{locEdit=true;locMode=null;locSel=null;reloc()});
+  document.querySelectorAll('[data-loc]').forEach(b=>b.onclick=()=>{locMode=b.dataset.loc;sfx('a',.4);reloc();if(locMode==='other')setTimeout(()=>$('#locq')?.focus(),50)});
+  const q=$('#locq');if(q)q.oninput=()=>{clearTimeout(locT);locSel=null;$('.locsel')?.remove();document.querySelectorAll('.locs .chk').forEach(x=>x.remove());const ok=$('#locok');if(ok)ok.disabled=true;locT=setTimeout(()=>locSearch(q.value.trim()),700)};
+  document.querySelectorAll('.lc').forEach(c=>c.onchange=()=>{locChk[+c.dataset.i]=c.checked?1:0;const ok=$('#locok');if(ok)ok.disabled=!locOk()});
+  $('#locok')?.addEventListener('click',()=>{if(!locOk())return;const loc=locMode==='home'?{a:(CFG.place&&CFG.place[LANG])||'',home:1}:{a:locSel.a,lat:locSel.lat,lon:locSel.lon};
+    FILE.loc=loc;dbSubject({loc});locEdit=false;locMode=null;locSel=null;locChk=[0,0];sfx('caught',.6);toast(T('locSaved'));$('#pg').innerHTML=pHub();bindHub()})}
+
+// ---------- a trial invitation (🧪, opened from Oak's Lab): made-up friends answer by themselves, and nothing is really sent ----------
+const TEST=()=>!!(FILE&&FILE.test);
+const FAKE={he:[['רייצ׳ל','f'],['רוס','m'],['מוניקה','f'],['צ׳נדלר','m'],['ג׳ואי','m'],['פיבי','f']],en:[['Rachel','f'],['Ross','m'],['Monica','f'],['Chandler','m'],['Joey','m'],['Phoebe','f']]};
+const fakeBase=Math.floor(Math.random()*MINI_N);
+function fakeFriends(){const have=new Set(party().map(f=>f.n)),add=FAKE[LANG==='en'?'en':'he'].filter(([n])=>!have.has(n));
+  add.forEach(([n,g],i)=>{const f={n,g,k:rid(8),...(i===4?{r:1}:{})};party().push(f);dbRoster(f,'inv')});save();toast(T('fakeAdded'));
+  add.forEach(([n],i)=>setTimeout(()=>fakeAnswer(n,i),4000+i*7000+Math.random()*4000))}
+async function fakeAnswer(n,i){const f=party().find(x=>x.n===n);if(!f)return;const db=await dbReady;if(!db||!mem.iid)return;const D=(FILE&&FILE.dates)||[],no=i===5;
+  try{await db.doc('invites/'+mem.iid).set({team:{[f.k]:{n:f.n,g:f.g,ans:no?'no':'yes',r:f.r?1:0,av:no?null:(fakeBase+i*11)%MINI_N,d:f.r||no?[]:D.filter(()=>Math.random()<.7),at:now()}}},{merge:true})}catch(e){}}
+document.addEventListener('click',e=>{if(!TEST())return;const a=e.target.closest('a[href*="wa.me"],#sshare');if(!a)return;e.preventDefault();e.stopPropagation();
+  if(a.id==='swa'||a.id==='sshare'){mem.sentAll=1;save()}toast(T('testNoSend'))},true);
+function testBar(){document.body.classList.toggle('testm',TEST());if(TEST()&&!$('#testbar')){const d=document.createElement('div');d.id='testbar';d.textContent=T('testBar');document.body.appendChild(d)}}
+
+// ---------- the evening itself: the same link leads into it, and afterwards shows the filled Pokédex entry ----------
+let EVE=null,eveUn=null;
+function watchEve(){if(eveUn||!FILE||!FILE.room)return;eveUn=1;dbReady.then(db=>{if(!db)return;eveUn=db.doc('state/'+FILE.room).onSnapshot(d=>{EVE=d.exists?d.data():null;const cur=PAGES()[page];if(scene==='letter'&&cur&&cur[0]==='hub'&&!$('.locp')){$('#pg').innerHTML=pHub();bindHub()}},()=>{})})}
+function eveBlock(){if(!FILE||!FILE.room||(EVE&&EVE.revealed))return '';const base=location.pathname.replace(/invite\/.*$/,''),nm=encodeURIComponent(ROLE==='s'?NAME:NAME);
+  if(REMOTE)return `<section class="blk eveb"><h2>${H('eveRemoteT')}</h2><p>${H('eveRemote')}</p><a class="nextbtn wbtn glow" href="${base}?n=${nm}#remote=${esc(FILE.room)}">${H('eveRemoteBtn')}</a></section>`;
+  const s=evDate();if(s&&cdText()!==T('cdToday')&&s>new Date())return '';
+  return `<section class="blk eveb"><h2>${H('eveT')}</h2><a class="nextbtn wbtn glow" href="${base}?n=${nm}#r=${esc(FILE.room)}">${H('eveBtn')}</a></section>`}
+function dexDone(){const r=EVE&&EVE.revealed&&EVE.result;if(!r)return '';const sd=r.spriteData||'',src=sd?(/^(data:|https?:)/.test(sd)?sd:'../'+sd):'',ty=Array.isArray(r.types)?r.types.join(' / '):String(r.types||'');
+  return `<section class="dex done"><div class="dexscr"><div class="dexsil">${src?`<img src="${src}" alt="">`:'★'}</div><div class="dexinfo"><b class="dno">PSP</b><b class="dnm">${esc(r.finalName||'')}</b>${ty?`<span>${H('dexType')}: ${esc(ty)}</span>`:''}<span>${esc(ROLE==='s'?NAME:BY)}</span></div></div><p class="dexdesc">${H('dexDoneT')}</p></section>`}
 
 function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],tiles=[];
   const tile=(k,ic,sub,done)=>tiles.push(`<button class="hubt${done?' done':''}" data-go="${k}"><span class="hi">${ic}</span><b>${H('tab_'+k)}</b><small>${esc(sub)}</small></button>`);
@@ -920,9 +979,10 @@ function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
     tile('team',`<span class="ball" style="--s:30px;display:block"></span>`,P.length?`${yes.length}/${P.length} ✓`:T('hubPick'),P.length>=4&&yes.length===P.length)}
   return tiles.join('')}
 function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
-  return `<p class="savedtag">${H('saved')}</p>${ptitle(ROLE==='s'?'ckTitle':'f_hubTitle')}
-  <div class="hubg">${hubTiles()}</div>
-  ${wwBlock()}${ROLE==='f'?crewRow():''}
+  const pickFirst=ROLE==='s'&&FILE&&!FILE.loc;
+  return `<p class="savedtag">${H('saved')}</p>${ptitle(ROLE==='s'?'ckTitle':'f_hubTitle')}${eveBlock()}${dexDone()}
+  ${pickFirst?wwBlock():''}<div class="hubg">${hubTiles()}</div>
+  ${pickFirst?'':wwBlock()}${ROLE==='f'?crewRow():''}
   ${ROLE==='s'?`<section class="blk">${checklistHTML()}</section>`:`<section class="blk"><ol class="todo">${(TXR('todo')||[]).filter(x=>!x.go).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol></section>`}
   <div class="hubl">${ROLE==='s'?`<button class="ghostbtn" data-go="route">🗺 ${H('routeTitle')}</button>`:''}<button class="ghostbtn" data-go="letter">✉ ${H('hubLetter')}</button></div>
   <button class="linkbtn" id="chg">${H('changeAnswer')}</button>`}

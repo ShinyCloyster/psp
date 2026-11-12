@@ -69,6 +69,21 @@ h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;l
 .wrap h1{font-size:32px}.wrap h2{font-size:24px}.wrap h3{font-size:19px}
 p{margin:0}
 .muted{color:var(--mist)}
+.lab{gap:14px}.labhead{display:flex;align-items:center;gap:12px}.labhead img{height:84px;image-rendering:pixelated}.labhead h1{font-size:30px}.labhead p{margin:2px 0 0;font-size:14px}
+.labtabs{display:flex;gap:6px;background:var(--night2);border:1px solid var(--line);border-radius:14px;padding:5px;position:sticky;top:6px;z-index:5}
+.labtab{flex:1;border:0;background:transparent;color:var(--mist);border-radius:10px;padding:10px 4px;font:500 15px var(--body);display:flex;align-items:center;justify-content:center;gap:6px}
+.labtab small{font-size:12px;background:var(--night3);border-radius:999px;padding:1px 7px}.labtab.on{background:var(--gold);color:#1B1A12;font-weight:700}.labtab.on small{background:rgba(0,0,0,.12)}
+.labnew{width:100%}.labempty{color:var(--mist);text-align:center;font-size:14px;margin:18px 0}.labnote{margin:0;font-size:14px;color:var(--mist);background:var(--night2);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+.labh{font-size:18px;color:var(--mist);margin:6px 0 -4px}.lab-l{font-weight:700;font-size:15px;margin:4px 0 -6px}.labsm{font-size:13px}.labcode{font:400 16px var(--pixel);color:var(--gold);direction:ltr}
+.labo{min-height:0!important;padding:8px 14px!important;flex-direction:row!important}
+.labdate{flex:1 1 150px;min-height:44px;font:inherit;font-size:16px;cursor:pointer;background:var(--night3);border:1px solid var(--line);border-radius:10px;color:var(--cream);padding:8px 10px;color-scheme:dark}
+.labtime{width:auto!important;min-height:44px;font-size:16px}
+.ivn{font-family:var(--display);font-size:22px;font-weight:400}.ivsteps{display:flex;flex-wrap:wrap;gap:6px}
+.ivs{font-size:12px;border-radius:999px;padding:3px 9px;background:var(--night3);color:var(--mist);border:1px solid var(--line)}.ivs.ok{background:rgba(91,196,138,.16);color:#8EE0B0;border-color:rgba(91,196,138,.5)}.ivs small{opacity:.85}
+.ivnew{border-color:var(--gold)}.labdone{display:flex;flex-direction:column;gap:8px;background:rgba(242,201,76,.1);border-radius:12px;padding:10px}
+img[src*="img/mini/"]{image-rendering:pixelated}
+.lb-dn{position:absolute;top:-40px;left:50%;width:102px;height:90px;margin-left:-51px;background:url(invite/img/dn-mail.webp) 0 0 no-repeat;image-rendering:pixelated;zoom:1.8;animation:lbdn 2.4s ease-out both}
+@keyframes lbdn{0%{transform:translateY(-500px) rotate(-8deg)}70%{transform:translateY(20px)}100%{transform:none}}
 .card{background:var(--night2);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
 .btn{background:var(--gold);color:#1B1A12;border:0;border-radius:12px;padding:12px 18px;font-weight:700;font-size:16px}
 .btn[disabled]{opacity:.4;cursor:default}
@@ -815,7 +830,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794481268';
+const BUILDV='1794497703';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -853,7 +868,7 @@ const AVSCALE={doron:1.18};
 // no avatar? give them a trainer from the sprite bank: by name when it is one of the characters, else a stable pick per person, never twice in a room
 const DEF_M=['red','brock','lance','falkner','bugsy','morty','koga','ltsurge','blaine','pryce','bruno','ash'],DEF_F=['misty','erika','whitney','jasmine','karen','valerie','mom-johto'];
 const DEF_NAME={'אש':'ash','ash':'ash','ברוק':'brock','brock':'brock','מיסטי':'misty','misty':'misty','רד':'red','red':'red'};
-function defSprite(p){if(!p)return 'img/tr-red.webp';const nm=String(p.name||'').trim().toLowerCase();if(DEF_NAME[nm])return 'img/tr-'+DEF_NAME[nm]+'.webp';
+function defSprite(p){if(!p)return 'img/tr-red.webp';const ia=S.state?.pre?.av?.[String(p.name||'').trim()];if(typeof ia==='number')return 'img/mini/'+ia+'.png';const nm=String(p.name||'').trim().toLowerCase();if(DEF_NAME[nm])return 'img/tr-'+DEF_NAME[nm]+'.webp';
   const key=JSON.stringify(roster().map(x=>x.id+(genderOf(x)||'')));if(S.defKey!==key){S.defKey=key;S.defMap={};const used=new Set(roster().map(x=>DEF_NAME[String(x.name||'').trim().toLowerCase()]).filter(Boolean));
     const nx=(pool,seed)=>{const free=pool.filter(k=>!used.has(k));const k=(free.length?free:pool)[seed%(free.length||pool.length)];used.add(k);return k};
     roster().forEach((x,i)=>{if(DEF_NAME[String(x.name||'').trim().toLowerCase()])return;let h=0;for(const c of String(x.id||x.name))h=(h*31+c.charCodeAt(0))>>>0;S.defMap[x.id]=nx(genderOf(x)==='f'?DEF_F:DEF_M,h)})}
@@ -937,6 +952,8 @@ function globalSubs(){
   raw.collection('stage').orderBy(FP).startAt('card-').endAt('card-\uf8ff').onSnapshot(q=>{S.cardDocs={};q.docs.forEach(d=>{S.cardDocs[d.id.slice(5)]=clone(d.data())});const was=S.cardsLoaded;S.cardsLoaded=true;if(!isScreen()&&(!was||hashParts().mode==='card'))render();else if(isScreen())renderPanel()},()=>{});
   if((isScreen()||hashParts().mode==='admin')&&!ROOM.code)raw.collection('state').onSnapshot(q=>{S.roomList=q.docs.filter(d=>d.id!=='rooms').map(d=>({code:d.id==='main'?LEGACY_ROOM:d.id,...clone(d.data())}));render()},()=>{});
 }
+// a phone opened from the invitation (?n=<name>): that name is picked by itself, once
+function autoPickName(){const qn=(new URLSearchParams(location.search).get('n')||'').trim();if(!qn||S.me||S.qnDone)return '';const pp=inRoom().find(p=>String(p.name||'').trim()===qn&&(!S.joined?.has(p.id)||S.joinedDev?.[p.id]==='bot'));if(pp){S.qnDone=1;setTimeout(()=>{S.me=pp.id;store.set('psp-me',S.me);store.set('psp-eve',String(S.state?.eve||''));S.view='';S.joinSent=false;render()},0)}return ''}
 function joinView(){
   const L=myRooms();
   const balls=['poke-ball','great-ball','ultra-ball','master-ball'].map(k=>`<img src="img/it-${k}.webp" alt="" style="width:44px;height:44px;image-rendering:pixelated">`).join('');
@@ -966,52 +983,71 @@ const INV_PLACE='רש״י 9, תל אביב',INV_HOURS=['17:00','17:30','18:00','
 function invLink(v,id){const q=new URLSearchParams();q.set('to',v.subject||'');q.set('g',v.g==='f'?'f':'m');q.set('i',id);if(v.place)q.set('place',v.place);if(v.ps)q.set('ps',v.ps);
   return location.origin+location.pathname.replace(/index\.html$/,'')+'invite/'+(v.lang==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
 function invMsg(v,id){return (v.lang==='en'?`Hi ${v.subject}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:`:`היי ${v.subject}! דרגונייט בדרך ${v.g==='f'?'אלייך':'אליך'} עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:`)+'\n'+invLink(v,id)}
-function invitesCard(){
-  if(!S.invSub&&S.db?.raw){S.invSub=true;S.db.raw.collection('invites').onSnapshot(q=>{S.invites=q.docs.map(d=>({id:d.id,...clone(d.data())})).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));if(isScreen()&&!ROOM.code)roomsView()},()=>{})}
-  const N=S.ni||(S.ni={n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'}),L=S.invites||[];
-  const form=`<div style="display:flex;flex-direction:column;gap:8px">
-    <input type="text" id="ni-n" placeholder="שם הנבדק" value="${esc(N.n)}" oninput="S.ni.n=this.value">
-    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="np-o ${N.g==='m'?'on':''}" data-nig="m" style="min-height:0;padding:8px 14px">בן ♂</button><button class="np-o ${N.g==='f'?'on':''}" data-nig="f" style="min-height:0;padding:8px 14px">בת ♀</button>
-      <button class="np-o ${N.lang==='he'?'on':''}" data-nil="he" style="min-height:0;padding:8px 14px">עברית</button><button class="np-o ${N.lang==='en'?'on':''}" data-nil="en" style="min-height:0;padding:8px 14px">English</button></div>
-    <p class="muted" style="margin:4px 0 0;font-size:13px">מועדים: בוחרים יום ושעה, ולוחצים "הוסף". אפשר כמה.</p>
-    <div class="row" style="gap:6px;flex-wrap:wrap;align-items:stretch"><input type="date" id="ni-d" value="${esc(N.day||'')}" onclick="try{this.showPicker()}catch(e){}" onchange="S.ni.day=this.value" style="flex:1 1 150px;min-height:44px;font-size:16px;cursor:pointer" title="📅 בחר יום"><select id="ni-t" onchange="S.ni.time=this.value" style="min-height:44px;font-size:16px">${INV_HOURS.map(h=>`<option ${h===(N.time||'20:00')?'selected':''}>${h}</option>`).join('')}</select><button class="btn small" data-niadd="1">+ הוסף מועד</button></div>
-    <div class="row" style="gap:6px;flex-wrap:wrap">${N.dates.length?N.dates.map(d=>`<button class="btn ghost small" data-nidel="${d}">${invFmt(d)} ✕</button>`).join(''):'<span class="muted" style="font-size:13px">המועדים שאתה מאשר. כל מוזמן יסמן מה מתאים לו.</span>'}</div>
-    <input type="text" id="ni-place" placeholder="איפה (ריק = רש״י 9, תל אביב)" value="${esc(N.place)}" oninput="S.ni.place=this.value">
-    <input type="text" id="ni-ps" placeholder="נ.ב. אישי (לא חובה)" value="${esc(N.ps)}" oninput="S.ni.ps=this.value">
-    <button class="btn" data-act="newinvite">✉️ פתח הזמנה</button>
-    ${S.niDone?`<div class="card" style="margin:0;background:rgba(242,201,76,.12)"><p style="margin:0 0 6px;font-weight:700">ההזמנה של ${esc(S.niDone.subject)} מוכנה</p><p class="muted" style="margin:0 0 8px;font-size:12px;direction:ltr;word-break:break-all">${esc(decodeURI(invLink(S.niDone,S.niDone.id)))}</p>
-      <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" style="text-decoration:none;background:#25D366;color:#0b2b17" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(invMsg(S.niDone,S.niDone.id))}">לשלוח בוואטסאפ</a><button class="btn ghost small" data-copy="${esc(invMsg(S.niDone,S.niDone.id))}">להעתיק</button></div></div>`:''}</div>`;
-  return `<div class="card"><p class="eyebrow" style="margin:0">INVITATIONS</p><h2 style="margin:2px 0 4px">הזמנות</h2><p class="muted" style="margin:0 0 10px;font-size:13px">פותחים הזמנה עם המועדים שאתה מאשר. הנבדק והחברים מסמנים מה מתאים להם, ואתה קובע.</p>${form}
-   ${L.map(v=>{const T=Object.values(v.team||{}).filter(x=>x&&x.ans!=='removed'),yes=T.filter(x=>x.ans==='yes'),here=yes.filter(x=>!x.r),D=v.dates||[];
-     const cnt=d=>((v.sd||[]).includes(d)?1:0)+here.filter(x=>(x.d||[]).includes(d)).length,tot=1+here.length;
-     return `<div style="border-top:1px solid var(--line);padding:10px 0;margin-top:10px">
-     <div class="row" style="gap:8px"><b class="grow">${esc(v.subject||'')} ${v.g==='f'?'♀':'♂'}${v.lang==='en'?' · English':''}</b><span class="muted" style="font-size:13px">${v.ans==='yes'?'✓ אמר כן':v.ans==='open'?'נשלחה':'עוד לא'} · ${String(v.at||'').slice(0,10)}</span></div>
-     <p class="muted" style="margin:4px 0 8px;font-size:14px">${T.length?T.map(x=>`${esc(x.n||'')} ${x.ans==='yes'?'✓':'…'}${x.r?' (מרחוק)':''}`).join(' · '):'עוד אף אחד מהצוות לא ענה'}${T.length?` (${yes.length}/${T.length} אישרו)`:''}</p>
-     ${D.length?`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px">${D.map(d=>{const c=cnt(d),full=c===tot&&tot>1;return `<button class="btn ${v.date===d?'':'ghost'} small" data-invset="${esc(v.id)}|${d}" title="לקבוע את המועד" style="${full&&v.date!==d?'border-color:var(--gold);color:var(--gold)':''}">${v.date===d?'🏆 ':''}${invFmt(d)} · ${c}/${tot}</button>`}).join('')}</div>${v.date?`<p class="muted" style="margin:0 0 8px;font-size:13px">נקבע: ${invFmt(v.date)}. לחיצה על מועד אחר תחליף.</p>`:'<p class="muted" style="margin:0 0 8px;font-size:13px">לחיצה על מועד קובעת אותו לכולם.</p>'}`:''}
-     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost small" data-copy="${esc(invMsg(v,v.id))}">קישור לנבדק</button><button class="btn ghost small" data-inv="${esc(v.id)}">לחדר חדש עם השמות</button><button class="btn ghost small" data-invdel="${esc(v.id)}">מחיקה</button></div></div>`}).join('')}</div>`}
+function invSub(){
+  if(!S.invSub&&S.db?.raw){S.invSub=true;S.db.raw.collection('invites').onSnapshot(q=>{S.invites=q.docs.map(d=>({id:d.id,...clone(d.data())})).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));if(isScreen()&&!ROOM.code)roomsView()},()=>{})}}
+function invForm(){const N=S.ni;
+  return `<div class="card"><div class="row"><h2 class="grow" style="margin:0">${N.test?'🧪 הזמנת ניסוי':'הזמנה חדשה'}</h2><button class="x" data-niclose="1" aria-label="סגירה">✕</button></div>
+    <label class="lab-l" for="ni-n">מי הנבדק?</label><input type="text" id="ni-n" placeholder="שם" value="${esc(N.n)}" oninput="S.ni.n=this.value">
+    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="np-o labo ${N.g==='m'?'on':''}" data-nig="m">בן ♂</button><button class="np-o labo ${N.g==='f'?'on':''}" data-nig="f">בת ♀</button><span class="grow"></span>
+      <button class="np-o labo ${N.lang==='he'?'on':''}" data-nil="he">עברית</button><button class="np-o labo ${N.lang==='en'?'on':''}" data-nil="en">English</button></div>
+    <label class="lab-l" for="ni-d">מועדים שאתה מאשר</label><p class="muted labsm">בוחרים יום ושעה, ולוחצים "הוסף". אפשר כמה, וכל מוזמן יסמן מה מתאים לו.</p>
+    <div class="row" style="gap:6px;flex-wrap:wrap;align-items:stretch"><input type="date" id="ni-d" class="labdate" value="${esc(N.day||'')}" onclick="try{this.showPicker()}catch(e){}" onchange="S.ni.day=this.value">
+      <select id="ni-t" class="labtime" onchange="S.ni.time=this.value">${INV_HOURS.map(h=>`<option ${h===(N.time||'20:00')?'selected':''}>${h}</option>`).join('')}</select><button class="btn small" data-niadd="1">+ הוסף</button></div>
+    ${N.dates.length?`<div class="row" style="gap:6px;flex-wrap:wrap">${N.dates.map(d=>`<button class="btn ghost small" data-nidel="${d}">${invFmt(d)} ✕</button>`).join('')}</div>`:''}
+    <label class="lab-l" for="ni-place">איפה</label><input type="text" id="ni-place" value="${esc(N.place)}" oninput="S.ni.place=this.value"><p class="muted labsm">הנבדק יכול להציע מקום אחר בתל אביב, עם מסך גדול ומקום לכולם.</p>
+    <label class="lab-l" for="ni-ps">נ.ב. אישי</label><input type="text" id="ni-ps" placeholder="משפט קצר ממך, בסוף המכתב" value="${esc(N.ps)}" oninput="S.ni.ps=this.value">
+    <button class="btn" data-act="newinvite">${N.test?'🧪 פתיחת הזמנת ניסוי':'✉️ פתיחת ההזמנה'}</button></div>`}
+function invCard(v){const T=Object.values(v.team||{}).filter(x=>x&&x.ans!=='removed'),yes=T.filter(x=>x.ans==='yes'),here=yes.filter(x=>!x.r),D=v.dates||[];
+  const cnt=d=>((v.sd||[]).includes(d)?1:0)+here.filter(x=>(x.d||[]).includes(d)).length,tot=1+here.length;
+  const st=[['נשלחה',1],['אמר כן',v.ans==='yes'],['מקום',!!v.loc],['צוות',yes.length>=4,T.length?yes.length+'/'+T.length:''],['תאריך',!!v.date],['ערב',!!v.room]];
+  const done=S.niDone&&S.niDone.id===v.id;
+  return `<div class="card ivc${done?' ivnew':''}"><div class="row" style="gap:8px"><b class="grow ivn">${esc(v.subject||'')} ${v.g==='f'?'♀':'♂'}${v.lang==='en'?' · EN':''}</b>${v.test?'<span class="chip">🧪 ניסוי</span>':''}<span class="muted labsm">${String(v.at||'').slice(5,10).split('-').reverse().join('.')}</span></div>
+   <div class="ivsteps">${st.map(([n,ok,x])=>`<span class="ivs${ok?' ok':''}">${ok?'✓':'○'} ${n}${x?` <small>${x}</small>`:''}</span>`).join('')}</div>
+   ${T.length?`<p class="labsm" style="margin:0">${T.map(x=>`${esc(x.n||'')} ${x.ans==='yes'?'✓':x.ans==='no'?'✕':'…'}${x.r?' (מרחוק)':''}`).join(' · ')}</p>`:''}
+   <p class="labsm" style="margin:0">📍 ${v.loc?esc(v.loc.a||''):`${esc(v.place||INV_PLACE)} <span class="muted">(עוד לא אושר)</span>`}</p>
+   ${D.length?`<div class="row" style="gap:6px;flex-wrap:wrap">${D.map(d=>{const c=cnt(d),full=c===tot&&tot>1;return `<button class="btn ${v.date===d?'':'ghost'} small" data-invset="${esc(v.id)}|${d}" title="לקבוע את המועד" style="${full&&v.date!==d?'border-color:var(--gold);color:var(--gold)':''}">${v.date===d?'🏆 ':''}${invFmt(d)} · ${c}/${tot}</button>`}).join('')}</div><p class="muted labsm" style="margin:0">${v.date?'נקבע. לחיצה על מועד אחר תחליף.':'לחיצה על מועד קובעת אותו לכולם.'}</p>`:''}
+   ${done?`<div class="labdone"><b>ההזמנה מוכנה. לשלוח ל${esc(v.subject)}:</b><div class="row" style="gap:8px;flex-wrap:wrap">${v.test?'':`<a class="btn small" style="text-decoration:none;background:#25D366;color:#0b2b17" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(invMsg(v,v.id))}">בוואטסאפ</a>`}<button class="btn ghost small" data-copy="${esc(invMsg(v,v.id))}">להעתיק</button></div></div>`:''}
+   <div class="row" style="gap:8px;flex-wrap:wrap">${v.room?`<a class="btn small" href="#screen=${esc(v.room)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">🎮 הערב · ${esc(v.room)}</a>`:`<button class="btn small" data-inv="${esc(v.id)}">🎮 פתיחת הערב</button>`}
+     <a class="btn ghost small" href="${esc(invLink(v,v.id))}" target="_blank" rel="noopener" style="text-decoration:none">לפתוח כנבדק</a><button class="btn ghost small" data-copy="${esc(invMsg(v,v.id))}">קישור לנבדק</button><button class="btn ghost small" data-invdel="${esc(v.id)}">מחיקה</button></div></div>`}
 function roomsView(){
-  const app=$('#app');app.hidden=false;
+  const app=$('#app');app.hidden=false;invSub();S.ni=S.ni||{n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'};
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
   if(!S.canEdit){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>המסך הגדול</h1><p class="muted">את הערב מריץ המארח. התחברו עם חשבון ה־Google של המארח כדי להמשיך. משתתפים: אותו קישור בלי ‎#screen.</p><button class="btn" onclick="hostLogin()">התחברות כמארח עם Google</button></div>`;return}
   const L=(S.roomList||[]).slice().sort((a,b)=>(b.eve||0)-(a.eve||0));
   const st=r=>(r.status==='closed'||(r.code===LEGACY_ROOM&&r.status!=='open'))?'נסגר · תוצאות זמינות':r.revealed?'אחרי החשיפה':r.open?'ערב פעיל':'פתוח, טרם התחיל';
-  app.innerHTML=`<div class="col"><p class="eyebrow">PSP · ROOMS</p><h1>החדרים שלך</h1>
-  ${invitesCard()}
-  <div class="card np"><p class="eyebrow" style="margin:0">NEW ROOM</p><h2 style="margin:2px 0 12px">חדר חדש</h2>
-   <input type="text" id="nr-name" class="np-name" placeholder="על מי הערב?" value="${esc(S.nrn||'')}" oninput="S.nrn=this.value">
+  const tab=S.labTab||'inv',I=S.invites||[],invs=I.filter(v=>!v.test),tinv=I.filter(v=>v.test),evs=L.filter(r=>!r.rehearsal),tevs=L.filter(r=>r.rehearsal);
+  const roomForm=()=>`  <div class="card np"><div class="row"><h2 class="grow" style="margin:0">${S.nrr?'🧪 ערב ניסוי':'ערב חדש'}</h2><button class="x" data-nrclose="1" aria-label="סגירה">✕</button></div>
+   ${S.nrInv?`<p class="labnote">✉️ מההזמנה של ${esc(S.nrn||'')}: השמות, הדמויות והמאמנים עוברים לערב.</p>`:''}
+   <label class="lab-l" for="nr-name">על מי הערב?</label>
+   <input type="text" id="nr-name" class="np-name" placeholder="שם הנבדק" value="${esc(S.nrn||'')}" oninput="S.nrn=this.value">
    <div class="np-opts"><div class="np-seg"><button class="np-o ${S.nrg!=='f'?'on':''}" data-nrg="m" aria-label="בן"><img src="img/ow-boy.png" alt=""><span class="np-sym" style="color:#6390F0">♂</span></button><button class="np-o ${S.nrg==='f'?'on':''}" data-nrg="f" aria-label="בת"><img src="img/ow-girl.png" alt=""><span class="np-sym" style="color:#F95587">♀</span></button></div>
     <div class="np-seg"><button class="np-o ${S.nrl!=='en'?'on':''}" data-nrl="he">${FLAG_IL}<span>עברית</span></button><button class="np-o ${S.nrl==='en'?'on':''}" data-nrl="en">${FLAG_UK}<span>English</span></button></div></div>
-   <div class="np-host"><input type="text" id="nr-host" placeholder="מי מנחה? (אוק יקרא לו הנכד שלו)" value="${esc(S.nrh||'')}" oninput="S.nrh=this.value"><button class="np-o ${S.nrhg!=='f'?'on':''}" data-nrhg="m" aria-label="מנחה"><span class="np-sym" style="position:static;color:#6390F0">♂</span></button><button class="np-o ${S.nrhg==='f'?'on':''}" data-nrhg="f" aria-label="מנחה"><span class="np-sym" style="position:static;color:#F95587">♀</span></button></div>
+   <label class="lab-l" for="nr-host">מי מנחה את הערב?</label><div class="np-host"><input type="text" id="nr-host" placeholder="שם המנחה" value="${esc(S.nrh||'')}" oninput="S.nrh=this.value"><button class="np-o ${S.nrhg!=='f'?'on':''}" data-nrhg="m" aria-label="מנחה"><span class="np-sym" style="position:static;color:#6390F0">♂</span></button><button class="np-o ${S.nrhg==='f'?'on':''}" data-nrhg="f" aria-label="מנחה"><span class="np-sym" style="position:static;color:#F95587">♀</span></button></div>
    <div class="np-cnt"><span>כמה עונים על הנבדק?</span><button class="np-o" data-nrc="-1">−</button><b>${S.nrc||5}</b><button class="np-o" data-nrc="1">+</button></div>
-   <textarea id="nr-names" class="np-names" rows="2" placeholder="השמות שלהם, אם ידועים (לא חובה), מופרדים בפסיק" oninput="S.nrnames=this.value">${esc(S.nrnames||'')}</textarea>
-   <p class="np-h">ארבעת המאמנים <span class="muted" style="font-weight:400">(לא חובה, אפשר גם אחר כך בניהול)</span></p><div class="np-tr">${[0,1,2,3].map(i=>`<input type="text" placeholder="מאמן ${i+1}${i?'':', למשל: צבא'}" value="${esc((S.nrt||[])[i]||'')}" oninput="(S.nrt=S.nrt||[])[${i}]=this.value">`).join('')}</div>
+   <textarea id="nr-names" class="np-names" rows="2" placeholder="השמות שלהם, מופרדים בפסיק" oninput="S.nrnames=this.value">${esc(S.nrnames||'')}</textarea>
+   <p class="np-h">ארבעת המאמנים</p><div class="np-tr">${[0,1,2,3].map(i=>`<input type="text" placeholder="מאמן ${i+1}${i?'':', למשל: צבא'}" value="${esc((S.nrt||[])[i]||'')}" oninput="(S.nrt=S.nrt||[])[${i}]=this.value">`).join('')}</div>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
-   <div class="np-reh"><button class="np-o ${S.nrr?'on':''}" data-nrr="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrr?'☑':'☐'} 🎭 חזרה גנרלית עם בוטים</button>${S.nrr?`<button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrf?'☑':'☐'} ⏩ מצב מהיר</button>`:''}</div>
-   <p class="muted" style="font-size:12px;margin:6px 0 10px">חזרה גנרלית: חדר בדיקה עם 6 בוטים שעונים, משחקים ומדברים לבד. את השקפים מעבירים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
-   <button class="btn np-go" data-act="newroom">${S.nrr?'🎭 פתיחת חדר חזרה גנרלית':'⚡ יצירת חדר'}</button></div>
-  ${L.map(r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span style="font:400 18px var(--pixel);color:var(--gold);direction:ltr">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🎭 חזרה גנרלית'+(r.fast?' ⏩':''):''}</p>
-   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול, תמונות וקבצים</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">העתקת קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`).join('')}</div>`;
+   <div class="np-reh"><button class="np-o ${S.nrr?'on':''}" data-nrr="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrr?'☑':'☐'} 🧪 ערב ניסוי עם בוטים</button>${S.nrr?`<button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrf?'☑':'☐'} ⏩ מצב מהיר</button>`:''}</div>
+   <p class="muted" style="font-size:12px;margin:6px 0 10px">בערב ניסוי 6 בוטים עונים, משחקים ומדברים לבד. מעבירים שקפים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
+   <button class="btn np-go" data-act="newroom">${S.nrr?'🧪 פתיחת ערב ניסוי':'⚡ פתיחת הערב'}</button></div>`;
+  const roomCard=r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span class="labcode">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🧪 ניסוי'+(r.fast?' ⏩':''):''}</p>
+   <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול ותמונות</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length}/4 מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`;
+  const empty=t=>`<p class="labempty">${t}</p>`;
+  const body=tab==='inv'?`${S.niOpen?invForm():`<button class="btn labnew" data-niopen="0">+ הזמנה חדשה</button>`}${invs.map(invCard).join('')||empty('עוד אין הזמנות. כל הזמנה מתחילה כאן, וממשיכה עד הערב עצמו.')}`
+    :tab==='eve'?`${S.nrOpen?roomForm():`<button class="btn labnew" data-nropen="0">+ ערב חדש</button>`}${evs.map(roomCard).join('')||empty('עוד אין ערבים.')}`
+    :`<p class="labnote">🧪 ניסוי הוא הרצה לבדיקה: חברים מדומים עונים לבד, ושום הודעה לא נשלחת באמת.</p>
+     ${S.niOpen?invForm():S.nrOpen?roomForm():`<div class="row" style="gap:8px"><button class="btn labnew grow" data-niopen="1">+ הזמנת ניסוי</button><button class="btn labnew grow" data-nropen="1">+ ערב ניסוי</button></div>`}
+     ${tinv.length?`<h3 class="labh">הזמנות</h3>${tinv.map(invCard).join('')}`:''}${tevs.length?`<h3 class="labh">ערבים</h3>${tevs.map(roomCard).join('')}`:''}${!tinv.length&&!tevs.length?empty('אין ניסויים פתוחים.'):''}`;
+  const cnt={inv:invs.length,eve:evs.length,test:tinv.length+tevs.length};
+  app.innerHTML=`<div class="col lab"><div class="labhead"><img src="img/tr-oak.webp" alt=""><div><h1>המעבדה של אוק</h1><p class="muted">הזמנות, ערבים וניסויים, במקום אחד.</p></div></div>
+  <div class="labtabs">${[['inv','✉️ הזמנות'],['eve','🎮 ערבים'],['test','🧪 ניסויים']].map(([k,nm])=>`<button class="labtab${tab===k?' on':''}" data-labtab="${k}">${nm}<small>${cnt[k]}</small></button>`).join('')}</div>
+  ${body}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.labtab){S.labTab=b.dataset.labtab;roomsView();return}
+    if(b.dataset.niopen){S.niOpen=true;S.nrOpen=false;S.niDone=null;S.ni.test=b.dataset.niopen==='1';roomsView();return}
+    if(b.dataset.niclose){S.niOpen=false;roomsView();return}
+    if(b.dataset.nropen){S.nrOpen=true;S.niOpen=false;S.nrr=b.dataset.nropen==='1';S.nrInv=null;roomsView();return}
+    if(b.dataset.nrclose){S.nrOpen=false;S.nrInv=null;roomsView();return}
     if(b.dataset.nrg){S.nrg=b.dataset.nrg;roomsView();return}
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
     if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
@@ -1021,11 +1057,12 @@ function roomsView(){
     if(b.dataset.niadd){const day=$('#ni-d')?.value,tm=$('#ni-t')?.value||'20:00';if(!day){toast('קודם בוחרים יום');try{$('#ni-d').showPicker()}catch(e){$('#ni-d')?.focus()}return}const d=day+'T'+tm;if(!S.ni.dates.includes(d)){S.ni.dates.push(d);S.ni.dates.sort()}S.ni.day='';roomsView();return}
     if(b.dataset.nidel){S.ni.dates=S.ni.dates.filter(x=>x!==b.dataset.nidel);roomsView();return}
     if(b.dataset.act==='newinvite'){const N=S.ni,n=(N.n||'').trim().slice(0,40);if(!n){toast('מה השם?');return}if(!N.dates.length){toast('צריך לפחות מועד אחד');return}
-      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.place.trim()&&N.place.trim()!==INV_PLACE?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
-      b.disabled=true;try{await S.db.raw.doc('invites/'+id).set(v);S.niDone={...v,id};S.ni={n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'};toast('ההזמנה נפתחה')}catch(e){console.error(e);toast('לא נשמר. האם הודבקו החוקים החדשים בקונסול?')}roomsView();return}
+      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.test?{test:true}:{}),...(N.place.trim()&&N.place.trim()!==INV_PLACE?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
+      b.disabled=true;try{await S.db.raw.doc('invites/'+id).set(v);S.niDone={...v,id};S.niOpen=false;S.ni={n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'};toast('ההזמנה נפתחה')}catch(e){console.error(e);toast('לא נשמר. האם הודבקו החוקים החדשים בקונסול?')}roomsView();return}
     if(b.dataset.invset){const [id,d]=b.dataset.invset.split('|');await S.db.raw.doc('invites/'+id).update({date:d}).catch(()=>toast('לא נשמר'));return}
     if(b.dataset.inv){const v=(S.invites||[]).find(x=>x.id===b.dataset.inv);if(!v)return;const names=Object.values(v.team||{}).filter(x=>x&&x.ans==='yes').map(x=>x.n);
-      S.nrn=v.subject||'';S.nrg=v.g==='f'?'f':'m';S.nrl=v.lang==='en'?'en':'he';S.nrnames=names.join(', ');S.nrc=Math.max(1,Math.min(14,names.length||S.nrc||5));roomsView();window.scrollTo(0,0);toast('הפרטים הועתקו לחדר החדש');return}
+      S.nrn=v.subject||'';S.nrg=v.g==='f'?'f':'m';S.nrl=v.lang==='en'?'en':'he';S.nrnames=names.join(', ');S.nrc=Math.max(1,Math.min(14,names.length||S.nrc||5));
+      S.nrInv=v.id;S.nrr=!!v.test;S.nrOpen=true;S.niOpen=false;S.labTab=v.test?'test':'eve';if(Array.isArray(v.tr))S.nrt=v.tr.map(x=>String(x||'').slice(0,40));roomsView();window.scrollTo(0,0);return}
     if(b.dataset.invdel){if(!confirm('למחוק את ההזמנה של '+((S.invites||[]).find(x=>x.id===b.dataset.invdel)?.subject||'')+'?'))return;await S.db.raw.doc('invites/'+b.dataset.invdel).delete().catch(()=>toast('לא נמחק'));return}
     if(b.dataset.nrhg){S.nrhg=b.dataset.nrhg;roomsView();return}
     if(b.dataset.nrc){S.nrc=Math.max(1,Math.min(14,(S.nrc||5)+(+b.dataset.nrc)));roomsView();return}
@@ -1035,10 +1072,11 @@ function roomsView(){
       const code=tgt.slice(3),r=(S.roomList||[]).find(x=>x.code===code);if(!r)return;const a=new Set(r.skip||[]);a.has(k)?a.delete(k):a.add(k);r.skip=[...a];roomsView();
       await S.db.raw.doc('state/'+(code===LEGACY_ROOM?'main':code)).set({skip:r.skip},{merge:true}).catch(()=>toast('לא נשמר'));return}
     if(b.dataset.copy){const u=b.dataset.copy;(navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('הקישור הועתק')).catch(()=>prompt('הקישור:',u));return}
-    if(b.dataset.act==='newroom'&&S.nrr){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf);return}
+    if(b.dataset.act==='newroom'&&S.nrr){b.disabled=true;await rehearseCreate(($('#nr-name')?.value||'').trim(),S.nrl==='en'?'en':'he',S.nrs||[],S.nrf,invFrom());return}
     if(b.dataset.act==='newroom'){const nm=($('#nr-name')?.value||'').trim();if(!nm){toast('מה השם?');return}
       const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c=Array.from({length:4},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c)||c===LEGACY_ROOM);
-      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null,pre:(()=>{const names=(S.nrnames||'').split(/[,،\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,14);return {n:Math.max(S.nrc||5,names.length),names}})()});
+      b.disabled=true;await S.db.raw.doc('state/'+c).set({subject:nm,gender:S.nrg==='f'?'f':'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang:S.nrl==='en'?'en':'he',skip:S.nrs||[],host:(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null,pre:(()=>{const names=(S.nrnames||'').split(/[,،\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,14),iv=invFrom();return {n:Math.max(S.nrc||5,names.length),names,...(iv?{inv:iv.id,av:iv.av}:{})}})()});
+      if(S.nrInv)await S.db.raw.doc('invites/'+S.nrInv).update({room:c}).catch(()=>{});
       for(const [i,t] of (S.nrt||[]).entries()){const v=String(t||'').trim();if(v)await S.db.raw.doc('setup/'+c+'~asset-tr-'+(i+1)).set({label:v}).catch(()=>{})}
       RAWSTORE.set('psp-lang:'+c,S.nrl==='en'?'en':'he');location.hash='screen='+c;location.reload()}}}
 const hexName=n=>Array.from(String(n)).map(c=>c.charCodeAt(0).toString(16)).join('');
@@ -1251,7 +1289,7 @@ function render(){
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
   if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">${ll(`לא ${esc(person(S.me).name)}? החלפת שם`,`Not ${esc(person(S.me).name)}? Switch name`)}</button>`);
-  if(randLeft())app.querySelector('.col').insertAdjacentHTML('afterbegin',`<button class="btn ghost small" data-act="randfill" style="margin-bottom:10px;border-style:dashed">${ll(`🎲 חזרה גנרלית: לענות בשבילי באקראי (${randLeft()})`,`🎲 Rehearsal: answer for me at random (${randLeft()})`)}</button>`);
+  if(randLeft())app.querySelector('.col').insertAdjacentHTML('afterbegin',`<button class="btn ghost small" data-act="randfill" style="margin-bottom:10px;border-style:dashed">${ll(`🎲 ניסוי: לענות בשבילי באקראי (${randLeft()})`,`🎲 Rehearsal: answer for me at random (${randLeft()})`)}</button>`);
   if(!S.remoteMode&&S.state&&person(S.me)&&!person(S.me).remote&&!(S.intro?.live)&&/^(tr|b|r)\d$/.test(S.deck?.seg||''))app.insertAdjacentHTML('beforeend',`<button class="saybtn" data-act="say">💬</button>`);
   if(!S.remoteMode&&S.state&&S.deck?.t0&&!(S.intro?.live)&&!isPresenter(person(S.me))&&person(S.me)?.role==='self')app.insertAdjacentHTML('beforeend',`<div class="rcmini tonly"><span class="rmn"></span><span class="rml"></span><b class="rmt" style="font:400 15px var(--pixel)"></b></div>`);
   if(!S.remoteMode&&S.state&&!app.querySelector('.rcbig')&&isPresenter(person(S.me))&&!(S.intro?.live))app.insertAdjacentHTML('beforeend',`<div class="rcmini"><button data-act="ctlprev">▶</button><span class="rcl"></span><b class="rmt" style="font:400 13px var(--pixel)"></b><button data-act="ctlnext">◀</button></div>`);
@@ -1663,7 +1701,7 @@ function pickView0(){
   <div class="card center"><div class="ball wobble" style="--s:90px"></div><p style="margin:16px 0 0">${ll(`${esc(subj)} ${gs('מגדיר','מגדירה')} עכשיו את המשתתפים והאחוזים.<br>ברגע ${gs('שהוא יסיים','שהיא תסיים')}, השם שלך יופיע כאן לבד ופרופסור אוק יתחיל.`,`${esc(subj)} is setting up the participants and weights right now.<br>As soon as that's done, your name will appear here and Professor Oak will begin.`)}</p></div>
   ${S.joined?.has('subj')?'':`<p class="muted center" style="margin-top:30px">${ll(`רק ${esc(subj)}:`,`Only ${esc(subj)}:`)}</p><div class="names"><button class="name" data-pick="subj">${ll(`אני ${esc(subj)}<small>${gs('הנבדק','הנבדקת')}</small>`,`I'm ${esc(subj)}<small>the subject</small>`)}</button></div>`}`;
   return `<p class="eyebrow">PSP · WHO'S THAT TRAINER?</p>${ll(`<h1>מי אתה?</h1>`,`<h1>Who are you?</h1>`)}<p class="muted">${ll(`בוחרים את השם שלך פעם אחת. הטלפון יזכור.`,`Pick your name once. The phone will remember.`)}</p>
-  <div class="names">${[...(roomClosed()?roster().filter(p=>{const a=answersOf(p.id);return a&&Object.keys(a).length}):inRoom())].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const bt=isRehearsal()&&S.joinedDev?.[p.id]==='bot',t=S.joined?.has(p.id)&&!bt;return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${bt?ll('בוט. לחיצה תיקח את מקומו','a bot. Tap to take over'):ll(`${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}`,`${t?'already in':p.role==='self'?'the subject':esc(p.relation||ROLES[p.role]||'')}`)}</small></button>`}).join('')}</div>`;
+  ${autoPickName()}<div class="names">${[...(roomClosed()?roster().filter(p=>{const a=answersOf(p.id);return a&&Object.keys(a).length}):inRoom())].sort((a,b)=>(S.joined?.has(a.id)?1:0)-(S.joined?.has(b.id)?1:0)).map(p=>{const bt=isRehearsal()&&S.joinedDev?.[p.id]==='bot',t=S.joined?.has(p.id)&&!bt;return `<button class="name${t?' taken':''}" data-pick="${esc(p.id)}">${esc(p.name)}<small>${bt?ll('בוט. לחיצה תיקח את מקומו','a bot. Tap to take over'):ll(`${t?'כבר נכנס':p.role==='self'?gs('הנבדק','הנבדקת'):esc(p.relation||ROLES[p.role]||'')}`,`${t?'already in':p.role==='self'?'the subject':esc(p.relation||ROLES[p.role]||'')}`)}</small></button>`}).join('')}</div>`;
 }
 
 // ----- subject setup -----
@@ -2187,7 +2225,7 @@ function renderLobby(){
   const box=$('#lobby');if(!box)return;S.lobbyShown=S.lobbyShown||new Set();
   const j=S.joined||new Set(),ppl=inRoom().filter(p=>j.has(p.id)||Object.keys(S.answers[p.id]?.answers||{}).length);
   const n=ppl.length+1,h=n<=4?240:n<=8?185:150;
-  box.innerHTML=`<div class="lb-item"><img class="avf" src="img/tr-red.webp" alt="" style="height:${h}px">${ll(`<span>המאמן</span>`,`<span>The trainer</span>`)}</div>`+ppl.map(p=>`<div class="lb-item${S.lobbyShown.has(p.id)?'':' lb-new'}">${avFull(p,h)}<span>${esc(p.name)}</span></div>`).join('');
+  box.innerHTML=(S.state?.pre?.inv?`<div class="lb-dn"></div>`:'')+`<div class="lb-item"><img class="avf" src="img/tr-red.webp" alt="" style="height:${h}px">${ll(`<span>המאמן</span>`,`<span>The trainer</span>`)}</div>`+ppl.map(p=>`<div class="lb-item${S.lobbyShown.has(p.id)?'':' lb-new'}">${avFull(p,h)}<span>${esc(p.name)}</span></div>`).join('');
   ppl.forEach(p=>S.lobbyShown.add(p.id));
 }
 function screenOverlay(){
@@ -2384,7 +2422,7 @@ function lkPpl(){return gamePlayers()}
 const LK_MINI=77,lkAv=p=>{const v=S.gIn?.[p.id]?.av;return v!=null&&v>=0&&v<LK_MINI?`img/mini/${v}.png`:null};
 // a character's frame in img/ow-sheet.webp: 10 characters a row, each 3 frames (stand, step, step) x 4 rows (down, left, right, up), 34 px cells, shown at 2x
 const OW={c:34,z:2,cols:10,rows:'dlru'},owPos=(n,d,f)=>{const c=OW.c*OW.z,r=OW.rows.indexOf(d);return `${-((n%OW.cols)*3+f)*c}px ${-(Math.floor(n/OW.cols)*4+r)*c}px`},owStyle=n=>`background-image:url(img/ow-sheet.webp);background-size:${OW.cols*3*OW.c*OW.z}px ${Math.ceil(LK_MINI/OW.cols)*4*OW.c*OW.z}px;background-position:${owPos(n,'d',0)}`;
-function lakeAuto(){const used=new Set(lkPpl().map(p=>S.gIn?.[p.id]?.av).filter(v=>v!=null));lkPpl().forEach(p=>{if(S.gIn?.[p.id]?.av!=null)return;const free=[...Array(LK_MINI).keys()].filter(i=>!used.has(i)),v=free.length?free[Math.floor(Math.random()*free.length)]:Math.floor(Math.random()*LK_MINI);used.add(v);S.gIn=S.gIn||{};S.gIn[p.id]={...(S.gIn[p.id]||{}),av:v};S.db.doc('stage/g-'+p.id).set({av:v},{merge:true}).catch(()=>{})})}
+function lakeAuto(){const used=new Set(lkPpl().map(p=>S.gIn?.[p.id]?.av).filter(v=>v!=null));lkPpl().forEach(p=>{if(S.gIn?.[p.id]?.av!=null)return;const ia=S.state?.pre?.av?.[String(p.name||'').trim()];if(typeof ia==='number'&&!used.has(ia)){used.add(ia);S.gIn=S.gIn||{};S.gIn[p.id]={...(S.gIn[p.id]||{}),av:ia};S.db.doc('stage/g-'+p.id).set({av:ia},{merge:true}).catch(()=>{});return}const free=[...Array(LK_MINI).keys()].filter(i=>!used.has(i)),v=free.length?free[Math.floor(Math.random()*free.length)]:Math.floor(Math.random()*LK_MINI);used.add(v);S.gIn=S.gIn||{};S.gIn[p.id]={...(S.gIn[p.id]||{}),av:v};S.db.doc('stage/g-'+p.id).set({av:v},{merge:true}).catch(()=>{})})}
 function lakeEnter(){let L=S.lake;if(!L){const pl=lkPpl();L=S.lake={sid:(Date.now()%1e9)|0,phase:'free',seen:0,got:{},pos:{},gy:null,qEnd:0};
     // everyone starts on the grass by the shore, spread out; when there is no such grass, in the water
     const land=lkCells('g').filter(([x,y])=>{const[a,b]=lkT(x,y);if(!LK.reach[b]?.[a]||y<LK.y+LK.th*1.6)return false;for(let d=1;d<=3;d++)for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]])if(lkAt(a+dx*d,b+dy*d)==='w')return true;return false}),spots=land.length>=3?land:lkCells('w');
@@ -2830,9 +2868,13 @@ const isRehearsal=()=>!!S.state?.rehearsal;
 // a real phone can take a bot's place in a rehearsal: the bots keep playing only the people no phone has taken
 function botIds(){return isRehearsal()?roster().filter(p=>p.bot&&(S.joinedDev?.[p.id]||'bot')==='bot').map(p=>p.id):[]}
 const brnd=a=>a[Math.floor(Math.random()*a.length)];
-async function rehearseCreate(nm,lang,skip,fast){const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c='T'+Array.from({length:3},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c));
-  const B=lang==='en'?BOTS_EN:BOTS_HE,ros=B.map(([n,role,w],i)=>({id:i?'bot'+i:'subj',name:i?n:(nm||n),role,weight:w,bot:true,relation:role==='self'?'':ll('חבר/ה','friend')}));
-  await S.db.raw.doc('state/'+c).set({subject:ros[0].name,gender:'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang,skip,rehearsal:true,fast:!!fast,presenter:''});
+// the invitation this evening comes from: its id and the characters picked (by name), so the evening carries them
+function invFrom(){const v=S.nrInv&&(S.invites||[]).find(x=>x.id===S.nrInv);if(!v)return null;const av={},team=[];if(typeof v.av==='number')av[v.subject]=v.av;
+  Object.values(v.team||{}).forEach(x=>{if(x&&x.ans==='yes'){team.push({n:x.n,g:x.g});if(typeof x.av==='number')av[x.n]=x.av}});return {id:v.id,av,team}}
+async function rehearseCreate(nm,lang,skip,fast,iv){const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c='T'+Array.from({length:3},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c));
+  const B=lang==='en'?BOTS_EN:BOTS_HE,TM=(iv&&iv.team)||[],ros=B.map(([n,role,w],i)=>({id:i?'bot'+i:'subj',name:i?((TM[i-1]&&TM[i-1].n)||n):(nm||n),role,weight:w,bot:true,relation:role==='self'?'':ll('חבר/ה','friend')}));
+  await S.db.raw.doc('state/'+c).set({subject:ros[0].name,gender:'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang,skip,rehearsal:true,fast:!!fast,presenter:'',...(iv?{pre:{inv:iv.id,av:iv.av,n:ros.length-1,names:[]}}:{})});
+  if(iv){await S.db.raw.doc('invites/'+iv.id).update({room:c}).catch(()=>{});for(const [i,t] of (S.nrt||[]).entries()){const v=String(t||'').trim();if(v)await S.db.raw.doc('setup/'+c+'~asset-tr-'+(i+1)).set({label:v}).catch(()=>{})}}
   await S.db.raw.doc('setup/'+c).set({roster:ros,gender:'m',name:ros[0].name,at:Date.now()});
   for(const p of ros)await S.db.raw.doc('joined/'+c+'~'+p.id).set({at:new Date().toISOString(),gender:'m',dev:'bot'});
   RAWSTORE.set('psp-lang:'+c,lang);location.hash='screen='+c;location.reload()}
@@ -3441,7 +3483,7 @@ function renderPanel(){
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
   <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
   <div class="row"><span class="muted grow" style="font-size:13px">שעון הערב: ${S.deck?.t0?'רץ':'יתחיל במעבר מהשקף הראשון'} (מתאפס בשקף הראשון)</span><button class="btn ghost small" data-pa="clock">איפוס השעון</button></div>
-  <details><summary class="muted" style="cursor:pointer">דוח זמנים: תכנון מול בפועל${isRehearsal()?' · 🎭 חזרה גנרלית':''}</summary>${timingReport()}</details>
+  <details><summary class="muted" style="cursor:pointer">דוח זמנים: תכנון מול בפועל${isRehearsal()?' · 🧪 ניסוי':''}</summary>${timingReport()}</details>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
   <div class="row"><button class="btn ghost small" data-pa="demo">מילוי אקראי לבדיקה</button><button class="btn ghost small" data-pa="save">שמירת תוצאות</button><button class="btn ghost small" data-pa="cards">קישורים אישיים</button><button class="btn red small" data-pa="reset">איפוס הערב</button></div>
   ${S.showCards?`<div class="card" style="margin:8px 0"><div class="row"><b class="grow">קישורים אישיים לכרטיסים (נשמרים גם אחרי איפוס)</b><button class="btn ghost small" data-pa="copyall">העתקת הכול</button></div>${roster().map(r=>{const c=cardCodeFor(r.id);return c?`<div class="row" style="font-size:14px"><span class="grow">${esc(r.name)}</span><code style="direction:ltr">${c.toUpperCase()}</code><a href="${cardLink(c)}" target="_blank" style="color:var(--gold)">פתיחה</a></div>`:''}).join('')}</div>`:''}
