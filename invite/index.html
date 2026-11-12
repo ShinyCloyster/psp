@@ -452,7 +452,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,120):ms));
 
 // remembered per person and language: seen the intro, and the answer
 const GIID=(Q.get('i')||'').replace(/[^a-z0-9]/g,'').slice(0,24),GROUP=ROLE==='f'&&!Q.get('to')&&!!GIID;
-const KEY=GROUP?'psp-invite:'+LANG+':g:'+GIID:ROLE==='f'?'psp-invite:'+LANG+':f:'+BY+':'+NAME:'psp-invite:'+LANG+':'+NAME;
+const KEY=GROUP?'psp-invite:'+LANG+':g:'+GIID:ROLE==='f'?'psp-invite:'+LANG+':f:'+BY+':'+NAME:'psp-invite:'+LANG+':'+NAME+(GIID?':'+GIID:'');
 if(Q.get('reset')){try{Object.keys(localStorage).filter(k=>k.startsWith('psp-invite')).forEach(k=>localStorage.removeItem(k))}catch(e){}Q.delete('reset');history.replaceState(null,'',location.pathname+(Q.toString()?'?'+Q.toString():''))}
 const mem=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}};
