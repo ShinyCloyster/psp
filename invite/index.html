@@ -368,6 +368,21 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .trb label{display:block;font-weight:700;margin-bottom:6px}
 .trb input,.trb textarea{width:100%;font:500 16px/1.4 var(--body);padding:10px 12px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;color:#1E2238}
 .trb textarea{margin-top:8px;resize:vertical}
+.hubg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hubt{display:flex;flex-direction:column;align-items:center;gap:6px;background:#F8F8F8;border:4px solid #2A2E45;border-radius:14px;box-shadow:inset 0 0 0 3px #F8F8F8,inset 0 0 0 6px #6A8CC8;padding:14px 8px;color:#1E2238}
+.hubt .hi{height:44px;display:grid;place-items:center;font-size:30px}
+.hubt .hav img{zoom:2}.hubt .hav .cust{width:34px;height:40px;font-size:16px}
+.hubt b{font:400 20px/1.1 var(--display)}.hubt small{font-size:13px;color:#6A6F8A}
+.hubt.done{box-shadow:inset 0 0 0 3px #F8F8F8,inset 0 0 0 6px var(--ok)}
+.hubt.done small{color:#2E8B57;font-weight:700}
+.hubl{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+#pg>.savedtag{align-self:center;margin:0!important}
+#pg>.linkbtn{align-self:center}
+.gbp-menu>button.dis{opacity:.45}
+.bagg h2{margin-bottom:4px}.bagg .muted{margin:0 0 8px}
+.bagg .bagd{margin-top:10px;box-shadow:none;border-width:2px}
+.psum.dk{color:#8a6a14;margin:0 0 8px}
+.slist.lt .sb{background:#EEF1FA;color:#1E2238}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -575,11 +590,14 @@ const wa=(text,num)=>{const n=num===undefined?CFG.wa:num;return n||num===''?`htt
 let page=0,ans='ask',faqI=-1,taps=0;
 const pickT=v=>fill(pick(v));
 function toLetter(skipped){clearInterval(dnT);clearInterval(typing);$('#env').classList.add('hide');show('letter');skipBtn.classList.add('hide');mus(true);if(!skipped)sfx('page',.6);mem.seen=1;save();
-  page=mem.ans==='yes'?3:0;renderLetter()}
+  page=0;renderLetter()}
 // the pages, in story order: what this is, the evening's route, what to prepare, the decision;
 // after yes also your card, and for the subject the team
-function PAGES(){const P=[['letter',pLetter,()=>{}],['route',pMap,bindMap],['prep',pBag,bindBag],['decide',pDex,bindAnswer]];
-  if(mem.ans==='yes'){if(hasDates()&&!REMOTE)P.push(['dates',pDates,bindDates]);P.push(['card',pCard,bindCard]);if(ROLE==='s'){P.push(['trainers',pTrainers,bindTrainers]);P.push(['team',pParty,bindParty])}}return P}
+function PAGES(){
+  if(mem.ans!=='yes')return ROLE==='s'?[['letter',pLetter,()=>{}],['route',pMap,bindMap],['decide',pDex,bindDecide]]:[['letter',pLetter,()=>{}],['decide',pDex,bindDecide]];
+  const P=[['hub',pHub,bindHub],['card',pCard,bindCard]];if(hasDates()&&!REMOTE)P.push(['dates',pDates,bindDates]);
+  if(ROLE==='s'){P.push(['trainers',pTrainers,bindTrainers]);P.push(['team',pParty,bindParty]);P.push(['route',pMap,bindMap])}P.push(['letter',pLetter,()=>{}]);return P}
+const AFTER=()=>mem.ans==='yes';
 const pageIdx=k=>PAGES().findIndex(x=>x[0]===k);
 function renderLetter(){
   $('#lcol').innerHTML=`<nav class="steps" id="steps"></nav><div id="pg"></div><p class="locknote" id="locknote"></p><div class="pnav" id="pnav"></div><button class="restart" id="restart">${H('restart')}</button>`;
@@ -590,17 +608,18 @@ function renderLetter(){
   pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx))return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
   goPage(Math.min(page,PAGES().length-1),true)}
 // how far you may go: past the route only after every stop, past the prep only after every item (an answered invitation is open)
-function reach(){if(mem.ans)return 99;const P=PAGES();if(!mem.routeDone)return P.findIndex(x=>x[0]==='route');if(!mem.prepDone)return P.findIndex(x=>x[0]==='prep');return 99}
+function reach(){if(mem.ans)return 99;const P=PAGES(),r=P.findIndex(x=>x[0]==='route');if(r>=0&&!mem.routeDone)return r;return 99}
 function navBar(){const P=PAGES(),n=P.length,i=page,r=reach();
+  if(AFTER()){$('#steps').innerHTML='';$('#locknote').textContent='';$('#pnav').innerHTML=i>0?`<button class="prevbtn" id="prevbtn">${AR_PREV} ${H('backMenu')}</button><span></span>`:'';if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(0);return}
   const st=$('#steps');st.innerHTML=P.map(([k],j)=>`<button data-p="${j}" class="${j===i?'on':''}${j<i?' done':''}${j>r?' lock':''}" ${j>r?'disabled':''}><b>${j>r?'🔒':j+1}</b>${esc(T('tab_'+k))}</button>`).join('');
   st.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>goPage(+b.dataset.p));
-  const lockMsg=i>=r&&i<n-1?(P[i][0]==='route'?'routeLocked':P[i][0]==='prep'?'prepLocked':''):'';
+  const lockMsg=i>=r&&i<n-1?(P[i][0]==='route'?'routeLocked':''):'';
   $('#pnav').innerHTML=(i>0?`<button class="prevbtn" id="prevbtn">${AR_PREV} ${H('prev')}</button>`:'<span></span>')+(i<n-1?`<button class="nextbtn${lockMsg?' locked':''}" id="nextbtn" ${lockMsg?'disabled':''}>${esc(T('nextTo').replace('{x}',T('tab_'+P[i+1][0])))} ${lockMsg?'🔒':AR_NEXT}</button>`:'');
   $('#locknote').textContent=lockMsg?T(lockMsg):'';
   if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(page-1);if($('#nextbtn')&&!lockMsg)$('#nextbtn').onclick=()=>goPage(page+1)}
 function goPage(i,first){const P=PAGES(),n=P.length;if(i<0||i>=n||i>reach())return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);stopPlay();
   navBar();const st=$('#steps');
-  const on=st.querySelector('.on');if(on)st.scrollLeft+=on.getBoundingClientRect().left-st.getBoundingClientRect().left-(st.clientWidth-on.clientWidth)/2;
+  const on=st&&st.querySelector('.on');if(on)st.scrollLeft+=on.getBoundingClientRect().left-st.getBoundingClientRect().left-(st.clientWidth-on.clientWidth)/2;
   const pg=$('#pg');pg.innerHTML=P[i][1]();pg.className=first?'':(dir>0?'in-next':'in-prev');
   $('#letter').scrollTo(0,0);P[i][2]()}
 const ptitle=k=>`<h1 class="ptitle">${H(k)}</h1>`;
@@ -631,7 +650,7 @@ function pMap(){const SS=TXR('stops')||[];
   <div class="mapbtns"><button class="nextbtn" id="mapgo"></button><button class="ghostbtn" id="mapplay">${H('routePlay')}</button></div>
   <ol class="slist">${SS.map((x,i)=>`<li><button data-s="${i}"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.c))}</small></span></button></li>`).join('')}</ol>`}
 function bindMap(){if(ROLE==='f'){if(!mem.routeDone){mem.routeDone=1;save()}navBar();return}stop=0;placeIc(STOPS[0]);city(0);stopInfo(0,true);
-  $('#mapgo').onclick=()=>{if(flying)return;stopPlay();if(stop>=STOPS.length-1){goPage(page+1);return}fly(stop,stop+1)};
+  $('#mapgo').onclick=()=>{if(flying)return;stopPlay();if(stop>=STOPS.length-1){goPage(AFTER()?0:page+1);return}fly(stop,stop+1)};
   $('#mapplay').onclick=()=>{if(playing){stopPlay();return}playing=true;$('#mapplay').innerHTML=H('routeStopPlay');if(stop>=STOPS.length-1){stop=0;placeIc(STOPS[0]);city(0);stopInfo(0)}const next=()=>{if(!playing)return;if(stop>=STOPS.length-1){stopPlay();return}fly(stop,stop+1,()=>stop>=STOPS.length-1?stopPlay():setTimeout(next,RM?300:1100))};next()};
   document.querySelectorAll('.slist [data-s]').forEach(b=>b.onclick=()=>{if(flying)return;stopPlay();const i=+b.dataset.s;if(i===stop)return;fly(stop,i);$('#tmap').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
 function stopPlay(){playing=false;const b=$('#mapplay');if(b)b.innerHTML=H(stop>=STOPS.length-1?'routeAgain':'routePlay')}
@@ -649,19 +668,17 @@ function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8,n=
   if(badge&&(mem.badges||0)<i){mem.badges=i;save()}
   if(i===n-1&&!mem.routeDone){mem.routeDone=1;save();navBar()}
   $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<small class="sof">${esc(T('stopOf').replace('{i}',i+1).replace('{n}',n))} · ${esc(pickT(S.c))}</small><b class="stt">${esc(pickT(S.t))}</b>${esc(pickT(S.d))}`;
-  const end=i>=n-1,mg=$('#mapgo');mg.textContent=end?`${T('nextTo').replace('{x}',T('tab_prep'))} ${AR_NEXT}`:`${T('mapNext')} ${AR_NEXT}`;mg.classList.toggle('glow',end);
+  const end=i>=n-1,mg=$('#mapgo');mg.textContent=end?(AFTER()?`${AR_PREV} ${T('backMenu')}`:`${T('nextTo').replace('{x}',T('tab_decide'))} ${AR_NEXT}`):`${T('mapNext')} ${AR_NEXT}`;mg.classList.toggle('glow',end);
   if(!playing)$('#mapplay').innerHTML=H(end?'routeAgain':'routePlay');if(end&&!first)setTimeout(()=>$('.mapbtns')?.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'}),400);
   if(!first)sfx(badge?'tink':(i===n-1?'page':'a'),.6)}
 
 // ---- 3. what to prepare: the bag, like the game's: pick an item, its description shows below ----
 let bagI=0;
 const BAG=()=>ROLE==='f'?[['phone','bagPhone','bagPhoneText',null],['ball','f_bagQ','f_bagQText','f_bagQMore'],['friends','f_bagTeam','f_bagTeamText',null]]:[['ball','bagTrainers','bagTrainersText','bagTrainersMore'],['friends','bagFriends','bagFriendsText','bagFriendsMore'],['phone','bagPhone','bagPhoneText',null]];
-function pBag(){return `${ptitle('prepTitle')}<p class="plead">${H('prepLead')}</p>
-  <section class="blk bagg"><div class="bagl">${BAG().map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${H(t)}</b>${ic==='ball'&&ROLE==='s'?'<em>×4</em>':''}</button>`).join('')}</div></section>
-  <div class="gbp-box bagd" id="bagd"></div>`}
+function bagBlock(){return `<section class="blk bagg"><h2>${H('prepTitle')}</h2><p class="muted">${H('prepLead')}</p><div class="bagl">${BAG().map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${H(t)}</b>${ic==='ball'&&ROLE==='s'?'<em>×4</em>':''}</button>`).join('')}</div><div class="gbp-box bagd" id="bagd"></div></section>`}
 function bagIcon(ic){return ic==='ball'?`<span class="ball" style="--s:30px;display:block"></span>`:ic==='phone'?'<span class="phone"></span>':`<span class="friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</span>`}
 function bindBag(){const show=i=>{bagI=i;const seen=mem.prepSeen||(mem.prepSeen=[]);if(!seen.includes(i)){seen.push(i);save()}
-    if(seen.length>=BAG().length&&!mem.prepDone){mem.prepDone=1;save();navBar()}const nx=[0,1,2].find(k=>!seen.includes(k));
+    if(seen.length>=BAG().length&&!mem.prepDone){mem.prepDone=1;save();renderMenu()}const nx=[0,1,2].find(k=>!seen.includes(k));
     document.querySelectorAll('.bagl button').forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('seen',seen.includes(k)&&k!==i);b.classList.toggle('nextup',k===nx)});
     const [,t,d,m]=BAG()[i];
     $('#bagd').innerHTML=`<b class="q">${H(t)}</b>${H(d)}${m?`<ul>${TL(m).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`};
@@ -669,9 +686,10 @@ function bindBag(){const show=i=>{bagI=i;const seen=mem.prepSeen||(mem.prepSeen=
 
 // ---- 4. the decision: an empty Pokédex entry, Oak's notes, and the answer ----
 function datesEarly(){if(!hasDates()||REMOTE)return '';const mine=myDates();return `<section class="blk dearly"><h2>${H('datesEarlyT')}</h2><p class="muted">${H('datesEarly')}</p><div class="dchips">${FILE.dates.map(d=>`<button data-d="${d}" class="${mine.includes(d)?'on':''}${FILE.date===d?' set':''}">${mine.includes(d)?'✓ ':''}${esc(fmtD(d))}</button>`).join('')}</div></section>`}
-function pDex(){return `${ptitle('decideTitle')}<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
+function progBlock(){const SS=TXR('stops')||[];return `<details class="blk notes ndet"><summary><h2>${H('routeTitle')}</h2></summary><p class="psum dk">${H('routeSum')}</p><ol class="slist plain lt">${SS.map((x,i)=>`<li><div class="sb"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.d))}</small></span></div></li>`).join('')}</ol></details>`}
+function pDex(){return `${ptitle('decideTitle')}${ROLE==='f'?progBlock():''}${bagBlock()}${datesEarly()}<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
   <details class="blk notes ndet"><summary><h2>${H('notesTitle')}</h2></summary><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>
-  ${datesEarly()}${pAnswer()}`}
+  ${pAnswer()}`}
 
 // ---- 5. (after yes) your card, and your character ----
 const MINI_N=77;
@@ -699,6 +717,7 @@ function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.in
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
 const wobbleS=()=>2.6;
 function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
+function bindDecide(){bindBag();bindAnswer()}
 function bindAnswer(){taps=0;bindChips(()=>{const d=$('.dearly');if(d)d.outerHTML=datesEarly();bindAnswer()});$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
     setTimeout(()=>{b.classList.remove('shake');if(!RM){b.classList.add('wobble');b.style.animationDuration=wobbleS()+'s'}},1150);
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
@@ -717,7 +736,7 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
-    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();dbSync({ans:'yes'});page=3;renderLetter();setTimeout(()=>$('#menuwrap')?.scrollIntoView({block:'start'}),50)})};
+    $('#csave').onclick=()=>{mus(false);evolve(()=>{mem.ans='yes';save();dbSync({ans:'yes'});page=0;renderLetter()})};
     $('#cask').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
   else if(ans==='faq'){const F=TXR('faq')||[],link=wa(T('waMsg'));
     w.innerHTML=faqI<0
@@ -729,8 +748,9 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
     if($('#fmore'))$('#fmore').onclick=()=>{faqI=-1;renderMenu(true)};
     $('#back').onclick=()=>{ans='ask';renderMenu(true)};$('#fyes').onclick=()=>{ans='confirm';sfx('a',.5);renderMenu(true)}}
   else{
-    w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes">${H('menuYes')}</button><button id="mlater">${H('menuLater')}</button></div>`;
-    $('#myes').onclick=()=>{ans='confirm';sfx('a',.5);renderMenu(true)};
+    const lk=ROLE==='s'&&!mem.prepDone;
+    w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes" ${lk?'disabled class="dis"':''}>${H('menuYes')}${lk?' 🔒':''}</button><button id="mlater">${H('menuLater')}</button></div>${lk?`<p class="locknote">${H('prepLocked')}</p>`:''}`;
+    $('#myes').onclick=()=>{if(ROLE==='s'&&!mem.prepDone)return;ans='confirm';sfx('a',.5);renderMenu(true)};
     $('#mlater').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
   if(scroll)w.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
 
@@ -809,7 +829,7 @@ async function watchFile(){const iid=ROLE==='s'?(mem.iidMade&&mem.iid):IID;const
   teamUn=db.doc('invites/'+iid).onSnapshot(d=>{const had=hasDates();FILE=d.exists?d.data():null;const t=(FILE&&FILE.team)||{},yes=Object.keys(t).filter(k=>t[k]&&t[k].ans==='yes');
     if(ROLE==='s'&&teamSeen&&yes.some(k=>!teamSeen.has(k))){sfx('caught',.7);const k=yes.find(k=>!teamSeen.has(k));toast(fill(pickG(TX.joined,t[k].g)).replace('{f}',t[k].n))}
     teamSeen=new Set(yes);TEAM=t;if(scene!=='letter')return;const cur=PAGES()[page];if(had!==hasDates()&&$('#steps'))navBar();
-    if(cur&&cur[0]==='decide'&&mem.ans==='yes'&&ROLE==='s'&&$('.cklist'))renderMenu();
+    if(cur&&cur[0]==='hub'){$('#pg').innerHTML=pHub();bindHub()}
     if(cur&&cur[0]==='decide'&&$('.dearly')){$('.dearly').outerHTML=datesEarly();bindChips(()=>{$('.dearly').outerHTML=datesEarly();bindAnswer()})}
     if(cur&&cur[0]==='decide'&&!$('.dearly')&&hasDates()&&!REMOTE&&$('#menuwrap')){$('#menuwrap').parentElement.querySelector('.bwrap')?.insertAdjacentHTML('beforebegin',datesEarly());bindAnswer()}
     if(cur&&(cur[0]==='team'||cur[0]==='dates')){const y=$('#letter').scrollTop;$('#pg').innerHTML=cur[1]();cur[2]();$('#letter').scrollTop=y}},e=>console.warn('file',e))}
@@ -855,6 +875,24 @@ function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx');
   return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p>${[0,1,2,3].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
     <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}"><textarea id="trn${i}" data-i="${i}" data-f="n" rows="3" maxlength="600" placeholder="${esc(T('trNotesPh'))}">${esc((tr[i]||{}).n||'')}</textarea></section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
 function bindTrainers(){document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(save,400)})}
+
+// ---------- 12. the menu after yes: one screen to come back to; big tiles open each task ----------
+function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],tiles=[];
+  const tile=(k,ic,sub,done)=>tiles.push(`<button class="hubt${done?' done':''}" data-go="${k}"><span class="hi">${ic}</span><b>${H('tab_'+k)}</b><small>${esc(sub)}</small></button>`);
+  tile('card',`<span class="hav">${cardFig()}</span>`,mem.av!=null?'✓':T('hubPick'),mem.av!=null);
+  if(hasDates()&&!REMOTE)tile('dates','📅',FILE.date?fmtD(FILE.date):myDates().length?T('hubMarked').replace('{n}',myDates().length):T('hubPick'),!!FILE.date);
+  if(ROLE==='s'){tile('trainers','🎒',`${tr.filter(x=>x&&x.t&&x.t.trim()).length}/4`,tr.filter(x=>x&&x.t&&x.t.trim()&&x.n&&x.n.trim()).length>=4);
+    tile('team',`<span class="ball" style="--s:30px;display:block"></span>`,P.length?`${yes.length}/${P.length} ✓`:T('hubPick'),P.length>=4&&yes.length===P.length)}
+  return tiles.join('')}
+function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
+  return `<p class="savedtag">${H('saved')}</p>${ptitle(ROLE==='s'?'ckTitle':'f_hubTitle')}
+  <div class="hubg">${hubTiles()}</div>
+  ${ROLE==='s'?`<section class="blk">${checklistHTML()}</section>`:`<section class="blk"><ol class="todo">${(TXR('todo')||[]).filter(x=>!x.go).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol></section>`}
+  <div class="hubl">${ROLE==='s'?`<button class="ghostbtn" data-go="route">🗺 ${H('routeTitle')}</button>`:''}<button class="ghostbtn" data-go="letter">✉ ${H('hubLetter')}</button></div>
+  <button class="linkbtn" id="chg">${H('changeAnswer')}</button>`}
+function bindHub(){document.querySelectorAll('#pg [data-go]').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
+  document.querySelector('#pg .tellbtn')?.addEventListener('click',()=>{mem.told=1;save();setTimeout(()=>{if(PAGES()[page][0]==='hub'){$('#pg').innerHTML=pHub();bindHub()}},800)});
+  $('#chg').onclick=()=>{delete mem.ans;mem.declined=1;save();dbSync({ans:'no'});ans='ask';page=PAGES().length-1;renderLetter()}}
 
 // ---------- 7. saving: "What? Your invitation is evolving!" ----------
 function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.classList.remove('hide');
