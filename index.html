@@ -815,7 +815,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794469331';
+const BUILDV='1794471031';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -959,15 +959,34 @@ function planPick(sk,tgt){const on=k=>!sk.includes(k);
   const nc=8-sk.filter(x=>x[0]==='c').length,nt=4-sk.filter(x=>x[0]==='t').length,m=planMinutes(sk);
   return `<div class="np-plan">${[1,2,3,4].map(p=>`<div class="np-part"><span class="np-pl">PKMN ${p}01</span><div class="np-row">${tile('c'+(2*p-1),`img/badge-${2*p-1}.webp`,`<span><b>${2*p-1}</b> ${COURSE_NAMES[2*p-2][0]}</span>`)}${tile('c'+2*p,`img/badge-${2*p}.webp`,`<span><b>${2*p}</b> ${COURSE_NAMES[2*p-1][0]}</span>`)}${tile('t'+p,'img/tr-silhouette.webp',`<span>מאמן ${p}</span>`,'tr')}</div></div>`).join('')}
    <p class="np-sum">${nc} קורסים · ${nt} מאמנים · כ-${Math.floor(m/60)}:${String(m%60).padStart(2,'0')} שעות</p><p class="muted" style="font-size:12px;margin:0">סבבי השאלות וההיכל תמיד נשארים. רק המארח יכול לשנות את זה.</p></div>`}
-// invitations from /invite/ (host only): who said yes, and who of their team did; a click copies them into the new room card
+// invitations from /invite/ (host only): open a new one (name + the dates you approve), see who said yes and who can make it when, and set the date
+const invId=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');
+const invFmt=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'numeric'})}catch(e){return d}};
+function invLink(v,id){const q=new URLSearchParams();q.set('to',v.subject||'');q.set('g',v.g==='f'?'f':'m');q.set('i',id);if(v.place)q.set('place',v.place);if(v.ps)q.set('ps',v.ps);
+  return location.origin+location.pathname.replace(/index\.html$/,'')+'invite/'+(v.lang==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
+function invMsg(v,id){return (v.lang==='en'?`Hi ${v.subject}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:`:`היי ${v.subject}! דרגונייט בדרך ${v.g==='f'?'אלייך':'אליך'} עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:`)+'\n'+invLink(v,id)}
 function invitesCard(){
   if(!S.invSub&&S.db?.raw){S.invSub=true;S.db.raw.collection('invites').onSnapshot(q=>{S.invites=q.docs.map(d=>({id:d.id,...clone(d.data())})).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));if(isScreen()&&!ROOM.code)roomsView()},()=>{})}
-  const L=S.invites||[];if(!L.length)return '';
-  return `<div class="card"><p class="eyebrow" style="margin:0">INVITATIONS</p><h2 style="margin:2px 0 4px">הזמנות</h2><p class="muted" style="margin:0 0 10px;font-size:13px">מי קיבל הזמנה מדרגונייט, ומי מהצוות שלו אישר.</p>
-   ${L.map(v=>{const T=Object.values(v.team||{}),yes=T.filter(x=>x&&x.ans==='yes');return `<div style="border-top:1px solid var(--line);padding:10px 0">
-     <div class="row" style="gap:8px"><b class="grow">${esc(v.subject||'')} ${v.g==='f'?'♀':'♂'}${v.lang==='en'?' · English':''}</b><span class="muted" style="font-size:13px">${v.ans==='yes'?'✓ אמר כן':'עוד לא'} · ${String(v.at||'').slice(0,10)}</span></div>
-     <p class="muted" style="margin:4px 0 8px;font-size:14px">${T.length?T.map(x=>`${esc(x.n||'')} ${x.ans==='yes'?'✓':'…'}`).join(' · '):'עוד אף אחד מהצוות לא ענה'}${T.length?` (${yes.length}/${T.length} אישרו)`:''}</p>
-     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost small" data-inv="${esc(v.id)}">לחדר חדש עם השמות</button><button class="btn ghost small" data-invdel="${esc(v.id)}">מחיקה</button></div></div>`}).join('')}</div>`}
+  const N=S.ni||(S.ni={n:'',g:'m',lang:'he',dates:[],place:'',ps:''}),L=S.invites||[];
+  const form=`<div style="display:flex;flex-direction:column;gap:8px">
+    <input type="text" id="ni-n" placeholder="שם הנבדק" value="${esc(N.n)}" oninput="S.ni.n=this.value">
+    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="np-o ${N.g==='m'?'on':''}" data-nig="m" style="min-height:0;padding:8px 14px">בן ♂</button><button class="np-o ${N.g==='f'?'on':''}" data-nig="f" style="min-height:0;padding:8px 14px">בת ♀</button>
+      <button class="np-o ${N.lang==='he'?'on':''}" data-nil="he" style="min-height:0;padding:8px 14px">עברית</button><button class="np-o ${N.lang==='en'?'on':''}" data-nil="en" style="min-height:0;padding:8px 14px">English</button></div>
+    <div class="row" style="gap:6px"><input type="date" id="ni-d" style="flex:1"><button class="btn ghost small" data-niadd="1">+ מועד</button></div>
+    <div class="row" style="gap:6px;flex-wrap:wrap">${N.dates.length?N.dates.map(d=>`<button class="btn ghost small" data-nidel="${d}">${invFmt(d)} ✕</button>`).join(''):'<span class="muted" style="font-size:13px">המועדים שאתה מאשר. כל מוזמן יסמן מה מתאים לו.</span>'}</div>
+    <input type="text" id="ni-place" placeholder="איפה (לא חובה)" value="${esc(N.place)}" oninput="S.ni.place=this.value">
+    <input type="text" id="ni-ps" placeholder="נ.ב. אישי (לא חובה)" value="${esc(N.ps)}" oninput="S.ni.ps=this.value">
+    <button class="btn" data-act="newinvite">✉️ פתח הזמנה</button>
+    ${S.niDone?`<div class="card" style="margin:0;background:rgba(242,201,76,.12)"><p style="margin:0 0 6px;font-weight:700">ההזמנה של ${esc(S.niDone.subject)} מוכנה</p><p class="muted" style="margin:0 0 8px;font-size:12px;direction:ltr;word-break:break-all">${esc(decodeURI(invLink(S.niDone,S.niDone.id)))}</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" style="text-decoration:none;background:#25D366;color:#0b2b17" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(invMsg(S.niDone,S.niDone.id))}">לשלוח בוואטסאפ</a><button class="btn ghost small" data-copy="${esc(invMsg(S.niDone,S.niDone.id))}">להעתיק</button></div></div>`:''}</div>`;
+  return `<div class="card"><p class="eyebrow" style="margin:0">INVITATIONS</p><h2 style="margin:2px 0 4px">הזמנות</h2><p class="muted" style="margin:0 0 10px;font-size:13px">פותחים הזמנה עם המועדים שאתה מאשר. הנבדק והחברים מסמנים מה מתאים להם, ואתה קובע.</p>${form}
+   ${L.map(v=>{const T=Object.values(v.team||{}).filter(x=>x&&x.ans!=='removed'),yes=T.filter(x=>x.ans==='yes'),here=yes.filter(x=>!x.r),D=v.dates||[];
+     const cnt=d=>((v.sd||[]).includes(d)?1:0)+here.filter(x=>(x.d||[]).includes(d)).length,tot=1+here.length;
+     return `<div style="border-top:1px solid var(--line);padding:10px 0;margin-top:10px">
+     <div class="row" style="gap:8px"><b class="grow">${esc(v.subject||'')} ${v.g==='f'?'♀':'♂'}${v.lang==='en'?' · English':''}</b><span class="muted" style="font-size:13px">${v.ans==='yes'?'✓ אמר כן':v.ans==='open'?'נשלחה':'עוד לא'} · ${String(v.at||'').slice(0,10)}</span></div>
+     <p class="muted" style="margin:4px 0 8px;font-size:14px">${T.length?T.map(x=>`${esc(x.n||'')} ${x.ans==='yes'?'✓':'…'}${x.r?' (מרחוק)':''}`).join(' · '):'עוד אף אחד מהצוות לא ענה'}${T.length?` (${yes.length}/${T.length} אישרו)`:''}</p>
+     ${D.length?`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px">${D.map(d=>{const c=cnt(d),full=c===tot&&tot>1;return `<button class="btn ${v.date===d?'':'ghost'} small" data-invset="${esc(v.id)}|${d}" title="לקבוע את המועד" style="${full&&v.date!==d?'border-color:var(--gold);color:var(--gold)':''}">${v.date===d?'🏆 ':''}${invFmt(d)} · ${c}/${tot}</button>`}).join('')}</div>${v.date?`<p class="muted" style="margin:0 0 8px;font-size:13px">נקבע: ${invFmt(v.date)}. לחיצה על מועד אחר תחליף.</p>`:'<p class="muted" style="margin:0 0 8px;font-size:13px">לחיצה על מועד קובעת אותו לכולם.</p>'}`:''}
+     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost small" data-copy="${esc(invMsg(v,v.id))}">קישור לנבדק</button><button class="btn ghost small" data-inv="${esc(v.id)}">לחדר חדש עם השמות</button><button class="btn ghost small" data-invdel="${esc(v.id)}">מחיקה</button></div></div>`}).join('')}</div>`}
 function roomsView(){
   const app=$('#app');app.hidden=false;
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
@@ -995,6 +1014,14 @@ function roomsView(){
     if(b.dataset.nrl){S.nrl=b.dataset.nrl;roomsView();return}
     if(b.dataset.nrf){S.nrf=!S.nrf;roomsView();return}
     if(b.dataset.nrr){S.nrr=!S.nrr;roomsView();return}
+    if(b.dataset.nig){S.ni.g=b.dataset.nig;roomsView();return}
+    if(b.dataset.nil){S.ni.lang=b.dataset.nil;roomsView();return}
+    if(b.dataset.niadd){const d=$('#ni-d')?.value;if(d&&!S.ni.dates.includes(d)){S.ni.dates.push(d);S.ni.dates.sort()}roomsView();return}
+    if(b.dataset.nidel){S.ni.dates=S.ni.dates.filter(x=>x!==b.dataset.nidel);roomsView();return}
+    if(b.dataset.act==='newinvite'){const N=S.ni,n=(N.n||'').trim().slice(0,40);if(!n){toast('מה השם?');return}if(!N.dates.length){toast('צריך לפחות מועד אחד');return}
+      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.place.trim()?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
+      b.disabled=true;try{await S.db.raw.doc('invites/'+id).set(v);S.niDone={...v,id};S.ni={n:'',g:'m',lang:'he',dates:[],place:'',ps:''};toast('ההזמנה נפתחה')}catch(e){console.error(e);toast('לא נשמר. האם הודבקו החוקים החדשים בקונסול?')}roomsView();return}
+    if(b.dataset.invset){const [id,d]=b.dataset.invset.split('|');await S.db.raw.doc('invites/'+id).update({date:d}).catch(()=>toast('לא נשמר'));return}
     if(b.dataset.inv){const v=(S.invites||[]).find(x=>x.id===b.dataset.inv);if(!v)return;const names=Object.values(v.team||{}).filter(x=>x&&x.ans==='yes').map(x=>x.n);
       S.nrn=v.subject||'';S.nrg=v.g==='f'?'f':'m';S.nrl=v.lang==='en'?'en':'he';S.nrnames=names.join(', ');S.nrc=Math.max(1,Math.min(14,names.length||S.nrc||5));roomsView();window.scrollTo(0,0);toast('הפרטים הועתקו לחדר החדש');return}
     if(b.dataset.invdel){if(!confirm('למחוק את ההזמנה של '+((S.invites||[]).find(x=>x.id===b.dataset.invdel)?.subject||'')+'?'))return;await S.db.raw.doc('invites/'+b.dataset.invdel).delete().catch(()=>toast('לא נמחק'));return}

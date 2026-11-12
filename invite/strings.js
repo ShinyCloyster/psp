@@ -6,6 +6,7 @@
 //   - {name} = the person's name from the link, {host} = the name in config.js.
 //   - In a friend's invitation: {by} = the subject's name, and {s:בחר|בחרה} picks the word by the subject's gender.
 //   - A key that starts with f_ is the friend's version of the same key (the friend sees it instead).
+//   - A key that starts with r_ is the version for a friend who answers remotely (won't come in person).
 window.INV_TEXT = {
   he: {
     title: 'PSP · יש לך דואר',
@@ -110,6 +111,37 @@ window.INV_TEXT = {
     girl: 'בת ♀',
     partySlots: 'הצוות',
     friendNamePh: 'החבר',
+    // ===== round 2: the dates (only when the invitation was opened with dates) =====
+    tab_dates: 'תאריכים',
+    goDates: 'לסימון תאריכים',
+    datesTitle: 'מתי נפגשים?',
+    datesLead: 'סמנו את כל המועדים שמתאימים לכם. כשכולם יכולים באותו מועד, הוא נדלק, ו{host} קובע.',
+    datesMine: 'מה מתאים לי:',
+    datesTable: 'מי יכול מתי',
+    datesMe: 'אני',
+    datesAll: 'כולם יכולים!',
+    datesLocked: 'המסלול נקבע: {d}',
+    datesNone: 'עוד אף אחד לא סימן.',
+    datesWait: 'טוען את המועדים…',
+    // ===== round 2: a friend who answers remotely (won't come in person) =====
+    remoteChk: 'לא יגיע פיזית, יענה מרחוק',
+    remoteTag: 'מרחוק',
+    r_letter: [
+      { m: 'שמחים לבשר לך ש{by} {s:בחר|בחרה} בך להצטרף כחוקר שדה במחקר {s:עליו|עליה}, מרחוק.', f: 'שמחים לבשר לך ש{by} {s:בחר|בחרה} בך להצטרף כחוקרת שדה במחקר {s:עליו|עליה}, מרחוק.' },
+      { m: 'גם בלי להגיע, התשובות שלך הן חלק מהתמונה: לפני הערב תקבל קישור, ותענה מהבית.', f: 'גם בלי להגיע, התשובות שלך הן חלק מהתמונה: לפני הערב תקבלי קישור, ותעני מהבית.' },
+    ],
+    r_menuAsk: { m: 'מצטרף למחקר מרחוק?', f: 'מצטרפת למחקר מרחוק?' },
+    r_confirm: [
+      'לענות מהבית על כ־150 שאלות קצרות על {by}, בקישור שיגיע לפני הערב.',
+      'אפשר לענות בקצב שלך, ותמיד מותר לענות "לא יודע".',
+      'התשובות שלך פרטיות, ונכנסות לחישוב בערב.',
+      'אפשר לשאול הכול ולשנות את התשובה בכל רגע.',
+    ],
+    r_todo: [
+      { t: 'לבשר ל{by}', d: { m: 'ש{s:ידע|תדע} שאתה בפנים, גם מרחוק.', f: 'ש{s:ידע|תדע} שאת בפנים, גם מרחוק.' } },
+      { t: 'לבחור דמות', d: 'הדמות שתייצג אותך בערב, על המסך.', go: 'card' },
+      { t: 'לחכות לקישור', d: 'לפני הערב יגיע אליך קישור לשאלות. עונים מהבית, מתי שנוח.' },
+    ],
     // the team: build the list, then send everyone one message with one link
     addBtn: 'הוספה לצוות',
     added: '{f} ברשימה ✓',
@@ -211,7 +243,7 @@ window.INV_TEXT = {
     f_todo: [
       { t: 'לבשר ל{by}', d: { m: 'ש{s:ידע|תדע} שאתה בפנים.', f: 'ש{s:ידע|תדע} שאת בפנים.' } },
       { t: 'לבחור דמות', d: 'הדמות שתייצג אותך בערב, על המסך ובטלפון.', go: 'card' },
-      { t: 'לשמור את הערב', d: '{by} {s:יתאם|תתאם} תאריך שמתאים לכולם.' },
+      { t: 'לסמן תאריכים', d: 'מתוך המועדים שהוצעו, מה מתאים לך. כולם רואים מי יכול מתי.', go: 'dates' },
       { t: 'להגיע עם טלפון טעון', d: 'זה כל הציוד שצריך.' },
       { t: 'לא להתכונן', d: 'באמת. רק להגיע עם כל מה שאתם יודעים על {by}.' },
     ],
@@ -286,7 +318,7 @@ window.INV_TEXT = {
     todo: [
       { t: 'לבשר ל{host}', d: 'הודעה קצרה, כדי שנתחיל לתאם.' },
       { t: 'לבחור דמות', d: 'הדמות שתייצג אותך בערב, על המסך ובטלפון.', go: 'card' },
-      { t: 'לקבוע תאריך', d: 'ערב שמתאים לך ולחברים. {host} יעזור לתאם.' },
+      { t: 'לסמן תאריכים', d: 'מתוך המועדים ש{host} הציע, מה מתאים לך. כולם רואים מי יכול מתי.', go: 'dates' },
       { t: 'לוודא שהחברים בפנים', d: 'שכולם מוכנים להקדיש ערב של כ־3 שעות למציאת הפוקימון שלך.' },
       { t: 'לבחור 4 מאמנים', d: { m: 'להחליט מראש ולכתוב לעצמך כמה נקודות על כל אחד. עליהם תספר מול כולם, עד 7 דקות לכל אחד. למשל: צבא, משפחה, להקה, תנועת נוער.', f: 'להחליט מראש ולכתוב לעצמך כמה נקודות על כל אחד. עליהם תספרי מול כולם, עד 7 דקות לכל אחד. למשל: צבא, משפחה, להקה, תנועת נוער.' } },
       { t: 'להזמין את החברים', d: 'כל אחד מקבל ממך הזמנה אישית משלו.', go: 'team' },
@@ -403,6 +435,35 @@ window.INV_TEXT = {
     girl: 'She ♀',
     partySlots: 'The team',
     friendNamePh: 'your friend',
+    tab_dates: 'Dates',
+    goDates: 'Mark your dates',
+    datesTitle: 'When do we meet?',
+    datesLead: 'Mark every date that works for you. When everyone can make the same date it lights up, and {host} sets it.',
+    datesMine: 'What works for me:',
+    datesTable: 'Who can make it when',
+    datesMe: 'Me',
+    datesAll: 'Everyone can!',
+    datesLocked: 'The route is set: {d}',
+    datesNone: 'Nobody has marked anything yet.',
+    datesWait: 'Loading the dates…',
+    remoteChk: 'Won’t come in person, will answer remotely',
+    remoteTag: 'Remote',
+    r_letter: [
+      'We are delighted to inform you that {by} has chosen you to join the study about {s:him|her} as a field researcher, remotely.',
+      'Even without coming, your answers are part of the picture: before the evening you’ll get a link and answer from home.',
+    ],
+    r_menuAsk: 'Will you join the study remotely?',
+    r_confirm: [
+      'Answering about 150 short questions about {by} from home, with a link that arrives before the evening.',
+      'You can answer at your own pace, and "Don’t know" is always allowed.',
+      'Your answers are private, and they count on the evening.',
+      'You can ask anything and change your answer at any time.',
+    ],
+    r_todo: [
+      { t: 'Tell {by}', d: 'So {s:he|she} knows you’re in, even remotely.' },
+      { t: 'Choose a character', d: 'The one who’ll stand for you on the evening, on the screen.', go: 'card' },
+      { t: 'Wait for the link', d: 'Before the evening you’ll get a link to the questions. Answer from home, whenever suits you.' },
+    ],
     addBtn: 'Add to the team',
     added: '{f} is on the list ✓',
     stInList: 'On the list',
@@ -498,7 +559,7 @@ window.INV_TEXT = {
     f_todo: [
       { t: 'Tell {by}', d: 'So {s:he|she} knows you’re in.' },
       { t: 'Choose a character', d: 'The one who’ll stand for you on the evening, on the screen and on your phone.', go: 'card' },
-      { t: 'Keep the evening free', d: '{by} will set a date that works for everyone.' },
+      { t: 'Mark your dates', d: 'Of the dates offered, which work for you. Everyone sees who can make it when.', go: 'dates' },
       { t: 'Come with a charged phone', d: 'That’s all the gear you need.' },
       { t: 'Don’t prepare', d: 'Really. Just bring everything you know about {by}.' },
     ],
@@ -565,7 +626,7 @@ window.INV_TEXT = {
     todo: [
       { t: 'Tell {host}', d: 'A short message, so we can start coordinating.' },
       { t: 'Choose a character', d: 'The one who’ll stand for you on the evening, on the screen and on your phone.', go: 'card' },
-      { t: 'Set a date', d: 'An evening that works for you and your friends. {host} will help coordinate.' },
+      { t: 'Mark your dates', d: 'Of the dates {host} offered, which work for you. Everyone sees who can make it when.', go: 'dates' },
       { t: 'Make sure your friends are in', d: 'That everyone is up for an evening of about 3 hours to find your Pokémon.' },
       { t: 'Choose 4 trainers', d: 'Decide in advance and jot down a few points on each. You’ll tell about them in front of everyone, up to 7 minutes each. For example: the army, family, a band, a youth movement.' },
       { t: 'Invite your friends', d: 'Each one gets a personal invitation of their own from you.', go: 'team' },
