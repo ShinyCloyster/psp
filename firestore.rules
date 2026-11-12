@@ -15,7 +15,7 @@ service cloud.firestore {
       allow list, delete: if isHost();
       allow create: if isHost() || (signedIn() && request.resource.data.keys().hasOnly(['subject','g','lang','by','at','av','ans','team'])
                     && request.resource.data.subject is string && request.resource.data.subject.size() <= 40);
-      allow update: if isHost() || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['team','av','ans','at','sd','loc','tr'])
+      allow update: if isHost() || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['team','av','ans','at','sd','loc','tr','date'])
                     && request.resource.data.team.size() <= 30);
     }
   }

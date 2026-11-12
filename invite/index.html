@@ -409,6 +409,10 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .eveb{text-align:center}.eveb a.nextbtn{text-decoration:none;display:block}.eveb h2{margin:0 0 8px}.eveb p{font-size:15px}
 .dex.done .dexsil img{width:84px;height:84px;object-fit:contain;image-rendering:pixelated}
 .trhow ul{margin:6px 0 0;padding-inline-start:20px}.trhow li{margin:4px 0;font-size:15px;line-height:1.45}
+.dtab tr.none td{color:#9AA0B8}.dnone{font-size:13px;margin:6px 0 0}
+.dsets{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.dset{flex:1 1 140px;display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:3px solid #9FA7C7;border-radius:12px;padding:10px 8px;font:700 16px var(--body);color:#1E2238}
+.dset small{font:500 12px var(--body);color:#6A6F8A}.dset.all{border-color:var(--gold)}.dset.on{background:#E3F6EA;border-color:var(--ok)}
+.simb{background:#EFE7FF!important;text-align:center}.simb h2{margin:0 0 6px}.simb p{font-size:15px;margin:0 0 10px}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -873,18 +877,25 @@ const hasDates=()=>!!(FILE&&Array.isArray(FILE.dates)&&FILE.dates.length);
 const fmtD=(d,long)=>{const [a,t]=String(d).split('T');let r=a;try{r=new Date(a+'T12:00:00').toLocaleDateString(LANG==='he'?'he-IL':'en-GB',long?{weekday:'long',day:'numeric',month:'long'}:{weekday:'short',day:'numeric',month:'numeric'})}catch(e){}return t?r+' · '+t:r};
 const myDates=()=>ROLE==='s'?(FILE&&FILE.sd)||mem.sd||[]:((TEAM&&TEAM[FKEY]&&TEAM[FKEY].d)||mem.dates||[]);
 function datePeople(){const P=[{n:ROLE==='s'?T('datesMe'):(FILE&&FILE.subject)||BY,d:(FILE&&FILE.sd)||[],me:ROLE==='s'}];
-  Object.entries(TEAM||{}).forEach(([k,v])=>{if(v&&v.n&&v.ans!=='removed'&&!v.r&&(v.ans==='yes'||(v.d&&v.d.length)))P.push({n:k===FKEY?T('datesMe'):v.n,d:v.d||[],me:k===FKEY})});return P}
+  Object.entries(TEAM||{}).forEach(([k,v])=>{if(v&&v.n&&v.ans!=='removed'&&v.ans!=='no'&&!v.r){const d=v.d||[];P.push({n:k===FKEY?T('datesMe'):v.n,d,me:k===FKEY,none:!d.length})}});return P}
 function pDates(){if(!hasDates())return `${ptitle('datesTitle')}<p class="plead">${H('datesWait')}</p>`;
-  const D=FILE.dates,mine=myDates(),P=datePeople(),all=d=>P.length>1&&P.every(x=>x.d.includes(d));
+  const D=FILE.dates,mine=myDates(),P=datePeople(),R=P.filter(x=>!x.none),all=d=>R.length>1&&R.every(x=>x.d.includes(d)),cnt=d=>R.filter(x=>x.d.includes(d)).length;
   return `${ptitle('datesTitle')}${FILE.date?`<div class="dlock">🏆 ${esc(T('datesLocked').replace('{d}',fmtD(FILE.date,true)))}</div>`:''}<p class="plead">${H('datesLead')}</p>
   <section class="blk"><h2>${H('datesMine')}</h2><div class="dchips">${D.map(d=>`<button data-d="${d}" class="${mine.includes(d)?'on':''}${FILE.date===d?' set':''}">${mine.includes(d)?'✓ ':''}${esc(fmtD(d))}</button>`).join('')}</div></section>
   <section class="blk"><h2>${H('datesTable')}</h2><div class="dtabw"><table class="dtab"><tr><th></th>${D.map(d=>`<th class="${all(d)?'all':''}${FILE.date===d?' set':''}">${esc(fmtD(d))}</th>`).join('')}</tr>
-    ${P.map(x=>`<tr class="${x.me?'me':''}"><td>${esc(x.n)}</td>${D.map(d=>`<td class="${all(d)?'all':''}">${x.d.includes(d)?'✓':'·'}</td>`).join('')}</tr>`).join('')}</table></div>
-    ${D.some(all)?`<p class="dall">⭐ ${H('datesAll')} ${D.filter(all).map(d=>esc(fmtD(d))).join(' · ')}</p>`:''}</section>`}
+    ${P.map(x=>`<tr class="${x.me?'me':''}${x.none?' none':''}"><td>${esc(x.n)}</td>${D.map(d=>`<td class="${all(d)?'all':''}">${x.none?'—':x.d.includes(d)?'✓':'·'}</td>`).join('')}</tr>`).join('')}</table></div>${P.some(x=>x.none)?`<p class="muted dnone">${H('datesNone')}</p>`:''}
+    ${D.some(all)?`<p class="dall">⭐ ${H('datesAll')} ${D.filter(all).map(d=>esc(fmtD(d))).join(' · ')}</p>`:''}</section>
+  ${ROLE==='s'?`<section class="blk dsetb"><h2>${H(FILE.date?'dateSetDoneT':'dateSetT')}</h2><p class="muted">${H(FILE.date?'dateSetDone':'dateSetLead')}</p>
+    <div class="dsets">${D.map(d=>`<button class="dset${FILE.date===d?' on':''}${all(d)?' all':''}" data-set="${d}">${FILE.date===d?'🏆 ':all(d)?'⭐ ':''}${esc(fmtD(d))}<small>${esc(T('dateCan').replace('{a}',cnt(d)).replace('{b}',R.length))}</small></button>`).join('')}</div>
+    ${FILE.date?`<a class="wa wbtn" id="dwa" href="${wa(dateMsg(),'')}" target="_blank" rel="noopener">${H('dateTell')}</a>`:''}</section>`:''}`}
+function dateMsg(){return T('dateMsg').replace('{d}',fmtD(FILE.date,true)).replace('{p}',placeNow())+'\n'+groupLink()}
 function bindChips(redo){document.querySelectorAll('.dchips [data-d]').forEach(b=>b.onclick=()=>{const d=b.dataset.d,m=[...myDates()],i=m.indexOf(d);if(i>=0)m.splice(i,1);else m.push(d);m.sort();sfx('a',.4);
   if(ROLE==='s'){mem.sd=m;FILE&&(FILE.sd=m);save();dbSubject({sd:m})}else{mem.dates=m;if(TEAM&&TEAM[FKEY])TEAM[FKEY].d=m;save();dbFriend()}
   const y=$('#letter').scrollTop;redo();$('#letter').scrollTop=y})}
-function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()})}
+function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()});
+  document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const d=b.dataset.set;if(FILE.date===d)return;if(!confirm(T('dateSetAsk').replace('{d}',fmtD(d,true))))return;
+    FILE.date=d;dbSubject({date:d});sfx('caught',.7);toast(T('dateSetOk'));const y=$('#letter').scrollTop;$('#pg').innerHTML=pDates();bindDates();$('#letter').scrollTop=y;setTimeout(()=>$('#dwa')?.scrollIntoView({block:'center',behavior:'smooth'}),200)});
+  $('#dwa')?.addEventListener('click',()=>{mem.toldDate=FILE.date;save()})}
 
 // ---------- 11. the subject's checklist (after yes): what's done before the evening, and what's left ----------
 function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],I=[];
@@ -913,7 +924,7 @@ const mapsUrl=p=>'https://www.google.com/maps/search/?api=1&query='+encodeURICom
 function evDate(){const d=FILE&&FILE.date;if(!d)return null;const [a,b]=String(d).split('T'),[y,m,dd]=a.split('-').map(Number),[h,mi]=(b||'20:00').split(':').map(Number);return new Date(y,m-1,dd,h,mi)}
 const utc=t=>t.toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
 const calTitle=()=>T('calTitle').replace('{x}',ROLE==='s'?NAME:BY);
-function cdText(){const s=evDate();if(!s)return '';const n=new Date();n.setHours(0,0,0,0);const t=new Date(s);t.setHours(0,0,0,0);const d=Math.round((t-n)/864e5);return d<0?'':d===0?T('cdToday'):d===1?T('cdTomorrow'):T('cdLeft').replace('{d}',d)}
+function cdText(){const s=evDate();if(!s)return '';if(TEST()&&mem.simDay)return T('cdToday');const n=new Date();n.setHours(0,0,0,0);const t=new Date(s);t.setHours(0,0,0,0);const d=Math.round((t-n)/864e5);return d<0?'':d===0?T('cdToday'):d===1?T('cdTomorrow'):T('cdLeft').replace('{d}',d)}
 function wwBlock(){if(REMOTE)return '';const pl=placeNow(),s=evDate(),cd=cdText();
   const g=s?`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(calTitle())}&dates=${utc(s)}/${utc(new Date(s.getTime()+3*36e5))}&location=${encodeURIComponent(pl)}`:'';
   return `<section class="blk ww">${cd?`<div class="cd"><span class="ball wobble" style="--s:26px"></span><b>${esc(cd)}</b></div>`:''}
@@ -968,9 +979,13 @@ function testBar(){document.body.classList.toggle('testm',TEST());if(TEST()&&!$(
 // ---------- the evening itself: the same link leads into it, and afterwards shows the filled Pokédex entry ----------
 let EVE=null,eveUn=null;
 function watchEve(){if(eveUn||!FILE||!FILE.room)return;eveUn=1;dbReady.then(db=>{if(!db)return;eveUn=db.doc('state/'+FILE.room).onSnapshot(d=>{EVE=d.exists?d.data():null;const cur=PAGES()[page];if(scene==='letter'&&cur&&cur[0]==='hub'&&!$('.locp')){$('#pg').innerHTML=pHub();bindHub()}},()=>{})})}
+function simBlock(){if(ROLE!=='s'||!TEST()||!FILE||(EVE&&EVE.revealed))return '';const I=checklist(),full=I.every(x=>x.frac>=1);
+  if(!mem.simDay)return `<section class="blk simb"><h2>🧪 ${H('simT')}</h2><p>${H(full?'simReady':'simWait')}</p>${full?`<button class="nextbtn wbtn glow" id="simgo">${H('simBtn')}</button>`:''}</section>`;
+  return FILE.room?'':`<section class="blk simb"><h2>🧪 ${H('simDayT')}</h2><p>${H('simNeedRoom')}</p></section>`}
 function eveBlock(){if(!FILE||!FILE.room||(EVE&&EVE.revealed))return '';const base=location.pathname.replace(/invite\/.*$/,''),nm=encodeURIComponent(ROLE==='s'?NAME:NAME);
   if(REMOTE)return `<section class="blk eveb"><h2>${H('eveRemoteT')}</h2><p>${H('eveRemote')}</p><a class="nextbtn wbtn glow" href="${base}?n=${nm}#remote=${esc(FILE.room)}">${H('eveRemoteBtn')}</a></section>`;
   const s=evDate();if(s&&cdText()!==T('cdToday')&&s>new Date())return '';
+  if(!FILE.room)return '';
   return `<section class="blk eveb"><h2>${H('eveT')}</h2><a class="nextbtn wbtn glow" href="${base}?n=${nm}#r=${esc(FILE.room)}">${H('eveBtn')}</a></section>`}
 function dexDone(){const r=EVE&&EVE.revealed&&EVE.result;if(!r)return '';const sd=r.spriteData||'',src=sd?(/^(data:|https?:)/.test(sd)?sd:'../'+sd):'',ty=Array.isArray(r.types)?r.types.join(' / '):String(r.types||'');
   return `<section class="dex done"><div class="dexscr"><div class="dexsil">${src?`<img src="${src}" alt="">`:'★'}</div><div class="dexinfo"><b class="dno">PSP</b><b class="dnm">${esc(r.finalName||'')}</b>${ty?`<span>${H('dexType')}: ${esc(ty)}</span>`:''}<span>${esc(ROLE==='s'?NAME:BY)}</span></div></div><p class="dexdesc">${H('dexDoneT')}</p></section>`}
@@ -984,13 +999,13 @@ function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
   return tiles.join('')}
 function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
   const pickFirst=ROLE==='s'&&FILE&&!FILE.loc;
-  return `<p class="savedtag">${H('saved')}</p>${ptitle(ROLE==='s'?'ckTitle':'f_hubTitle')}${eveBlock()}${dexDone()}
+  return `<p class="savedtag">${H('saved')}</p>${ptitle(ROLE==='s'?'ckTitle':'f_hubTitle')}${simBlock()}${eveBlock()}${dexDone()}
   ${pickFirst?wwBlock():''}<div class="hubg">${hubTiles()}</div>
   ${pickFirst?'':wwBlock()}${ROLE==='f'?crewRow():''}
   ${ROLE==='s'?`<section class="blk">${checklistHTML()}</section>`:`<section class="blk"><ol class="todo">${(TXR('todo')||[]).filter(x=>!x.go).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol></section>`}
   <div class="hubl">${ROLE==='s'?`<button class="ghostbtn" data-go="route">🗺 ${H('routeTitle')}</button>`:''}<button class="ghostbtn" data-go="letter">✉ ${H('hubLetter')}</button></div>
   <button class="linkbtn" id="chg">${H('changeAnswer')}</button>`}
-function bindHub(){bindWW();document.querySelectorAll('#pg [data-go]').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
+function bindHub(){bindWW();$('#simgo')?.addEventListener('click',()=>{mem.simDay=1;save();sfx('caught',.7);$('#pg').innerHTML=pHub();bindHub();$('#letter').scrollTop=0});document.querySelectorAll('#pg [data-go]').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
   document.querySelector('#pg .tellbtn')?.addEventListener('click',()=>{mem.told=1;save();setTimeout(()=>{if(PAGES()[page][0]==='hub'){$('#pg').innerHTML=pHub();bindHub()}},800)});
   $('#chg').onclick=()=>{delete mem.ans;mem.declined=1;save();dbSync({ans:'no'});ans='ask';page=PAGES().length-1;renderLetter()}}
 
