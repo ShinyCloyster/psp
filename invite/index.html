@@ -305,6 +305,20 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .party h2 small{font:500 14px/1 var(--body);color:#6A6F8A}
 .paper .cd{color:#E4483F}
 .cd2{font:600 15px/1.4 var(--body);color:var(--gold)}
+.locknote{margin:0;text-align:center;color:var(--gold);font-size:14px}.locknote:empty{display:none}
+.nextbtn.locked{opacity:.45;filter:grayscale(.6);cursor:not-allowed}
+.steps button.lock{opacity:.4}
+.bagl button.seen{opacity:.5;filter:grayscale(.7)}
+.bagl button.nextup{box-shadow:0 0 0 3px var(--gold);animation:pulse 1.1s ease-in-out infinite}
+.faqyes{align-self:stretch;margin-top:12px;font-size:19px;padding:15px}
+.faqback{align-self:center;margin-top:8px}
+#menuwrap{display:flex;flex-direction:column;gap:10px}
+.gsel button{display:flex;align-items:center;justify-content:center;gap:6px;min-width:96px;flex:1;white-space:nowrap}
+#who .q{display:block;margin-bottom:6px;color:#3B4AA0}
+.pnm .gs{font-style:normal;color:#6A8CC8;font-weight:400}
+.pslot .pic{align-items:center}
+.sendall .wbtn{margin-top:10px}
+#who .gbp-menu{max-height:55vh;overflow-y:auto}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -372,6 +386,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
   <div class="ps" id="ps">PRESS START</div>
 </section>
 
+<section class="scene hide" id="who" style="justify-content:center;gap:12px;overflow-y:auto"></section>
 <section class="scene hide" id="arrive">
   <div id="shadow"></div>
   <div id="dnwrap"><div style="display:flex;flex-direction:column;align-items:center"><div id="dn" class="px"><button class="hit" id="dnhit" aria-label="envelope"></button></div><div id="ground"></div></div></div>
@@ -391,7 +406,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
 <script>
 (()=>{
 const Q=new URLSearchParams(location.search);
-const LANG=Q.get('lang')==='en'?'en':'he', G=Q.get('g')==='f'?'f':'m';
+const LANG=Q.get('lang')==='en'?'en':'he';let G=Q.get('g')==='f'?'f':'m';
 const TX=(window.INV_TEXT||{})[LANG]||{}, CFG=window.INV_CFG||{};
 const ROLE=Q.get('r')==='f'?'f':'s', BY=(Q.get('by')||'').trim().slice(0,40), BG=Q.get('bg')==='f'?'f':'m';
 // a friend sees the f_ version of a text when there is one
@@ -411,7 +426,8 @@ const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,120):ms));
 
 // remembered per person and language: seen the intro, and the answer
-const KEY=ROLE==='f'?'psp-invite:'+LANG+':f:'+BY+':'+NAME:'psp-invite:'+LANG+':'+NAME;
+const GIID=(Q.get('i')||'').replace(/[^a-z0-9]/g,'').slice(0,24),GROUP=ROLE==='f'&&!Q.get('to')&&!!GIID;
+const KEY=GROUP?'psp-invite:'+LANG+':g:'+GIID:ROLE==='f'?'psp-invite:'+LANG+':f:'+BY+':'+NAME:'psp-invite:'+LANG+':'+NAME;
 if(Q.get('reset')){try{Object.keys(localStorage).filter(k=>k.startsWith('psp-invite')).forEach(k=>localStorage.removeItem(k))}catch(e){}Q.delete('reset');history.replaceState(null,'',location.pathname+(Q.toString()?'?'+Q.toString():''))}
 const mem=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return {}}})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}};
@@ -431,7 +447,7 @@ const sndBtn=$('#snd');sndBtn.setAttribute('aria-pressed',soundOn);sndBtn.title=
 sndBtn.onclick=e=>{e.stopPropagation();soundOn=!soundOn;sndBtn.setAttribute('aria-pressed',soundOn);try{localStorage.setItem('psp-invite-snd',soundOn?'1':'0')}catch(x){}if(!soundOn&&music)music.pause();else if(scene==='holo'||scene==='letter')mus(true)};
 
 let scene='start';
-function show(id){['start','arrive','holo'].forEach(s=>$('#'+s).classList.toggle('hide',s!==id));$('#letter').classList.toggle('hide',id!=='letter');scene=id}
+function show(id){$('#who')?.classList.add('hide');['start','arrive','holo'].forEach(s=>$('#'+s).classList.toggle('hide',s!==id));$('#letter').classList.toggle('hide',id!=='letter');scene=id}
 
 // Dragonite's frames: 56 frames of 102 x 90 in an 8-column sheet
 const DN={fw:102,fh:90,n:56,cols:8};let dnT=null,dnK=0;
@@ -442,7 +458,18 @@ function dnRun(){clearInterval(dnT);const tick=()=>{const k=dnK%DN.n;$('#dn').st
 $('#startSub').textContent=T('startSub');$('#ps').textContent=T('pressStart');
 const skipBtn=$('#skip');skipBtn.textContent=T('skip');
 skipBtn.onclick=e=>{e.stopPropagation();unlock();toLetter(true)};
-function begin(){if(scene!=='start')return;unlock();if(mem.seen)skipBtn.classList.remove('hide');arrive()}
+function begin(){if(scene!=='start')return;unlock();if(mem.seen)skipBtn.classList.remove('hide');if(GROUP&&!mem.me){pickWho();return}arrive()}
+// the group link: "who is opening the invitation?", names from the subject's list, or a name of your own
+async function pickWho(){scene='who';['start','arrive','holo'].forEach(x=>$('#'+x).classList.add('hide'));const w=$('#who');w.classList.remove('hide');
+  w.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px"><b class="q">${H('pickTitle')}</b>${H('pickLead')}</div><div class="gbp-menu" id="whol"><p class="muted" style="margin:10px 14px">${H('pickLoading')}</p></div>`;
+  let team={};try{const db=await dbReady;if(db){const d=await db.doc('invites/'+IID).get();if(d.exists)team=d.data().team||{}}}catch(e){console.warn('pick',e)}
+  const L=Object.entries(team).filter(([k,v])=>v&&v.n&&v.ans!=='removed').sort((a,b)=>String(a[1].n).localeCompare(String(b[1].n)));
+  $('#whol').innerHTML=L.map(([k,v])=>`<button data-k="${esc(k)}">${esc(v.n)} ${v.g==='f'?'♀':'♂'}${v.ans==='yes'?' ✓':''}</button>`).join('')+`<button data-k="">${H('pickOther')}</button>`;
+  $('#whol').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{sfx('a',.5);const k=b.dataset.k;if(k){const v=team[k];choose(v.n,v.g==='f'?'f':'m',k);return}
+    let g='m';w.insertAdjacentHTML('beforeend',`<div class="blk addf" style="margin-top:12px;width:min(100%,460px)"><label for="pname">${H('pickName')}</label><input id="pname" maxlength="30" autocomplete="off"><div class="gsel" style="margin-top:10px"><button data-g="m" class="on">${H('boy')}</button><button data-g="f">${H('girl')}</button></div><button class="nextbtn wbtn" id="pgo">${H('pickGo')} ${AR_NEXT}</button></div>`);
+    w.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{g=x.dataset.g;w.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x))});$('#pname').focus();
+    $('#pgo').onclick=()=>{const n=($('#pname').value||'').trim().slice(0,30);if(!n){$('#pname').classList.add('bad');return}choose(n,g,rid(8))}})}
+function choose(n,g,k){NAME=n;G=g;FKEY=k;mem.me={n,g,k};save();$('#who').classList.add('hide');arrive()}
 $('#start').addEventListener('click',begin);$('#start').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')begin()});
 
 // ---------- 2. Dragonite arrives ----------
@@ -470,8 +497,8 @@ $('#seal').addEventListener('click',async e=>{e.stopPropagation();if(sealDone)re
   await wait(250);$('.wrap').classList.add('gone');await wait(RM?0:550);$('#env').classList.add('hide');holo()});
 
 // ---------- 4. Oak's hologram ----------
-const LINES=TL('oak');let li=0,typing=null,full='';
-async function holo(){show('holo');clearInterval(dnT);mus(true);sfx('tink',.5);await wait(300);$('#beam').classList.add('on');$('#scan').classList.add('on');$('#oak').classList.add('on');await wait(900);say(0)}
+let LINES=[];let li=0,typing=null,full='';
+async function holo(){LINES=TL('oak');show('holo');clearInterval(dnT);mus(true);sfx('tink',.5);await wait(300);$('#beam').classList.add('on');$('#scan').classList.add('on');$('#oak').classList.add('on');await wait(900);say(0)}
 function say(i){li=i;full=LINES[i]||'';const t=$('#oaktxt');$('#oaktri').style.visibility='hidden';clearInterval(typing);
   if(RM){t.textContent=full;$('#oaktri').style.visibility='';return}
   let n=0;t.textContent='';typing=setInterval(()=>{n++;t.textContent=full.slice(0,n);if(n>=full.length){clearInterval(typing);typing=null;$('#oaktri').style.visibility=''}},32)}
@@ -495,19 +522,26 @@ function PAGES(){const P=[['letter',pLetter,()=>{}],['route',pMap,bindMap],['pre
   if(mem.ans==='yes'){P.push(['card',pCard,bindCard]);if(ROLE==='s')P.push(['team',pParty,bindParty])}return P}
 const pageIdx=k=>PAGES().findIndex(x=>x[0]===k);
 function renderLetter(){
-  $('#lcol').innerHTML=`<nav class="steps" id="steps"></nav><div id="pg"></div><div class="pnav" id="pnav"></div><button class="restart" id="restart">${H('restart')}</button>`;
+  $('#lcol').innerHTML=`<nav class="steps" id="steps"></nav><div id="pg"></div><p class="locknote" id="locknote"></p><div class="pnav" id="pnav"></div><button class="restart" id="restart">${H('restart')}</button>`;
   $('#restart').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
+  $('#lcol').addEventListener('click',e=>{if(e.target.id==='notme'){delete mem.me;save();location.reload()}});
   // swipe: in Hebrew the next page comes from the left, in English from the right
   let x0=null,y0=0;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
   pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx))return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
   goPage(Math.min(page,PAGES().length-1),true)}
-function goPage(i,first){const P=PAGES(),n=P.length;if(i<0||i>=n)return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);stopPlay();
-  const st=$('#steps');st.innerHTML=P.map(([k],j)=>`<button data-p="${j}" class="${j===i?'on':''}${j<i?' done':''}"><b>${j+1}</b>${esc(T('tab_'+k))}</button>`).join('');
+// how far you may go: past the route only after every stop, past the prep only after every item (an answered invitation is open)
+function reach(){if(mem.ans)return 99;const P=PAGES();if(!mem.routeDone)return P.findIndex(x=>x[0]==='route');if(!mem.prepDone)return P.findIndex(x=>x[0]==='prep');return 99}
+function navBar(){const P=PAGES(),n=P.length,i=page,r=reach();
+  const st=$('#steps');st.innerHTML=P.map(([k],j)=>`<button data-p="${j}" class="${j===i?'on':''}${j<i?' done':''}${j>r?' lock':''}" ${j>r?'disabled':''}><b>${j>r?'🔒':j+1}</b>${esc(T('tab_'+k))}</button>`).join('');
   st.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>goPage(+b.dataset.p));
+  const lockMsg=i>=r&&i<n-1?(P[i][0]==='route'?'routeLocked':P[i][0]==='prep'?'prepLocked':''):'';
+  $('#pnav').innerHTML=(i>0?`<button class="prevbtn" id="prevbtn">${AR_PREV} ${H('prev')}</button>`:'<span></span>')+(i<n-1?`<button class="nextbtn${lockMsg?' locked':''}" id="nextbtn" ${lockMsg?'disabled':''}>${esc(T('nextTo').replace('{x}',T('tab_'+P[i+1][0])))} ${lockMsg?'🔒':AR_NEXT}</button>`:'');
+  $('#locknote').textContent=lockMsg?T(lockMsg):'';
+  if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(page-1);if($('#nextbtn')&&!lockMsg)$('#nextbtn').onclick=()=>goPage(page+1)}
+function goPage(i,first){const P=PAGES(),n=P.length;if(i<0||i>=n||i>reach())return;const dir=i>page?1:-1;page=i;if(!first)sfx('a',.4);stopPlay();
+  navBar();const st=$('#steps');
   const on=st.querySelector('.on');if(on)st.scrollLeft+=on.getBoundingClientRect().left-st.getBoundingClientRect().left-(st.clientWidth-on.clientWidth)/2;
   const pg=$('#pg');pg.innerHTML=P[i][1]();pg.className=first?'':(dir>0?'in-next':'in-prev');
-  $('#pnav').innerHTML=(i>0?`<button class="prevbtn" id="prevbtn">${AR_PREV} ${H('prev')}</button>`:'<span></span>')+(i<n-1?`<button class="nextbtn" id="nextbtn">${esc(T('nextTo').replace('{x}',T('tab_'+P[i+1][0])))} ${AR_NEXT}</button>`:'');
-  if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(page-1);if($('#nextbtn'))$('#nextbtn').onclick=()=>goPage(page+1);
   $('#letter').scrollTo(0,0);P[i][2]()}
 const ptitle=k=>`<h1 class="ptitle">${H(k)}</h1>`;
 
@@ -518,10 +552,10 @@ function pLetter(){return `<article class="paper">
     <h1>${H('letterTitle')}</h1>
     <p class="to">${H('letterTo')}</p>
     ${TL('letter').map(p=>`<p>${esc(p)}</p>`).join('')}
-    ${DATE||PLACE?`<p class="whn">${DATE?`<b>${H('when')}:</b> ${esc(DATE)}${daysText()?` · <b class="cd">${esc(daysText())}</b>`:''}`:''}${DATE&&PLACE?'<br>':''}${PLACE?`<b>${H('where')}:</b> ${esc(PLACE)}`:''}</p>`:''}
+    ${PLACE?`<p class="whn"><b>${H('where')}:</b> ${esc(PLACE)}</p>`:''}
     <p class="sign">${H('letterSign')}</p>
     ${PS?`<div class="ps"><b>${H('psLabel')}:</b> ${esc(PS)}</div>`:''}
-  </article><p class="hint2">${H('letterNext')}</p>`}
+  </article><p class="hint2">${H('letterNext')}</p>${GROUP?`<button class="restart" style="order:0" id="notme">${H('notMe')}</button>`:''}`}
 
 // ---- 2. the route: the evening is the badge route through Kanto; Dragonite flies you from stop to stop ----
 const STOPS=[[44,94],[44,38],[124,30],[124,78],[100,54],[108,101],[124,54],[44,117],[44,70],[28,30]];
@@ -548,6 +582,7 @@ function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8,n=
   document.querySelectorAll('.mk').forEach((m,k)=>{m.classList.toggle('seen',k<=i);m.classList.toggle('now',k===i)});
   document.querySelectorAll('.slist [data-s]').forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('seen',k<=i)});
   if(badge&&(mem.badges||0)<i){mem.badges=i;save()}
+  if(i===n-1&&!mem.routeDone){mem.routeDone=1;save();navBar()}
   $('#stopbox').innerHTML=`${badge?`<img class="sbadge" src="../img/badge-${i}.webp" alt="">`:''}<small class="sof">${esc(T('stopOf').replace('{i}',i+1).replace('{n}',n))} · ${esc(pickT(S.c))}</small><b class="stt">${esc(pickT(S.t))}</b>${esc(pickT(S.d))}`;
   $('#mapgo').textContent=i>=n-1?T('routeAgain'):`${T('mapNext')} ${AR_NEXT}`;
   if(!first)sfx(badge?'tink':(i===n-1?'page':'a'),.6)}
@@ -559,7 +594,9 @@ function pBag(){return `${ptitle('prepTitle')}<p class="plead">${H('prepLead')}<
   <section class="blk bagg"><div class="bagl">${BAG().map(([ic,t],i)=>`<button data-b="${i}" class="${i===bagI?'on':''}"><span class="bi">${bagIcon(ic)}</span><b>${H(t)}</b>${ic==='ball'&&ROLE==='s'?'<em>×4</em>':''}</button>`).join('')}</div></section>
   <div class="gbp-box bagd" id="bagd"></div>`}
 function bagIcon(ic){return ic==='ball'?`<span class="ball" style="--s:30px;display:block"></span>`:ic==='phone'?'<span class="phone"></span>':`<span class="friends">${[13,44,61].map(n=>`<img src="../img/mini/${n}.png" alt="" class="px">`).join('')}</span>`}
-function bindBag(){const show=i=>{bagI=i;document.querySelectorAll('.bagl button').forEach((b,k)=>b.classList.toggle('on',k===i));
+function bindBag(){const show=i=>{bagI=i;const seen=mem.prepSeen||(mem.prepSeen=[]);if(!seen.includes(i)){seen.push(i);save()}
+    if(seen.length>=BAG().length&&!mem.prepDone){mem.prepDone=1;save();navBar()}const nx=[0,1,2].find(k=>!seen.includes(k));
+    document.querySelectorAll('.bagl button').forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('seen',seen.includes(k)&&k!==i);b.classList.toggle('nextup',k===nx)});
     const [,t,d,m]=BAG()[i];
     $('#bagd').innerHTML=`<b class="q">${H(t)}</b>${H(d)}${m?`<ul>${TL(m).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`};
   document.querySelectorAll('.bagl button').forEach(b=>b.onclick=()=>{sfx('a',.4);show(+b.dataset.b)});show(bagI)}
@@ -580,7 +617,7 @@ function pCard(){const id=String(Math.abs([...NAME].reduce((h,c)=>(h*31+c.charCo
       <div><span>NAME</span><b class="nm">${esc(NAME)}</b></div>
       <div><span>POKéDEX</span><b>???</b></div>
       <div><span>TIME</span><b>${esc(T('saveTime'))}</b></div>
-      <div><span>DATE</span><b class="nm">${esc(DATE||T('dateTbd'))}</b></div></div>
+      <div><span>DATE</span><b class="nm">${esc(T('dateTbd'))}</b></div></div>
       <div class="tcfig" id="tcfig">${cardFig()}</div></div>
     <p class="tcbl">${H('cardBadges')}</p>
     <div class="tcbadges">${[1,2,3,4,5,6,7,8].map(n=>`<img src="../img/badge-${n}.webp" alt="" class="${lit>=n?'on':''}">`).join('')}</div>
@@ -593,8 +630,8 @@ function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.in
   c.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px;margin-top:10px">${H('customText')}${l?`<br><a class="wa" href="${l}" target="_blank" rel="noopener">${H('customWa')}</a>`:''}</div>`}
 
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
-const wobbleS=()=>DAYS==null||DAYS<0?2.6:DAYS<=1?.8:DAYS<=7?1.3:DAYS<=30?1.9:2.6;
-function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p>${daysText()?`<b class="cd2">${esc(T('revealIn').replace('{x}',daysText()))}</b>`:`<b class="cd2">${H('dateTbdLong')}</b>`}<small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
+const wobbleS=()=>2.6;
+function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
 function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
     setTimeout(()=>{b.classList.remove('shake');if(!RM){b.classList.add('wobble');b.style.animationDuration=wobbleS()+'s'}},1150);
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
@@ -614,12 +651,12 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
   else if(ans==='faq'){const F=TXR('faq')||[],link=wa(T('waMsg'));
     w.innerHTML=faqI<0
       ?`<section class="blk res"><h2>${H('laterTitle')}</h2><p>${H('faqLead')}</p></section><div class="gbp-menu faqm" role="menu">${F.map((x,i)=>`<button data-q="${i}">${esc(pickT(x.q))}</button>`).join('')}</div>
-        <section class="blk res"><p>${H('laterText')}</p>${link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('laterWa')}</a>`:''}<br><button class="linkbtn" id="back">${H('backToAnswer')}</button></section>`
+        ${link?`<div class="mapbtns"><a class="wa" href="${link}" target="_blank" rel="noopener">${H('laterWa')}</a></div>`:''}<button class="nextbtn faqyes" id="fyes">${H('menuYes')}</button><button class="ghostbtn faqback" id="back">${AR_PREV} ${H('backToAnswer')}</button>`
       :`<div class="oakq"><img class="px" src="img/oak.png" alt=""><div class="gbp-box"><b class="q">${esc(pickT(F[faqI].q))}</b>${esc(pickT(F[faqI].a))}</div></div>
-        <div class="gbp-menu" role="menu"><button id="fmore">${H('faqBack')}</button><button id="back">${H('backToAnswer')}</button></div>`;
+        <div class="gbp-menu" role="menu"><button id="fmore">${H('faqBack')}</button></div><button class="nextbtn faqyes" id="fyes">${H('menuYes')}</button><button class="ghostbtn faqback" id="back">${AR_PREV} ${H('backToAnswer')}</button>`;
     w.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{faqI=+b.dataset.q;sfx('a',.5);renderMenu(true)});
     if($('#fmore'))$('#fmore').onclick=()=>{faqI=-1;renderMenu(true)};
-    $('#back').onclick=()=>{ans='ask';renderMenu(true)}}
+    $('#back').onclick=()=>{ans='ask';renderMenu(true)};$('#fyes').onclick=()=>{ans='confirm';sfx('a',.5);renderMenu(true)}}
   else{
     w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes">${H('menuYes')}</button><button id="mlater">${H('menuLater')}</button></div>`;
     $('#myes').onclick=()=>{ans='confirm';sfx('a',.5);renderMenu(true)};
@@ -628,60 +665,56 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
 
 
 // ---------- 8. the subject's team (stage 2): six slots like the game's party; everyone past six goes to Bill's PC ----------
-const party=()=>mem.party||(mem.party=[]);
+const party=()=>{const L=mem.party||(mem.party=[]);L.forEach(f=>{if(!f.k)f.k=rid(8)});return L};
 let addG='m';
-function friendLink(f){if(!f.k){f.k=rid(8);save()}const q=new URLSearchParams({to:f.n,g:f.g});q.set('r','f');q.set('by',NAME);q.set('bg',G);if(mem.iid){q.set('i',mem.iid);q.set('k',f.k)}['date','place'].forEach(k=>{if(Q.get(k))q.set(k,Q.get(k))});return location.origin+location.pathname.replace(/en\/?$/,'')+(LANG==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
-const friendText=f=>fill(pick(TX.friendMsg)).replace('{f}',f.n)+'\n'+friendLink(f);
+function groupLink(){const q=new URLSearchParams();q.set('r','f');q.set('by',NAME);q.set('bg',G);if(mem.iid)q.set('i',mem.iid);if(PLACE)q.set('place',PLACE);return location.origin+location.pathname.replace(/en\/?$/,'')+(LANG==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
+const groupText=()=>T('groupMsg')+'\n'+groupLink();
 function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function openUrl(u){const w=window.open(u,'_blank');if(!w)location.href=u}
-function shareFriend(f,done){const text=friendText(f);
+function shareText(text,done){
   if(navigator.share){navigator.share({text}).then(done).catch(()=>{})}
   else{(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{toast(T('copied'));done()}).catch(()=>{prompt('',text);done()})}}
 function slot(f,i){if(!f)return `<div class="pslot empty"><span>${H('partyEmpty')}</span></div>`;
   const r=TEAM&&f.k&&TEAM[f.k],yes=r&&r.ans==='yes',av=r&&r.av,pic=av==='custom'?'<span class="cust sm">?</span>':`<img class="px" src="${typeof av==='number'?`../img/mini/${av}.png`:`../img/ow-${f.g==='f'?'girl':'boy'}.png`}" alt="">`;
-  const stt=yes?esc(pickG(TX.stYes,f.g)):r&&r.ans==='no'?esc(pickG(TX.stNo,f.g)):H(f.sent?'stSent':'stNew');
-  return `<div class="pslot${yes?' yes':''}"><span class="pic">${pic}</span><div class="pnm"><b>${esc(f.n)}</b><small class="${yes?'yes':f.sent?'ok':''}">${stt}</small></div><div class="pbtns"><button data-rs="${i}">${H('resend')}</button><button data-rm="${i}" class="x" aria-label="${esc(T('remove'))}">✕</button></div></div>`}
-let addHow='';
-function pParty(){const P=party(),pc=P.slice(6);
+  const stt=yes?esc(pickG(TX.stYes,f.g)):r&&r.ans==='no'?esc(pickG(TX.stNo,f.g)):H('stInList');
+  return `<div class="pslot${yes?' yes':''}"><span class="pic">${pic}</span><div class="pnm"><b>${esc(f.n)} <i class="gs">${f.g==='f'?'♀':'♂'}</i></b><small class="${yes?'yes':''}">${stt}</small></div>${f.mine?`<div class="pbtns"><button data-rm="${esc(f.k)}" class="x" aria-label="${esc(T('remove'))}">✕</button></div>`:''}</div>`}
+// the team on screen: everyone on my list, plus anyone who joined from the group link with a name of their own
+function teamList(){const mine=party().map(f=>({...f,mine:1})),keys=new Set(mine.map(f=>f.k));
+  const extra=Object.entries(TEAM||{}).filter(([k,v])=>!keys.has(k)&&v&&v.n&&v.ans!=='removed').map(([k,v])=>({n:v.n,g:v.g,k}));return [...mine,...extra]}
+function pParty(){const P=teamList(),pc=P.slice(6);
   return `${ptitle('partyTitle')}<p class="plead">${H('partyLead')}</p>
   <ol class="howto">${TL('partyHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
   <section class="blk addf" id="addf">
     <label for="fname">${H('addNameL')}</label><input id="fname" type="text" maxlength="30" autocomplete="off" placeholder="${esc(T('addNamePh'))}">
     <label>${H('addGL')}</label><div class="gsel"><button data-g="m" class="${addG==='m'?'on':''}">${H('boy')}</button><button data-g="f" class="${addG==='f'?'on':''}">${H('girl')}</button></div>
-    <label>${H('addHowL')}</label>
-    <div class="how"><button class="hw${addHow==='wa'?' on':''}" data-h="wa"><b>${H('howWa')}</b><small>${H('howWaD')}</small></button><button class="hw${addHow==='me'?' on':''}" data-h="me"><b>${H('howMe')}</b><small>${H('howMeD')}</small></button></div>
-    <div id="howbox"></div>
-    <p class="prevl">${H('previewL')}</p><div class="msgprev" id="msgprev"></div>
+    <button class="nextbtn wbtn" id="fadd">${H('addBtn')}</button>
   </section>
   <section class="blk party"><h2>${H('partySlots')} <small>${esc(T('partyCount').replace('{n}',P.length))}</small></h2>
     <div class="pslots">${[0,1,2,3,4,5].map(i=>slot(P[i],i)).join('')}</div>
     ${pc.length?`<div class="billpc"><b>${H('billPc')}</b><p>${H('billLead')}</p><div class="pslots">${pc.map((f,k)=>slot(f,k+6)).join('')}</div></div>`:''}
-    <p class="hint2 dark">${H('partyNext')}</p></section>`}
+    <p class="hint2 dark">${H('partyNext')}</p></section>
+  <section class="blk addf sendall"><h2>${H('sendAllTitle')}</h2><p class="muted">${H('sendAllLead')}</p>
+    ${P.length?`<p class="prevl">${H('sendAllPrev')}</p><div class="msgprev">${esc((()=>{try{return decodeURI(groupText())}catch(e){return groupText()}})())}</div>
+    <a class="wa wbtn" id="swa" href="${wa(groupText(),'')}" target="_blank" rel="noopener">${H('sendAllWa')}</a><button class="ghostbtn wbtn" id="sshare">${H('sendAllShare')}</button>`:`<p class="hint2 dark">${H('sendAllNeed')}</p>`}
+  </section>`}
+// the subject's list goes into the invitation file too, so the group link can show it
+async function dbRoster(f,ans){if(!mem.iidMade)await dbSubject();const db=await dbReady;if(!db||!mem.iid)return;try{await db.doc('invites/'+mem.iid).set({team:{[f.k]:{n:f.n,g:f.g,ans,at:now()}}},{merge:true})}catch(e){console.warn('roster',e)}}
 function bindParty(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').innerHTML=pParty();bindParty();$('#letter').scrollTop=y};
-  const nm=()=>($('#fname').value||'').trim().slice(0,30);
-  const preview=()=>{const f={n:nm()||T('friendNamePh'),g:addG};$('#msgprev').textContent=(()=>{try{return decodeURI(friendText(f))}catch(e){return friendText(f)}})();
-    const hb=$('#howbox');const lbl=k=>esc(T(k).replace('{f}',nm()||T('friendNamePh')));
-    if(addHow==='wa'){if(!$('#fphone'))hb.innerHTML=`<label for="fphone">${H('addPhoneL')}</label><input id="fphone" type="tel" inputmode="tel" autocomplete="off" dir="ltr" placeholder="05X-XXXXXXX"><button class="wa wbtn" id="fsend"></button>`;$('#fsend').textContent=T('sendWa').replace('{f}',nm()||T('friendNamePh'))}
-    else if(addHow==='me'){if(!$('#fsend')||$('#fphone'))hb.innerHTML=`<button class="nextbtn wbtn" id="fsend"></button>`;$('#fsend').textContent=T('sendMe').replace('{f}',nm()||T('friendNamePh'))}
-    else hb.innerHTML='';
-    if($('#fsend'))$('#fsend').onclick=send};
-  const send=()=>{const n=nm();if(!n){const i=$('#fname');i.placeholder=T('addNeedName');i.classList.add('bad');i.focus();i.scrollIntoView({block:'center'});return}
-    const f={n,g:addG,sent:0};
-    if(addHow==='wa'){let d=($('#fphone').value||'').replace(/\D/g,'');if(d.startsWith('0'))d='972'+d.slice(1);openUrl(wa(friendText(f),d.length>=9?d:''));f.sent=1;party().push(f);save();done(f)}
-    else{party().push(f);save();shareFriend(f,()=>{f.sent=1;save();rer()});done(f)}};
-  const done=f=>{sfx('tink',.6);toast(T('sentTo').replace('{f}',f.n));addHow='';rer()};
-  $('#fname').oninput=()=>{$('#fname').classList.remove('bad');preview()};
-  document.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;document.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x));preview()});
-  document.querySelectorAll('.how [data-h]').forEach(x=>x.onclick=()=>{addHow=x.dataset.h;document.querySelectorAll('.how [data-h]').forEach(y=>y.classList.toggle('on',y===x));preview();$('#howbox').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})});
-  document.querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{const f=party()[+b.dataset.rs];shareFriend(f,()=>{f.sent=1;save();rer()})});
-  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rm,f=party()[i];if(!confirm(`${T('remove')}: ${f.n}?`))return;party().splice(i,1);save();sfx('a',.4);rer()});
-  preview()}
+  const add=()=>{const i=$('#fname'),n=(i.value||'').trim().slice(0,30);if(!n){i.placeholder=T('addNeedName');i.classList.add('bad');i.focus();return}
+    const f={n,g:addG,k:rid(8)};party().push(f);save();dbRoster(f,'inv');sfx('tink',.6);toast(T('added').replace('{f}',n));rer();setTimeout(()=>$('#fname')?.focus(),50)};
+  $('#fadd').onclick=add;$('#fname').onkeydown=e=>{if(e.key==='Enter')add()};$('#fname').oninput=()=>$('#fname').classList.remove('bad');
+  document.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;document.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x))});
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const L=party(),i=L.findIndex(f=>f.k===b.dataset.rm),f=L[i];if(!f||!confirm(`${T('remove')}: ${f.n}?`))return;L.splice(i,1);save();dbRoster(f,'removed');sfx('a',.4);rer()});
+  if($('#swa'))$('#swa').addEventListener('click',()=>{mem.sentAll=1;save();toast(T('sentAll'))});
+  if($('#sshare'))$('#sshare').onclick=()=>shareText(groupText(),()=>{mem.sentAll=1;save();toast(T('sentAll'))});
+  if(!mem.iidMade)dbSubject()}
 
 // ---------- 9. the database (stage 3): the subject's yes opens an invitation file (invites/<id>); each friend's answer is written into it ----------
 // Only names, genders, answers and the chosen characters are stored; never phone numbers. The id is long and random: only links that carry it can reach the file.
 const FB_CONFIG={apiKey:"AIzaSyDw2P3ZnpxVQaYOWdKGJqRaHYDcg4m6EJo",authDomain:"psp-evening.firebaseapp.com",projectId:"psp-evening",storageBucket:"psp-evening.firebasestorage.app",messagingSenderId:"634212710488",appId:"1:634212710488:web:ada5fc839089791ce5f22d"};
 const rid=n=>Array.from(crypto.getRandomValues(new Uint8Array(n)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');
-const IID=ROLE==='f'?(Q.get('i')||'').replace(/[^a-z0-9]/g,'').slice(0,24):'',FKEY=ROLE==='f'?(Q.get('k')||'').replace(/[^a-z0-9]/g,'').slice(0,12):'';
+const IID=ROLE==='f'?GIID:'';let FKEY=ROLE==='f'?(Q.get('k')||'').replace(/[^a-z0-9]/g,'').slice(0,12):'';
+if(GROUP&&mem.me){NAME=mem.me.n;G=mem.me.g;FKEY=mem.me.k}
 const dbReady=new Promise(res=>{const go=async()=>{try{if(!window.firebase)return res(null);if(!firebase.apps.length)firebase.initializeApp(FB_CONFIG);const a=firebase.auth();
     await new Promise(r=>{const un=a.onAuthStateChanged(u=>{un();r(u)})});if(!a.currentUser)await a.signInAnonymously();res(firebase.firestore())}catch(e){console.warn('db',e);res(null)}};
   if(document.readyState==='complete')go();else addEventListener('load',go)});

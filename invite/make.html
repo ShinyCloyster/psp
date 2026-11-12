@@ -41,7 +41,6 @@ textarea{min-height:70px;resize:vertical}
     <label for="to">השם של הנבדק</label><input id="to" maxlength="40" placeholder="למשל: פושפושון">
     <label>בן או בת?</label><div class="seg" data-k="g"><button data-v="m" class="on">בן</button><button data-v="f">בת</button></div>
     <label>שפת ההזמנה</label><div class="seg" data-k="lang"><button data-v="he" class="on">עברית</button><button data-v="en">English</button></div>
-    <label for="date">תאריך הערב <small>(לא חובה. עם תאריך יש ספירה לאחור)</small></label><input id="date" type="date">
     <label for="place">איפה <small>(לא חובה)</small></label><input id="place" maxlength="80" placeholder="למשל: אצל אייל">
     <label for="ps">נ.ב. אישי ממך <small>(לא חובה. מופיע בסוף המכתב)</small></label><textarea id="ps" maxlength="500"></textarea>
   </section>
@@ -58,10 +57,10 @@ textarea{min-height:70px;resize:vertical}
 <script>
 const $=s=>document.querySelector(s),st={g:'m',lang:'he'};
 document.querySelectorAll('.seg').forEach(seg=>seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{st[seg.dataset.k]=b.dataset.v;seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));upd()}));
-['to','date','place','ps'].forEach(id=>$('#'+id).addEventListener('input',upd));
+['to','place','ps'].forEach(id=>$('#'+id).addEventListener('input',upd));
 const MSG={he:{m:'היי {n}! דרגונייט בדרך אליך עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:',f:'היי {n}! דרגונייט בדרך אלייך עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:'},en:{m:'Hi {n}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:',f:'Hi {n}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:'}};
 function link(test){const base=location.origin+location.pathname.replace(/make\.html$/,'')+(st.lang==='en'?'en/':'');const q=new URLSearchParams();q.set('to',$('#to').value.trim()||'?');q.set('g',st.g);
-  ['date','place','ps'].forEach(k=>{const v=$('#'+k).value.trim();if(v)q.set(k,v)});if(test)q.set('reset','1');return base+'?'+q.toString().replace(/\+/g,'%20')}
+  ['place','ps'].forEach(k=>{const v=$('#'+k).value.trim();if(v)q.set(k,v)});if(test)q.set('reset','1');return base+'?'+q.toString().replace(/\+/g,'%20')}
 function text(){return MSG[st.lang][st.g].replace('{n}',$('#to').value.trim()||'…')+'\n'+link()}
 function upd(){$('#link').textContent=decodeURI(link());$('#msg').textContent=decodeURI(text());$('#wa').href='https://wa.me/?text='+encodeURIComponent(text());$('#try').href=link(true)}
 $('#copy').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(text()):Promise.reject()).then(()=>{const t=document.createElement('div');t.className='toast';t.textContent='הועתק';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}).catch(()=>prompt('',text()))};
