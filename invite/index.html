@@ -534,11 +534,13 @@ let AC=null;const BUF={};
 function unlock(){try{if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();const b=AC.createBuffer(1,1,22050),s0=AC.createBufferSource();s0.buffer=b;s0.connect(AC.destination);s0.start(0);
     Object.entries(SND).forEach(([k,src])=>fetch(src).then(r=>r.arrayBuffer()).then(x=>new Promise((ok,no)=>AC.decodeAudioData(x,ok,no))).then(d=>{BUF[k]=d}).catch(()=>{}))}
   if(AC.state==='suspended')AC.resume()}catch(e){}
-  if(!music){music=new Audio('snd/lab.mp3');music.loop=true;music.volume=.3;music.muted=true;const p=music.play();if(p&&p.then)p.then(()=>{music.pause();music.muted=false}).catch(()=>{music.muted=false})}}
+  if(!music){music=new Audio(musSrc());music.loop=true;music.volume=.3;music.muted=true;const p=music.play();if(p&&p.then)p.then(()=>{music.pause();music.muted=false}).catch(()=>{music.muted=false})}}
 function sfx(k,vol){if(!soundOn||!AC||!BUF[k])return;try{if(AC.state==='suspended')AC.resume();const s1=AC.createBufferSource(),g=AC.createGain();g.gain.value=vol??.8;s1.buffer=BUF[k];s1.connect(g);g.connect(AC.destination);s1.start(0)}catch(e){}}
 // wait (briefly) for a sound that may still be loading, then play it
 async function sfxSoon(k,vol){for(let i=0;i<16&&!BUF[k];i++)await new Promise(r=>setTimeout(r,60));sfx(k,vol)}
-function mus(on){if(!music)return;if(on&&soundOn){music.play().catch(()=>{})}else music.pause()}
+// Cherrygrove City (HeartGold/SoulSilver) for the invitation; after yes, the menu plays Global Trade Station, the same as the evening's lobby
+function musSrc(){return mem.ans==='yes'?'../mus-gts.mp3':'../mus-cherrygrove.mp3'}
+function mus(on){if(!music)return;const want=musSrc();if(!music.src.endsWith(want.slice(2))){music.pause();music.src=want;music.loop=true}if(on&&soundOn){music.play().catch(()=>{})}else music.pause()}
 const sndBtn=$('#snd');sndBtn.setAttribute('aria-pressed',soundOn);sndBtn.title=T('sound');
 sndBtn.onclick=e=>{e.stopPropagation();soundOn=!soundOn;sndBtn.setAttribute('aria-pressed',soundOn);try{localStorage.setItem('psp-invite-snd',soundOn?'1':'0')}catch(x){}if(!soundOn&&music)music.pause();else if(scene==='holo'||scene==='letter')mus(true)};
 
@@ -1005,7 +1007,7 @@ function evolve(done){const o=$('#evo'),box=$('#evotxt'),stage=$('#evostage');o.
     sfx('caught',.8);say(T('evoDone'));await wait(1300);ec.style.display='none';eb.style.display='';await wait(1500);say(T('evoFly'));
     if(!RM){stage.innerHTML='<video class="evov" src="vid/dn-fly.mp4" muted playsinline autoplay loop></video>';const ev2=stage.querySelector('video');try{await ev2.play()}catch(e){}}
     await wait(2600);if(ev){const v0=ev.volume;for(let k=10;k>=0;k--){ev.volume=v0*k/10;await wait(60)}ev.pause()}
-    o.classList.add('hide');mus(true);done()};
+    o.classList.add('hide');done();mus(true)};
   go()}
 // returning visitors who already answered still start at PRESS START (the sound needs a tap), and can skip
 })();

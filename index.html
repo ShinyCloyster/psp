@@ -830,7 +830,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794497703';
+const BUILDV='1794498480';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -840,7 +840,7 @@ function music(name,o={}){
   BGM.t=setTimeout(()=>{if(BGM.cur!==name)return;const a=new Audio(name+(MUS_OGG.has(name)?'.ogg':'.mp3')+'?v='+BUILDV);a.loop=o.loop!==false;a.volume=0;BGM.a=a;a.play().catch(()=>{BGM.blocked=a});fadeAudio(a,o.vol??.35,1200);
     if(o.then||o.onend)a.onended=()=>{if(BGM.a===a){BGM.cur=null;o.onend?o.onend():music(o.then,{vol:o.vol})}}},o.delay||0)}
 // questionnaire rounds: each opens on its own track; when a track ends the next one starts
-const ROUND_MUS=['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-newbark'];
+const ROUND_MUS=['mus-route29','mus-natpark','mus-cycling','mus-surfing','mus-azalea','mus-lab','mus-newbark'];
 function roundMusic(k){const key='r'+k;if(BGM.list===key&&BGM.cur)return;const n=ROUND_MUS.length,play=i=>music(ROUND_MUS[(k-1+i)%n],{loop:false,vol:.25,list:key,onend:()=>play(i+1)});play(0)}
 // browsers refuse sound before the first click on the page (e.g. opening straight into a slide): start the waiting track on the first gesture
 ['pointerdown','keydown','touchend'].forEach(ev=>document.addEventListener(ev,()=>{const a=BGM.blocked;if(a&&BGM.a===a&&a.paused){BGM.blocked=null;a.play().catch(()=>{BGM.blocked=a})}},true));
@@ -2084,7 +2084,7 @@ function closingHTML(){
    <div class="crow front">${runners.slice(0,2).join('')}<div class="chero">${win?spr(win,360).replace('cg mon','cg mon win'):''}${avFull(subjP(),380)}</div>${runners.slice(2).join('')}</div>
   </div>`}
 function slideMusic(id){
-  if(id==='cover')return music('mus-adventure',{vol:.3});
+  if(id==='cover')return music('mus-gts',{vol:.3});
   {const m=id.match(/^x-round-(\d)/);if(m)return roundMusic(+m[1])}
   if(/^x-break-/.test(id))return music('mus-healed',{loop:false,vol:.35,then:'mus-center'});
   if(/^x-part-/.test(id))return music('mus-badge',{loop:false,vol:.4});
@@ -2487,8 +2487,8 @@ const WHY_BOTS=()=>EN?['Something in the water','They came here to breed','A tra
 const whyT=()=>S.fastOn?9:30;
 function whyEnter(){S.why=S.why||{ph:'ask'};whyPaint(true);gamePub();if(S.why.ph==='run')whyTick()}
 function whyTick(){const W=S.why;clearInterval(S.whyT);S.whyT=setInterval(()=>{if(S.why!==W||cur()?.kind!=='why'||W.ph!=='run'){clearInterval(S.whyT);return}const T=whyT(),el=(Date.now()-W.t0)/1000,n=Math.min(2,Math.floor(el/(T/3)));
-  if(el>=T){W.ph='end';W.n=2;clearInterval(S.whyT);sfx('sfx-dex-page-added');whyPaint(true);gamePub();return}if(n!==W.n){W.n=n;sfx('sfx-tink');whyPaint(true)}const c=$('#whyclk b');if(c)c.textContent=Math.ceil(T-el)},250)}
-function whyGo(d){const W=S.why;if(!W||d<0)return false;if(W.ph==='ask'){W.ph='run';W.t0=Date.now();W.n=0;whyPaint(true);gamePub();whyTick();return true}if(W.ph==='run'){W.ph='end';W.n=2;whyPaint(true);gamePub();return true}if(W.ph==='end'){W.ph='rocket';sfx('sfx-denied');whyPaint(true);gamePub();return true}return false}
+  if(el>=T){W.ph='end';W.n=2;clearInterval(S.whyT);music(null);sfx('sfx-dex-page-added');whyPaint(true);gamePub();return}if(n!==W.n){W.n=n;sfx('sfx-tink');whyPaint(true)}const c=$('#whyclk b');if(c)c.textContent=Math.ceil(T-el)},250)}
+function whyGo(d){const W=S.why;if(!W||d<0)return false;if(W.ph==='ask'){W.ph='run';W.t0=Date.now();W.n=0;music('mus-alph',{vol:.3});whyPaint(true);gamePub();whyTick();return true}if(W.ph==='run'){W.ph='end';W.n=2;music(null);whyPaint(true);gamePub();return true}if(W.ph==='end'){W.ph='rocket';sfx('sfx-denied');whyPaint(true);gamePub();return true}return false}
 function whyPaint(full){const W=S.why,cv=$('#cv');if(!W||cur()?.kind!=='why')return;const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,pl=lkPpl().filter(p=>!isPresenter(p));
   const cards=pl.map(p=>{const t=String(S.gIn?.[p.id]?.th||'').trim();return `<div class="whyb ${t?'':'off'}">${avHead(p,52)}<span><b>${esc(p.name)}</b>${t?`<em dir="auto">${esc(t)}</em>`:`<em>…</em>`}</span></div>`}).join('');
   if(!full&&$('#whyg')){$('#whyg').innerHTML=cards;return}
@@ -3052,7 +3052,7 @@ function renderHof(){
     h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="${ll(`פרופסור אוק`,`Professor Oak`)}"><img class="oakmon" ${artAttr(l)} alt="">${oakBox()}</div>`;
   }
   cv.innerHTML=h;deckPub();
-  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music('mus-enter-hall',{vol:.15});else music('mus-hof',{vol:.28,delay:step==='reveal'?4300:0});
+  if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music('mus-sacred',{vol:.25});else music('mus-hof',{vol:.28,delay:step==='reveal'?4300:0});
   if(step==='types')layoutTypes(false);
   if(OAK_STEPS.includes(step)&&S.oakPages)oakGo();
 }
