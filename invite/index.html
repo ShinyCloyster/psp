@@ -8,6 +8,11 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="יש לך דואר. דרגונייט כבר בדרך.">
 <meta property="og:description" content="הזמנה אישית מהאוניברסיטה הפוקימונית · PSP">
+<meta property="og:image" content="https://shinycloyster.github.io/psp/invite/img/og-he.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="יש לך דואר. דרגונייט כבר בדרך.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#161A2E">
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -295,6 +300,8 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .prevl{margin:14px 0 6px;font-size:14px;color:#6A6F8A}
 .msgprev{white-space:pre-wrap;word-break:break-all;background:#DCF8C6;color:#1E2238;border-radius:10px 10px 10px 2px;padding:10px 12px;font-size:14px;line-height:1.45;direction:auto}
 .party h2 small{font:500 14px/1 var(--body);color:#6A6F8A}
+.paper .cd{color:#E4483F}
+.cd2{font:600 15px/1.4 var(--body);color:var(--gold)}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -467,6 +474,8 @@ $('#holo').addEventListener('click',()=>{if(scene!=='holo')return;if(typing){cle
 
 // ---------- 5. the letter, in pages (like the pockets of the bag) ----------
 const DATE=(()=>{const d=Q.get('date')||'';if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return '';try{return new Date(d+'T12:00:00').toLocaleDateString(LANG==='he'?'he-IL':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}catch(e){return d}})();
+const DAYS=(()=>{const d=Q.get('date')||'';if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return null;const t=new Date(d+'T00:00:00'),n=new Date();n.setHours(0,0,0,0);return Math.round((t-n)/864e5)})();
+const daysText=()=>DAYS==null||DAYS<0?'':DAYS===0?T('daysToday'):DAYS===1?T('daysTomorrow'):T('daysLeft').replace('{d}',DAYS);
 const PLACE=(Q.get('place')||'').trim().slice(0,80), PS=(Q.get('ps')||'').trim().slice(0,500);
 const RTL=LANG==='he', AR_NEXT=RTL?'◀':'▶', AR_PREV=RTL?'▶':'◀';
 const wa=(text,num)=>{const n=num===undefined?CFG.wa:num;return n||num===''?`https://wa.me/${n?encodeURIComponent(n):''}?text=${encodeURIComponent(text)}`:''};
@@ -503,7 +512,7 @@ function pLetter(){return `<article class="paper">
     <h1>${H('letterTitle')}</h1>
     <p class="to">${H('letterTo')}</p>
     ${TL('letter').map(p=>`<p>${esc(p)}</p>`).join('')}
-    ${DATE||PLACE?`<p class="whn">${DATE?`<b>${H('when')}:</b> ${esc(DATE)}`:''}${DATE&&PLACE?'<br>':''}${PLACE?`<b>${H('where')}:</b> ${esc(PLACE)}`:''}</p>`:''}
+    ${DATE||PLACE?`<p class="whn">${DATE?`<b>${H('when')}:</b> ${esc(DATE)}${daysText()?` · <b class="cd">${esc(daysText())}</b>`:''}`:''}${DATE&&PLACE?'<br>':''}${PLACE?`<b>${H('where')}:</b> ${esc(PLACE)}`:''}</p>`:''}
     <p class="sign">${H('letterSign')}</p>
     ${PS?`<div class="ps"><b>${H('psLabel')}:</b> ${esc(PS)}</div>`:''}
   </article><p class="hint2">${H('letterNext')}</p>`}
@@ -578,9 +587,10 @@ function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.in
   c.innerHTML=`<div class="gbp-box" style="min-height:0;padding-bottom:16px;margin-top:10px">${H('customText')}${l?`<br><a class="wa" href="${l}" target="_blank" rel="noopener">${H('customWa')}</a>`:''}</div>`}
 
 // ---------- 6. the answer: the Poké Ball, then yes (with the save screen) or "not sure" (Oak answers) ----------
-function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball"></button><p>${H('ballAsk')}</p><small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
+const wobbleS=()=>DAYS==null||DAYS<0?2.6:DAYS<=1?.8:DAYS<=7?1.3:DAYS<=30?1.9:2.6;
+function pAnswer(){return `<div class="bwrap"><button class="ball${RM?'':' wobble'}" id="ball" aria-label="Poké Ball" style="animation-duration:${wobbleS()}s"></button><p>${H('ballAsk')}</p>${daysText()?`<b class="cd2">${esc(T('revealIn').replace('{x}',daysText()))}</b>`:`<b class="cd2">${H('dateTbdLong')}</b>`}<small>${H('ballTap')}</small><div class="lkbox hide" id="ballsay"></div></div><div id="menuwrap"></div>`}
 function bindAnswer(){taps=0;$('#ball').onclick=()=>{const b=$('#ball');taps++;b.classList.remove('wobble','shake');void b.offsetWidth;b.classList.add('shake');sfx('toss',.5);
-    setTimeout(()=>{b.classList.remove('shake');if(!RM)b.classList.add('wobble')},1150);
+    setTimeout(()=>{b.classList.remove('shake');if(!RM){b.classList.add('wobble');b.style.animationDuration=wobbleS()+'s'}},1150);
     if(taps>=3){const s=$('#ballsay');s.textContent=T('ballNo');s.classList.remove('hide');sfx('denied',.6)}};
   renderMenu()}
 function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
@@ -614,7 +624,7 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
 // ---------- 8. the subject's team (stage 2): six slots like the game's party; everyone past six goes to Bill's PC ----------
 const party=()=>mem.party||(mem.party=[]);
 let addG='m';
-function friendLink(f){const q=new URLSearchParams({to:f.n,g:f.g});if(LANG!=='he')q.set('lang',LANG);q.set('r','f');q.set('by',NAME);q.set('bg',G);['date','place'].forEach(k=>{if(Q.get(k))q.set(k,Q.get(k))});return location.origin+location.pathname+'?'+q.toString()}
+function friendLink(f){const q=new URLSearchParams({to:f.n,g:f.g});q.set('r','f');q.set('by',NAME);q.set('bg',G);['date','place'].forEach(k=>{if(Q.get(k))q.set(k,Q.get(k))});return location.origin+location.pathname.replace(/en\/?$/,'')+(LANG==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
 const friendText=f=>fill(pick(TX.friendMsg)).replace('{f}',f.n)+'\n'+friendLink(f);
 function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function openUrl(u){const w=window.open(u,'_blank');if(!w)location.href=u}

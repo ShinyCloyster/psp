@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PSP · מחולל הזמנות</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Secular+One&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+:root{--night:#161A2E;--cream:#F6F1E7;--gold:#F2C94C;--line:#3A4170;--mist:#B9BDD6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night);color:var(--cream);font-family:Rubik,Arial,sans-serif;padding:20px 16px 40px}
+.col{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font:400 32px/1.1 'Secular One',sans-serif;margin:0;color:var(--gold)}
+p{margin:0;color:var(--mist);line-height:1.5}
+.card{background:#F8F8F8;color:#1E2238;border:4px solid #2A2E45;border-radius:12px;box-shadow:inset 0 0 0 3px #F8F8F8,inset 0 0 0 6px #6A8CC8;padding:16px 18px}
+label{display:block;font-weight:700;margin:14px 0 6px}
+label:first-child{margin-top:0}
+label small{font-weight:400;color:#6A6F8A}
+input,textarea{width:100%;font:500 17px/1.3 Rubik,sans-serif;padding:11px 12px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;color:#1E2238}
+textarea{min-height:70px;resize:vertical}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:11px;border:3px solid #9FA7C7;border-radius:10px;background:#fff;font:600 16px/1 Rubik,sans-serif;color:#6A6F8A}
+.seg button.on{border-color:var(--gold);background:#FFF4CC;color:#1E2238}
+.out{word-break:break-all;direction:ltr;text-align:left;background:#EEF1FA;border-radius:8px;padding:10px;font-size:13px;margin-top:6px}
+.msg{white-space:pre-wrap;background:#DCF8C6;border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45;margin-top:6px}
+.btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.btns a,.btns button{display:block;text-align:center;text-decoration:none;border:0;border-radius:12px;padding:13px;font:700 16px/1 Rubik,sans-serif}
+.wa{background:#25D366;color:#0b2b17}
+.gold{background:var(--gold);color:#1E2238}
+.ghost{background:none!important;border:2px solid #9FA7C7!important;color:#2A2E45}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1E2238;color:#fff;border:2px solid var(--gold);border-radius:12px;padding:10px 16px}
+</style>
+</head>
+<body>
+<div class="col">
+  <h1>מחולל הזמנות</h1>
+  <p>ממלאים את הפרטים של הנבדק, ומקבלים קישור אישי וגם הודעה מוכנה לשליחה. את החברים הנבדק מזמין בעצמו, מתוך ההזמנה.</p>
+  <section class="card">
+    <label for="to">השם של הנבדק</label><input id="to" maxlength="40" placeholder="למשל: פושפושון">
+    <label>בן או בת?</label><div class="seg" data-k="g"><button data-v="m" class="on">בן</button><button data-v="f">בת</button></div>
+    <label>שפת ההזמנה</label><div class="seg" data-k="lang"><button data-v="he" class="on">עברית</button><button data-v="en">English</button></div>
+    <label for="date">תאריך הערב <small>(לא חובה. עם תאריך יש ספירה לאחור)</small></label><input id="date" type="date">
+    <label for="place">איפה <small>(לא חובה)</small></label><input id="place" maxlength="80" placeholder="למשל: אצל אייל">
+    <label for="ps">נ.ב. אישי ממך <small>(לא חובה. מופיע בסוף המכתב)</small></label><textarea id="ps" maxlength="500"></textarea>
+  </section>
+  <section class="card">
+    <label>הקישור</label><div class="out" id="link"></div>
+    <label>ההודעה שתישלח</label><div class="msg" id="msg"></div>
+    <div class="btns">
+      <a class="wa" id="wa" target="_blank" rel="noopener">לשלוח בוואטסאפ</a>
+      <button class="gold" id="copy">להעתיק הודעה וקישור</button>
+      <a class="ghost" id="try" target="_blank" rel="noopener">לפתוח את ההזמנה (בדיקה, מתחילה נקי)</a>
+    </div>
+  </section>
+</div>
+<script>
+const $=s=>document.querySelector(s),st={g:'m',lang:'he'};
+document.querySelectorAll('.seg').forEach(seg=>seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{st[seg.dataset.k]=b.dataset.v;seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));upd()}));
+['to','date','place','ps'].forEach(id=>$('#'+id).addEventListener('input',upd));
+const MSG={he:{m:'היי {n}! דרגונייט בדרך אליך עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:',f:'היי {n}! דרגונייט בדרך אלייך עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:'},en:{m:'Hi {n}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:',f:'Hi {n}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:'}};
+function link(test){const base=location.origin+location.pathname.replace(/make\.html$/,'')+(st.lang==='en'?'en/':'');const q=new URLSearchParams();q.set('to',$('#to').value.trim()||'?');q.set('g',st.g);
+  ['date','place','ps'].forEach(k=>{const v=$('#'+k).value.trim();if(v)q.set(k,v)});if(test)q.set('reset','1');return base+'?'+q.toString().replace(/\+/g,'%20')}
+function text(){return MSG[st.lang][st.g].replace('{n}',$('#to').value.trim()||'…')+'\n'+link()}
+function upd(){$('#link').textContent=decodeURI(link());$('#msg').textContent=decodeURI(text());$('#wa').href='https://wa.me/?text='+encodeURIComponent(text());$('#try').href=link(true)}
+$('#copy').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(text()):Promise.reject()).then(()=>{const t=document.createElement('div');t.className='toast';t.textContent='הועתק';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}).catch(()=>prompt('',text()))};
+upd();
+</script>
+</body>
+</html>
