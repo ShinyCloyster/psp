@@ -815,7 +815,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794475558';
+const BUILDV='1794481268';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -961,20 +961,22 @@ function planPick(sk,tgt){const on=k=>!sk.includes(k);
    <p class="np-sum">${nc} קורסים · ${nt} מאמנים · כ-${Math.floor(m/60)}:${String(m%60).padStart(2,'0')} שעות</p><p class="muted" style="font-size:12px;margin:0">סבבי השאלות וההיכל תמיד נשארים. רק המארח יכול לשנות את זה.</p></div>`}
 // invitations from /invite/ (host only): open a new one (name + the dates you approve), see who said yes and who can make it when, and set the date
 const invId=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');
-const invFmt=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'numeric'})}catch(e){return d}};
+const invFmt=d=>{const [a,t]=String(d).split('T');let r=a;try{r=new Date(a+'T12:00:00').toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'numeric'})}catch(e){}return t?r+' '+t:r};
+const INV_PLACE='רש״י 9, תל אביב',INV_HOURS=['17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'];
 function invLink(v,id){const q=new URLSearchParams();q.set('to',v.subject||'');q.set('g',v.g==='f'?'f':'m');q.set('i',id);if(v.place)q.set('place',v.place);if(v.ps)q.set('ps',v.ps);
   return location.origin+location.pathname.replace(/index\.html$/,'')+'invite/'+(v.lang==='en'?'en/':'')+'?'+q.toString().replace(/\+/g,'%20')}
 function invMsg(v,id){return (v.lang==='en'?`Hi ${v.subject}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:`:`היי ${v.subject}! דרגונייט בדרך ${v.g==='f'?'אלייך':'אליך'} עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:`)+'\n'+invLink(v,id)}
 function invitesCard(){
   if(!S.invSub&&S.db?.raw){S.invSub=true;S.db.raw.collection('invites').onSnapshot(q=>{S.invites=q.docs.map(d=>({id:d.id,...clone(d.data())})).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));if(isScreen()&&!ROOM.code)roomsView()},()=>{})}
-  const N=S.ni||(S.ni={n:'',g:'m',lang:'he',dates:[],place:'',ps:''}),L=S.invites||[];
+  const N=S.ni||(S.ni={n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'}),L=S.invites||[];
   const form=`<div style="display:flex;flex-direction:column;gap:8px">
     <input type="text" id="ni-n" placeholder="שם הנבדק" value="${esc(N.n)}" oninput="S.ni.n=this.value">
     <div class="row" style="gap:6px;flex-wrap:wrap"><button class="np-o ${N.g==='m'?'on':''}" data-nig="m" style="min-height:0;padding:8px 14px">בן ♂</button><button class="np-o ${N.g==='f'?'on':''}" data-nig="f" style="min-height:0;padding:8px 14px">בת ♀</button>
       <button class="np-o ${N.lang==='he'?'on':''}" data-nil="he" style="min-height:0;padding:8px 14px">עברית</button><button class="np-o ${N.lang==='en'?'on':''}" data-nil="en" style="min-height:0;padding:8px 14px">English</button></div>
-    <div class="row" style="gap:6px"><input type="date" id="ni-d" style="flex:1"><button class="btn ghost small" data-niadd="1">+ מועד</button></div>
+    <p class="muted" style="margin:4px 0 0;font-size:13px">מועדים: בוחרים יום ושעה, ולוחצים "הוסף". אפשר כמה.</p>
+    <div class="row" style="gap:6px;flex-wrap:wrap;align-items:stretch"><input type="date" id="ni-d" value="${esc(N.day||'')}" onclick="try{this.showPicker()}catch(e){}" onchange="S.ni.day=this.value" style="flex:1 1 150px;min-height:44px;font-size:16px;cursor:pointer" title="📅 בחר יום"><select id="ni-t" onchange="S.ni.time=this.value" style="min-height:44px;font-size:16px">${INV_HOURS.map(h=>`<option ${h===(N.time||'20:00')?'selected':''}>${h}</option>`).join('')}</select><button class="btn small" data-niadd="1">+ הוסף מועד</button></div>
     <div class="row" style="gap:6px;flex-wrap:wrap">${N.dates.length?N.dates.map(d=>`<button class="btn ghost small" data-nidel="${d}">${invFmt(d)} ✕</button>`).join(''):'<span class="muted" style="font-size:13px">המועדים שאתה מאשר. כל מוזמן יסמן מה מתאים לו.</span>'}</div>
-    <input type="text" id="ni-place" placeholder="איפה (לא חובה)" value="${esc(N.place)}" oninput="S.ni.place=this.value">
+    <input type="text" id="ni-place" placeholder="איפה (ריק = רש״י 9, תל אביב)" value="${esc(N.place)}" oninput="S.ni.place=this.value">
     <input type="text" id="ni-ps" placeholder="נ.ב. אישי (לא חובה)" value="${esc(N.ps)}" oninput="S.ni.ps=this.value">
     <button class="btn" data-act="newinvite">✉️ פתח הזמנה</button>
     ${S.niDone?`<div class="card" style="margin:0;background:rgba(242,201,76,.12)"><p style="margin:0 0 6px;font-weight:700">ההזמנה של ${esc(S.niDone.subject)} מוכנה</p><p class="muted" style="margin:0 0 8px;font-size:12px;direction:ltr;word-break:break-all">${esc(decodeURI(invLink(S.niDone,S.niDone.id)))}</p>
@@ -1016,11 +1018,11 @@ function roomsView(){
     if(b.dataset.nrr){S.nrr=!S.nrr;roomsView();return}
     if(b.dataset.nig){S.ni.g=b.dataset.nig;roomsView();return}
     if(b.dataset.nil){S.ni.lang=b.dataset.nil;roomsView();return}
-    if(b.dataset.niadd){const d=$('#ni-d')?.value;if(d&&!S.ni.dates.includes(d)){S.ni.dates.push(d);S.ni.dates.sort()}roomsView();return}
+    if(b.dataset.niadd){const day=$('#ni-d')?.value,tm=$('#ni-t')?.value||'20:00';if(!day){toast('קודם בוחרים יום');try{$('#ni-d').showPicker()}catch(e){$('#ni-d')?.focus()}return}const d=day+'T'+tm;if(!S.ni.dates.includes(d)){S.ni.dates.push(d);S.ni.dates.sort()}S.ni.day='';roomsView();return}
     if(b.dataset.nidel){S.ni.dates=S.ni.dates.filter(x=>x!==b.dataset.nidel);roomsView();return}
     if(b.dataset.act==='newinvite'){const N=S.ni,n=(N.n||'').trim().slice(0,40);if(!n){toast('מה השם?');return}if(!N.dates.length){toast('צריך לפחות מועד אחד');return}
-      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.place.trim()?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
-      b.disabled=true;try{await S.db.raw.doc('invites/'+id).set(v);S.niDone={...v,id};S.ni={n:'',g:'m',lang:'he',dates:[],place:'',ps:''};toast('ההזמנה נפתחה')}catch(e){console.error(e);toast('לא נשמר. האם הודבקו החוקים החדשים בקונסול?')}roomsView();return}
+      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.place.trim()&&N.place.trim()!==INV_PLACE?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
+      b.disabled=true;try{await S.db.raw.doc('invites/'+id).set(v);S.niDone={...v,id};S.ni={n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'};toast('ההזמנה נפתחה')}catch(e){console.error(e);toast('לא נשמר. האם הודבקו החוקים החדשים בקונסול?')}roomsView();return}
     if(b.dataset.invset){const [id,d]=b.dataset.invset.split('|');await S.db.raw.doc('invites/'+id).update({date:d}).catch(()=>toast('לא נשמר'));return}
     if(b.dataset.inv){const v=(S.invites||[]).find(x=>x.id===b.dataset.inv);if(!v)return;const names=Object.values(v.team||{}).filter(x=>x&&x.ans==='yes').map(x=>x.n);
       S.nrn=v.subject||'';S.nrg=v.g==='f'?'f':'m';S.nrl=v.lang==='en'?'en':'he';S.nrnames=names.join(', ');S.nrc=Math.max(1,Math.min(14,names.length||S.nrc||5));roomsView();window.scrollTo(0,0);toast('הפרטים הועתקו לחדר החדש');return}
