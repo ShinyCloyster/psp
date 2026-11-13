@@ -850,7 +850,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794587249';
+const BUILDV='1794587417';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2942,10 +2942,10 @@ async function rehearseCreate(nm,lang,skip,fast,iv){const taken=new Set((S.roomL
   RAWSTORE.set('psp-lang:'+c,lang);location.hash='screen='+c;location.reload()}
 // speed: in a fast rehearsal every game clock runs at roughly a third
 function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,4,3);MEM_T=7;BT_T=7;BT_RES=3;PQ_T=6}else{QD.splice(0,3,10,9,8);MEM_T=20;BT_T=20;BT_RES=7;PQ_T=15}}
-async function botFill(){if(S.botFilled||!S.answersLoaded&&!S.answers)return;S.botFilled=true;
-  for(const id of botIds()){const cur=S.answers?.[id]?.answers||{};if(Object.keys(cur).length>20)continue;const a={...cur},r=rng('bot-'+id+Date.now()),bias={};
-    BANK.items.forEach(it=>{if(it.kind==='bonus'||it.id in a)return;bias[it.dim]??=1+r()*4;a[it.id]=Math.max(1,Math.min(5,Math.round(bias[it.dim]+(r()-.5)*2)))});
-    await S.db.doc('answers/'+id).set({answers:a,mew:'',demo:true,at:new Date().toISOString()},{merge:true}).catch(()=>{})}}
+// a bot answers a round only when that round opens, each bot after its own short delay; its leanings stay the same across the rounds
+async function botRound(id,k){const P=planFor(id),R=P&&P.rounds[k];if(!R)return;const cur=S.answers?.[id]?.answers||{},a={},br=rng('bot-'+id),bias={},r=rng('bot-'+id+Date.now()),dim={};BANK.items.forEach(it=>dim[it.id]=it.dim);
+  R.forEach(u=>u.ids.forEach(q=>{if(q in cur)return;const d=dim[q];if(bias[d]==null){const g=rng('bot-'+id+'-'+d);bias[d]=1+g()*4}a[q]=Math.max(1,Math.min(5,Math.round(bias[d]+(r()-.5)*2)))}));
+  if(Object.keys(a).length)await S.db.doc('answers/'+id).set({answers:a,demo:true,at:new Date().toISOString()},{merge:true}).catch(()=>{})}
 // what this phone still owes in a rehearsal: unanswered questions in the open rounds, or Mew's vote
 function randLeft(){if(!isRehearsal()||S.remoteMode||!S.me||!person(S.me))return 0;const a=myDoc().answers||{},P=planFor(S.me),o=Math.min(4,S.state?.open||0);let n=0;for(let k=0;k<o;k++)n+=countIds(P.rounds[k])-answeredIn(P.rounds[k],a);const m=S.state?.mew;if(!n&&m?.status==='ready'&&m.statements?.length&&!myDoc().mew)n=1;return n}
 function randFill(){if(!randLeft())return;const d=myDoc(),a=d.answers=d.answers||{},P=planFor(S.me),o=Math.min(4,S.state?.open||0),r=rng('me-'+S.me+Date.now()),bias={},dim={};BANK.items.forEach(it=>dim[it.id]=it.dim);
@@ -2954,7 +2954,7 @@ function randFill(){if(!randLeft())return;const d=myDoc(),a=d.answers=d.answers|
   sfx('sfx-tink');saveMine();toast(ll('מולא באקראי','Filled at random'));render()}
 function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=cur(),B=botIds(),now=Date.now();if(!it||!B.length)return;S.botAt=S.botAt||{};
   const once=(k,ms,fn)=>{if(S.botAt[k]==null)S.botAt[k]=now+ms;else if(S.botAt[k]>0&&now>=S.botAt[k]){S.botAt[k]=-1;fn()}};
-  if((S.state?.open||0)>0)botFill();
+  if(S.answersLoaded||S.answers)for(let k=0;k<(S.state?.open||0);k++)B.forEach(id=>once('ans'+k+id,(S.fastOn?800+Math.random()*5000:3000+Math.random()*30000),()=>botRound(id,k)));
   const m=S.state?.mew;if(m?.status==='ready'&&m.statements?.length)B.forEach(id=>once('mew'+id,2000+Math.random()*8000,()=>{if(!S.answers?.[id]?.mew)S.db.doc('answers/'+id).set({mew:brnd(m.statements).id},{merge:true}).catch(()=>{})}));
   const put=(id,o)=>{S.gIn=S.gIn||{};S.gIn[id]={...(S.gIn[id]||{}),...o};gameIn()};
   // memory: the bot whose turn it is flips two cards, and half the time it remembers a pair it saw
