@@ -908,7 +908,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794603970';
+const BUILDV='1794605417';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2800,8 +2800,9 @@ function friendsRun(){const cv=$('#cv'),sec=cv.querySelector('section');if(!sec)
 
 // ---------- room plan: which of the 8 courses and 4 trainers this room includes (state.skip: 'c1'..'c8', 't1'..'t4') ----------
 const PARTS={1:[1,2,3,4],2:[5,6],3:[7,8]},PART_TR={1:[1],2:[2],3:[3,4]};
-const COURSE_NAMES=[['מדע, תיאוריה ופרדיגמה','Science, theory and paradigm'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],['המודל של PSP','The PSP model'],['18 הסוגים','The 18 types'],['6 הסטטים','The 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
-function courseOf(id){if(id==='f-extra'||id==='e-line')return 8;if(id==='d-battle')return 6;if(id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,c:2,d:3,k:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
+const COURSE_NAMES=[['מדע, תיאוריה ופרדיגמה','Science, theory and paradigm'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],['18 הסוגים · חלק א׳','The 18 types · part 1'],['18 הסוגים · חלק ב׳','The 18 types · part 2'],['6 הסטטים','The 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
+const TYPES_B=['flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'];
+function courseOf(id){if(id==='f-extra'||id==='e-line')return 8;if(id==='e-layers')return 3;if(id==='d-battle'||id==='f-divider-2')return 6;{const m=id.match(/^[qt]-([a-z]+)$/);if(m)return TYPES_B.includes(m[1])?6:5}if(/^f-/.test(id))return 5;if(id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,c:2,d:3,k:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
 const skipSet=()=>new Set(S.state?.skip||[]);
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&sk.has('t'+m[1]))return false;
   m=id.match(/^x-(part|sum)-(\d)$/);if(m&&(PARTS[m[2]]||[]).every(c=>sk.has('c'+c)))return false;return true}
