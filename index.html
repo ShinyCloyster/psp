@@ -585,12 +585,19 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .cmp em{position:absolute;right:-18px;top:-20px;width:30px;height:34px;border-radius:10px;background:#fff;border:3px solid #161A2E;color:#E5484D;font:900 24px/28px var(--body);font-style:normal;text-align:center;scale:0;transition:scale .25s cubic-bezier(.2,1.6,.4,1)}.cmp.in em{scale:1}
 .hop{animation:cmhop .5s ease-out var(--dl,0s)}@keyframes cmhop{35%{translate:0 -22px}70%{translate:0 0}85%{translate:0 -6px}}
 .cmtr{position:absolute;width:68px;height:68px;image-rendering:pixelated;background-repeat:no-repeat;z-index:4}
-.cmmon{position:absolute;z-index:4;image-rendering:pixelated;scale:2;transform-origin:50% 100%;transition:opacity .35s,scale .45s cubic-bezier(.2,1.5,.4,1),filter .8s,translate .8s}
-.cmmon.lft{left:605px;top:417px;transform:scaleX(-1)}.cmmon.rgt{left:1243px;top:421px}
-.cmmon.out{opacity:0;scale:.3}.cmmon.lunge{animation:cmlunge .7s ease-in-out}@keyframes cmlunge{40%{translate:90px -10px}}
-.cmmon.hit{animation:cmhit .12s steps(2) 6}@keyframes cmhit{50%{opacity:.2;translate:8px 0}}
-.cmmon.faint{opacity:.55;translate:0 50px;filter:grayscale(1) brightness(.75)}
-.cmhp{position:absolute;top:268px;width:300px;z-index:5;background:#F8F8E8;border:5px solid #283850;border-radius:12px 4px 12px 4px;padding:6px 14px 10px;direction:ltr;transition:opacity .3s}.cmhp.out{opacity:0}.cmhp.lft{left:470px}.cmhp.rgt{left:1130px}
+.cmmon{position:absolute;z-index:4;image-rendering:pixelated;background-repeat:no-repeat;background-position-y:0;animation:cmidle .7s steps(1) infinite;transition:opacity .25s,scale .3s steps(4)}
+@keyframes cmidle{0%{background-position-x:var(--f0)}50%{background-position-x:var(--f1)}}
+.cmmon.lft{transform:scaleX(-1)}.cmmon.out{opacity:0;scale:.2}
+.cmmon.lunge{translate:0 0;animation:cmidle .7s steps(1) infinite,cmlunge .8s steps(4)}@keyframes cmlunge{40%{translate:48px -16px}}
+.cmmon.hit{animation:cmidle .7s steps(1) infinite,cmhit .12s steps(2) 7}@keyframes cmhit{50%{opacity:0}}
+.cmmon.spin{animation:cmspin .9s steps(1) forwards}@keyframes cmspin{0%{background-position-x:0}25%{background-position-x:calc(-96px * var(--z))}50%{background-position-x:calc(-48px * var(--z))}75%{background-position-x:0}100%{background-position-x:calc(-96px * var(--z));filter:brightness(2.2) sepia(1) hue-rotate(-50deg) saturate(5)}}
+.cmball{position:absolute;left:1280px;top:470px;width:40px;height:40px;image-rendering:pixelated;z-index:4;transition:opacity .2s}.cmball.out{opacity:0}
+.cmthrow{position:absolute;left:0;top:0;width:36px;height:36px;margin:-18px 0 0 -18px;image-rendering:pixelated}
+.cmpoof{position:absolute;width:120px;height:120px;background:radial-gradient(circle,#fff 0 30%,rgba(255,255,255,.6) 31% 45%,transparent 46%);animation:cmpoof .45s steps(4) forwards}@keyframes cmpoof{from{scale:.2}to{scale:1.4;opacity:0}}
+.cmdrop{position:absolute;left:0;top:0;width:24px;height:16px;background:#58A8F8;box-shadow:8px 0 0 #B8E0FF,-8px 8px 0 #3870D0,0 8px 0 #58A8F8}
+.cmp.npc{z-index:2}.cmp.npc.back{z-index:1}.cmnpc{display:block;width:32px;height:42px;margin:20px auto 0;background:url(img/cm-crowd.png) no-repeat;background-size:512px 42px;image-rendering:pixelated}
+.cmp.pet{width:48px;height:48px}.cmpet{display:block;width:48px;height:48px;background-repeat:no-repeat;background-size:288px 48px;image-rendering:pixelated;animation:cmpet .8s steps(1) infinite}@keyframes cmpet{0%{background-position:-192px 0}50%{background-position:-240px 0}}
+.cmhp{position:absolute;top:322px;width:300px;z-index:5;background:#F8F8E8;border:5px solid #283850;border-radius:12px 4px 12px 4px;padding:6px 14px 10px;direction:ltr;transition:opacity .3s}.cmhp.out{opacity:0}.cmhp.lft{left:470px}.cmhp.rgt{left:1130px}
 .cmhp b{font:400 18px var(--pixel);color:#303030}.cmhp span{float:right;font:400 15px var(--pixel);color:#303030;margin-top:3px}
 .cmbar{height:12px;margin-top:8px;background:#506858;border:3px solid #303030;border-radius:6px;overflow:hidden}.cmbar i{display:block;height:100%;background:#58D080;transition:width 1.3s linear,background 1.3s}.cmbar i.low{background:#F05848}
 .cmfx{position:absolute;inset:0;z-index:6;pointer-events:none}
@@ -890,7 +897,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794588720';
+const BUILDV='1794590088';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2636,8 +2643,8 @@ const CMT_TH={d:['דורקהיים','Durkheim','durkheim','#6390F0'],m:['מרק�
 const CMT=[
  {t:['הקרב','The battle'],q:{
    d:['תראו את הקהל: כולם קמים יחד. הקרב הזה הוא טקס שמחבר את כולנו.','Look at the crowd: everyone rises together. This battle is a ritual that binds us all.'],
-   m:['לרייצ׳ו של רד יש ויטמינים יקרים מהחנות. כסף ניצח פה, לא כישרון.','Red’s Raichu is pumped with pricey vitamins from the Mart. Money won here, not talent.'],
-   w:['חשמל נגד מים: הכלי הכי יעיל למטרה, בחישוב קר. פעולה תכליתית.','Electric against Water: the most efficient means to the end, coldly calculated. Instrumental action.']}},
+   m:['לווייפוריאון של רד יש ויטמינים יקרים מהחנות. כסף ניצח פה, לא כישרון.','Red’s Vaporeon is pumped with pricey vitamins from the Mart. Money won here, not talent.'],
+   w:['מים נגד אש: הכלי הכי יעיל למטרה, בחישוב קר. פעולה תכליתית.','Water against Fire: the most efficient means to the end, coldly calculated. Instrumental action.']}},
  {t:['התג והפרס','The badge and the prize'],q:{
    d:['התג אומר לכולם: אתה שייך. כולנו מכבדים את אותו סמל.','The badge tells everyone: you belong. We all honour the same symbol.'],
    m:['המפסיד שילם למנצח. ככה מי שכבר חזק נעשה עשיר יותר.','The loser paid the winner. That’s how the strong get richer.'],
@@ -2648,7 +2655,8 @@ const CMT=[
    w:['הוא רץ לחבק אותו בלי לחשוב פעמיים. פעולה רגשית.','He runs to hug it without a second thought. Affective action.']}}];
 const CM_RED=48,CM_BLUE=47,cmtT=()=>S.fastOn?8:25;
 // seats: one per bench, the front row first, from the river outwards
-const CM_SEATS=(()=>{const xs=[784,1200,656,1296,528,1392,400,1488,272,1584,1680],o=[];[[196,0],[131,1]].forEach(([y,b])=>xs.forEach(x=>o.push([x,y,b])));return o})();
+const CM_SEATS=(()=>{const xs=[784,1200,656,1296,528,1392,400,1488,272,1584,1680],o=[];[[196,0],[131,1]].forEach(([y,b])=>xs.forEach(x=>o.push([x,y,b])));[96,224,352,480,1536,1664,1760,1856].forEach(x=>o.push([x,80,2]));return o})();
+const CM_NPC=16,CM_PETS=[['eevee',176,250],['umbreon',1752,250],['espeon',860,236],['sylveon',1086,236],['jolteon',120,420],['glaceon',1820,420]];
 function cmtAv(p){const v=S.gIn?.[p.id]?.av;if(typeof v==='number'&&v>=0&&v<LK_MINI)return v;const ia=S.state?.pre?.av?.[String(p.name||'').trim()];if(typeof ia==='number'&&ia>=0&&ia<LK_MINI)return ia;let h=0;for(const c of String(p.id))h=(h*31+c.charCodeAt(0))>>>0;return h%LK_MINI}
 const cmtOw=(n,d,f)=>`${owStyle(n)};background-position:${owPos(n,d,f||0)}`;
 function cmtVote(id,r){const v=String(S.gIn?.[id]?.['cm'+r]||'');return v.length===3?v:'---'}
@@ -2666,15 +2674,20 @@ function cmtGo(d){const C=S.cmt;if(!C||d<0)return false;
 function cmtIn(){const C=S.cmt;if(!C||C.ph!=='guess')return;const pl=lkPpl();let n=0;pl.forEach(p=>{const ok=!cmtVote(p.id,C.r).includes('-');if(ok)n++;$('#cmp-'+p.id)?.classList.toggle('in',ok)});const c=$('#cmcnt');if(c)c.textContent=`${n}/${pl.length}`;
   if(pl.length&&n>=pl.length&&!C.allIn){C.allIn=true;setTimeout(()=>{if(S.cmt===C&&C.ph==='guess')cmtReveal()},1200)}}
 // the field: what the scenes so far have left behind (the fainted Gyarados, Blue by his Pokémon)
+// overworld Pokémon sheets: 6 frames of 24px (side x2 facing left, back x2, front x2); idle = the two frames of a direction
+const CM_MON=(nm,d,cls,id,x,y,z)=>`<div class="cmmon ${cls}" id="${id}" style="left:${x-12*z}px;top:${y-24*z}px;width:${24*z}px;height:${24*z}px;background-image:url(img/cm-${nm}.png);background-size:${144*z}px ${24*z}px;--z:${z};--f0:${-{s:0,b:2,f:4}[d]*24*z}px;--f1:${-({s:0,b:2,f:4}[d]+1)*24*z}px"></div>`;
 function cmtField(done){const C=S.cmt,fz=done>=1,hug=done>=3,hid=C.r===0&&C.ph==='scene';
   return `<div class="cmtr" id="cm-red" style="left:${330-34}px;top:${470-62}px;${cmtOw(CM_RED,'r')}"></div>
    <div class="cmtr" id="cm-blue" style="left:${(hug?1400:1600)-34}px;top:${470-62}px;${cmtOw(CM_BLUE,'l')}"></div>
-   <img class="cmmon lft ${hid?'out':''}" id="cm-rai" src="anim/26.gif" alt="">
-   <img class="cmmon rgt ${fz&&!hug?'faint':''} ${hid?'out':''}" id="cm-gy" src="anim/130.gif" alt="">
-   <div class="cmhp lft ${hid?'out':''}" id="cm-hpr"><b>RAICHU</b><span>Lv50</span><div class="cmbar"><i style="width:100%"></i></div></div>
-   <div class="cmhp rgt ${hid?'out':''}" id="cm-hpg"><b>GYARADOS</b><span>Lv50</span><div class="cmbar"><i style="width:${fz?0:100}%"></i></div></div>`}
+   ${CM_MON('vaporeon','s','lft '+(hid?'out':''),'cm-rai',640,500,4)}
+   ${CM_MON('flareon','s',(hid||(fz&&!hug)?'out':''),'cm-gy',1300,500,4)}
+   <img class="cmball ${fz&&!hug?'':'out'}" id="cm-ball" src="img/it-poke-ball.webp" alt="">
+   <div class="cmhp lft ${hid?'out':''}" id="cm-hpr"><b>VAPOREON</b><span>Lv50</span><div class="cmbar"><i style="width:100%"></i></div></div>
+   <div class="cmhp rgt ${hid?'out':''}" id="cm-hpg"><b>FLAREON</b><span>Lv50</span><div class="cmbar"><i style="width:${fz?0:100}%"></i></div></div>`}
 function cmtPaint(){const C=S.cmt,cv=$('#cv');if(!C||cur()?.kind!=='cmt')return;const R=CMT[C.r],done=C.ph==='scene'?C.r:C.r+1,pl=lkPpl();
-  const crowd=pl.slice(0,CM_SEATS.length).map((p,i)=>{const[x,y,b]=CM_SEATS[i];return `<div class="cmp ${b?'back':''}" id="cmp-${p.id}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%5)*.07}s"><i class="lks" style="${cmtOw(cmtAv(p),'d')}"></i><b>${esc(p.name)}</b><em>!</em></div>`}).join('');
+  const crowd=pl.slice(0,CM_SEATS.length).map((p,i)=>{const[x,y,b]=CM_SEATS[i];return `<div class="cmp ${b?'back':''}" id="cmp-${p.id}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%5)*.07}s"><i class="lks" style="${cmtOw(cmtAv(p),'d')}"></i><b>${esc(p.name)}</b><em>!</em></div>`}).join('')
+    +CM_SEATS.slice(pl.length).map(([x,y,b],i)=>{const k=(i*7+3)%10;if(k<3)return '';const own=i%3!==1,n=own?(i*5)%CM_NPC:(i*13+20)%LK_MINI;return `<div class="cmp npc ${b?'back':''}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%6)*.09}s">${own?`<i class="cmnpc" style="background-position:${-n*32}px 0"></i>`:`<i class="lks" style="${cmtOw(n,'d')}"></i>`}</div>`}).join('')
+    +CM_PETS.map(([nm,x,y],i)=>`<div class="cmp npc pet" style="left:${x-24}px;top:${y-48}px;--dl:${i*.11}s"><i class="cmpet" style="background-image:url(img/cm-${nm}.png)"></i></div>`).join('');
   const head=`<div class="cmhd"><p class="cmeb" dir="ltr">THREE FATHERS · BATTLE COMMENTATORS</p><h2>${ll('פרשני הקרב','Battle commentators')}</h2><span class="cmrd">${ll('סבב','Round')} ${C.r+1}/3 · ${LL(R.t)}</span>${C.ph==='guess'?`<div class="cmclk" id="cmclk"><b>${Math.max(0,Math.ceil((C.end-Date.now())/1000))}</b><span>${ll('ענו','in')} <i id="cmcnt">0/${pl.length}</i></span></div>`:''}</div>`;
   let low='';
   if(C.ph==='scene')low=`<div class="cmbox" id="cmbox"><p></p></div>`;
@@ -2692,18 +2705,18 @@ function cmtSay(t){const b=$('#cmbox p');if(!b)return;b.textContent=t;b.classLis
 function cmtCry(n,v){try{const c=new Audio('cries/'+n+'.ogg?v='+BUILDV);c.volume=v||.6;c.play().catch(()=>{})}catch(e){}}
 function cmtWalk(el,n,d,x,ms){if(!el)return;let f=0;const iv=setInterval(()=>{f=(f+1)%4;el.style.backgroundPosition=owPos(n,d,[1,0,2,0][f])},130);el.style.transition=`left ${ms}ms linear`;el.style.left=(x-34)+'px';setTimeout(()=>{clearInterval(iv);el.style.backgroundPosition=owPos(n,d,0)},ms)}
 function cmtHop(sel){document.querySelectorAll(sel).forEach(e=>{e.classList.remove('hop');void e.offsetWidth;e.classList.add('hop')})}
-function cmtEmote(x,y,t){const fx=$('#cmfx');if(!fx)return;const e=document.createElement('div');e.className='cmemo';e.style.left=x+'px';e.style.top=y+'px';e.textContent=t;fx.appendChild(e);setTimeout(()=>e.remove(),2600)}
+function cmtEmote(x,y,t){const fx=$('#cmfx');if(!fx)return;const e=document.createElement('div');e.className='cmemo';e.style.left=x+'px';e.style.top=y+'px';if(t==='❤')e.innerHTML='<svg viewBox="0 0 7 6" width="35" height="30" shape-rendering="crispEdges" style="margin-top:10px"><path d="M1 0h2v1h1V0h2v1h1v2H6v1H5v1H4v1H3V5H2V4H1V3H0V1h1z" fill="#E5484D"/></svg>';else e.textContent=t;fx.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function cmtScene(){const C=S.cmt,tok=C.tok=(C.tok||0)+1,F=S.fastOn?.55:1,at=(ms,fn)=>setTimeout(()=>{if(S.cmt===C&&C.tok===tok&&C.ph==='scene'&&cur()?.kind==='cmt')fn()},ms*F);
   const R=$('#cm-red'),B=$('#cm-blue'),rai=$('#cm-rai'),gy=$('#cm-gy');
   if(C.r===0){music('mus-trainer',{vol:.22});
-    at(300,()=>{cmtSay(ll('בלו שולח את גיאראדוס!','Blue sends out GYARADOS!'));gy?.classList.remove('out');$('#cm-hpg')?.classList.remove('out');cmtCry(130)});
-    at(1900,()=>{cmtSay(ll('רד שולח את רייצ׳ו!','Red sends out RAICHU!'));rai?.classList.remove('out');$('#cm-hpr')?.classList.remove('out');cmtCry(26)});
-    at(3500,()=>{cmtSay(ll('רייצ׳ו משתמש ב־Thunderbolt!','RAICHU used THUNDERBOLT!'));rai?.classList.add('lunge')});
-    at(4100,()=>{const fx=$('#cmfx');if(fx)fx.insertAdjacentHTML('beforeend',`<svg class="cmbolt" viewBox="0 0 700 220"><polyline points="0,120 120,60 190,150 300,40 380,160 470,70 560,140 700,90" fill="none" stroke="#FFF6A0" stroke-width="26" stroke-linejoin="bevel"/><polyline points="0,120 120,60 190,150 300,40 380,160 470,70 560,140 700,90" fill="none" stroke="#F2C94C" stroke-width="12" stroke-linejoin="bevel"/></svg><div class="cmflash"></div>`);gy?.classList.add('hit');sfx('sfx-ball-poof')});
-    at(4900,()=>{cmtSay(ll('זה סופר אפקטיבי!','It’s super effective!'));const h=$('#cm-hpg .cmbar i');if(h){h.style.width='0%';h.classList.add('low')}$('#cmfx .cmbolt')?.remove();$('#cmfx .cmflash')?.remove()});
-    at(6500,()=>{cmtSay(ll('גיאראדוס התעלף!','The foe’s GYARADOS fainted!'));gy?.classList.remove('hit');gy?.classList.add('faint');sfx('sfx-faint-fall');cmtCry(130,.35)});
-    at(7700,()=>{cmtSay(ll('רד ניצח! הקהל קם על הרגליים.','Red wins! The crowd is on its feet.'));music('mus-victory',{loop:false,vol:.3});cmtHop('.cmp');cmtHop('#cm-red')});
-    at(10200,cmtGuess)}
+    at(300,()=>{cmtSay(ll('בלו שולח את פלריאון!','Blue sends out FLAREON!'));cmtThrow(1600,1300,()=>{gy?.classList.remove('out');$('#cm-hpg')?.classList.remove('out');cmtCry(136)})});
+    at(2100,()=>{cmtSay(ll('רד שולח את וייפוריאון!','Red sends out VAPOREON!'));cmtThrow(330,640,()=>{rai?.classList.remove('out');$('#cm-hpr')?.classList.remove('out');cmtCry(134)})});
+    at(3900,()=>{cmtSay(ll('וייפוריאון משתמש ב־Hydro Pump!','VAPOREON used HYDRO PUMP!'));rai?.classList.add('lunge')});
+    at(4400,()=>{const fx=$('#cmfx');if(!fx)return;sfx('sfx-ball-toss');for(let i=0;i<16;i++)setTimeout(()=>{const d=document.createElement('div');d.className='cmdrop';fx.appendChild(d);const y0=440+Math.round((Math.random()-.5)*5)*8;d.animate([{transform:`translate(700px,${y0}px)`},{transform:`translate(1270px,${y0+Math.round((Math.random()-.5)*4)*8}px)`}],{duration:420,easing:'steps(12)',fill:'forwards'}).onfinish=()=>d.remove()},i*45);setTimeout(()=>{gy?.classList.add('hit');fx.insertAdjacentHTML('beforeend','<div class="cmflash"></div>')},450)});
+    at(5600,()=>{cmtSay(ll('זה סופר אפקטיבי!','It’s super effective!'));const h=$('#cm-hpg .cmbar i');if(h){h.style.width='0%';h.classList.add('low')}$('#cmfx .cmflash')?.remove()});
+    at(7200,()=>{cmtSay(ll('פלריאון התעלף!','The foe’s FLAREON fainted!'));gy?.classList.remove('hit');gy?.classList.add('spin');sfx('sfx-faint-fall');cmtCry(136,.35);setTimeout(()=>{gy?.classList.add('out');$('#cm-ball')?.classList.remove('out')},900)});
+    at(8600,()=>{cmtSay(ll('רד ניצח! הקהל קם על הרגליים.','Red wins! The crowd is on its feet.'));music('mus-victory',{loop:false,vol:.3});cmtHop('.cmp');cmtHop('#cm-red');cmtHop('#cm-rai')});
+    at(11000,cmtGuess)}
   else if(C.r===1){
     at(300,()=>{cmtSay(ll('השופט מכריז: המנצח הוא רד!','The referee calls it: Red is the winner!'));const fx=$('#cmfx');if(fx)fx.insertAdjacentHTML('beforeend','<div class="cmflag"></div>')});
     at(2100,()=>{cmtSay(ll('רד קיבל את תג הבולדר!','Red received the BOULDER BADGE!'));const fx=$('#cmfx');if(fx)fx.insertAdjacentHTML('beforeend','<img class="cmbadge" src="img/badge-1.webp" alt="">');music('mus-badge',{loop:false,vol:.35});cmtHop('#cm-red')});
@@ -2713,9 +2726,12 @@ function cmtScene(){const C=S.cmt,tok=C.tok=(C.tok||0)+1,F=S.fastOn?.55:1,at=(ms
   else{
     at(300,()=>{cmtSay(ll('אחרי הקרב…','After the battle…'))});
     at(900,()=>cmtWalk(B,CM_BLUE,'l',1400,1300));
-    at(2400,()=>{cmtSay(ll('בלו רץ לגיאראדוס שלו.','Blue runs to his Gyarados.'));cmtEmote(1366,330,'❤');gy?.classList.remove('faint');cmtCry(130,.45)});
-    at(4300,()=>{cmtSay(ll('והקהל מריע לשניהם.','And the crowd cheers them both.'));cmtHop('.cmp');setTimeout(()=>cmtHop('.cmp'),600);cmtHop('#cm-red')});
+    at(2400,()=>{cmtSay(ll('בלו רץ לפלריאון שלו.','Blue runs to his Flareon.'));$('#cm-ball')?.classList.add('out');gy?.classList.remove('spin');gy?.classList.remove('out');cmtCry(136,.45);setTimeout(()=>cmtEmote(1466,370,'❤'),500)});
+    at(4300,()=>{cmtSay(ll('והקהל מריע לשניהם.','And the crowd cheers them both.'));cmtHop('.cmp');setTimeout(()=>cmtHop('.cmp'),600);cmtHop('#cm-red');cmtHop('#cm-gy')});
     at(6500,cmtGuess)}}
+// a Poké Ball arcs from the trainer to the spot, pops, and the Pokémon appears
+function cmtThrow(x0,x1,then){const fx=$('#cmfx');if(!fx){then();return}const b=document.createElement('img');b.className='cmthrow';b.src='img/it-poke-ball.webp';fx.appendChild(b);sfx('sfx-ball-toss');
+  b.animate([{transform:`translate(${x0}px,420px) rotate(0)`},{transform:`translate(${(x0+x1)/2}px,300px) rotate(${x1>x0?360:-360}deg)`,offset:.5},{transform:`translate(${x1}px,450px) rotate(${x1>x0?720:-720}deg)`}],{duration:700,easing:'linear',fill:'forwards'}).onfinish=()=>{b.remove();sfx('sfx-ball-poof');fx.insertAdjacentHTML('beforeend',`<div class="cmpoof" style="left:${x1-60}px;top:${390}px"></div>`);setTimeout(()=>fx.querySelector('.cmpoof')?.remove(),500);then()}}
 // phone
 function cmtPick(i,k){const G=S.game;if(G?.g!=='cmt'||G.ph!=='guess')return;const key='cm'+G.r,v=String((S.myG||{})[key]||'---').split('');const j=v.indexOf(k);if(j>=0&&j!==i)v[j]=v[i];v[i]=k;const s=v.join('');
   S.myG={...(S.myG||{}),[key]:s};try{navigator.vibrate?.(12)}catch(e){}sfx('sfx-a');render();S.db.doc('stage/g-'+S.me).set({[key]:s},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')))}
