@@ -908,7 +908,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794606786';
+const BUILDV='1794607619';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2784,12 +2784,13 @@ function cmtPhone(me,G){const head=`<p class="eyebrow">BATTLE COMMENTATORS · ${
    ${rv?`<p class="center" style="font-size:18px">${ll('בסבב הזה','This round')}: <b>${[0,1,2].filter(i=>v[i]===(G.ord||[])[i]).length}/3</b> · ${ll('סה״כ','Total')} <b>${G.scores?.[me.id]||0}</b></p>`:full?`<p class="muted center">${ll('נשלח. תסתכלו על המסך.','Sent. Watch the screen.')}</p>`:''}`}
 
 // ---------- the Friends gang rates Monica on the sample question, by itself, one at a time ----------
-const FRIENDS_RATE=[[2,'monica',1,['בלי לתכנן? חוקים עוזרים לשלוט בכיף!','Without a plan? Rules help control the fun!']],
- [0,'chandler',3,['לעבור בין קבוצות? היא יכולה להיות יותר מארחת? היא תעבור מקבוצה לקבוצה, אבל רק עם מגש מיני־קישים.','Move between groups? Could she BE any more of a host? She’ll go group to group, but only with a tray of mini quiches.']],
+const FRIENDS_RATE=[[0,'monica',4,['לעבור בין קבוצות? בטח. ובכל קבוצה שאני מצטרפת אליה, הקבוצה שלי תמיד מנצחת.','Move between groups? Sure. And whichever group I join, my team always wins.']],
+ [2,'rachel',1,['בלי לתכנן? מוניקה? אצלה חוקים עוזרים לשלוט בכיף.','Without a plan? Monica? For her, rules help control the fun.']],
  [1,'ross',1,['בפינה שקטה? היא תהיה במטבח, מסדרת מגבות לפי 11 קטגוריות.','In a quiet corner? She’ll be in the kitchen, sorting towels into 11 categories.']],
+ [3,'chandler',5,['לעזור למארחים? היא יכולה להיות יותר מארחת? היא תארח גם במסיבה של מישהו אחר.','Help the hosts? Could she BE any more of a host? She’ll host even at someone else’s party.']],
  [3,'phoebe',5,['במסיבה היא שמה אותי אחראית על קרח וכוסות. רק קרח וכוסות.','At the party she put me in charge of ice and cups. Just ice and cups.']],
  [-1,'joey',0,['הייתה מסיבה? הייתי ליד האוכל כל הערב. ג׳ואי לא חולק אוכל, וגם לא ממציא תשובות.','There was a party? I was by the food all night. Joey doesn’t share food, and he doesn’t make up answers.']]];
-const FR_GIF={monica:1,ross:1,phoebe:1,joey:1};
+const FR_GIF={monica:1,rachel:1,ross:1,chandler:1,phoebe:1,joey:1};
 function friendsRun(){const cv=$('#cv'),sec=cv.querySelector('section');if(!sec)return;const rows=[...sec.querySelectorAll('div')].filter(r=>r.children.length===2&&r.lastElementChild?.children.length===5&&r.firstElementChild?.tagName==='P');if(rows.length<4)return;const run=(S.frRun=(S.frRun||0)+1),alive=()=>S.frRun===run&&cur()?.id==='k-scenario';
   sec.insertAdjacentHTML('beforeend',`<div id="frbox" class="frbox"><img id="frimg" src="img/frf-monica.webp" alt=""><div class="frbub" id="frbub"><b>${ll('הנבדקת: מוניקה','The subject: Monica')}</b><p>${ll('ככה היא והחברים שלה עונים עליה:','This is how she and her friends answer about her:')}</p></div></div>`);
   const h2=sec.querySelector('h2');if(h2)h2.classList.add('frh2');setTimeout(()=>{if(alive())$('#frbox')?.classList.add('in')},700);
