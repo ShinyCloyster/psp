@@ -45,7 +45,7 @@ window.INV_TEXT = {
       'אין תשובה נכונה. מאמן יכול להיות גם משהו קטן ויומיומי, כל עוד הוא השפיע עליך.',
     ],
     bagFriendsMore: [
-      'כדאי 4 עד 10 אנשים שמכירים אותך טוב, ואם אפשר ממעגלים שונים: משפחה, חברים ותיקים, עבודה.',
+      'כדאי 4 עד 10 אנשים שמכירים אותך טוב.',
       'כל אחד מהם עונה בטלפון על כ־150 שאלות קצרות עליך, ב־4 סבבים קצרים לאורך הערב. תמיד מותר לענות "לא יודע".',
       'מי שלא יכול להגיע יכול לענות מרחוק, בקישור.',
       'התשובות של כל אחד פרטיות, ובין לבין כולם משחקים ומתחרים בליגה של הערב.',
@@ -482,7 +482,7 @@ window.INV_TEXT = {
       'There’s no right answer. A trainer can be something small and everyday, as long as it shaped you.',
     ],
     bagFriendsMore: [
-      'Ideally 4 to 10 people who know you well, and if possible from different circles: family, old friends, work.',
+      'Ideally 4 to 10 people who know you well.',
       'Each of them answers about 150 short questions about you on their phone, in 4 short rounds through the evening. "Don’t know" is always allowed.',
       'Anyone who can’t come can answer remotely, with a link.',
       'Everyone’s answers are private, and in between, everyone plays and competes in the evening’s league.',

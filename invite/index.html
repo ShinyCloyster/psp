@@ -748,7 +748,7 @@ function pCard(){const id=String(Math.abs([...NAME].reduce((h,c)=>(h*31+c.charCo
     <div class="tcbadges">${[1,2,3,4,5,6,7,8].map(n=>`<img src="../img/badge-${n}.webp" alt="" class="${lit>=n?'on':''}">`).join('')}</div>
     <b class="approved">APPROVED</b>
   </section>
-  <div class="blk"><div class="pgrid"><button data-av="custom" class="custt${mem.av==='custom'?' on':''}"><span>🎨</span><i>${H('customTile')}</i></button>${Array.from({length:MINI_N},(_,i)=>`<button data-av="${i}" class="${mem.av===i?'on':''}"><img class="px" src="../img/mini/${i}.png" alt=""></button>`).join('')}</div><div id="custbox"></div></div>`}
+  <div class="blk"><div class="pgrid">${Array.from({length:MINI_N},(_,i)=>`<button data-av="${i}" class="${mem.av===i?'on':''}"><img class="px" src="../img/mini/${i}.png" alt=""></button>`).join('')}</div><div id="custbox"></div></div>`}
 function bindCard(){custBox();document.querySelectorAll('[data-av]').forEach(bt=>bt.onclick=()=>{const v=bt.dataset.av;mem.av=v==='custom'?'custom':+v;save();dbSync({av:mem.av});sfx('tink',.6);
     document.querySelectorAll('[data-av]').forEach(x=>x.classList.toggle('on',x===bt));$('#tcfig').innerHTML=cardFig();custBox();if(v!=='custom')$('.tcard').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})})}
 function custBox(){const c=$('#custbox');if(!c)return;if(mem.av!=='custom'){c.innerHTML='';return}const l=wa(T('customWaMsg'));
