@@ -824,7 +824,7 @@ function teamList(){const mine=party().map(f=>({...f,mine:1})),keys=new Set(mine
 function pParty(){const P=teamList(),pc=P.slice(6);
   return `${ptitle('partyTitle')}<p class="plead">${H('partyLead')}</p>
   <ol class="howto">${TL('partyHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
-  ${TEST()?`<section class="blk fakeb"><p>${H('fakeLead')}</p><button class="ghostbtn wbtn" id="fakef">🎲 ${H('fakeAdd')}</button></section>`:''}
+  ${TEST()?`<section class="blk fakeb"><p>${H('fakeLead')}</p><button class="ghostbtn wbtn" id="fakef">🎲 ${H('fakeAdd').replace('6',fakeSrc().length)}</button></section>`:''}
   <section class="blk addf" id="addf">
     <label for="fname">${H('addNameL')}</label><input id="fname" type="text" maxlength="30" autocomplete="off" placeholder="${esc(T('addNamePh'))}">
     <label>${H('addGL')}</label><div class="gsel"><button data-g="m" class="${addG==='m'?'on':''}">${H('boy')}</button><button data-g="f" class="${addG==='f'?'on':''}">${H('girl')}</button></div>
@@ -1016,10 +1016,11 @@ function bindLoc(){$('#locchg')?.addEventListener('click',()=>{locEdit=true;locM
 const TEST=()=>!!(FILE&&FILE.test);
 const FAKE={he:[['רייצ׳ל','f'],['רוס','m'],['מוניקה','f'],['צ׳נדלר','m'],['ג׳ואי','m'],['פיבי','f']],en:[['Rachel','f'],['Ross','m'],['Monica','f'],['Chandler','m'],['Joey','m'],['Phoebe','f']]};
 const fakeBase=Math.floor(Math.random()*MINI_N);
-function fakeFriends(){const have=new Set(party().map(f=>f.n)),add=FAKE[LANG==='en'?'en':'he'].filter(([n])=>!have.has(n));
-  add.forEach(([n,g],i)=>{const f={n,g,k:rid(8),...(i===4?{r:1}:{})};party().push(f);dbRoster(f,'inv')});save();toast(T('fakeAdded'));
+const fakeSrc=()=>Array.isArray(FILE&&FILE.fake)&&FILE.fake.length?(fakeSrc.c=fakeSrc.c||FILE.fake.map(x=>[String(x&&x.n||'').slice(0,40),x&&x.g==='f'?'f':'m']).filter(x=>x[0])):FAKE[LANG==='en'?'en':'he'];
+function fakeFriends(){const have=new Set(party().map(f=>f.n)),own=fakeSrc()!==FAKE.he&&fakeSrc()!==FAKE.en,add=fakeSrc().filter(([n])=>!have.has(n));
+  add.forEach(([n,g],i)=>{const f={n,g:g==='f'?'f':'m',k:rid(8),...(i===4&&!own?{r:1}:{})};party().push(f);dbRoster(f,'inv')});save();toast(T('fakeAdded'));
   add.forEach(([n],i)=>setTimeout(()=>fakeAnswer(n,i),4000+i*7000+Math.random()*4000))}
-async function fakeAnswer(n,i){const f=party().find(x=>x.n===n);if(!f)return;const db=await dbReady;if(!db||!mem.iid)return;const D=(FILE&&FILE.dates)||[],no=i===5;
+async function fakeAnswer(n,i){const f=party().find(x=>x.n===n);if(!f)return;const db=await dbReady;if(!db||!mem.iid)return;const D=(FILE&&FILE.dates)||[],no=i===5&&!(Array.isArray(FILE&&FILE.fake)&&FILE.fake.length);
   try{await db.doc('invites/'+mem.iid).set({team:{[f.k]:{n:f.n,g:f.g,ans:no?'no':'yes',r:f.r?1:0,av:no?null:(fakeBase+i*11)%MINI_N,d:f.r||no?[]:D.filter(()=>Math.random()<.7),at:now()}}},{merge:true})}catch(e){}}
 document.addEventListener('click',e=>{if(!TEST())return;const a=e.target.closest('a[href*="wa.me"],#sshare');if(!a)return;e.preventDefault();if(a.id==='sshare')e.stopPropagation();
   if(a.id==='swa'||a.id==='sshare'){mem.sentAll=1;save()}toast(T('testNoSend'))},true);

@@ -850,7 +850,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794579145';
+const BUILDV='1794587249';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1006,6 +1006,7 @@ function invLink(v,id){const q=new URLSearchParams();q.set('to',v.subject||'');q
 function invMsg(v,id){return (v.lang==='en'?`Hi ${v.subject}! Dragonite is on its way to you with something special. Open it when you have a minute and sound on:`:`היי ${v.subject}! דרגונייט בדרך ${v.g==='f'?'אלייך':'אליך'} עם משהו מיוחד. כדאי לפתוח כשיש דקה וסאונד:`)+'\n'+invLink(v,id)}
 function invSub(){
   if(!S.invSub&&S.db?.raw){S.invSub=true;S.db.raw.collection('invites').onSnapshot(q=>{S.invites=q.docs.map(d=>({id:d.id,...clone(d.data())})).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));if(isScreen()&&!ROOM.code)roomsView()},()=>{})}}
+const fakeList=t=>String(t||'').split(/[\r\n]+/).map(l=>l.trim()).filter(Boolean).slice(0,12).map(l=>{const m=l.match(/^(.*?)[,،]\s*(נ|f|F|בת)\s*$/);return m?[m[1].trim().slice(0,40),'f']:[l.replace(/[,،]\s*(ז|m|M|בן)\s*$/,'').trim().slice(0,40),'m']}).filter(x=>x[0]);
 function invForm(){const N=S.ni;
   return `<div class="card"><div class="row"><h2 class="grow" style="margin:0">${N.test?'🧪 הזמנת ניסוי':'הזמנה חדשה'}</h2><button class="x" data-niclose="1" aria-label="סגירה">✕</button></div>
     <label class="lab-l" for="ni-n">מי הנבדק?</label><input type="text" id="ni-n" placeholder="שם" value="${esc(N.n)}" oninput="S.ni.n=this.value">
@@ -1017,6 +1018,7 @@ function invForm(){const N=S.ni;
     ${N.dates.length?`<div class="row" style="gap:6px;flex-wrap:wrap">${N.dates.map(d=>`<button class="btn ghost small" data-nidel="${d}">${invFmt(d)} ✕</button>`).join('')}</div>`:''}
     <label class="lab-l" for="ni-place">איפה</label><input type="text" id="ni-place" value="${esc(N.place)}" oninput="S.ni.place=this.value"><p class="muted labsm">הנבדק יכול להציע מקום אחר בתל אביב, עם מסך גדול ומקום לכולם.</p>
     <label class="lab-l" for="ni-ps">נ.ב. אישי</label><input type="text" id="ni-ps" placeholder="משפט קצר ממך, בסוף המכתב" value="${esc(N.ps)}" oninput="S.ni.ps=this.value">
+    ${N.test?`<label class="lab-l" for="ni-fk">חברים מדומים (לא חובה)</label><p class="muted labsm">שם בכל שורה. לבת מוסיפים ", נ" בסוף. ריק = החבורה של Friends. הם יופיעו בכפתור "להוסיף חברים מדומים" בעמוד הצוות.</p><textarea id="ni-fk" rows="5" style="width:100%;font:inherit" placeholder="מיצי, נ&#10;יוגב" oninput="S.ni.fake=this.value">${esc(N.fake||'')}</textarea>`:''}
     <button class="btn" data-act="newinvite">${N.test?'🧪 פתיחת הזמנת ניסוי':'✉️ פתיחת ההזמנה'}</button></div>`}
 function invCard(v){const T=Object.values(v.team||{}).filter(x=>x&&x.ans!=='removed'),yes=T.filter(x=>x.ans==='yes'),here=yes.filter(x=>!x.r),D=v.dates||[];
   const cnt=d=>((v.sd||[]).includes(d)?1:0)+here.filter(x=>(x.d||[]).includes(d)).length,tot=1+here.length;
@@ -1092,7 +1094,7 @@ function roomsView(){
     if(b.dataset.niadd){const day=$('#ni-d')?.value,tm=$('#ni-t')?.value||'20:00';if(!day){toast('קודם בוחרים יום');try{$('#ni-d').showPicker()}catch(e){$('#ni-d')?.focus()}return}const d=day+'T'+tm;if(!S.ni.dates.includes(d)){S.ni.dates.push(d);S.ni.dates.sort()}S.ni.day='';roomsView();return}
     if(b.dataset.nidel){S.ni.dates=S.ni.dates.filter(x=>x!==b.dataset.nidel);roomsView();return}
     if(b.dataset.act==='newinvite'){const N=S.ni,n=(N.n||'').trim().slice(0,40);if(!n){toast('מה השם?');return}if(!N.dates.length){toast('צריך לפחות מועד אחד');return}
-      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.test?{test:true}:{}),...(N.place.trim()&&N.place.trim()!==INV_PLACE?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
+      const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.test?{test:true}:{}),...(N.test&&fakeList(N.fake).length?{fake:fakeList(N.fake).map(([n,g])=>({n,g}))}:{}),...(N.place.trim()&&N.place.trim()!==INV_PLACE?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};
       b.disabled=true;try{await S.db.raw.doc('invites/'+id).set(v);S.niDone={...v,id};S.niOpen=false;S.ni={n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'};toast('ההזמנה נפתחה')}catch(e){console.error(e);toast('לא נשמר. האם הודבקו החוקים החדשים בקונסול?')}roomsView();return}
     if(b.dataset.invset){const [id,d]=b.dataset.invset.split('|');await S.db.raw.doc('invites/'+id).update({date:d}).catch(()=>toast('לא נשמר'));return}
     if(b.dataset.inv){const v=(S.invites||[]).find(x=>x.id===b.dataset.inv);if(!v)return;const names=Object.values(v.team||{}).filter(x=>x&&x.ans==='yes').map(x=>x.n);
@@ -2479,8 +2481,9 @@ function lkPhase(ph,box,he,ms,next){const L=S.lake;L.phase=ph;clearTimeout(L.to)
 function lkCount(){const L=S.lake,c=$('#lkc');if(c)c.textContent=L.seen?'GYARADOS SEEN: '+L.seen:''}
 function lkSpawn(red){const L=S.lake,a=Math.random()*6.28,g=$('#lkg'),W=lkCells('w');let best=W[0],bd=-1;for(let i=0;i<W.length;i++){const q=W[i],m=Math.min(...lkPpl().map(p=>Math.hypot(q[0]-L.pos[p.id].x,q[1]-L.pos[p.id].y)));if(m>bd){bd=m;best=q}}
   L.gy={x:best[0],y:best[1],dx:0,dy:1,red,t:performance.now()};L.safeTo=Date.now()+1700+3000;if(g){g.style.backgroundImage=`url(img/gy-${red?'red-':''}sheet.png)`;g.style.display=''}L.seen++;lkCount();try{const c=new Audio('cries/130.ogg?v='+BUILDV);c.volume=.7;c.play().catch(()=>{})}catch(e){}}
-function lakeAppear(){const L=S.lake;lkSpawn(false);lkPhase('appear','Wild GYARADOS appeared!',0,1700,()=>{L.until=Date.now()+lkSec()*1000;lkPhase('chase','',0)})}
-function lkEnd(who){const L=S.lake,red=L.gy?.red,g=$('#lkg');L.gy=null;if(g)g.style.display='none';if(who){L.got[who]=(L.got[who]||0)+1;sfx('sfx-caught-mon')}const nm=who?esc(person(who)?.name||''):'';
+const lkEase=()=>Math.min(2,S.lake?.ease||0);
+function lakeAppear(){const L=S.lake;lkSpawn(false);lkPhase('appear','Wild GYARADOS appeared!',0,1700,()=>{L.until=Date.now()+(lkSec()+lkEase()*(S.fastOn?2:5))*1000;lkPhase('chase','',0)})}
+function lkEnd(who){const L=S.lake,red=L.gy?.red,g=$('#lkg');if(!red)L.ease=who?0:(L.ease||0)+1;L.gy=null;if(g)g.style.display='none';if(who){L.got[who]=(L.got[who]||0)+1;sfx('sfx-caught-mon')}const nm=who?esc(person(who)?.name||''):'';
   if(red){if(who){L.redBy=who;leagueSet('red',{[who]:1})}lkPhase('rafter',who?`${nm} caught the red GYARADOS!`:'The red GYARADOS fled!',0,3000,lakeFinish);return}
   lkPhase('after',who?`${nm} caught it!`:'GYARADOS fled!',0,S.fastOn?1500:4000,lakeNext)}
 function lakeNext(){const L=S.lake;if(L.seen<3)lakeAppear();else lakeAsk()}
@@ -2502,10 +2505,10 @@ function lakeRun(){const L=S.lake;let last=performance.now();const step=t=>{if(S
     if(!G.to){const[tx,ty]=lkT(G.x,G.y);[G.x,G.y]=lkC(tx,ty);let near=null,nd=1e9;lkPpl().forEach(p=>{if(!lkAv(p))return;const P=L.pos[p.id],di=Math.hypot(P.x-G.x,P.y-G.y);if(di<nd){nd=di;near=P}});
       // Gyarados keeps to the water: it runs from whoever comes close, and otherwise mostly keeps going the same way
       let opts=D4.filter(([dx,dy])=>lkAt(tx+dx,ty+dy)==='w'&&lkIn(tx+dx,ty+dy));const near1=(a,b)=>lkPpl().some(p=>{if(!lkAv(p))return false;const[c,d]=lkT(L.pos[p.id].x,L.pos[p.id].y);return Math.max(Math.abs(c-a),Math.abs(d-b))<=1}),safe=opts.filter(([dx,dy])=>!near1(tx+dx,ty+dy));if(safe.length)opts=safe;
-      if(opts.length){let pk;if(near&&nd<LK.tw*9){const pp=lkPpl().filter(p=>lkAv(p)).map(p=>lkT(L.pos[p.id].x,L.pos[p.id].y)),far=(x,y)=>Math.min(...pp.map(([a,b])=>Math.abs(a-x)+Math.abs(b-y)));pk=opts.map(o=>{const sx=tx+o[0],sy=ty+o[1],seen=new Set([sx+','+sy]);let fr=[[sx,sy]],best=far(sx,sy);for(let d=0;d<6&&fr.length;d++){const nx=[];fr.forEach(([x,y])=>D4.forEach(([ex,ey])=>{const a=x+ex,b=y+ey,k=a+','+b;if(seen.has(k)||lkAt(a,b)!=='w'||!lkIn(a,b)||far(a,b)<=d/2)return;seen.add(k);nx.push([a,b]);best=Math.max(best,far(a,b))}));fr=nx}return[far(sx,sy)*2+best+seen.size*.02+Math.random()*.3,o]}).sort((a,b)=>b[0]-a[0])[0][1]}
+      if(opts.length){let pk;const ez=G.red?0:lkEase();if(near&&nd<LK.tw*(9-3*ez)){const pp=lkPpl().filter(p=>lkAv(p)).map(p=>lkT(L.pos[p.id].x,L.pos[p.id].y)),far=(x,y)=>Math.min(...pp.map(([a,b])=>Math.abs(a-x)+Math.abs(b-y)));pk=opts.map(o=>{const sx=tx+o[0],sy=ty+o[1],seen=new Set([sx+','+sy]);let fr=[[sx,sy]],best=far(sx,sy);for(let d=0;d<6&&fr.length;d++){const nx=[];fr.forEach(([x,y])=>D4.forEach(([ex,ey])=>{const a=x+ex,b=y+ey,k=a+','+b;if(seen.has(k)||lkAt(a,b)!=='w'||!lkIn(a,b)||far(a,b)<=d/2)return;seen.add(k);nx.push([a,b]);best=Math.max(best,far(a,b))}));fr=nx}return[far(sx,sy)*2+best+seen.size*.02+Math.random()*.3,o]}).sort((a,b)=>b[0]-a[0])[0][1]}
         else{const fw=opts.find(o=>o[0]===G.dx&&o[1]===G.dy);pk=fw&&Math.random()<.75?fw:opts[Math.floor(Math.random()*opts.length)]}
         G.dx=pk[0];G.dy=pk[1];G.to=[tx+pk[0],ty+pk[1]];G.from=[G.x,G.y];G.k=0}}
-    walk(G,LK.gsp*(Date.now()<L.safeTo?1.7:1));
+    walk(G,LK.gsp*(G.red?1:1-.2*lkEase())*(Date.now()<L.safeTo?1.7:1));
     const g=$('#lkg');if(g){const row=G.dx?(G.dx<0?1:2):(G.dy>0?0:3),fr=Math.floor(t/150)%4;g.style.transform=`translate(${Math.round(G.x-LK.x)}px,${Math.round(G.y-LK.y)}px) translate(-50%,-62%)`;g.style.backgroundPosition=`${-fr*LK.gd}px ${-row*LK.gd}px`}
     // caught: a player who steps onto Gyarados's own tile
     if((L.phase==='chase'||L.phase==='rchase')&&Date.now()>=L.safeTo){const[gx,gy]=lkT(G.x,G.y);const who=lkPpl().find(p=>{if(!lkAv(p))return false;const[a,b]=lkT(L.pos[p.id].x,L.pos[p.id].y);return a===gx&&b===gy});if(who)lkEnd(who.id);else if(Date.now()>L.until)lkEnd(null)}else if((L.phase==='chase'||L.phase==='rchase')&&Date.now()>L.until)lkEnd(null)}
