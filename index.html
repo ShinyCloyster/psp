@@ -370,6 +370,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .gbp-menu>button.gbp-ok{justify-content:center;display:flex;width:100%;margin-top:12px;background:#E4483F;color:#fff;border:0;border-radius:8px;padding:12px;font-family:var(--display);font-size:22px}
 .btn.on{outline:3px solid var(--gold);outline-offset:2px}
 .ravail .btn{width:auto;display:inline-block;margin:4px 0 0 6px}
+#photoov .saystack{position:fixed;left:3vw;bottom:5vh;z-index:2}
 #photoov{position:fixed;inset:0;z-index:40;background:rgba(10,12,24,.96);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .45s}
 #photoov.show{opacity:1;pointer-events:auto}
 #photoov img{max-width:92vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:scale(.96);transition:transform .45s}
@@ -538,7 +539,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .en .pqti{right:auto;left:128px;font-size:56px}.en .qboard.pqboard{width:960px}.en .pqfig{right:auto;left:110px}.en .pqopts{left:auto;right:70px;direction:ltr}.en .pqans{left:auto;right:70px}.en .pqclock{left:auto!important;right:600px}.en .qboard.pqboard{left:auto;right:70px}.en .pq .pqend+.qboard{left:430px;right:auto}
 /* league */
 .lgbox{background:rgba(22,26,46,.94);border:3px solid #F2C94C;border-radius:24px;padding:16px 20px;color:#F6F1E7;display:flex;flex-direction:column;gap:6px}
-.lgh{font:400 16px var(--pixel);color:#F2C94C;text-align:center;margin-bottom:4px}
+.lgh{font:400 16px var(--pixel);color:#F2C94C;text-align:center;margin-bottom:4px}html:not(.en) .lgh{font:400 30px var(--display)}html:not(.en) .lgtab th{font:700 17px var(--body)}
 .lgr{display:grid;grid-template-columns:30px auto 1fr 50px;gap:10px;align-items:center;font-size:22px;padding:2px 8px;border-radius:12px}.lgr i{font:400 16px var(--pixel);font-style:normal;color:#9FA7C7}
 .lgr span{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lgr b{font:400 20px var(--pixel);color:#F2C94C;text-align:left}.lgr.top{background:rgba(242,201,76,.16)}.lgr.top i{color:#F2C94C}
 .lgbox.cmp .lgr{font-size:20px}
@@ -581,8 +582,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 @keyframes frbob{0%{margin-bottom:0}100%{margin-bottom:8px}}
 .segnext{display:block;font-size:20px;opacity:.85;margin-top:4px;font-weight:500}
 .st.cmt{overflow:hidden;background:#6CC7A0}.cmar{position:absolute;left:0;top:0;width:1920px;height:1080px;image-rendering:pixelated;z-index:0}
-.cmp{position:absolute;width:68px;height:68px;z-index:3}.cmp.back{z-index:2}.cmp b{position:absolute;top:64px;left:50%;transform:translateX(-50%);background:rgba(22,26,46,.85);color:#F6F1E7;border-radius:9px;padding:1px 9px;font:700 17px var(--body);white-space:nowrap}
-.cmp em{position:absolute;right:-18px;top:-20px;width:30px;height:34px;border-radius:10px;background:#fff;border:3px solid #161A2E;color:#E5484D;font:900 24px/28px var(--body);font-style:normal;text-align:center;scale:0;transition:scale .25s cubic-bezier(.2,1.6,.4,1)}.cmp.in em{scale:1}
+.cmpp{position:absolute;width:68px;height:68px;z-index:3}.cmpp.back{z-index:2}.cmpp b{position:absolute;top:64px;left:50%;transform:translateX(-50%);background:rgba(22,26,46,.85);color:#F6F1E7;border-radius:9px;padding:1px 9px;font:700 17px var(--body);white-space:nowrap}
+.cmpp em{position:absolute;right:-18px;top:-20px;width:30px;height:34px;border-radius:10px;background:#fff;border:3px solid #161A2E;color:#E5484D;font:900 24px/28px var(--body);font-style:normal;text-align:center;scale:0;transition:scale .25s cubic-bezier(.2,1.6,.4,1)}.cmpp.in em{scale:1}
 .hop{animation:cmhop .5s ease-out var(--dl,0s)}@keyframes cmhop{35%{translate:0 -22px}70%{translate:0 0}85%{translate:0 -6px}}
 .cmtr{position:absolute;width:68px;height:68px;image-rendering:pixelated;background-repeat:no-repeat;z-index:4}
 .cmmon{position:absolute;z-index:4;image-rendering:pixelated;background-repeat:no-repeat;background-position-y:0;animation:cmidle .7s steps(1) infinite;transition:opacity .25s,scale .3s steps(4)}
@@ -595,8 +596,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .cmthrow{position:absolute;left:0;top:0;width:36px;height:36px;margin:-18px 0 0 -18px;image-rendering:pixelated}
 .cmpoof{position:absolute;width:120px;height:120px;background:radial-gradient(circle,#fff 0 30%,rgba(255,255,255,.6) 31% 45%,transparent 46%);animation:cmpoof .45s steps(4) forwards}@keyframes cmpoof{from{scale:.2}to{scale:1.4;opacity:0}}
 .cmdrop{position:absolute;left:0;top:0;width:24px;height:16px;background:#58A8F8;box-shadow:8px 0 0 #B8E0FF,-8px 8px 0 #3870D0,0 8px 0 #58A8F8}
-.cmp.npc{z-index:2}.cmp.npc.back{z-index:1}.cmnpc{display:block;width:32px;height:42px;margin:20px auto 0;background:url(img/cm-crowd.png) no-repeat;background-size:512px 42px;image-rendering:pixelated}
-.cmp.pet{width:48px;height:48px}.cmpet{display:block;width:48px;height:48px;background-repeat:no-repeat;background-size:288px 48px;image-rendering:pixelated;animation:cmpet .8s steps(1) infinite}@keyframes cmpet{0%{background-position:-192px 0}50%{background-position:-240px 0}}
+.cmpp.npc{z-index:2}.cmpp.npc.back{z-index:1}.cmnpc{display:block;width:32px;height:42px;margin:20px auto 0;background:url(img/cm-crowd.png) no-repeat;background-size:512px 42px;image-rendering:pixelated}
+.cmpp.pet{width:48px;height:48px}.cmpet{display:block;width:48px;height:48px;background-repeat:no-repeat;background-size:288px 48px;image-rendering:pixelated;animation:cmpet .8s steps(1) infinite}@keyframes cmpet{0%{background-position:-192px 0}50%{background-position:-240px 0}}
 .cmhp{position:absolute;top:322px;width:300px;z-index:5;background:#F8F8E8;border:5px solid #283850;border-radius:12px 4px 12px 4px;padding:6px 14px 10px;direction:ltr;transition:opacity .3s}.cmhp.out{opacity:0}.cmhp.lft{left:470px}.cmhp.rgt{left:1130px}
 .cmhp b{font:400 18px var(--pixel);color:#303030}.cmhp span{float:right;font:400 15px var(--pixel);color:#303030;margin-top:3px}
 .cmbar{height:12px;margin-top:8px;background:#506858;border:3px solid #303030;border-radius:6px;overflow:hidden}.cmbar i{display:block;height:100%;background:#58D080;transition:width 1.3s linear,background 1.3s}.cmbar i.low{background:#F05848}
@@ -832,7 +833,7 @@ const ROUND_SIZE=[50,50,50],NR=ROUND_SIZE.length;   // the evening has 3 parts, 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LEGACY_ROOM='ERI1',ROOM_ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets|admin)(?:=([A-Za-z0-9]{4}))?(?:@([\w-]+))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase(),at:m[3]||''};return {mode:/^c=/.test(h)?'card':'',code:''}}
+function hashParts(){const h=(location.hash||'').replace('#','');const m=h.match(/^(screen|host|remote|r|assets|admin|ctl)(?:=([A-Za-z0-9]{4}))?(?:@([\w-]+))?$/);if(m)return {mode:m[1],code:(m[2]||'').toUpperCase(),at:m[3]||''};return {mode:/^c=/.test(h)?'card':'',code:''}}
 const RAWSTORE={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const ROOM=(()=>{const hp=hashParts();let code=hp.code;if(!code&&(hp.mode===''||hp.mode==='r'||hp.mode==='remote')){const sr=RAWSTORE.get('psp-room');code=(sr||'').toUpperCase();if(sr===null&&RAWSTORE.get('psp-me'))code=LEGACY_ROOM}return {code,legacy:code===LEGACY_ROOM,mode:hp.mode,at:hp.at||''}})();
 // language: ?lang=en|he, else the room's own language (cached per room once its state arrives), else the phone's last choice. Eri's evening stays Hebrew.
@@ -897,7 +898,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794590088';
+const BUILDV='1794599819';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -996,7 +997,7 @@ async function boot(){
   S.db.collection('joined').onSnapshot(q=>{S.joined=new Set(q.docs.map(d=>d.id));S.joinedLoaded=true;S.joinedG={};S.joinedDev={};q.docs.forEach(d=>{const x=d.data()||{};if(x.gender)S.joinedG[d.id]=x.gender;if(x.dev)S.joinedDev[d.id]=x.dev});changed()},()=>{});
   S.db.doc('stage/main').onSnapshot(sn=>{S.stage=sn.exists?clone(sn.data()):null;if(isScreen())stagePhoto();else render()},()=>{});
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
-  S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n>S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
+  S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n!==S.ctlN){S.ctlN=d.n;if(S.screenOn)go(d.d>0?1:-1)}},()=>{});
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0,os=S.deck?.seg;S.deck=d;if((!had&&d?.t0)||os!==d?.seg)render();else deckLabels()},()=>{});
   S.db.doc('stage/league').onSnapshot(sn=>{S.league=sn.exists?clone(sn.data()):{};if(isScreen()&&cur()?.kind==='league')$('#cv').innerHTML=leagueHTML()},()=>{});
   S.db.doc('stage/game').onSnapshot(sn=>{if(isScreen())return;const was=S.game;S.game=sn.exists?sn.data():null;const G=S.game;
@@ -1368,6 +1369,7 @@ function render(){
   if(hashParts().mode==='admin'){app.innerHTML=adminView();bindAdmin();return}
   if(hashParts().mode==='assets'){S.admTab='images';history.replaceState(null,'','#admin='+ROOM.code);app.innerHTML=adminView();bindAdmin();return}
   if(!ROOM.code&&hashParts().mode!=='card'){app.innerHTML=`<div class="col">${joinView()}</div>`;bindPhone();return}
+  if(hashParts().mode==='ctl'){app.innerHTML=`<div class="col">${remoteCtlView({name:ll('מנחה','Host')})}</div>`;bindPhone();deckLabels();return}
   rememberRoom();
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
@@ -2077,6 +2079,7 @@ async function startScreen(){
   if(ROOM.code&&!ROOM.legacy){roomBadge();loadQR()}
   show(true);
 }
+function ctlQR(){if(!window.qrcode||!ROOM.code)return '';if(S.ctlQR?.c===ROOM.code)return S.ctlQR.u;try{const q=qrcode(0,'M');q.addData(roomLink(ROOM.code,'ctl'));q.make();S.ctlQR={c:ROOM.code,u:q.createDataURL(5,2)};return S.ctlQR.u}catch(x){return ''}}
 function loadQR(){const mk=()=>{try{const q=qrcode(0,'M');q.addData(roomLink(ROOM.code));q.make();S.qr=q.createDataURL(10,2);roomBadge();if(cur()?.kind==='slide')show(true)}catch(e){}};
   if(window.qrcode)return mk();const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';sc.onload=mk;document.head.append(sc)}
 function roomBadge(){if(!ROOM.code||ROOM.legacy)return;let b=$('#roombadge');if(!b){b=document.createElement('div');b.id='roombadge';b.style.cssText='position:fixed;top:12px;'+(EN?'right':'left')+':12px;z-index:40;background:rgba(22,26,46,.9);border:2px solid #F2C94C;border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;color:#F6F1E7;font:600 14px var(--body)';document.body.append(b)}
@@ -2213,7 +2216,7 @@ function quizWinHTML(){const Q=quizState(),rows=Q.players.map(p=>({p,sc:Q.scores
 function sayIn(pid,d){S.sayLast=S.sayLast||{};if(!S.sayInit){S.sayLast[pid]=d.at;return}if(!d?.at||d.at<=(S.sayLast[pid]||0))return;S.sayLast[pid]=d.at;
   if(!/^(tr|b|r)\d$/.test(segAt(POS)))return;sayShow(pid,String(d.t||'').slice(0,SAYMAX))}
 // comments stack: the newest goes on top, the earlier ones stay below it for a while, up to four at once
-function sayShow(pid,t){const p=person(pid);if(!p)return;let st=$('#saystack');if(!st){$('#cv').insertAdjacentHTML('beforeend','<div id="saystack" class="saystack"></div>');st=$('#saystack')}
+function sayShow(pid,t){const p=person(pid);if(!p)return;const host=$('#photoov.show')||$('#cv');let st=host.querySelector('.saystack');if(!st){$('#saystack')?.removeAttribute('id');host.insertAdjacentHTML('beforeend','<div id="saystack" class="saystack"></div>');st=host.querySelector('.saystack')}
   const el=document.createElement('div');el.className='sayc';el.innerHTML=`${avHead(p,72)}<div class="saybox2"><span class="sayname" dir="auto">${esc(p.name)}</span><p dir="auto">${esc(t)}</p></div>`;st.prepend(el);sfx('sfx-a');
   while(st.children.length>4)st.lastElementChild.remove();
   setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),450)},Math.min(16000,7000+t.length*90))}
@@ -2513,7 +2516,7 @@ function lkPpl(){return gamePlayers()}
 // each player picks a character from img/mini (cut from Eyal's sprite sheet); until then, the plain boy or girl
 const LK_MINI=77,lkAv=p=>{const v=S.gIn?.[p.id]?.av;return v!=null&&v>=0&&v<LK_MINI?`img/mini/${v}.png`:null};
 // a character's frame in img/ow-sheet.webp: 10 characters a row, each 3 frames (stand, step, step) x 4 rows (down, left, right, up), 34 px cells, shown at 2x
-const OW={c:34,z:2,cols:10,rows:'dlru'},owPos=(n,d,f)=>{const c=OW.c*OW.z,r=OW.rows.indexOf(d);return `${-((n%OW.cols)*3+f)*c}px ${-(Math.floor(n/OW.cols)*4+r)*c}px`},owStyle=n=>`background-image:url(img/ow-sheet.webp);background-size:${OW.cols*3*OW.c*OW.z}px ${Math.ceil(LK_MINI/OW.cols)*4*OW.c*OW.z}px;background-position:${owPos(n,'d',0)}`;
+const OW={c:34,z:2,cols:10,rows:'drlu'},owPos=(n,d,f)=>{const c=OW.c*OW.z,r=OW.rows.indexOf(d);return `${-((n%OW.cols)*3+f)*c}px ${-(Math.floor(n/OW.cols)*4+r)*c}px`},owStyle=n=>`background-image:url(img/ow-sheet.webp);background-size:${OW.cols*3*OW.c*OW.z}px ${Math.ceil(LK_MINI/OW.cols)*4*OW.c*OW.z}px;background-position:${owPos(n,'d',0)}`;
 function lakeAuto(){const used=new Set(lkPpl().map(p=>S.gIn?.[p.id]?.av).filter(v=>v!=null));lkPpl().forEach(p=>{if(S.gIn?.[p.id]?.av!=null)return;const ia=S.state?.pre?.av?.[String(p.name||'').trim()];if(typeof ia==='number'&&!used.has(ia)){used.add(ia);S.gIn=S.gIn||{};S.gIn[p.id]={...(S.gIn[p.id]||{}),av:ia};S.db.doc('stage/g-'+p.id).set({av:ia},{merge:true}).catch(()=>{});return}const free=[...Array(LK_MINI).keys()].filter(i=>!used.has(i)),v=free.length?free[Math.floor(Math.random()*free.length)]:Math.floor(Math.random()*LK_MINI);used.add(v);S.gIn=S.gIn||{};S.gIn[p.id]={...(S.gIn[p.id]||{}),av:v};S.db.doc('stage/g-'+p.id).set({av:v},{merge:true}).catch(()=>{})})}
 function lakeEnter(){let L=S.lake;if(!L){const pl=lkPpl();L=S.lake={sid:(Date.now()%1e9)|0,phase:'free',seen:0,got:{},pos:{},gy:null,qEnd:0};
     // everyone starts on the grass by the shore, spread out; when there is no such grass, in the water
@@ -2685,9 +2688,9 @@ function cmtField(done){const C=S.cmt,fz=done>=1,hug=done>=3,hid=C.r===0&&C.ph==
    <div class="cmhp lft ${hid?'out':''}" id="cm-hpr"><b>VAPOREON</b><span>Lv50</span><div class="cmbar"><i style="width:100%"></i></div></div>
    <div class="cmhp rgt ${hid?'out':''}" id="cm-hpg"><b>FLAREON</b><span>Lv50</span><div class="cmbar"><i style="width:${fz?0:100}%"></i></div></div>`}
 function cmtPaint(){const C=S.cmt,cv=$('#cv');if(!C||cur()?.kind!=='cmt')return;const R=CMT[C.r],done=C.ph==='scene'?C.r:C.r+1,pl=lkPpl();
-  const crowd=pl.slice(0,CM_SEATS.length).map((p,i)=>{const[x,y,b]=CM_SEATS[i];return `<div class="cmp ${b?'back':''}" id="cmp-${p.id}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%5)*.07}s"><i class="lks" style="${cmtOw(cmtAv(p),'d')}"></i><b>${esc(p.name)}</b><em>!</em></div>`}).join('')
-    +CM_SEATS.slice(pl.length).map(([x,y,b],i)=>{const k=(i*7+3)%10;if(k<3)return '';const own=i%3!==1,n=own?(i*5)%CM_NPC:(i*13+20)%LK_MINI;return `<div class="cmp npc ${b?'back':''}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%6)*.09}s">${own?`<i class="cmnpc" style="background-position:${-n*32}px 0"></i>`:`<i class="lks" style="${cmtOw(n,'d')}"></i>`}</div>`}).join('')
-    +CM_PETS.map(([nm,x,y],i)=>`<div class="cmp npc pet" style="left:${x-24}px;top:${y-48}px;--dl:${i*.11}s"><i class="cmpet" style="background-image:url(img/cm-${nm}.png)"></i></div>`).join('');
+  const crowd=pl.slice(0,CM_SEATS.length).map((p,i)=>{const[x,y,b]=CM_SEATS[i];return `<div class="cmpp ${b?'back':''}" id="cmp-${p.id}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%5)*.07}s"><i class="lks" style="${cmtOw(cmtAv(p),'d')}"></i><b>${esc(p.name)}</b><em>!</em></div>`}).join('')
+    +CM_SEATS.slice(pl.length).map(([x,y,b],i)=>{const k=(i*7+3)%10;if(k<3)return '';const own=i%3!==1,n=own?(i*5)%CM_NPC:(i*13+20)%LK_MINI;return `<div class="cmpp npc ${b?'back':''}" style="left:${x-34}px;top:${y-62}px;--dl:${(i%6)*.09}s">${own?`<i class="cmnpc" style="background-position:${-n*32}px 0"></i>`:`<i class="lks" style="${cmtOw(n,'d')}"></i>`}</div>`}).join('')
+    +CM_PETS.map(([nm,x,y],i)=>`<div class="cmpp npc pet" style="left:${x-24}px;top:${y-48}px;--dl:${i*.11}s"><i class="cmpet" style="background-image:url(img/cm-${nm}.png)"></i></div>`).join('');
   const head=`<div class="cmhd"><p class="cmeb" dir="ltr">THREE FATHERS · BATTLE COMMENTATORS</p><h2>${ll('פרשני הקרב','Battle commentators')}</h2><span class="cmrd">${ll('סבב','Round')} ${C.r+1}/3 · ${LL(R.t)}</span>${C.ph==='guess'?`<div class="cmclk" id="cmclk"><b>${Math.max(0,Math.ceil((C.end-Date.now())/1000))}</b><span>${ll('ענו','in')} <i id="cmcnt">0/${pl.length}</i></span></div>`:''}</div>`;
   let low='';
   if(C.ph==='scene')low=`<div class="cmbox" id="cmbox"><p></p></div>`;
@@ -2715,7 +2718,7 @@ function cmtScene(){const C=S.cmt,tok=C.tok=(C.tok||0)+1,F=S.fastOn?.55:1,at=(ms
     at(4400,()=>{const fx=$('#cmfx');if(!fx)return;sfx('sfx-ball-toss');for(let i=0;i<16;i++)setTimeout(()=>{const d=document.createElement('div');d.className='cmdrop';fx.appendChild(d);const y0=440+Math.round((Math.random()-.5)*5)*8;d.animate([{transform:`translate(700px,${y0}px)`},{transform:`translate(1270px,${y0+Math.round((Math.random()-.5)*4)*8}px)`}],{duration:420,easing:'steps(12)',fill:'forwards'}).onfinish=()=>d.remove()},i*45);setTimeout(()=>{gy?.classList.add('hit');fx.insertAdjacentHTML('beforeend','<div class="cmflash"></div>')},450)});
     at(5600,()=>{cmtSay(ll('זה סופר אפקטיבי!','It’s super effective!'));const h=$('#cm-hpg .cmbar i');if(h){h.style.width='0%';h.classList.add('low')}$('#cmfx .cmflash')?.remove()});
     at(7200,()=>{cmtSay(ll('פלריאון התעלף!','The foe’s FLAREON fainted!'));gy?.classList.remove('hit');gy?.classList.add('spin');sfx('sfx-faint-fall');cmtCry(136,.35);setTimeout(()=>{gy?.classList.add('out');$('#cm-ball')?.classList.remove('out')},900)});
-    at(8600,()=>{cmtSay(ll('רד ניצח! הקהל קם על הרגליים.','Red wins! The crowd is on its feet.'));music('mus-victory',{loop:false,vol:.3});cmtHop('.cmp');cmtHop('#cm-red');cmtHop('#cm-rai')});
+    at(8600,()=>{cmtSay(ll('רד ניצח! הקהל קם על הרגליים.','Red wins! The crowd is on its feet.'));music('mus-victory',{loop:false,vol:.3});cmtHop('.cmpp');cmtHop('#cm-red');cmtHop('#cm-rai')});
     at(11000,cmtGuess)}
   else if(C.r===1){
     at(300,()=>{cmtSay(ll('השופט מכריז: המנצח הוא רד!','The referee calls it: Red is the winner!'));const fx=$('#cmfx');if(fx)fx.insertAdjacentHTML('beforeend','<div class="cmflag"></div>')});
@@ -2727,7 +2730,7 @@ function cmtScene(){const C=S.cmt,tok=C.tok=(C.tok||0)+1,F=S.fastOn?.55:1,at=(ms
     at(300,()=>{cmtSay(ll('אחרי הקרב…','After the battle…'))});
     at(900,()=>cmtWalk(B,CM_BLUE,'l',1400,1300));
     at(2400,()=>{cmtSay(ll('בלו רץ לפלריאון שלו.','Blue runs to his Flareon.'));$('#cm-ball')?.classList.add('out');gy?.classList.remove('spin');gy?.classList.remove('out');cmtCry(136,.45);setTimeout(()=>cmtEmote(1466,370,'❤'),500)});
-    at(4300,()=>{cmtSay(ll('והקהל מריע לשניהם.','And the crowd cheers them both.'));cmtHop('.cmp');setTimeout(()=>cmtHop('.cmp'),600);cmtHop('#cm-red');cmtHop('#cm-gy')});
+    at(4300,()=>{cmtSay(ll('והקהל מריע לשניהם.','And the crowd cheers them both.'));cmtHop('.cmpp');setTimeout(()=>cmtHop('.cmpp'),600);cmtHop('#cm-red');cmtHop('#cm-gy')});
     at(6500,cmtGuess)}}
 // a Poké Ball arcs from the trainer to the spot, pops, and the Pokémon appears
 function cmtThrow(x0,x1,then){const fx=$('#cmfx');if(!fx){then();return}const b=document.createElement('img');b.className='cmthrow';b.src='img/it-poke-ball.webp';fx.appendChild(b);sfx('sfx-ball-toss');
@@ -2772,7 +2775,7 @@ function pqShuffle(){S.pqPos={};const seed=String(ROOM.code||'')+String(S.state?
     const start=Math.min(...pairs.map(p=>p.a)),r=rng(seed+key),ord=pairs.slice();for(let i=ord.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[ord[i],ord[j]]=[ord[j],ord[i]]}
     const items=ord.flatMap(p=>[SEQ[p.a],SEQ[p.a+1]]);if(pairs.every(p=>p.a>=start&&p.a<start+pairs.length*2))SEQ.splice(start,items.length,...items);S.pqPos[key]=ord.map(p=>p.k)})}
 const pqPosOf=(key,k)=>{const o=S.pqPos?.[key];const i=o?o.indexOf(k):-1;return i>=0?i:PQ[key].items.findIndex(x=>x.k===k)};
-function leagueSpot(){const last=['pq-evo','pq-stats','quizwin','c-memory','s-memory'].map(id=>SEQ.findIndex(x=>x.id===id)).reduce((a,b)=>Math.max(a,b),-1);if(last>=0)SEQ.splice(last+1,0,{kind:'league',id:'league'})}
+function leagueSpot(){const G=['s-memory','c-memory','d-battle','quizwin','pq-stats','pq-evo'];let last=null;for(let i=SEQ.length-1;i>=0;i--){if(!G.includes(SEQ[i].id))continue;const it={kind:'league',id:last?'league-'+SEQ[i].id:'league',fin:!last};if(!last)last=it;SEQ.splice(i+1,0,it)}}
 function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});pqShuffle();leagueSpot()}
 function skipSync(){if(!isScreen()||!S.slides||!SEQ.length)return;const k=JSON.stringify([...skipSet()].sort());if(k===S.skipKey)return;const id=cur()?.id,old=SEQ.slice(0,POS+1).map(x=>x.id);buildSeq();
   let p=SEQ.findIndex(x=>x.id===id);if(p<0){p=0;old.forEach(o=>{const j=SEQ.findIndex(x=>x.id===o);if(j>=0)p=j})}POS=p;HOF=0;SUB=0;show(true)}
@@ -3013,10 +3016,10 @@ function leagueBox(compact){const T=leagueTable();let rank=0,prev=null;
   return `<div class="lgbox ${compact?'cmp':''}"><p class="lgh">🏆 ${ll('ליגת הערב','THE EVENING LEAGUE')}</p>${T.map((r,i)=>{if(r.pts!==prev){rank=i;prev=r.pts}return `<div class="lgr ${rank===0&&r.pts>0?'top':''}"><i>${r.pts>0?rank+1:'–'}</i>${avHead(r.p,compact?34:40)}<span>${esc(r.p.name)}</span><b>${r.pts}</b></div>`}).join('')}</div>`}
 function leagueOnBreak(id){if(!/^x-break-\d$/.test(id)||!leagueAny())return;const cv=$('#cv'),nurse=cv.querySelector('img[src*="tr-nurse"]');
   if(!$('#facts')&&nurse)nurse.parentElement.style.visibility='hidden';cv.insertAdjacentHTML('beforeend',`<div class="lgbreak ${$('#facts')?'low':''}">${leagueBox(true)}</div>`)}
-function leagueHTML(){const T=leagueTable().filter(r=>r.pts>0),lv=[...new Set(T.map(r=>r.pts))].slice(0,3),steps=lv.map((p,i)=>({i,pts:p,rows:T.filter(r=>r.pts===p)}));
+function leagueHTML(){const fin=cur()?.fin!==false;const T=leagueTable().filter(r=>r.pts>0),lv=[...new Set(T.map(r=>r.pts))].slice(0,3),steps=lv.map((p,i)=>({i,pts:p,rows:T.filter(r=>r.pts===p)}));
   const step=st=>{const k=st.i,n=st.rows.length,sz=[250,190,160][k]/(n>2?1.7:n>1?1.3:1);
     return `<div class="lgs r${k+1}"><div class="lgav">${k?'':'<span class="lgcrown">👑</span>'}${st.rows.map(r=>avFull(r.p,Math.round(sz))).join('')}</div><p>${st.rows.map(r=>esc(r.p.name)).join(' · ')}</p><b>${st.pts} ${ll('נק׳','pts')}</b><div class="lgst">${k+1}</div></div>`};
-  return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · CHAMPION</p><h2 class="lgti">${ll('אלוף הליגה של הערב','The champion of the evening league')}</h2>
+  return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · ${fin?'CHAMPION':'STANDINGS'}</p><h2 class="lgti">${fin?ll('אלוף הליגה של הערב','The champion of the evening league'):ll('ליגת הערב: המצב עכשיו','The evening league so far')}</h2>
    <div class="lgpod">${steps.length?[steps[1],steps[0],steps[2]].filter(Boolean).map(step).join(''):`<p>${ll('עוד אין נקודות','No points yet')}</p>`}</div>${leagueBreak()}</div>`}
 function leagueBreak(){const L=S.league||{},G=LEAGUE_GAMES.filter(([g])=>Object.values(L[g]||{}).some(v=>v>0)),T=leagueTable();
   return `<div class="lgbox lgtabw"><p class="lgh">🏆 ${ll('פירוט הניקוד','THE SCORE, GAME BY GAME')}</p><table class="lgtab"><tr><th></th>${G.map(([g,n])=>`<th>${n}</th>`).join('')}<th>${ll('סה״כ','Total')}</th></tr>${T.map(r=>`<tr><td>${avHead(r.p,34)} ${esc(r.p.name)}</td>${G.map(([g])=>`<td>${r.by[g]||'·'}</td>`).join('')}<td><b>${r.pts}</b></td></tr>`).join('')}</table></div>`}
@@ -3628,9 +3631,8 @@ function gapPages(R,G){if(EN)return gapPagesEN(R,G);const n=subjectName();
   const L=[[`נקודות עיוורון: איפה ${n} רואה את ${gs('עצמו','עצמה')} אחרת ממה שאתם רואים ${gs('אותו','אותה')}.`,-1]];
   G.forEach((g,j)=>{const I=gapInfo(g),up=g.self>g.others;let head,more='';
     if(g.layer==='types'){const c=BANK.constructs.types[g.dim]||'',[c0,c1]=c.split(':'),ess=String(c1||c0).split(',')[0].trim();L.push([`${I.name}: `+(up?`${n} ${gs('רואה בעצמו','רואה בעצמה')} הרבה יותר ${ess} ממה שאתם רואים ${gs('בו','בה')}.`:`אתם רואים ב${n} הרבה יותר ${ess} ממה ש${gs('הוא רואה בעצמו','היא רואה בעצמה')}.`),j]);return}
-    else if(g.layer==='stats'){const [en,he]=STAT_HE[g.dim].split(' · ');head=`הסטט ${en}, ${he}`}
-    else head=`ההתפתחות ${EVO_META[g.dim][0]}, ${EVO_HE[g.dim]}`;
-    L.push([head+': '+(up?`${n} ${gs('רואה בעצמו','רואה בעצמה')} הרבה יותר מזה ממה שאתם רואים ${gs('בו','בה')}.`:`אתם רואים ב${n} הרבה יותר מזה ממה ש${gs('הוא רואה בעצמו','היא רואה בעצמה')}.`)+more,j])});
+    if(g.layer==='stats'){const [en,he]=STAT_HE[g.dim].split(' · ');L.push([`${he} (${en}): `+(up?`${n} ${gs('מדרג את עצמו','מדרגת את עצמה')} גבוה יותר ממה שאתם ${gs('מדרגים אותו','מדרגים אותה')}.`:`אתם מדרגים את ${n} גבוה יותר ממה ש${gs('הוא מדרג את עצמו','היא מדרגת את עצמה')}.`),j]);return}
+    L.push([`${EVO_META[g.dim][2]} (${EVO_META[g.dim][0]}): `+(up?`${n} ${gs('מזהה את הדרך הזו להשתנות בעצמו','מזהה את הדרך הזו להשתנות בעצמה')} הרבה יותר ממה שאתם ${gs('מזהים אותה בו','מזהים אותה בה')}.`:`אתם מזהים ב${n} את הדרך הזו להשתנות הרבה יותר ממה ש${gs('הוא מזהה בעצמו','היא מזהה בעצמה')}.`),j])});
   L.push([`אף צד לא בהכרח צודק. שווה לשאול את ${n} על זה בהמשך הערב.`,-1]);
   return paged(L)}
 function legendPages(R){if(EN)return legendPagesEN(R);const n=subjectName(),t=R.legends[0],l=t.line,name=ISO(finalName(l)),types=l.stage_types.at(-1).map(x=>TYPE_HE[x]).join(' ו'),o=S.oak?.[l.id];
@@ -3646,9 +3648,8 @@ function gapPagesEN(R,G){const n=subjectName();
   const L=[[`Blind spots: where ${n} sees ${gs('himself','herself')} differently from how you see ${gs('him','her')}.`,-1]];
   G.forEach((g,j)=>{const I=gapInfo(g),up=g.self>g.others;let head,more='';
     if(g.layer==='types'){const c=BANK.constructs.types[g.dim]||'',[c0,c1]=c.split(':'),ess=String(c1||c0).split(',')[0].trim().toLowerCase();head=`${I.name}`;more='';L.push([`${I.name}: `+(up?`${n} sees a lot more ${ess} in ${gs('himself','herself')} than you see in ${gs('him','her')}.`:`You see a lot more ${ess} in ${n} than ${gs('he sees in himself','she sees in herself')}.`),j]);return}
-    else if(g.layer==='stats'){const [en,he]=STAT_HE[g.dim].split(' · ');head=`The ${en} stat, ${he}`}
-    else head=`The ${EVO_META[g.dim][0]} evolution, ${EVO_HE[g.dim]}`;
-    L.push([head+': '+(up?`${n} sees much more of it in ${gs('himself','herself')} than you see in ${gs('him','her')}.`:`You see much more of it in ${n} than ${gs('he sees in himself','she sees in herself')}.`)+more,j])});
+    if(g.layer==='stats'){const [en]=STAT_HE[g.dim].split(' · ');L.push([`${en}: `+(up?`${n} rates ${gs('himself','herself')} higher than you rate ${gs('him','her')}.`:`You rate ${n} higher than ${gs('he rates himself','she rates herself')}.`),j]);return}
+    const ev=EVO_META[g.dim][0].toLowerCase().replace(/^./,c=>c.toUpperCase());L.push([`${ev} evolution: `+(up?`${n} sees this way of changing in ${gs('himself','herself')} much more than you see it in ${gs('him','her')}.`:`You see this way of changing in ${n} much more than ${gs('he sees it in himself','she sees it in herself')}.`),j])});
   L.push([`Neither side is necessarily right. It\'s worth asking ${n} about it later this evening.`,-1]);
   return paged(L)}
 function legendPagesEN(R){const n=subjectName(),t=R.legends[0],l=t.line,name=ISO(finalName(l)),types=l.stage_types.at(-1).map(x=>TYPE_HE[x]).join(' and '),o=S.oak?.[l.id];
@@ -3702,7 +3703,8 @@ function renderPanel(){
   <p class="muted" style="font-size:13px">רק כמויות. מה כל אחד ענה לא מוצג בשום מקום.</p>
   <div class="row"><span class="muted">סבב פתוח: ${open||'אין'}</span>${ROUND_SIZE.map((_,i)=>i+1).map(k=>`<button class="btn ghost small" data-pa="open" data-k="${k}">פתיחת ${k}</button>`).join('')}</div>
   <div class="row"><span class="muted">שאלת מיו: ${m?.status==='ready'?'נשלחה':m?.status==='working'?'בבנייה':'עוד לא'}</span><button class="btn ghost small" data-pa="mew">${m?.status==='ready'?'בנייה מחדש':'בנייה עכשיו'}</button></div>
-  <div class="row"><label class="muted" for="presenter">מרצה (שלט בטלפון)</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
+  <div class="card" style="margin:8px 0;display:flex;gap:12px;align-items:center">${ctlQR()?`<img src="${ctlQR()}" alt="" style="width:120px;height:120px;border-radius:8px;background:#fff">`:''}<div><b>📱 שלט למנחה שלא משתתף</b><p class="muted" style="margin:4px 0;font-size:13px">סורקים מהטלפון, ומקבלים רק הבא / חזרה ושעון. בלי דמות ובלי שאלון.</p><p class="mono" style="font-size:12px;direction:ltr;word-break:break-all">${roomLink(ROOM.code,'ctl')}</p></div></div>
+  <div class="row"><label class="muted" for="presenter">מנחה מתוך המשתתפים</label><select id="presenter" style="flex:1"><option value="" ${presenterName()===''?'selected':''}>אין</option>${[...new Set([presenterName(),...inRoom().map(x=>String(x.name).trim())].filter(Boolean))].map(n=>`<option value="${esc(n)}" ${n===presenterName()?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
   <div class="row"><span class="muted grow" style="font-size:13px">שעון הערב: ${S.deck?.t0?'רץ':'יתחיל במעבר מהשקף הראשון'} (מתאפס בשקף הראשון)</span><button class="btn ghost small" data-pa="clock">איפוס השעון</button></div>
   <details><summary class="muted" style="cursor:pointer">דוח זמנים: תכנון מול בפועל${isRehearsal()?' · 🧪 ניסוי':''}</summary>${timingReport()}</details>
   <div class="row"><label class="muted" for="jump">קפיצה לשקף</label><select id="jump" style="flex:1">${SEQ.map((s,i)=>`<option value="${i}" ${i===POS?'selected':''}>${i+1}. ${s.id}</option>`).join('')}</select></div>
