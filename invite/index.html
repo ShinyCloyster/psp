@@ -58,6 +58,9 @@ button{font:inherit;cursor:pointer}
 #arrive{justify-content:flex-end;padding-bottom:max(28px,env(safe-area-inset-bottom))}
 #shadow{position:fixed;top:18%;left:0;width:calc(var(--z)*204px);height:calc(var(--z)*180px);background-repeat:no-repeat;filter:brightness(0);opacity:0;transform:translateX(110vw)}
 #shadow.go{animation:shadow 1.15s cubic-bezier(.4,0,.6,1) forwards}
+#shadow.gif{width:calc(var(--z)*234px*.45);height:calc(var(--z)*102px*.45);background:url(img/dn-sil.gif) center/contain no-repeat;image-rendering:pixelated}
+#shadow.gif.go{animation:shadowg 1.25s cubic-bezier(.4,0,.6,1) forwards}
+@keyframes shadowg{0%{transform:translate(110vw,6vh);opacity:0}12%{opacity:.6}88%{opacity:.6}100%{transform:translate(-110vw,-8vh);opacity:0}}
 @keyframes shadow{0%{transform:translate(110vw,6vh) scaleX(-1);opacity:0}12%{opacity:.55}88%{opacity:.55}100%{transform:translate(-110vw,-8vh) scaleX(-1);opacity:0}}
 #dnwrap{position:relative;flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
 #dn{width:calc(var(--z)*102px);height:calc(var(--z)*90px);background-repeat:no-repeat;transform:translateY(-120vh);will-change:transform;position:relative}
@@ -424,6 +427,7 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .tph button{position:absolute;top:2px;inset-inline-end:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:12px;line-height:22px;padding:0}
 .trplus{width:64px;height:64px;border-radius:10px;border:3px dashed #9FA7C7;display:grid;place-items:center;font:700 30px/1 var(--body);color:#6A6F8A;cursor:pointer}
 .trphl{font-size:15px;line-height:1.5;color:var(--cream);margin:0 4px}.remindb{display:block;text-align:center;text-decoration:none;margin-top:8px}
+.trcnt h2{margin:0 0 8px}.trcnt .muted{margin:8px 0 0;font-size:14px}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -591,10 +595,11 @@ $('#start').addEventListener('click',begin);$('#start').addEventListener('keydow
 // ---------- 2. Dragonite arrives ----------
 // a short anime cut: Dragonite over the sea, then flying with the bag; skipped when motion is reduced or the clip won't play
 async function clip(src,ms,cap){const c=$('#cut'),v=$('#cutv');if(RM||!c)return;$('#cutt').textContent=cap||'';v.src=src;v.loop=true;c.classList.remove('hide');
-  let ok=true;try{await v.play()}catch(e){ok=false}if(ok)await wait(ms);c.classList.add('out');await wait(350);c.classList.add('hide');c.classList.remove('out');v.pause()}
+  let ok=true;try{await Promise.race([v.play(),new Promise((_,no)=>setTimeout(()=>no('slow'),2500))])}catch(e){ok=false}if(ok)await wait(ms);c.classList.add('out');await wait(350);c.classList.add('hide');c.classList.remove('out');v.pause()}
+['img/dn-fly.webp','img/dn-mail.webp','img/dn-sil.gif'].forEach(u=>{const i=new Image();i.src=u});
 async function arrive(){show('arrive');if(!RM)sfxSoon('cry',.9);await clip('vid/dn-sea.mp4',2000,T('enRoute'));await clip('vid/dn-fly.mp4',1800,T('enRoute'));dnSheet('img/dn-fly.webp');dnRun();
   const sh=$('#shadow'),dn=$('#dn');
-  if(!RM){sh.style.backgroundImage='url(img/dn-fly.webp)';sh.style.backgroundSize=`${DN.cols*DN.fw*Z*2}px ${Math.ceil(DN.n/DN.cols)*DN.fh*Z*2}px`;sh.style.backgroundPosition='0 0';sh.classList.add('go');await wait(1350);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
+  if(!RM){sh.classList.add('gif','go');await wait(1350);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
   else{dn.classList.add('down');sfx('cry',.9)}
   $('#ground').classList.add('on');if(!RM)dust();
   await wait(500);dnSheet('img/dn-mail.webp');sfx('tink',.6);
@@ -890,7 +895,7 @@ async function watchFile(){const iid=ROLE==='s'?(mem.iidMade&&mem.iid):IID;const
 let restored=false;
 function restoreFromFile(){if(restored||!FILE)return;restored=true;let ch=false;
   if(ROLE==='s'){if(!mem.ans&&FILE.ans==='yes'){mem.ans='yes';ch=true}if(mem.av==null&&FILE.av!=null){mem.av=FILE.av;ch=true}if(!mem.sd&&Array.isArray(FILE.sd))mem.sd=FILE.sd;
-    if(Array.isArray(FILE.tr)&&!(mem.trainers||[]).some(x=>x&&x.t)){mem.trainers=FILE.tr.map(t=>({t:t||''}));ch=true}
+    if(Array.isArray(FILE.tr)&&!(mem.trainers||[]).some(x=>x&&x.t)){mem.trainers=FILE.tr.map(t=>({t:t||''}));if(FILE.tr.length===3)mem.ntr=3;ch=true}
     if(!(mem.party||[]).length){const L=Object.entries(FILE.team||{}).filter(([k,v])=>v&&v.n&&v.ans!=='removed').map(([k,v])=>({n:v.n,g:v.g==='f'?'f':'m',k,...(v.r?{r:1}:{})}));if(L.length){mem.party=L;ch=true}}}
   else{const me=(FILE.team||{})[FKEY];if(me){if(!mem.ans&&me.ans==='yes'){mem.ans='yes';ch=true}if(mem.av==null&&me.av!=null){mem.av=me.av;ch=true}if(!mem.dates&&Array.isArray(me.d))mem.dates=me.d}}
   if(ch&&mem.ans==='yes'){mem.seen=1;mem.prepDone=1;mem.routeDone=1;mem.told=mem.told||1;if(mem.party&&mem.party.length)mem.sentAll=mem.sentAll||1}
@@ -930,7 +935,7 @@ function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k
   add('ck_yes',1);add('ck_tell',mem.told?1:0,null,'tell');if(FILE)add('ck_place',FILE.loc?1:0);
   add('ck_invite',P.length/4,'team');add('ck_confirm',P.length?yes.length/Math.max(4,P.length):0,'team');
   if(hasDates())add('ck_date',FILE.date?1:(myDates().length?.25:0)+(here.length?.5*here.filter(f=>(T0[f.k].d||[]).length).length/here.length:0),'dates');
-  add('ck_trainers',tr.filter(x=>x&&x.t&&x.t.trim()).length/4,'trainers');
+  add('ck_trainers',tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length/NTR(),'trainers');
   add('ck_chars',((mem.av!=null?1:0)+yes.filter(f=>T0[f.k].av!=null).length)/(1+yes.length),'card');
   return I}
 function checklistHTML(){const I=checklist(),pct=Math.round(I.reduce((a,x)=>a+x.frac,0)/I.length*100),link=wa(T('waYes'));
@@ -942,8 +947,9 @@ function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
   if(k==='ck_date')return FILE&&FILE.date?fmtD(FILE.date):T('ckDateN').replace('{a}',here.filter(f=>(T0[f.k].d||[]).length).length).replace('{b}',here.length);
   return T('ckCharsN').replace('{me}',T(mem.av!=null?'ckMeYes':'ckMeNo')).replace('{a}',yes.filter(f=>T0[f.k].av!=null).length).replace('{b}',yes.length)}
 // the trainers page: four names and a few points on each (kept on this phone only)
-function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx');
-  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2,3].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
+const NTR=()=>mem.ntr===3?3:4;
+function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx'),nt=NTR();
+  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section><section class="blk trcnt"><h2>${H('trCountT')}</h2><div class="gsel"><button data-nt="3" class="${nt===3?'on':''}">${H('trCount3')}</button><button data-nt="4" class="${nt===4?'on':''}">${H('trCount4')}</button></div><p class="muted">${H('trCountHint')}</p></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2,3].slice(0,nt).map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
     <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}">${ROLE==='s'&&mem.iidMade?trPhotos(i):''}</section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
 
 // the trainers' photos: shrunk on the phone, each in its own document, which only Eyal can list
@@ -957,7 +963,9 @@ function bindPhotos(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').inn
     const ph={...((FILE&&FILE.ph)||{})};ph[t]=[...(ph[t]||[])];
     try{for(const f of files){const data=await shrinkPic(f),id=rid(16);await db.doc('invph/'+id).set({iid:mem.iid,t,data,at:now()});PHC[id]=data;ph[t].push(id)}FILE.ph=ph;await dbSubject({ph});sfx('tink',.6);toast(T('trPhDone'))}catch(e){console.warn('photo',e);toast(T('trPhFail'))}rer()});
   document.querySelectorAll('[data-phdel]').forEach(b=>b.onclick=async()=>{const id=b.dataset.phdel,t=b.dataset.t,ph={...((FILE&&FILE.ph)||{})};ph[t]=(ph[t]||[]).filter(x=>x!==id);FILE.ph=ph;dbSubject({ph});try{(await dbReady).doc('invph/'+id).delete()}catch(e){}rer()})}
-function bindTrainers(){bindPhotos();document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(()=>{save();if(ROLE==='s'&&FILE)dbSubject({tr:(mem.trainers||[]).map(x=>String((x&&x.t)||'').trim().slice(0,40))})},600)})}
+function bindTrainers(){bindPhotos();document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(()=>{save();trSync()},600)});
+  document.querySelectorAll('[data-nt]').forEach(b=>b.onclick=()=>{mem.ntr=+b.dataset.nt;save();trSync();sfx('a',.4);const y=$('#letter').scrollTop;$('#pg').innerHTML=pTrainers();bindTrainers();$('#letter').scrollTop=y})}
+function trSync(){if(ROLE==='s'&&FILE)dbSubject({tr:[0,1,2,3].slice(0,NTR()).map(i=>String(((mem.trainers||[])[i]||{}).t||'').trim().slice(0,40))})}
 
 // ---------- 12. the menu after yes: one screen to come back to; big tiles open each task ----------
 function placeNow(){return (typeof FILE!=='undefined'&&FILE&&FILE.loc&&FILE.loc.a)||PLACE||(typeof FILE!=='undefined'&&FILE&&FILE.place)||(CFG.place&&CFG.place[LANG])||''}
@@ -1044,7 +1052,7 @@ function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
   const tile=(k,ic,sub,done)=>tiles.push(`<button class="hubt${done?' done':''}" data-go="${k}"><span class="hi">${ic}</span><b>${H('tab_'+k)}</b><small>${esc(sub)}</small></button>`);
   tile('card',`<span class="hav">${cardFig()}</span>`,mem.av!=null?'✓':T('hubPick'),mem.av!=null);
   if(hasDates()&&!REMOTE)tile('dates','📅',FILE.date?fmtD(FILE.date):myDates().length?T('hubMarked').replace('{n}',myDates().length):T('hubPick'),!!FILE.date);
-  if(ROLE==='s'){tile('trainers','🎒',`${tr.filter(x=>x&&x.t&&x.t.trim()).length}/4`,tr.filter(x=>x&&x.t&&x.t.trim()).length>=4);
+  if(ROLE==='s'){tile('trainers','🎒',`${tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length}/${NTR()}`,tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length>=NTR());
     tile('team',`<span class="ball" style="--s:30px;display:block"></span>`,P.length?`${yes.length}/${P.length} ✓`:T('hubPick'),P.length>=4&&yes.length===P.length)}
   return tiles.join('')}
 function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));

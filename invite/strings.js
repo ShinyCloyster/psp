@@ -443,6 +443,10 @@ window.INV_TEXT = {
     ckSpritesN: '{a} מתוך {b} בחרו',
     trainersTitle: 'המאמנים שלך',
     trainersLead: { m: 'ארבע מסגרות, קבוצות או אמונות שעיצבו אותך: הצבא, המשפחה, להקה, תנועת נוער, ספורט, אמונה, עבודה. כאן רק כותבים את השמות שלהם.', f: 'ארבע מסגרות, קבוצות או אמונות שעיצבו אותך: הצבא, המשפחה, להקה, תנועת נוער, ספורט, אמונה, עבודה. כאן רק כותבים את השמות שלהם.' },
+    trCountT: 'כמה מאמנים?',
+    trCount3: '3 מאמנים',
+    trCount4: '4 מאמנים',
+    trCountHint: 'עם 4, הרביעי מגיע ממש לפני היכל התהילה. גם 3 זה ערב מלא.',
     trHowT: 'מה זה אומר בערב',
     trHow: [
       'לכל מאמן יש משבצת משלו, של עד 7 דקות.',
@@ -865,6 +869,10 @@ window.INV_TEXT = {
     ckSpritesN: '{a} of {b} chose',
     trainersTitle: 'Your trainers',
     trainersLead: 'Four frameworks, groups or beliefs that shaped you: the army, family, a band, a youth movement, a sport, a faith, a job. Here you only write their names.',
+    trCountT: 'How many trainers?',
+    trCount3: '3 trainers',
+    trCount4: '4 trainers',
+    trCountHint: 'With 4, the fourth comes right before the Hall of Fame. 3 is a full evening too.',
     trHowT: 'What this means on the evening',
     trHow: [
       'Each trainer gets a slot of its own, of up to 7 minutes.',
