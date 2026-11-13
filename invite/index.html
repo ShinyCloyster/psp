@@ -420,6 +420,10 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .dset small{font:500 12px var(--body);color:#6A6F8A}.dset.all{border-color:var(--gold)}.dset.on{background:#E3F6EA;border-color:var(--ok)}
 .simb{background:#EFE7FF!important;text-align:center}.simb h2{margin:0 0 6px}.simb p{font-size:15px;margin:0 0 10px}
 .instb h2{margin:0 0 6px}.instb p{font-size:15px;margin:0 0 10px}.insthow{margin:0 0 8px;padding-inline-start:22px}.insthow li{margin:4px 0;font-size:15px}
+.trph{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.tph{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;background:#E3E6F2}.tph img{width:100%;height:100%;object-fit:cover}
+.tph button{position:absolute;top:2px;inset-inline-end:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:12px;line-height:22px;padding:0}
+.trplus{width:64px;height:64px;border-radius:10px;border:3px dashed #9FA7C7;display:grid;place-items:center;font:700 30px/1 var(--body);color:#6A6F8A;cursor:pointer}
+.trphl{font-size:15px;line-height:1.5;color:var(--cream);margin:0 4px}.remindb{display:block;text-align:center;text-decoration:none;margin-top:8px}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -828,7 +832,7 @@ function pParty(){const P=teamList(),pc=P.slice(6);
     <p class="hint2 dark">${H('partyNext')}</p></section>
   <section class="blk addf sendall"><h2>${H('sendAllTitle')}</h2><p class="muted">${H('sendAllLead')}</p>
     ${FILE&&!FILE.loc?`<p class="lockmsg">🔒 ${H('locFirst')}</p><button class="ghostbtn wbtn" id="gohub">${H('locGo')}</button>`:P.length?`<p class="prevl">${H('sendAllPrev')}</p><div class="msgprev">${esc((()=>{try{return decodeURI(groupText())}catch(e){return groupText()}})())}</div>
-    <a class="wa wbtn" id="swa" href="${wa(groupText(),'')}" target="_blank" rel="noopener">${H('sendAllWa')}</a><button class="ghostbtn wbtn" id="sshare">${H('sendAllShare')}</button>`:`<p class="hint2 dark">${H('sendAllNeed')}</p>`}
+    <a class="wa wbtn" id="swa" href="${wa(groupText(),'')}" target="_blank" rel="noopener">${H('sendAllWa')}</a><button class="ghostbtn wbtn" id="sshare">${H('sendAllShare')}</button>${(()=>{const W=P.filter(f=>{const r=TEAM&&TEAM[f.k];return !r||r.ans==='inv'});return W.length&&mem.sentAll?`<a class="ghostbtn wbtn remindb" id="remind" href="${wa(T('remindMsg').replace('{names}',W.map(f=>f.n).join(', '))+'\n'+groupLink(),'')}" target="_blank" rel="noopener">🔔 ${esc(T('remindBtn').replace('{n}',W.length))}</a>`:''})()}`:`<p class="hint2 dark">${H('sendAllNeed')}</p>`}
   </section>`}
 // the subject's list goes into the invitation file too, so the group link can show it
 async function dbRoster(f,ans){if(!mem.iidMade)await dbSubject();const db=await dbReady;if(!db||!mem.iid)return;try{await db.doc('invites/'+mem.iid).set({team:{[f.k]:{n:f.n,g:f.g,ans,r:f.r?1:0,at:now()}}},{merge:true})}catch(e){console.warn('roster',e)}}
@@ -921,25 +925,39 @@ function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()});
   $('#dwa')?.addEventListener('click',()=>{mem.toldDate=FILE.date;save()})}
 
 // ---------- 11. the subject's checklist (after yes): what's done before the evening, and what's left ----------
-function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),tr=mem.trainers||[],I=[];
+function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),here=yes.filter(f=>!(f.r||T0[f.k].r)),tr=mem.trainers||[],I=[];
   const add=(k,frac,go,extra)=>I.push({k,frac:Math.max(0,Math.min(1,frac)),go,extra});
-  add('ck_yes',1);add('ck_tell',mem.told?1:0,null,'tell');if(FILE)add('ck_place',FILE.loc?1:0);add('ck_av',mem.av!=null?1:0,'card');
-  if(hasDates())add('ck_dates',myDates().length?1:0,'dates');
+  add('ck_yes',1);add('ck_tell',mem.told?1:0,null,'tell');if(FILE)add('ck_place',FILE.loc?1:0);
   add('ck_invite',P.length/4,'team');add('ck_confirm',P.length?yes.length/Math.max(4,P.length):0,'team');
-  add('ck_sprites',yes.length?yes.filter(f=>T0[f.k].av!=null).length/yes.length:0,'team');
-  if(hasDates())add('ck_date',FILE&&FILE.date?1:0,'dates');
+  if(hasDates())add('ck_date',FILE.date?1:(myDates().length?.25:0)+(here.length?.5*here.filter(f=>(T0[f.k].d||[]).length).length/here.length:0),'dates');
   add('ck_trainers',tr.filter(x=>x&&x.t&&x.t.trim()).length/4,'trainers');
+  add('ck_chars',((mem.av!=null?1:0)+yes.filter(f=>T0[f.k].av!=null).length)/(1+yes.length),'card');
   return I}
 function checklistHTML(){const I=checklist(),pct=Math.round(I.reduce((a,x)=>a+x.frac,0)/I.length*100),link=wa(T('waYes'));
   return `<div class="ckbar"><div class="ckfill" style="width:${pct}%"></div><b>${esc(T('ckOf').replace('{p}',pct))}</b></div>
-  <ul class="cklist">${I.map(x=>`<li class="${x.frac>=1?'done':x.frac>0?'part':''}"><span class="ckm">${x.frac>=1?'✓':x.frac>0?Math.round(x.frac*100)+'%':''}</span><div><b>${H(x.k)}</b>${x.k==='ck_confirm'||x.k==='ck_sprites'?`<small>${esc(ckCount(x.k))}</small>`:''}
+  <ul class="cklist">${I.map(x=>`<li class="${x.frac>=1?'done':x.frac>0?'part':''}"><span class="ckm">${x.frac>=1?'✓':x.frac>0?Math.round(x.frac*100)+'%':''}</span><div><b>${H(x.k)}</b>${['ck_confirm','ck_date','ck_chars'].includes(x.k)?`<small>${esc(ckCount(x.k))}</small>`:''}
     ${x.frac<1&&x.extra==='tell'&&link?`<a class="wa tellbtn" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.frac<1&&x.go&&pageIdx(x.go)>=0?`<button class="ghostbtn togo" data-go="${x.go}">${H({card:'goCard',team:'goTeam',dates:'goDates',trainers:'goTrainers'}[x.go])} ${AR_NEXT}</button>`:''}</div></li>`).join('')}</ul>`}
-function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes');return k==='ck_confirm'?T('ckConfirmN').replace('{a}',yes.length).replace('{b}',P.length):T('ckSpritesN').replace('{a}',yes.filter(f=>T0[f.k].av!=null).length).replace('{b}',yes.length)}
+function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),here=yes.filter(f=>!(f.r||T0[f.k].r));
+  if(k==='ck_confirm')return T('ckConfirmN').replace('{a}',yes.length).replace('{b}',P.length);
+  if(k==='ck_date')return FILE&&FILE.date?fmtD(FILE.date):T('ckDateN').replace('{a}',here.filter(f=>(T0[f.k].d||[]).length).length).replace('{b}',here.length);
+  return T('ckCharsN').replace('{me}',T(mem.av!=null?'ckMeYes':'ckMeNo')).replace('{a}',yes.filter(f=>T0[f.k].av!=null).length).replace('{b}',yes.length)}
 // the trainers page: four names and a few points on each (kept on this phone only)
 function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx');
-  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>${[0,1,2,3].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
-    <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}"></section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
-function bindTrainers(){document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(()=>{save();if(ROLE==='s'&&FILE)dbSubject({tr:(mem.trainers||[]).map(x=>String((x&&x.t)||'').trim().slice(0,40))})},600)})}
+  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2,3].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
+    <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}">${ROLE==='s'&&mem.iidMade?trPhotos(i):''}</section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
+
+// the trainers' photos: shrunk on the phone, each in its own document, which only Eyal can list
+const PHC={};
+function shrinkPic(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);let u=c.toDataURL('image/jpeg',.82);if(u.length>800000)u=c.toDataURL('image/jpeg',.6);res(u)};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
+const phOf=t=>(((FILE&&FILE.ph)||{})[t])||[];
+function trPhotos(i){const L=phOf(i);return `<div class="trph">${L.map(id=>`<span class="tph" data-id="${id}">${PHC[id]?`<img src="${PHC[id]}" alt="">`:''}<button data-phdel="${id}" data-t="${i}" aria-label="✕">✕</button></span>`).join('')}${L.length<6?`<label class="trplus" aria-label="+">+<input type="file" accept="image/*" multiple hidden data-tph="${i}"></label>`:''}</div>`}
+async function loadThumbs(){const db=await dbReady;if(!db||!FILE||!FILE.ph)return;for(const id of Object.values(FILE.ph).flat()){if(PHC[id])continue;try{const d=await db.doc('invph/'+id).get();if(d.exists){PHC[id]=d.data().data;const el=document.querySelector(`.tph[data-id="${id}"]`);if(el&&!el.querySelector('img'))el.insertAdjacentHTML('afterbegin',`<img src="${PHC[id]}" alt="">`)}}catch(e){}}}
+function bindPhotos(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').innerHTML=pTrainers();bindTrainers();$('#letter').scrollTop=y};loadThumbs();
+  document.querySelectorAll('[data-tph]').forEach(inp=>inp.onchange=async()=>{const t=+inp.dataset.tph,files=[...inp.files].slice(0,6-phOf(t).length);if(!files.length)return;toast(T('trPhUp'));const db=await dbReady;if(!db)return;
+    const ph={...((FILE&&FILE.ph)||{})};ph[t]=[...(ph[t]||[])];
+    try{for(const f of files){const data=await shrinkPic(f),id=rid(16);await db.doc('invph/'+id).set({iid:mem.iid,t,data,at:now()});PHC[id]=data;ph[t].push(id)}FILE.ph=ph;await dbSubject({ph});sfx('tink',.6);toast(T('trPhDone'))}catch(e){console.warn('photo',e);toast(T('trPhFail'))}rer()});
+  document.querySelectorAll('[data-phdel]').forEach(b=>b.onclick=async()=>{const id=b.dataset.phdel,t=b.dataset.t,ph={...((FILE&&FILE.ph)||{})};ph[t]=(ph[t]||[]).filter(x=>x!==id);FILE.ph=ph;dbSubject({ph});try{(await dbReady).doc('invph/'+id).delete()}catch(e){}rer()})}
+function bindTrainers(){bindPhotos();document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(()=>{save();if(ROLE==='s'&&FILE)dbSubject({tr:(mem.trainers||[]).map(x=>String((x&&x.t)||'').trim().slice(0,40))})},600)})}
 
 // ---------- 12. the menu after yes: one screen to come back to; big tiles open each task ----------
 function placeNow(){return (typeof FILE!=='undefined'&&FILE&&FILE.loc&&FILE.loc.a)||PLACE||(typeof FILE!=='undefined'&&FILE&&FILE.place)||(CFG.place&&CFG.place[LANG])||''}
@@ -1035,7 +1053,6 @@ function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
   ${pickFirst?wwBlock():''}<div class="hubg">${hubTiles()}</div>
   ${pickFirst?'':wwBlock()}${ROLE==='f'?crewRow():''}
   ${ROLE==='s'?`<section class="blk">${checklistHTML()}</section>`:`<section class="blk"><ol class="todo">${(TXR('todo')||[]).filter(x=>!x.go).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}</li>`).join('')}</ol></section>`}
-  ${instBlock()}
   <div class="hubl">${ROLE==='s'?`<button class="ghostbtn" data-go="route">🗺 ${H('routeTitle')}</button>`:''}<button class="ghostbtn" data-go="letter">✉ ${H('hubLetter')}</button></div>
   <button class="linkbtn" id="chg">${H('changeAnswer')}</button>`}
 function bindHub(){bindWW();bindInst();$('#simgo')?.addEventListener('click',()=>{mem.simDay=1;save();sfx('caught',.7);$('#pg').innerHTML=pHub();bindHub();$('#letter').scrollTop=0});document.querySelectorAll('#pg [data-go]').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
