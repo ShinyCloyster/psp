@@ -295,7 +295,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .en .gbbox,.en .gbbox p,.en .bd-bub,.en .gpanel,.en .lgcard{direction:ltr;text-align:left}
 .en .gbtri{left:auto;right:46px}.en .gbpage{right:auto;left:46px}.en .gbp-tri{left:auto;right:16px}.en .bd-bub .gbtri{left:auto;right:24px}
 .en .qboard{left:auto;right:575px}.en section[id^="q-"] h2{max-width:690px}
-.qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
+.qrow2{position:absolute;left:200px;right:200px;bottom:4px;display:flex;justify-content:space-between;z-index:6;pointer-events:none}.qside{display:flex;gap:4px;width:370px;justify-content:space-evenly;align-items:flex-end}.qside+.qside{flex-direction:row}.qslot{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;flex:1;max-width:110px}.qslot b{font-size:17px;color:#F6F1E7;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 0 #161A2E}.qfig{position:relative;height:96px;width:100%;display:flex;align-items:flex-end;justify-content:center}.qmini{position:relative;z-index:2;zoom:2.6;image-rendering:pixelated}.qfig .avh{position:relative;z-index:2}.qpile{position:absolute;left:46px;right:-46px;bottom:4px;height:100%;z-index:1}.qball{position:absolute;width:30px;height:30px;transform:translateX(-50%);image-rendering:pixelated;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}.qball.drop{animation:qdrop .7s cubic-bezier(.3,1.5,.5,1) both}@keyframes qdrop{0%{transform:translate(-50%,-160px) scale(.6);opacity:0}60%{opacity:1}100%{transform:translateX(-50%)}}.qbang{position:absolute;top:-44px;left:50%;transform:translateX(-50%);z-index:3;width:44px;height:44px;border-radius:11px;background:#FFFDF8;border:4px solid #161A2E;font:400 26px/36px var(--pixel);font-style:normal;color:#E5484D;text-align:center;animation:qbang .35s cubic-bezier(.3,1.8,.5,1)}.qbang::after{content:'';position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);border:6px solid transparent;border-top-color:#161A2E}.qbang.miss{color:#5A5F73}@keyframes qbang{from{transform:translate(-50%,10px) scale(.2)}}.qboard{position:absolute;left:575px;top:30px;width:505px;background:rgba(22,26,46,.9);border:3px solid var(--gold);border-radius:22px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;z-index:6}
 .qbh{grid-column:1/-1;font:400 14px var(--pixel);color:var(--gold);text-align:center;margin-bottom:2px}
 .qr{display:flex;align-items:center;gap:8px;font-size:22px;color:var(--cream)}.qr .qn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
 .qr b{font:400 18px var(--pixel);color:var(--gold);min-width:30px;text-align:left}.qst{width:30px;display:flex;justify-content:center}.qst img{width:28px;height:28px;image-rendering:pixelated}
@@ -908,7 +908,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794632822';
+const BUILDV='1794633565';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2251,11 +2251,18 @@ function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ
 function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;
   const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores,next:S.qAuto&&!Q.revealed?S.qAuto.next:null};const k=JSON.stringify(doc);
   if(k!==S.quizKey){S.quizKey=k;S.db.doc('stage/quiz').set(doc).catch(()=>{})}
-  if(Q.type){if(!$('#qboard'))$('#cv').insertAdjacentHTML('beforeend','<div id="qboard" class="qboard"></div>');quizBoardUpdate()}}
-function quizBoardUpdate(){const el=$('#qboard');if(!el)return;const Q=quizState();if(!Q?.type)return;const G=S.guesses||{};
-  const rows=Q.players.map(p=>({p,sc:Q.scores[p.id],g:G[p.id]?.[Q.type]})).sort((a,b)=>b.sc-a.sc);
-  el.innerHTML=`<p class="qbh">SCOREBOARD</p>`+rows.map(r=>{let st='';if(Q.revealed)st=r.g&&r.g.g===Q.type?`<img src="img/${QBALL[r.g.n][0]}.webp" alt="">`:'<i class="qx">✗</i>';else if(r.g)st='<i class="qv">✓</i>';
-    return `<div class="qr">${avHead(r.p,46)}<span class="qn">${esc(r.p.name)}</span><span class="qst">${st}</span><b>${r.sc}</b></div>`}).join('')}
+  if(Q.type){if(!$('#qboard'))$('#cv').insertAdjacentHTML('beforeend','<div id="qboard" class="qrow2"></div>');quizBoardUpdate()}}
+// the players stand in a row at the bottom, on both sides of the progress bar: "!" over whoever guessed during the count,
+// and a growing pile of Poké/Great/Ultra Balls behind each one. No numbers until the champion slide.
+const QPILE=[[0,0],[24,0],[-24,0],[12,-20],[-12,-20],[36,-20],[0,-40],[24,-40],[-24,-40],[48,0],[12,-60],[-12,-60],[36,-60],[0,-80],[48,-40],[24,-80],[60,-20],[12,-100]];
+function quizBoardUpdate(){const el=$('#qboard');if(!el)return;const Q=quizState();if(!Q?.type)return;const G=S.guesses||{};S.qSeen=S.qSeen||{};
+  const slot=p=>{const g=G[p.id]?.[Q.type],bl=[];Q.rev.forEach(t=>{const x=G[p.id]?.[t];if(x&&x.g===t)bl.push(x.n)});const seen=S.qSeen[p.id]??bl.length;S.qSeen[p.id]=bl.length;
+    const pile=bl.map((n,i)=>{const[x,y]=QPILE[i%QPILE.length];return `<img class="qball${i>=seen?' drop':''}" src="img/${QBALL[n][0]}.webp" alt="" style="left:calc(50% + ${x}px);bottom:${8-y}px">`}).join('');
+    const bub=Q.revealed?(g&&g.g!==Q.type?'<i class="qbang miss">…</i>':''):(g?'<i class="qbang">!</i>':''),av=lkAv(p);
+    return `<div class="qslot">${bub}<div class="qfig"><div class="qpile">${pile}</div>${av?`<img class="qmini" src="${av}" alt="">`:avHead(p,56)}</div><b>${esc(p.name)}</b></div>`};
+  const pl=Q.players,h=Math.ceil(pl.length/2),k=JSON.stringify([Q.type,Q.revealed,pl.map(p=>[p.id,G[p.id]?.[Q.type]?.g||'',Q.rev.map(t=>G[p.id]?.[t]?.g===t?G[p.id][t].n:0).join('')])]);if(el.dataset.k===k)return;el.dataset.k=k;
+  el.innerHTML=`<div class="qside">${pl.slice(0,h).map(slot).join('')}</div><div class="qside">${pl.slice(h).map(slot).join('')}</div>`;
+  if(el.querySelector('.qbang:not(.miss)'))el.querySelectorAll('.qbang:not(.miss)').forEach(b=>{if(!b.dataset.a){b.dataset.a=1}})}
 function quizWinHTML(){const Q=quizState(),rows=Q.players.map(p=>({p,sc:Q.scores[p.id],b:Q.balls[p.id]})).sort((a,b)=>b.sc-a.sc||b.b[1]-a.b[1]||b.b[2]-a.b[2]),top=rows.slice(0,3),ord=[top[1],top[0],top[2]].filter(Boolean);
   return `<div class="st qwin"><div class="center" style="gap:14px"><p style="font:400 24px var(--pixel);color:var(--gold)">WHO'S THAT TYPE? · CHAMPION</p>
    <div class="qpod">${ord.map(r=>{const first=r===top[0];return `<div class="qps ${first?'first':''}">${avFull(r.p,first?460:340)}<p class="qpn">${esc(r.p.name)}</p>${ll(`<p class="qpp">${r.sc} נק׳</p>`,`<p class="qpp">${r.sc} pts</p>`)}<div class="qpb">${[1,2,3].map(n=>r.b[n]?`<span><img src="img/${QBALL[n][0]}.webp" alt="">×${r.b[n]}</span>`:'').join('')}</div></div>`}).join('')}</div></div></div>`}
