@@ -277,6 +277,9 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .steps button.on b{background:var(--red);color:#fff}
 .pnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
 .prevbtn{background:none;border:2px solid var(--line);color:var(--mist);border-radius:12px;padding:11px 14px;font:500 16px/1 var(--body)}
+.prevbtn.okback{background:#2E9E5B;border-color:#2E9E5B;color:#fff;font-weight:700}
+.optb{display:inline-block;margin-top:4px;background:none;border:1.5px dashed #9FA7C7;border-radius:8px;padding:3px 8px;font:500 12px/1.2 var(--body);color:#4A5070;width:auto}
+.rtag.otag{background:#E6E0F5;color:#5B4A8A}.optlead{margin:8px 0 0!important;font-size:13px}
 .ghostbtn{background:none;border:2px solid var(--gold);color:var(--gold);border-radius:12px;padding:10px 14px;font:700 15px/1 var(--body)}
 .ptitle{font:400 30px/1.15 var(--display);margin:4px 0 0;color:var(--cream)}
 .psum{margin:0;font:600 14px/1.5 var(--body);color:var(--gold)}
@@ -427,7 +430,17 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .tph button{position:absolute;top:2px;inset-inline-end:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:12px;line-height:22px;padding:0}
 .trplus{width:64px;height:64px;border-radius:10px;border:3px dashed #9FA7C7;display:grid;place-items:center;font:700 30px/1 var(--body);color:#6A6F8A;cursor:pointer}
 .trphl{font-size:15px;line-height:1.5;color:var(--cream);margin:0 4px}.remindb{display:block;text-align:center;text-decoration:none;margin-top:8px}
-.trcnt h2{margin:0 0 8px}.trcnt .muted{margin:8px 0 0;font-size:14px}
+.trexr{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.trex{position:relative;height:128px;width:auto;min-width:0;background:#E6EAF6;border:3px solid #9FA7C7;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:4px 2px 6px;overflow:hidden;color:#1E2238;box-shadow:none}
+.trex.on{border-color:#E0A800;background:#FFF3C8}
+.trsil{position:absolute;top:4px;inset-inline-end:2px;display:flex;filter:brightness(0);opacity:.3;pointer-events:none}
+.trsil img{height:70px;margin-inline-start:-22px;image-rendering:pixelated}.trsil img.bt{height:40px;margin-top:24px}
+.trfg{position:relative;height:84px;max-width:100%;object-fit:contain;image-rendering:pixelated}
+.trex b{position:relative;font:700 13px/1.2 var(--body);margin-top:4px;white-space:nowrap}
+.trexc{margin-top:12px;background:#fff;border:3px solid #E0A800;border-radius:12px;padding:12px 14px}
+.trexh{margin:0 0 4px;font-size:17px}.trexhow{margin:0 0 8px;font-size:14px;color:#4A5070;font-weight:600}
+.trtxt{margin:0 0 10px;line-height:1.55;font-size:15px}.trexpl{margin:0 0 6px!important}
+.trexph{display:flex;gap:6px;flex-wrap:wrap}.trexph img{flex:1 1 45%;min-width:0;max-width:100%;border-radius:8px;border:2px solid #2A2E45}
 /* page 5: the team */
 .party .muted{margin:-4px 0 12px}
 .pslots{display:flex;flex-direction:column;gap:6px}
@@ -658,8 +671,17 @@ function renderLetter(){
   goPage(Math.min(page,PAGES().length-1),true)}
 // how far you may go: past the route only after every stop, past the prep only after every item (an answered invitation is open)
 function reach(){if(mem.ans)return 99;const P=PAGES(),r=P.findIndex(x=>x[0]==='route');if(r>=0&&!mem.routeDone)return r;return 99}
+// what's still missing on a page after yes ('' = all done here, null = nothing to check)
+function pageLeft(k){const tr=(mem.trainers||[]).slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length;
+  if(k==='card')return mem.av!=null?'':T('leftCard');
+  if(k==='dates'){if(ROLE==='s')return FILE&&FILE.date?'':T('leftDatesS');return myDates().length||(FILE&&FILE.date)?'':T('leftDatesF')}
+  if(k==='trainers')return tr>=NTR()?'':T('leftTr').replace('{n}',NTR()-tr);
+  if(k==='team'){const ts=teamState();return ts.ok?'':ts.here.length<4&&!ts.wait.length?T('leftTeam4'):T('leftTeamWait').replace('{n}',ts.wait.length)}
+  return null}
+// the back button follows what changes on the page (a character picked, a friend answered)
+setInterval(()=>{try{if(AFTER()&&page>0&&$('#prevbtn')){const lf=String(pageLeft(PAGES()[page][0]));if(lf!==navBar.k)navBar()}}catch(e){}},800);
 function navBar(){const P=PAGES(),n=P.length,i=page,r=reach();
-  if(AFTER()){$('#steps').innerHTML='';$('#locknote').textContent='';$('#pnav').innerHTML=i>0?`<button class="prevbtn" id="prevbtn">${AR_PREV} ${H('backMenu')}</button><span></span>`:'';if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(0);return}
+  if(AFTER()){$('#steps').innerHTML='';const lf=i>0?pageLeft(P[i][0]):null;navBar.k=String(lf);$('#locknote').textContent=lf?T('backLeft').replace('{x}',lf):'';$('#pnav').innerHTML=i>0?`<button class="prevbtn${lf===''?' okback':''}" id="prevbtn">${lf===''?H('backDone'):`${AR_PREV} ${H('backMenu')}`}</button><span></span>`:'';if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(0);return}
   const st=$('#steps');st.innerHTML=P.map(([k],j)=>`<button data-p="${j}" class="${j===i?'on':''}${j<i?' done':''}${j>r?' lock':''}" ${j>r?'disabled':''}><b>${j>r?'🔒':j+1}</b>${esc(T('tab_'+k))}</button>`).join('');
   st.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>goPage(+b.dataset.p));
   const lockMsg=i>=r&&i<n-1?(P[i][0]==='route'?'routeLocked':''):'';
@@ -781,7 +803,7 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
       <ol class="todo">${(TXR('todo')||[]).filter(x=>!(x.go==='dates'&&!hasDates())).map((x,i)=>`<li><b>${esc(pickT(x.t))}</b><span>${esc(pickT(x.d))}</span>${i===0&&link?`<a class="wa" href="${link}" target="_blank" rel="noopener">${H('waYesBtn')}</a>`:''}${x.go&&pageIdx(x.go)>=0?`<button class="nextbtn togo" data-go="${x.go}">${H({card:'goCard',team:'goTeam',dates:'goDates'}[x.go])} ${AR_NEXT}</button>`:''}</li>`).join('')}</ol>
       <button class="linkbtn" id="chg">${H('changeAnswer')}</button></section>`;
     w.querySelectorAll('.togo').forEach(b=>b.onclick=()=>goPage(pageIdx(b.dataset.go)));
-    $('#chg').onclick=()=>{delete mem.ans;mem.declined=1;save();dbSync({ans:'no'});ans='ask';page=3;renderLetter()}}
+    $('#chg').onclick=()=>{delete mem.ans;delete mem.declined;save();dbSync({ans:'inv'});ans='ask';page=3;renderLetter()}}
   else if(ans==='confirm'){
     w.innerHTML=`<section class="blk res conf"><h2>${H('confirmTitle')}</h2><p>${H('confirmLead')}</p><ul class="conf-l">${TL('confirm').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       <div class="gbp-menu" role="menu"><button id="csave">${H('confirmSave')}</button><button id="cask">${H('confirmAsk')}</button></div>`;
@@ -798,7 +820,10 @@ function renderMenu(scroll){const w=$('#menuwrap');if(!w)return;
     $('#back').onclick=()=>{ans='ask';renderMenu(true)};$('#fyes').onclick=()=>{ans='confirm';sfx('a',.5);renderMenu(true)}}
   else{
     const lk=ROLE==='s'&&!mem.prepDone;
-    w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes" ${lk?'disabled class="dis"':''}>${H('menuYes')}${lk?' 🔒':''}</button><button id="mlater">${H('menuLater')}</button></div>${lk?`<p class="locknote">${H('prepLocked')}</p>`:''}`;
+    if(ROLE==='f'&&mem.declined){w.innerHTML=`<section class="blk res"><h2>${H('declinedT')}</h2><button class="ghostbtn wbtn" id="mchg">${H('declinedChg')}</button></section>`;$('#mchg').onclick=()=>{delete mem.declined;save();dbFriend();sfx('a',.5);renderMenu(true)};return}
+    w.innerHTML=`<div class="lkbox" style="margin-bottom:10px">${H('menuAsk')}</div><div class="gbp-menu" role="menu"><button id="myes" ${lk?'disabled class="dis"':''}>${H('menuYes')}${lk?' 🔒':''}</button>${ROLE==='f'&&!REMOTE?`<button id="mremote">${H('menuRemote')}</button>`:''}<button id="mlater">${H('menuLater')}</button>${ROLE==='f'?`<button id="mno">${H('menuNo')}</button>`:''}</div>${lk?`<p class="locknote">${H('prepLocked')}</p>`:''}`;
+    $('#mremote')?.addEventListener('click',()=>{REMOTE=true;if(mem.me)mem.me.r=1;save();ans='confirm';sfx('a',.5);renderMenu(true)});
+    $('#mno')?.addEventListener('click',()=>{if(!confirm(T('noAsk')))return;mem.declined=1;delete mem.ans;save();dbFriend();sfx('a',.4);renderMenu(true)});
     $('#myes').onclick=()=>{if(ROLE==='s'&&!mem.prepDone)return;ans='confirm';sfx('a',.5);renderMenu(true)};
     $('#mlater').onclick=()=>{ans='faq';faqI=-1;sfx('a',.5);renderMenu(true)}}
   if(scroll)w.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})}
@@ -814,10 +839,13 @@ function openUrl(u){const w=window.open(u,'_blank');if(!w)location.href=u}
 function shareText(text,done){
   if(navigator.share){navigator.share({text}).then(done).catch(()=>{})}
   else{(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{toast(T('copied'));done()}).catch(()=>{prompt('',text);done()})}}
+// the team's state: who's coming in person, who still owes an answer (optional friends never block)
+const tAns=f=>{const r=TEAM&&f.k&&TEAM[f.k];return r?r.ans:'inv'},tOpt=f=>!!(f.o||(TEAM&&f.k&&TEAM[f.k]&&TEAM[f.k].o)),tRem=f=>!!(f.r||(TEAM&&f.k&&TEAM[f.k]&&TEAM[f.k].r));
+function teamState(){const L=teamList(),here=L.filter(f=>tAns(f)==='yes'&&!tRem(f)),wait=L.filter(f=>!tOpt(f)&&tAns(f)!=='yes'&&tAns(f)!=='no');return {here,wait,ok:here.length>=4&&!wait.length}}
 function slot(f,i){if(!f)return `<div class="pslot empty"><span>${H('partyEmpty')}</span></div>`;
   const r=TEAM&&f.k&&TEAM[f.k],yes=r&&r.ans==='yes',av=r&&r.av,pic=av==='custom'?'<span class="cust sm">?</span>':`<img class="px" src="${typeof av==='number'?`../img/mini/${av}.png`:`../img/ow-${f.g==='f'?'girl':'boy'}.png`}" alt="">`;
   const stt=yes?esc(pickG(TX.stYes,f.g)):r&&r.ans==='no'?esc(pickG(TX.stNo,f.g)):H('stInList');
-  return `<div class="pslot${yes?' yes':''}"><span class="pic">${pic}</span><div class="pnm"><b>${esc(f.n)} <i class="gs">${f.g==='f'?'♀':'♂'}</i>${f.r||(r&&r.r)?` <em class="rtag">${H('remoteTag')}</em>`:''}</b><small class="${yes?'yes':''}">${stt}</small></div>${f.mine?`<div class="pbtns"><button data-rm="${esc(f.k)}" class="x" aria-label="${esc(T('remove'))}">✕</button></div>`:''}</div>`}
+  return `<div class="pslot${yes?' yes':''}"><span class="pic">${pic}</span><div class="pnm"><b>${esc(f.n)} <i class="gs">${f.g==='f'?'♀':'♂'}</i>${f.r||(r&&r.r)?` <em class="rtag">${H('remoteTag')}</em>`:''}${tOpt(f)?` <em class="rtag otag">${H('optTag')}</em>`:''}</b><small class="${yes?'yes':''}">${stt}</small>${ROLE==='s'&&!yes&&!(r&&r.ans==='no')?`<button class="optb" data-opt="${esc(f.k)}">${H(tOpt(f)?'optOff':'optOn')}</button>`:''}</div>${f.mine?`<div class="pbtns"><button data-rm="${esc(f.k)}" class="x" aria-label="${esc(T('remove'))}">✕</button></div>`:''}</div>`}
 // the team on screen: everyone on my list, plus anyone who joined from the group link with a name of their own
 function teamList(){const mine=party().map(f=>({...f,mine:1})),keys=new Set(mine.map(f=>f.k));
   const extra=Object.entries(TEAM||{}).filter(([k,v])=>!keys.has(k)&&v&&v.n&&v.ans!=='removed').map(([k,v])=>({n:v.n,g:v.g,k,r:v.r}));return [...mine,...extra]}
@@ -834,12 +862,14 @@ function pParty(){const P=teamList(),pc=P.slice(6);
   <section class="blk party"><h2>${H('partySlots')} <small>${esc(T('partyCount').replace('{n}',P.length))}</small></h2>
     <div class="pslots">${[0,1,2,3,4,5].map(i=>slot(P[i],i)).join('')}</div>
     ${pc.length?`<div class="billpc"><b>${H('billPc')}</b><p>${H('billLead')}</p><div class="pslots">${pc.map((f,k)=>slot(f,k+6)).join('')}</div></div>`:''}
-    <p class="hint2 dark">${H('partyNext')}</p></section>
+    <p class="hint2 dark">${H('partyNext')}</p><p class="muted optlead">${H('optLead')}</p></section>
   <section class="blk addf sendall"><h2>${H('sendAllTitle')}</h2><p class="muted">${H('sendAllLead')}</p>
     ${FILE&&!FILE.loc?`<p class="lockmsg">🔒 ${H('locFirst')}</p><button class="ghostbtn wbtn" id="gohub">${H('locGo')}</button>`:P.length?`<p class="prevl">${H('sendAllPrev')}</p><div class="msgprev">${esc((()=>{try{return decodeURI(groupText())}catch(e){return groupText()}})())}</div>
     <a class="wa wbtn" id="swa" href="${wa(groupText(),'')}" target="_blank" rel="noopener">${H('sendAllWa')}</a><button class="ghostbtn wbtn" id="sshare">${H('sendAllShare')}</button>${(()=>{const W=P.filter(f=>{const r=TEAM&&TEAM[f.k];return !r||r.ans==='inv'});return W.length&&mem.sentAll?`<a class="ghostbtn wbtn remindb" id="remind" href="${wa(T('remindMsg').replace('{names}',W.map(f=>f.n).join(', '))+'\n'+groupLink(),'')}" target="_blank" rel="noopener">🔔 ${esc(T('remindBtn').replace('{n}',W.length))}</a>`:''})()}`:`<p class="hint2 dark">${H('sendAllNeed')}</p>`}
   </section>`}
 // the subject's list goes into the invitation file too, so the group link can show it
+async function setOpt(k,on,done){const f=party().find(x=>x.k===k);if(f){if(on)f.o=1;else delete f.o;save()}if(TEAM&&TEAM[k])TEAM[k].o=on?1:0;sfx('a',.4);done&&done();
+  const db=await dbReady;if(!db||!mem.iid)return;try{await db.doc('invites/'+mem.iid).set({team:{[k]:{o:on?1:0}}},{merge:true})}catch(e){console.warn('opt',e)}}
 async function dbRoster(f,ans){if(!mem.iidMade)await dbSubject();const db=await dbReady;if(!db||!mem.iid)return;try{await db.doc('invites/'+mem.iid).set({team:{[f.k]:{n:f.n,g:f.g,ans,r:f.r?1:0,at:now()}}},{merge:true})}catch(e){console.warn('roster',e)}}
 function bindParty(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').innerHTML=pParty();bindParty();$('#letter').scrollTop=y};
   const add=()=>{const i=$('#fname'),n=(i.value||'').trim().slice(0,30);if(!n){i.placeholder=T('addNeedName');i.classList.add('bad');i.focus();return}
@@ -847,6 +877,7 @@ function bindParty(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').inne
   $('#fadd').onclick=add;$('#fname').onkeydown=e=>{if(e.key==='Enter')add()};$('#fname').oninput=()=>$('#fname').classList.remove('bad');
   document.querySelectorAll('.gsel [data-g]').forEach(x=>x.onclick=()=>{addG=x.dataset.g;document.querySelectorAll('.gsel [data-g]').forEach(y=>y.classList.toggle('on',y===x))});
   document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const L=party(),i=L.findIndex(f=>f.k===b.dataset.rm),f=L[i];if(!f||!confirm(`${T('remove')}: ${f.n}?`))return;L.splice(i,1);save();dbRoster(f,'removed');sfx('a',.4);rer()});
+  document.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>{const k=b.dataset.opt,f=teamList().find(x=>x.k===k)||{k};setOpt(k,!tOpt(f),rer)});
   if($('#swa'))$('#swa').addEventListener('click',()=>{mem.sentAll=1;save();toast(T('sentAll'))});
   $('#gohub')?.addEventListener('click',()=>goPage(0));$('#fakef')?.addEventListener('click',()=>{fakeFriends();rer()});
   if($('#sshare'))$('#sshare').onclick=()=>shareText(groupText(),()=>{mem.sentAll=1;save();toast(T('sentAll'))});
@@ -925,7 +956,10 @@ function bindChips(redo){document.querySelectorAll('.dchips [data-d]').forEach(b
   if(ROLE==='s'){mem.sd=m;FILE&&(FILE.sd=m);save();dbSubject({sd:m})}else{mem.dates=m;if(TEAM&&TEAM[FKEY])TEAM[FKEY].d=m;save();dbFriend()}
   const y=$('#letter').scrollTop;redo();$('#letter').scrollTop=y})}
 function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()});
-  document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const d=b.dataset.set;if(FILE.date===d)return;if(!confirm(T('dateSetAsk').replace('{d}',fmtD(d,true))))return;
+  document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const d=b.dataset.set;if(FILE.date===d)return;const ts=teamState();
+    if(ts.here.length<4){alert(T('dateNeedTeam').replace('{n}',ts.here.length));return}
+    for(const f of ts.wait){if(!confirm(pickG(TX.datePend,f.g).replace('{n}',f.n)))return;setOpt(f.k,true)}
+    if(!confirm(T('dateSetAsk').replace('{d}',fmtD(d,true))))return;
     FILE.date=d;dbSubject({date:d});sfx('caught',.7);toast(T('dateSetOk'));const y=$('#letter').scrollTop;$('#pg').innerHTML=pDates();bindDates();$('#letter').scrollTop=y;setTimeout(()=>$('#dwa')?.scrollIntoView({block:'center',behavior:'smooth'}),200)});
   $('#dwa')?.addEventListener('click',()=>{mem.toldDate=FILE.date;save()})}
 
@@ -947,9 +981,12 @@ function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
   if(k==='ck_date')return FILE&&FILE.date?fmtD(FILE.date):T('ckDateN').replace('{a}',here.filter(f=>(T0[f.k].d||[]).length).length).replace('{b}',here.length);
   return T('ckCharsN').replace('{me}',T(mem.av!=null?'ckMeYes':'ckMeNo')).replace('{a}',yes.filter(f=>T0[f.k].av!=null).length).replace('{b}',yes.length)}
 // the trainers page: four names and a few points on each (kept on this phone only)
-const NTR=()=>mem.ntr===3?3:4;
-function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx'),nt=NTR();
-  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section><section class="blk trcnt"><h2>${H('trCountT')}</h2><div class="gsel"><button data-nt="3" class="${nt===3?'on':''}">${H('trCount3')}</button><button data-nt="4" class="${nt===4?'on':''}">${H('trCount4')}</button></div><p class="muted">${H('trCountHint')}</p></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2,3].slice(0,nt).map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
+const NTR=()=>3;
+const EXIMG={surge:'../img/tr-ltsurge.webp',misty:'../img/tr-misty.webp',james:'img/ex/james.png',jessie:'img/ex/jessie.png'},
+  EXSIL={surge:'<img src="img/ex/army.png" alt="">',misty:['erika','whitney','jasmine'].map(n=>`<img src="../img/tr-${n}.webp" alt="">`).join(''),james:'<img src="img/ex/growlithe.png" alt="" class="px">',jessie:'<img src="img/ex/boots.png" alt="" class="bt">'};
+function exCard(x){return `<div class="trexc"><p class="trexh"><b>${esc(x.n)}</b> · 🎓 ${esc(x.tr)}</p><p class="trexhow">${esc(x.how)}</p><p class="trtxt">${esc(x.txt).replace(/\n/g,'<br>')}</p><p class="muted trexpl">${H('trExPh')}</p><div class="trexph">${x.ph.map(f=>`<img src="img/ex/${f}.jpg" alt="">`).join('')}</div></div>`}
+function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx'),X=TXR('trExs')||[],xi=pTrainers.ex;
+  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trexs"><h2>${H('trExT')}</h2><p class="muted">${H('trExLead')}</p><div class="trexr">${X.map((x,i)=>`<button class="trex${xi===i?' on':''}" data-ex="${i}"><span class="trsil">${EXSIL[x.k]||''}</span><img class="trfg" src="${EXIMG[x.k]}" alt=""><b>${esc(x.n)}</b></button>`).join('')}</div>${xi!=null&&X[xi]?exCard(X[xi]):''}</section><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
     <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}">${ROLE==='s'&&mem.iidMade?trPhotos(i):''}</section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
 
 // the trainers' photos: shrunk on the phone, each in its own document, which only Eyal can list
@@ -964,7 +1001,7 @@ function bindPhotos(){const rer=()=>{const y=$('#letter').scrollTop;$('#pg').inn
     try{for(const f of files){const data=await shrinkPic(f),id=rid(16);await db.doc('invph/'+id).set({iid:mem.iid,t,data,at:now()});PHC[id]=data;ph[t].push(id)}FILE.ph=ph;await dbSubject({ph});sfx('tink',.6);toast(T('trPhDone'))}catch(e){console.warn('photo',e);toast(T('trPhFail'))}rer()});
   document.querySelectorAll('[data-phdel]').forEach(b=>b.onclick=async()=>{const id=b.dataset.phdel,t=b.dataset.t,ph={...((FILE&&FILE.ph)||{})};ph[t]=(ph[t]||[]).filter(x=>x!==id);FILE.ph=ph;dbSubject({ph});try{(await dbReady).doc('invph/'+id).delete()}catch(e){}rer()})}
 function bindTrainers(){bindPhotos();document.querySelectorAll('.trb [data-i]').forEach(el=>el.oninput=()=>{const tr=mem.trainers||(mem.trainers=[{},{},{},{}]);const i=+el.dataset.i;tr[i]=tr[i]||{};tr[i][el.dataset.f]=el.value;clearTimeout(bindTrainers.t);bindTrainers.t=setTimeout(()=>{save();trSync()},600)});
-  document.querySelectorAll('[data-nt]').forEach(b=>b.onclick=()=>{mem.ntr=+b.dataset.nt;save();trSync();sfx('a',.4);const y=$('#letter').scrollTop;$('#pg').innerHTML=pTrainers();bindTrainers();$('#letter').scrollTop=y})}
+  document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const i=+b.dataset.ex;pTrainers.ex=pTrainers.ex===i?null:i;sfx('a',.4);const y=$('#letter').scrollTop;$('#pg').innerHTML=pTrainers();bindTrainers();$('#letter').scrollTop=y;if(pTrainers.ex!=null)$('.trexc')?.scrollIntoView({block:'nearest',behavior:'smooth'})})}
 function trSync(){if(ROLE==='s'&&FILE)dbSubject({tr:[0,1,2,3].slice(0,NTR()).map(i=>String(((mem.trainers||[])[i]||{}).t||'').trim().slice(0,40))})}
 
 // ---------- 12. the menu after yes: one screen to come back to; big tiles open each task ----------
@@ -1054,7 +1091,7 @@ function hubTiles(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k]
   tile('card',`<span class="hav">${cardFig()}</span>`,mem.av!=null?'✓':T('hubPick'),mem.av!=null);
   if(hasDates()&&!REMOTE)tile('dates','📅',FILE.date?fmtD(FILE.date):myDates().length?T('hubMarked').replace('{n}',myDates().length):T('hubPick'),!!FILE.date);
   if(ROLE==='s'){tile('trainers','🎒',`${tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length}/${NTR()}`,tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length>=NTR());
-    tile('team',`<span class="ball" style="--s:30px;display:block"></span>`,P.length?`${yes.length}/${P.length} ✓`:T('hubPick'),P.length>=4&&yes.length===P.length)}
+    tile('team',`<span class="ball" style="--s:30px;display:block"></span>`,P.length?`${yes.length}/${P.length} ✓`:T('hubPick'),teamState().ok)}
   return tiles.join('')}
 function pHub(){const link=ROLE==='f'?wa(T('waYes'),''):wa(T('waYes'));
   const pickFirst=ROLE==='s'&&FILE&&!FILE.loc;
