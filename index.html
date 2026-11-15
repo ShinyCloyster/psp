@@ -81,6 +81,7 @@ p{margin:0}
 .labo{min-height:0!important;padding:8px 14px!important;flex-direction:row!important}
 .labdate{flex:1 1 150px;min-height:44px;font:inherit;font-size:16px;cursor:pointer;background:var(--night3);border:1px solid var(--line);border-radius:10px;color:var(--cream);padding:8px 10px;color-scheme:dark}
 .labtime{width:auto!important;min-height:44px;font-size:16px}
+.labhrs{display:flex;flex-wrap:wrap;gap:5px;flex-basis:100%;margin-top:2px}.labh{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:inherit;padding:7px 9px;font:inherit;font-size:14px;cursor:pointer}.labh.on{background:#f2c94c;color:#1a1a2e;border-color:#f2c94c;font-weight:700}
 .ivn{font-family:var(--display);font-size:22px;font-weight:400}.ivsteps{display:flex;flex-wrap:wrap;gap:6px}
 .ivs{font-size:12px;border-radius:999px;padding:3px 9px;background:var(--night3);color:var(--mist);border:1px solid var(--line)}.ivs.ok{background:rgba(91,196,138,.16);color:#8EE0B0;border-color:rgba(91,196,138,.5)}.ivs small{opacity:.85}
 .ivnew{border-color:var(--gold)}.labdone{display:flex;flex-direction:column;gap:8px;background:rgba(242,201,76,.1);border-radius:12px;padding:10px}
@@ -974,7 +975,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794766298';
+const BUILDV='1794769717';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1137,9 +1138,9 @@ function invForm(){const N=S.ni;
     <label class="lab-l" for="ni-n">מי הנבדק?</label><input type="text" id="ni-n" placeholder="שם" value="${esc(N.n)}" oninput="S.ni.n=this.value">
     <div class="row" style="gap:6px;flex-wrap:wrap"><button class="np-o labo ${N.g==='m'?'on':''}" data-nig="m">בן ♂</button><button class="np-o labo ${N.g==='f'?'on':''}" data-nig="f">בת ♀</button><span class="grow"></span>
       <button class="np-o labo ${N.lang==='he'?'on':''}" data-nil="he">עברית</button><button class="np-o labo ${N.lang==='en'?'on':''}" data-nil="en">English</button></div>
-    <label class="lab-l" for="ni-d">מועדים שאתה מאשר</label><p class="muted labsm">בוחרים יום ושעה, ולוחצים "הוסף". אפשר כמה, וכל מוזמן יסמן מה מתאים לו.</p>
+    <label class="lab-l" for="ni-d">מועדים שאתה מאשר</label><p class="muted labsm">בוחרים יום, מסמנים שעה אחת או כמה, ולוחצים "הוסף". היום נשאר, אז אפשר להוסיף עוד שעות או לעבור ליום אחר. כל מוזמן יסמן מה מתאים לו.</p>
     <div class="row" style="gap:6px;flex-wrap:wrap;align-items:stretch"><input type="date" id="ni-d" class="labdate" value="${esc(N.day||'')}" onclick="try{this.showPicker()}catch(e){}" onchange="S.ni.day=this.value">
-      <select id="ni-t" class="labtime" onchange="S.ni.time=this.value">${INV_HOURS.map(h=>`<option ${h===(N.time||'20:00')?'selected':''}>${h}</option>`).join('')}</select><button class="btn small" data-niadd="1">+ הוסף</button></div>
+      <button class="btn small" data-niadd="1">+ הוסף</button><div class="labhrs">${INV_HOURS.map(h=>`<button type="button" class="labh${(N.times||['20:00']).includes(h)?' on':''}" data-nih="${h}">${h}</button>`).join('')}</div></div>
     ${N.dates.length?`<div class="row" style="gap:6px;flex-wrap:wrap">${N.dates.map(d=>`<button class="btn ghost small" data-nidel="${d}">${invFmt(d)} ✕</button>`).join('')}</div>`:''}
     <label class="lab-l" for="ni-place">איפה</label><input type="text" id="ni-place" value="${esc(N.place)}" oninput="S.ni.place=this.value"><p class="muted labsm">הנבדק יכול להציע מקום אחר בתל אביב, עם מסך גדול ומקום לכולם.</p>
     <label class="lab-l" for="ni-ps">נ.ב. אישי</label><input type="text" id="ni-ps" placeholder="משפט קצר ממך, בסוף המכתב" value="${esc(N.ps)}" oninput="S.ni.ps=this.value">
@@ -1216,7 +1217,8 @@ function roomsView(){
     if(b.dataset.nrr){S.nrr=!S.nrr;roomsView();return}
     if(b.dataset.nig){S.ni.g=b.dataset.nig;roomsView();return}
     if(b.dataset.nil){S.ni.lang=b.dataset.nil;roomsView();return}
-    if(b.dataset.niadd){const day=$('#ni-d')?.value,tm=$('#ni-t')?.value||'20:00';if(!day){toast('קודם בוחרים יום');try{$('#ni-d').showPicker()}catch(e){$('#ni-d')?.focus()}return}const d=day+'T'+tm;if(!S.ni.dates.includes(d)){S.ni.dates.push(d);S.ni.dates.sort()}S.ni.day='';roomsView();return}
+    if(b.dataset.nih){const L=S.ni.times||(S.ni.times=['20:00']),i=L.indexOf(b.dataset.nih);if(i>=0)L.splice(i,1);else L.push(b.dataset.nih);L.sort();roomsView();return}
+    if(b.dataset.niadd){const day=$('#ni-d')?.value,tms=S.ni.times||['20:00'];if(!day){toast('קודם בוחרים יום');try{$('#ni-d').showPicker()}catch(e){$('#ni-d')?.focus()}return}if(!tms.length){toast('קודם מסמנים שעה');return}tms.forEach(tm=>{const d=day+'T'+tm;if(!S.ni.dates.includes(d))S.ni.dates.push(d)});S.ni.dates.sort();S.ni.day=day;roomsView();return}
     if(b.dataset.nidel){S.ni.dates=S.ni.dates.filter(x=>x!==b.dataset.nidel);roomsView();return}
     if(b.dataset.act==='newinvite'){const N=S.ni,n=(N.n||'').trim().slice(0,40);if(!n){toast('מה השם?');return}if(!N.dates.length){toast('צריך לפחות מועד אחד');return}
       const id=invId(),v={subject:n,g:N.g,lang:N.lang,at:new Date().toISOString(),ans:'open',team:{},dates:[...N.dates],...(N.test?{test:true}:{}),...(N.test&&fakeList(N.fake).length?{fake:fakeList(N.fake).map(([n,g])=>({n,g}))}:{}),...(N.place.trim()&&N.place.trim()!==INV_PLACE?{place:N.place.trim()}:{}),...(N.ps.trim()?{ps:N.ps.trim()}:{})};

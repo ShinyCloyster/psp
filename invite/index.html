@@ -48,12 +48,36 @@ button{font:inherit;cursor:pointer}
 #bar{position:fixed;top:max(10px,env(safe-area-inset-top));inset-inline:12px;display:flex;justify-content:space-between;z-index:40;pointer-events:none}
 #bar button{pointer-events:auto;background:rgba(22,26,46,.75);color:var(--mist);border:2px solid var(--line);border-radius:10px;padding:6px 10px;font:400 10px/1 var(--pixel)}
 #bar button[aria-pressed="false"]{opacity:.55}
-#bar #pball{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;font:400 12px/1 var(--pixel);color:var(--cream);border-color:var(--gold);background:rgba(22,26,46,.88)}
-#bar #pball.hide{display:none}
-#pball img{width:26px;height:26px;image-rendering:pixelated}
-#pball.t-master{border-color:#c77dff;box-shadow:0 0 12px rgba(199,125,255,.6)}
-#pball.up img{animation:pbup .9s ease-out}
-@keyframes pbup{0%{transform:scale(1)}30%{transform:scale(1.7) rotate(-20deg);filter:brightness(2.2)}60%{transform:scale(.9) rotate(10deg)}100%{transform:none}}
+#pbar{flex:1;margin:0 14px;position:relative;height:34px;pointer-events:auto;cursor:pointer}
+#pbar.hide{display:none}
+.pbt{position:absolute;inset-inline:6px;top:12px;height:8px;border-radius:4px;background:rgba(255,255,255,.14);box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
+.pbf{position:absolute;inset-inline-start:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,#f2c94c,#ffe08a);transition:width .9s cubic-bezier(.3,.8,.3,1)}
+[dir=rtl] .pbf{background:linear-gradient(270deg,#f2c94c,#ffe08a)}
+.pbs{position:absolute;top:50%;width:24px;height:24px;margin:-12px 0 0;margin-inline-start:-12px;border-radius:50%;background:#15151f;border:2px solid #3a3a4c;display:grid;place-items:center}
+.pbs img{width:18px;height:18px;image-rendering:pixelated;filter:brightness(0);opacity:.85}
+.pbs.on{background:#fff;border-color:#f2c94c;box-shadow:0 0 8px rgba(242,201,76,.7)}.pbs.on img{filter:none;opacity:1}
+.pbs.master.on{border-color:#c77dff;box-shadow:0 0 12px rgba(199,125,255,.9)}
+.pbtip{position:absolute;top:50%;width:30px;height:30px;margin:-15px 0 0;margin-inline-start:-15px;transition:inset-inline-start .9s cubic-bezier(.3,.8,.3,1);z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+.pbtip img{width:30px;height:30px;image-rendering:pixelated;display:block}
+.pbtip b{position:absolute;top:26px;left:50%;transform:translateX(-50%);font:400 9px/1 var(--pixel);color:var(--cream);white-space:nowrap;text-shadow:0 1px 0 #000}
+.pbtip.bump img{animation:pbbump .7s ease-out}
+@keyframes pbbump{0%{transform:scale(1)}35%{transform:scale(1.8);filter:brightness(1.6)}100%{transform:scale(1)}}
+.pbc{position:fixed;inset:0;z-index:70;pointer-events:none;display:grid;place-items:center;overflow:hidden}
+.pbc .pbcf{position:absolute;inset:0;opacity:0;background:radial-gradient(circle,rgba(255,240,180,.55),transparent 60%);animation:pbcf 2s ease-out forwards}
+.pbc.lv2 .pbcf{background:radial-gradient(circle,rgba(255,225,130,.8),rgba(20,20,45,.65) 70%);animation-duration:2.8s}
+.pbc.lv3 .pbcf{background:radial-gradient(circle,#fff,rgba(199,125,255,.8) 38%,rgba(10,6,30,.85) 75%);animation-duration:4s}
+@keyframes pbcf{0%{opacity:0}12%{opacity:1}75%{opacity:1}100%{opacity:0}}
+.pbc .pbcb{grid-area:1/1;width:44px;height:44px;image-rendering:pixelated;--bs:3;animation:pbcb 2.4s cubic-bezier(.25,.9,.3,1.1) forwards}
+.pbc.lv2 .pbcb{--bs:4;animation-duration:3s}.pbc.lv3 .pbcb{--bs:5.5;animation-duration:4s;filter:drop-shadow(0 0 10px #fff)}
+@keyframes pbcb{0%{transform:translateY(-44vh) scale(.5) rotate(0);opacity:0}10%{opacity:1}30%{transform:translateY(0) scale(var(--bs)) rotate(720deg)}38%{transform:translateY(0) scale(calc(var(--bs)*.85)) rotate(720deg)}46%{transform:translateY(0) scale(var(--bs)) rotate(720deg)}80%{transform:translateY(0) scale(var(--bs)) rotate(720deg);opacity:1}100%{transform:translateY(-44vh) scale(.4) rotate(720deg);opacity:0}}
+.pbc .pbct{position:absolute;top:66%;left:50%;width:max-content;max-width:calc(100% - 32px);translate:-50% 0;padding:8px 16px;border-radius:14px;background:rgba(14,16,34,.82);text-align:center;font:400 26px/1.25 var(--display);color:#fff8e0;text-shadow:0 3px 0 #000,0 0 14px rgba(242,201,76,.8);opacity:0;animation:pbct 2.4s ease-out forwards}
+.pbc.lv2 .pbct{font-size:30px;animation-duration:3s}.pbc.lv3 .pbct{font-size:34px;animation-duration:4s;text-shadow:0 3px 0 #000,0 0 18px rgba(199,125,255,1)}
+@keyframes pbct{0%,22%{opacity:0;transform:scale(.6)}32%{opacity:1;transform:scale(1.08)}40%{transform:scale(1)}82%{opacity:1}100%{opacity:0}}
+.pbc .pbsp{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px;opacity:0;animation:pbsp 1.5s var(--dl) ease-out forwards}
+.pbc .pbsp.st::before{content:'✦';display:block;color:#ffd84a;font-size:18px;line-height:18px;text-align:center}
+.pbc .pbsp.bl{background:center/contain no-repeat;image-rendering:pixelated;width:22px;height:22px}
+@keyframes pbsp{0%{opacity:1;transform:rotate(var(--a)) translateX(10px)}80%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--d)) rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.pbc .pbcb,.pbc .pbct,.pbc .pbcf{animation-duration:.01s!important;animation-fill-mode:forwards}.pbc .pbsp{display:none}.pbtip,.pbf{transition:none}}
 .fin{border:2px solid var(--gold);scroll-margin-top:64px}.fin .bwrap p{color:#3a3550}.cklist{scroll-margin-top:64px}.fin.done{border-color:#5fd38d}
 .hublead{margin:-4px 0 12px;opacity:.85}
 /* start */
@@ -67,8 +91,8 @@ button{font:inherit;cursor:pointer}
 #shadow{position:fixed;top:18%;left:0;width:calc(var(--z)*204px);height:calc(var(--z)*180px);background-repeat:no-repeat;filter:brightness(0);opacity:0;transform:translateX(110vw)}
 #shadow.go{animation:shadow 1.15s cubic-bezier(.4,0,.6,1) forwards}
 #shadow.gif{width:calc(var(--z)*234px*.45);height:calc(var(--z)*102px*.45);background:url(img/dn-sil.gif) center/contain no-repeat;image-rendering:pixelated}
-#shadow.gif.go{animation:shadowg 1.25s cubic-bezier(.4,0,.6,1) forwards}
-@keyframes shadowg{0%{transform:translate(110vw,6vh);opacity:0}12%{opacity:.6}88%{opacity:.6}100%{transform:translate(-110vw,-8vh);opacity:0}}
+#shadow.gif.go{animation:shadowg 2.1s ease-in-out forwards}
+@keyframes shadowg{0%{transform:translate(110vw,6vh);opacity:0}8%{opacity:.6}34%{transform:translate(calc(50vw - 50%),0)}66%{transform:translate(calc(50vw - 50%),-1vh);opacity:.6}94%{opacity:.6}100%{transform:translate(-110vw,-8vh);opacity:0}}
 @keyframes shadow{0%{transform:translate(110vw,6vh) scaleX(-1);opacity:0}12%{opacity:.55}88%{opacity:.55}100%{transform:translate(-110vw,-8vh) scaleX(-1);opacity:0}}
 #dnwrap{position:relative;flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
 #dn{width:calc(var(--z)*102px);height:calc(var(--z)*90px);background-repeat:no-repeat;transform:translateY(-120vh);will-change:transform;position:relative}
@@ -519,7 +543,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
 </head>
 <body>
 <div id="sky"></div>
-<div id="bar"><button id="snd" aria-pressed="true">♪</button><button id="skip" class="hide"></button><button id="pball" class="hide"></button></div>
+<div id="bar"><button id="snd" aria-pressed="true">♪</button><div id="pbar" class="hide"></div><button id="skip" class="hide"></button></div>
 
 <section class="scene" id="start" role="button" tabindex="0">
   <div class="logo">PSP</div>
@@ -630,7 +654,7 @@ async function clip(src,ms,cap){const c=$('#cut'),v=$('#cutv');if(RM||!c)return;
 ['img/dn-fly.webp','img/dn-mail.webp','img/dn-sil.gif'].forEach(u=>{const i=new Image();i.src=u});
 async function arrive(){show('arrive');if(!RM)sfxSoon('cry',.9);await clip('vid/dn-sea.mp4',2000,T('enRoute'));await clip('vid/dn-fly.mp4',1800,T('enRoute'));dnSheet('img/dn-fly.webp');dnRun();
   const sh=$('#shadow'),dn=$('#dn');
-  if(!RM){sh.classList.add('gif','go');await wait(1350);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
+  if(!RM){sh.classList.add('gif','go');await wait(2200);dn.classList.add('land');requestAnimationFrame(()=>dn.classList.add('down'));await wait(1500)}
   else{dn.classList.add('down');sfx('cry',.9)}
   $('#ground').classList.add('on');if(!RM)dust();
   await wait(500);dnSheet('img/dn-mail.webp');sfx('tink',.6);
@@ -699,15 +723,27 @@ function pageLeft(k){const tr=(mem.trainers||[]).slice(0,NTR()).filter(x=>x&&x.t
   return null}
 // the back button follows what changes on the page (a character picked, a friend answered)
 setInterval(()=>{try{if(AFTER()&&page>0&&$('#prevbtn')){const lf=String(pageLeft(PAGES()[page][0]));if(lf!==navBar.k)navBar()}}catch(e){}},800);
-const BALLS=[[100,'master'],[75,'ultra'],[50,'great'],[0,'poke']];let pbTier=null;
-function ballBadge(){const b=$('#pball');if(!b)return;const on=scene==='letter'&&ROLE==='s'&&AFTER();b.classList.toggle('hide',!on);if(!on)return;
-  const p=ckPct(),t=BALLS.find(x=>p>=x[0])[1];if(b.dataset.p===String(p)&&pbTier===t)return;b.dataset.p=p;
-  const up=pbTier&&BALLS.findIndex(x=>x[1]===t)<BALLS.findIndex(x=>x[1]===pbTier);pbTier=t;
-  b.className='t-'+t;b.innerHTML=`<img src="../img/it-${t}-ball.webp" alt=""><b>${p}%</b>`;b.title=T('ckOf').replace('{p}',p);
-  if(up){void b.offsetWidth;b.classList.add('up');sfx('tink',.7)}}
-document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#pball')){if(PAGES()[page]?.[0]!=='hub')goPage(0);setTimeout(()=>$('.cklist')?.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'}),150)}});
-setInterval(()=>{try{ballBadge()}catch(e){}},800);
-function navBar(){ballBadge();const P=PAGES(),n=P.length,i=page,r=reach();
+// the progress bar: the ball you hold rides the line; stations light up at 40 / 70 / 100; each upgrade is celebrated, bigger each time
+const BALLS=[[100,'master'],[70,'ultra'],[40,'great'],[0,'poke']],TIERS=['poke','great','ultra','master'];
+function pbarPaint(){const b=$('#pbar');if(!b)return;const on=scene==='letter'&&ROLE==='s'&&AFTER();b.classList.toggle('hide',!on);if(!on)return;
+  const p=ckPct(),t=BALLS.find(x=>p>=x[0])[1],lv=TIERS.indexOf(t);
+  if(!b.firstChild)b.innerHTML=`<div class="pbt"><div class="pbf"></div>${BALLS.slice(0,3).map(([at,k])=>`<i class="pbs ${k}" data-k="${k}" style="inset-inline-start:${at}%"><img src="../img/it-${k}-ball.webp" alt=""></i>`).join('')}<span class="pbtip"><img alt=""><b></b></span></div>`;
+  if(b.dataset.p===String(p))return;b.dataset.p=p;
+  b.querySelector('.pbf').style.width=p+'%';const tip=b.querySelector('.pbtip');tip.style.insetInlineStart=p+'%';tip.querySelector('img').src=`../img/it-${t}-ball.webp`;tip.querySelector('b').textContent=p+'%';
+  b.querySelectorAll('.pbs').forEach(s=>s.classList.toggle('on',TIERS.indexOf(s.dataset.k)<=lv));b.title=T('ckOf').replace('{p}',p);
+  const was=mem.pbP,wasLv=TIERS.indexOf(mem.pbT||'poke');
+  if(was!=null&&p>was){tip.classList.remove('bump');void tip.offsetWidth;tip.classList.add('bump');if(lv<=wasLv)sfx('tink',.5)}
+  if(lv>wasLv)setTimeout(()=>pbCelebrate(t,lv),was!=null&&p>was?500:900);
+  mem.pbP=p;mem.pbT=t;save()}
+function pbCelebrate(t,lv){if(lv<1)return;const o=document.createElement('div');o.className='pbc lv'+lv;const n=[14,26,48][lv-1],K=['poke','great','ultra','master'];
+  let sp='';for(let i=0;i<n;i++){const ball=i%3===0;sp+=`<i class="pbsp ${ball?'bl':'st'}" style="--a:${Math.round(i*360/n+Math.random()*20)}deg;--d:${Math.round((110+Math.random()*90)*(1+lv*.35))}px;--dl:${(.55+Math.random()*(.3+lv*.25)).toFixed(2)}s${ball?`;background-image:url(../img/it-${K[lv===3?i%4:Math.min(lv,i%2+lv-1)]}-ball.webp)`:''}"></i>`}
+  o.innerHTML=`<div class="pbcf"></div>${sp}<img class="pbcb" src="../img/it-${t}-ball.webp" alt=""><b class="pbct">${esc(T('pbUp_'+t))}</b>`;document.body.appendChild(o);
+  sfx('caught',.9);if(lv>=2&&soundOn){try{const a=new Audio('../mus-badge.mp3');a.volume=lv===3?.6:.4;a.play().catch(()=>{});setTimeout(()=>{let v=a.volume;const f=setInterval(()=>{v-=.05;if(v<=0){a.pause();clearInterval(f)}else a.volume=v},80)},lv===3?3400:2400)}catch(e){}}
+  if(lv===3&&!RM){const f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(()=>f.remove(),800)}
+  setTimeout(()=>o.remove(),[2600,3200,4200][lv-1])}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#pbar')){if(PAGES()[page]?.[0]!=='hub')goPage(0);setTimeout(()=>$('.cklist')?.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}),150)}});
+setInterval(()=>{try{pbarPaint()}catch(e){}},800);
+function navBar(){pbarPaint();const P=PAGES(),n=P.length,i=page,r=reach();
   if(AFTER()){$('#steps').innerHTML='';const lf=i>0?pageLeft(P[i][0]):null;navBar.k=String(lf);$('#locknote').textContent=lf?T('backLeft').replace('{x}',lf):'';$('#pnav').innerHTML=i>0?`<button class="prevbtn${lf===''?' okback':''}" id="prevbtn">${lf===''?H('backDone'):`${AR_PREV} ${H('backMenu')}`}</button><span></span>`:'';if($('#prevbtn'))$('#prevbtn').onclick=()=>goPage(0);return}
   const st=$('#steps');st.innerHTML=P.map(([k],j)=>`<button data-p="${j}" class="${j===i?'on':''}${j<i?' done':''}${j>r?' lock':''}" ${j>r?'disabled':''}><b>${j>r?'🔒':j+1}</b>${esc(T('tab_'+k))}</button>`).join('');
   st.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>goPage(+b.dataset.p));
@@ -984,8 +1020,9 @@ function pDates(){if(!hasDates())return `${ptitle('datesTitle')}<p class="plead"
     ${P.map(x=>`<tr class="${x.me?'me':''}${x.none?' none':''}"><td>${esc(x.n)}</td>${D.map(d=>`<td class="${all(d)?'all':''}">${x.none?'—':x.d.includes(d)?'✓':'·'}</td>`).join('')}</tr>`).join('')}</table></div>${P.some(x=>x.none)?`<p class="muted dnone">${H('datesNone')}</p>`:''}
     ${D.some(all)?`<p class="dall">⭐ ${H('datesAll')} ${D.filter(all).map(d=>esc(fmtD(d))).join(' · ')}</p>`:''}</section>
   ${ROLE==='s'?`<section class="blk dsetb"><h2>${H(FILE.date?'dateSetDoneT':'dateSetT')}</h2><p class="muted">${H(FILE.date?'dateSetDone':'dateSetLead')}</p>
-    <div class="dsets">${D.map(d=>`<button class="dset${FILE.date===d?' on':''}${all(d)?' all':''}" data-set="${d}">${FILE.date===d?'🏆 ':all(d)?'⭐ ':''}${esc(fmtD(d))}<small>${esc(T('dateCan').replace('{a}',cnt(d)).replace('{b}',R.length))}</small></button>`).join('')}</div>
+    <div class="dsets">${D.map(d=>`<button class="dset${FILE.date===d?' on':''}${all(d)?' all':''}" data-set="${d}">${FILE.date===d?'🏆 ':all(d)?'⭐ ':''}${esc(fmtD(d))}<small>${esc(T('dateCan').replace('{a}',cnt(d)).replace('{b}',R.length))} · ${hereOn(d)<4?'🔒 ':''}${esc(T('dateHere').replace('{n}',hereOn(d)))}</small></button>`).join('')}</div>
     ${FILE.date?`<a class="wa wbtn" id="dwa" href="${wa(dateMsg(),'')}" target="_blank" rel="noopener">${H('dateTell')}</a>`:''}</section>`:''}`}
+const hereOn=d=>teamState().here.filter(f=>(((TEAM||{})[f.k]||{}).d||[]).includes(d)).length;
 function dateMsg(){return T('dateMsg').replace('{d}',fmtD(FILE.date,true)).replace('{p}',placeNow())+'\n'+groupLink()}
 function bindChips(redo){document.querySelectorAll('.dchips [data-d]').forEach(b=>b.onclick=()=>{const d=b.dataset.d,m=[...myDates()],i=m.indexOf(d);if(i>=0)m.splice(i,1);else m.push(d);m.sort();sfx('a',.4);
   if(ROLE==='s'){mem.sd=m;FILE&&(FILE.sd=m);save();dbSubject({sd:m})}else{mem.dates=m;if(TEAM&&TEAM[FKEY])TEAM[FKEY].d=m;save();dbFriend()}
@@ -993,6 +1030,7 @@ function bindChips(redo){document.querySelectorAll('.dchips [data-d]').forEach(b
 function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()});
   document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const d=b.dataset.set;if(FILE.date===d)return;const ts=teamState();
     if(ts.here.length<4){alert(T('dateNeedTeam').replace('{n}',ts.here.length));return}
+    const onD=hereOn(d);if(onD<4){alert(T('dateNeedDay').replace('{n}',onD).replace('{d}',fmtD(d,true)));return}
     for(const f of ts.wait){if(!confirm(pickG(TX.datePend,f.g).replace('{n}',f.n)))return;setOpt(f.k,true)}
     if(!confirm(T('dateSetAsk').replace('{d}',fmtD(d,true))))return;
     FILE.date=d;dbSubject({date:d});sfx('caught',.7);toast(T('dateSetOk'));const y=$('#letter').scrollTop;$('#pg').innerHTML=pDates();bindDates();$('#letter').scrollTop=y;setTimeout(()=>$('#dwa')?.scrollIntoView({block:'center',behavior:'smooth'}),200)});
@@ -1000,20 +1038,20 @@ function bindDates(){bindChips(()=>{$('#pg').innerHTML=pDates();bindDates()});
 
 // ---------- 11. the subject's checklist (after yes): what's done before the evening, and what's left ----------
 function checklist(){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),here=yes.filter(f=>!(f.r||T0[f.k].r)),tr=mem.trainers||[],I=[];
-  const add=(k,frac,go,extra)=>I.push({k,frac:Math.max(0,Math.min(1,frac)),go,extra});
-  if(FILE)add('ck_place',FILE.loc?1:0);
-  add('ck_invite',P.length/4,'team');add('ck_confirm',P.length?yes.length/Math.max(4,P.length):0,'team');
-  if(hasDates())add('ck_date',FILE.date?1:(myDates().length?.25:0)+(here.length?.5*here.filter(f=>(T0[f.k].d||[]).length).length/here.length:0),'dates');
-  add('ck_trainers',tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length/NTR(),'trainers');
-  add('ck_chars',((mem.av!=null?1:0)+yes.filter(f=>T0[f.k].av!=null).length)/(1+yes.length),'card');
-  add('ck_final',YES()?1:0,null,'final');
+  const add=(k,frac,w,go,extra)=>I.push({k,frac:Math.max(0,Math.min(1,frac)),w,go,extra});
+  if(FILE)add('ck_place',FILE.loc?1:0,15);
+  add('ck_invite',P.filter(f=>!(T0[f.k]&&T0[f.k].ans==='no')).length/4,15,'team');add('ck_confirm',here.length/4,15,'team');
+  if(hasDates())add('ck_date',FILE.date?1:.5*((myDates().length?.25:0)+(here.length?.5*here.filter(f=>(T0[f.k].d||[]).length).length/here.length:0)),15,'dates');
+  add('ck_trainers',tr.slice(0,NTR()).filter(x=>x&&x.t&&x.t.trim()).length/NTR(),15,'trainers');
+  add('ck_chars',mem.av!=null?1:0,10,'card');
+  add('ck_final',YES()?1:0,15,null,'final');
   return I}
-const ckPct=()=>{const I=checklist();return Math.round(I.reduce((a,x)=>a+x.frac,0)/I.length*100)};
+const ckPct=()=>{const I=checklist(),W=I.reduce((a,x)=>a+x.w,0);return Math.round(I.reduce((a,x)=>a+x.frac*x.w,0)/W*100)};
 function checklistHTML(){const I=checklist();
   return `<ul class="cklist">${I.map(x=>`<li class="${x.frac>=1?'done':x.frac>0?'part':''}"><span class="ckm">${x.frac>=1?'✓':x.frac>0?Math.round(x.frac*100)+'%':''}</span><div><b>${H(x.k)}</b>${['ck_confirm','ck_date','ck_chars'].includes(x.k)?`<small>${esc(ckCount(x.k))}</small>`:''}
     ${x.frac<1&&x.extra==='final'?`<button class="ghostbtn tofin">${H('goFinal')}</button>`:''}${x.frac<1&&x.go&&pageIdx(x.go)>=0?`<button class="ghostbtn togo" data-go="${x.go}">${H({card:'goCard',team:'goTeam',dates:'goDates',trainers:'goTrainers'}[x.go])} ${AR_NEXT}</button>`:''}</div></li>`).join('')}</ul>`}
 function ckCount(k){const P=party(),T0=TEAM||{},yes=P.filter(f=>T0[f.k]&&T0[f.k].ans==='yes'),here=yes.filter(f=>!(f.r||T0[f.k].r));
-  if(k==='ck_confirm')return T('ckConfirmN').replace('{a}',yes.length).replace('{b}',P.length);
+  if(k==='ck_confirm')return T('ckHereN').replace('{a}',here.length);
   if(k==='ck_date')return FILE&&FILE.date?fmtD(FILE.date):T('ckDateN').replace('{a}',here.filter(f=>(T0[f.k].d||[]).length).length).replace('{b}',here.length);
   return T('ckCharsN').replace('{me}',T(mem.av!=null?'ckMeYes':'ckMeNo')).replace('{a}',yes.filter(f=>T0[f.k].av!=null).length).replace('{b}',yes.length)}
 // the trainers page: four names and a few points on each (kept on this phone only)
@@ -1022,7 +1060,7 @@ const EXIMG={surge:'../img/tr-ltsurge.webp',misty:'../img/tr-misty.webp',james:'
   EXSIL={surge:'<img src="img/ex/army.png" alt="">',misty:['erika','whitney','jasmine'].map(n=>`<img src="../img/tr-${n}.webp" alt="">`).join(''),james:'<img src="img/ex/growlithe.png" alt="" class="px">',jessie:'<img src="img/ex/boots.png" alt="" class="bt">'};
 function exCard(x){return `<div class="trexc"><p class="trexh"><b>${esc(x.n)}</b> · 🎓 ${esc(x.tr)}</p><p class="trexhow">${esc(x.how)}</p><p class="trtxt">${esc(x.txt).replace(/\n/g,'<br>')}</p><p class="muted trexpl">${H('trExPh')}</p><div class="trexph">${x.ph.map(f=>`<img src="img/ex/${f}.jpg" alt="">`).join('')}</div></div>`}
 function pTrainers(){const tr=mem.trainers||[],ex=TL('trEx'),X=TXR('trExs')||[],xi=pTrainers.ex;
-  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><section class="blk trexs"><h2>${H('trExT')}</h2><p class="muted">${H('trExLead')}</p><div class="trexr">${X.map((x,i)=>`<button class="trex${xi===i?' on':''}" data-ex="${i}"><span class="trsil">${EXSIL[x.k]||''}</span><img class="trfg" src="${EXIMG[x.k]}" alt=""><b>${esc(x.n)}</b></button>`).join('')}</div>${xi!=null&&X[xi]?exCard(X[xi]):''}</section><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
+  return `${ptitle('trainersTitle')}<p class="plead">${H('trainersLead')}</p><p class="muted trchg">🔄 ${H('trChange')}</p><section class="blk trexs"><h2>${H('trExT')}</h2><p class="muted">${H('trExLead')}</p><div class="trexr">${X.map((x,i)=>`<button class="trex${xi===i?' on':''}" data-ex="${i}"><span class="trsil">${EXSIL[x.k]||''}</span><img class="trfg" src="${EXIMG[x.k]}" alt=""><b>${esc(x.n)}</b></button>`).join('')}</div>${xi!=null&&X[xi]?exCard(X[xi]):''}</section><section class="blk trhow"><h2>${H('trHowT')}</h2><ul>${TL('trHow').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>${ROLE==='s'&&mem.iidMade?`<p class="trphl">${H('trPh')}</p>`:''}${[0,1,2].map(i=>`<section class="blk trb"><label for="trt${i}">${esc(T('trN').replace('{i}',i+1))}</label>
     <input id="trt${i}" data-i="${i}" data-f="t" maxlength="40" value="${esc((tr[i]||{}).t||'')}" placeholder="${esc(ex[i]||'')}">${ROLE==='s'&&mem.iidMade?trPhotos(i):''}</section>`).join('')}<p class="hint2">${H('trSaved')}</p>`}
 
 // the trainers' photos: shrunk on the phone, each in its own document, which only Eyal can list
