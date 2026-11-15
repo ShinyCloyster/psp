@@ -353,6 +353,15 @@ html[lang=he] .dexinfo span{font:500 14px/1.3 var(--body)}
 .bmo img{display:block;width:1687px;height:1637px;max-width:none}
 .tmap>img.bmc,.bmc{position:absolute;left:50%;top:50%;width:440px;height:330px;max-width:none;margin:-165px 0 0 -220px;opacity:0;transform:scale(.25);transition:opacity .25s,transform .25s;pointer-events:none}
 .tmap>img.bmc.in,.bmc.in{opacity:1;transform:scale(1);transition:opacity .5s ease-out,transform .7s cubic-bezier(.2,.8,.3,1)}
+.trint{position:absolute;inset:0;z-index:2;background:rgba(4,6,18,0);transition:background .45s;pointer-events:none;overflow:hidden}
+.trint.on{background:rgba(4,6,18,.74)}
+.trint img{position:absolute;bottom:14%;height:58%;left:-40%;opacity:0;filter:brightness(0) drop-shadow(0 0 5px rgba(150,180,255,.7));image-rendering:pixelated;animation:trx 2.8s ease-in-out forwards}
+.trint img.fl{transform:scaleX(-1);animation-name:trxb}
+@keyframes trx{0%{left:-40%;opacity:0}18%{opacity:.95}35%{left:22%}65%{left:40%}82%{opacity:.95}100%{left:110%;opacity:0}}
+@keyframes trxb{0%{left:110%;opacity:0}18%{opacity:.95}35%{left:48%}65%{left:30%}82%{opacity:.95}100%{left:-40%;opacity:0}}
+.trint b{position:absolute;top:10px;left:10px;right:10px;text-align:center;font-size:15px;line-height:1.35;color:var(--cream);text-shadow:0 2px 0 #000;opacity:0;animation:trt 2.8s forwards}
+@keyframes trt{0%{opacity:0;transform:translateY(-6px)}14%,86%{opacity:1;transform:none}100%{opacity:0}}
+.slist li.trrow .sb,.slist li.trrow button{opacity:.92}.slist .si.trs img{filter:brightness(0) drop-shadow(0 0 2px rgba(150,180,255,.8))!important;object-fit:contain}
 .bigm .dnic{left:50%;top:50%;z-index:3;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
 #cut{position:absolute;left:16px;right:16px;top:12%;z-index:30;display:flex;flex-direction:column;align-items:center;gap:12px;transition:opacity .35s}
 #cut.out{opacity:0}
@@ -495,6 +504,7 @@ html[lang=he] #start .sub{font-size:18px}html[lang=he] .lkbox .hint{font-size:15
   #start .ps,.lkbox .hint,.gbp-tri{animation:none}
   #oak.on,.ball.wobble,.paper,#env .wrap,#scan,.mk.now,.dnic,.evodn,.tcbadges img.on{animation:none}
   .bmc,.bmc.in{transition:none}
+  .trint img{animation:none;left:35%;opacity:.9}.trint b{animation:none;opacity:1}
   #dn.land,#beam,#oak{transition:none}
 }
 </style>
@@ -714,7 +724,7 @@ let stop=0,flying=null,playing=false;
 // the camera: a window on the map; Dragonite stays in the middle and the map moves under him
 const VW=()=>Math.min(352,Math.min(innerWidth,460)-36),VH=()=>Math.round(VW()*.75);
 function pMap(){const SS=TXR('stops')||[];
-  if(ROLE==='f')return `${ptitle('routeTitle')}<p class="psum">${H('routeSum')}</p><p class="plead">${H('f_routeHow')}</p><ol class="slist plain">${SS.map((x,i)=>`<li><div class="sb"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.d))}</small></span></div></li>`).join('')}</ol>`;
+  if(ROLE==='f')return `${ptitle('routeTitle')}<p class="psum">${H('routeSum')}</p><p class="plead">${H('f_routeHow')}</p><ol class="slist plain">${SS.map((x,i)=>`<li><div class="sb"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.d))}</small></span></div></li>${TR_LEG[i]!=null?trRow(TR_LEG[i]):''}`).join('')}</ol>`;
   return `${ptitle('routeTitle')}<p class="psum">${H('routeSum')}</p><p class="plead">${H('routeHow')}</p>
   <div class="tmap bigm" id="tmap" style="width:${VW()}px;height:${VH()}px"><div class="bmo" id="bmo"><img src="img/kanto-ov.webp" alt=""></div><img class="bmc px" id="bmc" alt=""><i class="dnic" id="dnic"></i></div>
   <div class="gbp-box stopbox" id="stopbox"></div>
@@ -729,8 +739,14 @@ function placeIc([x,y],flip,lift){const o=$('#bmo'),d=$('#dnic');if(!o||!d)retur
 // arriving: the city, sharp and at its own size, zooms in over the overview; leaving: it fades out
 function city(i){const c=$('#bmc');if(!c)return;c.classList.remove('in');c.onload=()=>{void c.offsetWidth;c.classList.add('in')};c.src=`img/city-${i}.webp`}
 function cityOut(){const c=$('#bmc');if(c)c.classList.remove('in')}
+// on the way from stop 2 to 3, 4 to 5 and 6 to 7: the map darkens and a trainer's silhouette crosses it (a different one each time)
+const TR_LEG={2:0,4:1,6:2},TR_SIL=['tr-red','tr-cynthia','tr-bruno'],TRD=2800;
+const trText=i=>T('trMeet').replace('{n}',(TXR('trOrd')||[])[i]||i+1);
+function trShow(i){const m=$('#tmap');if(!m)return;m.querySelector('.trint')?.remove();const o=document.createElement('div');o.className='trint';o.innerHTML=`<img class="${i===1?'fl':''}" src="../img/${TR_SIL[i]}.webp" alt=""><b>${esc(trText(i))}</b>`;m.appendChild(o);void o.offsetWidth;o.classList.add('on');sfx('page',.35);
+  setTimeout(()=>{o.classList.remove('on');setTimeout(()=>o.remove(),450)},TRD-350)}
 function fly(a,b,then){const A=STOPS[a],B=STOPS[b],dist=Math.hypot(B[0]-A[0],B[1]-A[1]),T0=RM?1:Math.min(2600,700+dist*1.6),d=$('#dnic');if(!d)return;sfx('toss',.35);d.classList.add('fly');cityOut();let t0=null;
-  flying=requestAnimationFrame(function step(t){if(!$('#dnic')){flying=null;return}if(t0==null)t0=t+(RM?0:250);const k=Math.max(0,Math.min(1,(t-t0)/T0)),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+  const tri=b===a+1?TR_LEG[a]:undefined;let ps=null,held=0,done=false;
+  flying=requestAnimationFrame(function step(t){if(!$('#dnic')){flying=null;return}if(t0==null)t0=t+(RM?0:250);let k=(t-t0-held)/T0;if(tri!=null&&!done&&k>=.5){if(ps==null){ps=t;trShow(tri)}if(t-ps<TRD)k=.5;else{done=true;held=t-ps;k=(t-t0-held)/T0}}k=Math.max(0,Math.min(1,k));const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
     placeIc([A[0]+(B[0]-A[0])*e,A[1]+(B[1]-A[1])*e],B[0]<A[0],Math.sin(Math.PI*e)*18);
     if(k<1)flying=requestAnimationFrame(step);else{flying=null;d.classList.remove('fly');stop=b;city(b);stopInfo(b);then&&then()}})}
 function stopInfo(i,first){const S=(TXR('stops')||[])[i]||{},badge=i>=1&&i<=8,n=STOPS.length;
@@ -757,7 +773,8 @@ function bindBag(){const show=i=>{bagI=i;const seen=mem.prepSeen||(mem.prepSeen=
 
 // ---- 4. the decision: an empty Pokédex entry, Oak's notes, and the answer ----
 function datesEarly(){if(!hasDates()||REMOTE)return '';const mine=myDates();return `<section class="blk dearly"><h2>${H('datesEarlyT')}</h2><p class="muted">${H('datesEarly')}</p><div class="dchips">${FILE.dates.map(d=>`<button data-d="${d}" class="${mine.includes(d)?'on':''}${FILE.date===d?' set':''}">${mine.includes(d)?'✓ ':''}${esc(fmtD(d))}</button>`).join('')}</div></section>`}
-function progBlock(){const SS=TXR('stops')||[];return `<details class="blk notes ndet"><summary><h2>${H('routeTitle')}</h2></summary><p class="psum dk">${H('routeSum')}</p><ol class="slist plain lt">${SS.map((x,i)=>`<li><div class="sb"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.d))}</small></span></div></li>`).join('')}</ol></details>`}
+const trRow=(i,lt)=>`<li class="trrow"><div class="sb"><span class="si trs"><img src="../img/${TR_SIL[i]}.webp" alt=""></span><span class="st"><b>${esc(T('trRow').replace('{n}',(TXR('trOrd')||[])[i]||i+1))}</b><small>${H('trRowD')}</small></span></div></li>`;
+function progBlock(){const SS=TXR('stops')||[];return `<details class="blk notes ndet"><summary><h2>${H('routeTitle')}</h2></summary><p class="psum dk">${H('routeSum')}</p><ol class="slist plain lt">${SS.map((x,i)=>`<li><div class="sb"><span class="si">${i>=1&&i<=8?`<img src="../img/badge-${i}.webp" alt="">`:i?'🏆':'🏠'}</span><span class="st"><b>${esc(pickT(x.t))}</b><small>${esc(pickT(x.d))}</small></span></div></li>${TR_LEG[i]!=null?trRow(TR_LEG[i]):''}`).join('')}</ol></details>`}
 function pDex(){return `${ptitle('decideTitle')}${ROLE==='f'?progBlock():''}${bagBlock()}${datesEarly()}<section class="dex"><div class="dexscr"><div class="dexsil">?</div><div class="dexinfo"><b class="dno">#???</b><b class="dnm">${esc(ROLE==='f'?BY:NAME)}</b><span>${H('dexType')}: ???</span><span>${H('dexHeight')}: ???</span></div></div><p class="dexdesc">${H('dexDesc')}</p></section>
   <details class="blk notes ndet"><summary><h2>${H('notesTitle')}</h2></summary><ul>${TL('notes').map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>
   ${pAnswer()}`}
