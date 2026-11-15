@@ -640,6 +640,13 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .gbd.on{background:#5A5A64;box-shadow:0 0 0 4px rgba(242,201,76,.9)}.gb-u.on::after{border-bottom-color:#F2C94C}.gb-d.on::after{border-top-color:#F2C94C}.gb-l.on::after{border-right-color:#F2C94C}.gb-r.on::after{border-left-color:#F2C94C}
 .gbbtn.on{box-shadow:0 1px 0 #64103A,0 0 0 6px rgba(242,201,76,.85)!important;filter:brightness(1.15)}
 .twseat{position:absolute;width:0;height:0}
+.svst{background:#161A2E}.svgym{position:absolute;left:70px;border:6px solid #2A2E45;border-radius:14px;overflow:hidden;box-shadow:0 8px 0 rgba(0,0,0,.35);animation:svgrow .7s cubic-bezier(.2,.8,.3,1)}@keyframes svgrow{from{transform:scale(.35);transform-origin:0 100%;opacity:.4}}
+.svgym .twmn{position:absolute;left:0;right:0;bottom:0;top:auto!important;height:auto!important;background:rgba(22,26,46,.78);color:#F2C94C;text-align:center;font-size:22px;padding:4px 0;z-index:500}
+.svp{position:absolute;right:70px;top:60px;bottom:60px;display:flex;flex-direction:column;align-items:stretch}.svrow{display:flex;align-items:flex-end;gap:34px;flex:1;min-height:0}.svrow .svbub{flex:1}.svp .sveb{margin:0;font:400 22px 'Press Start 2P',monospace;color:#E5484D;text-align:start}.svp .svti{margin:6px 0 18px;font:400 58px/1.1 'Secular One',Arial,sans-serif;color:#F6F1E7;text-align:start}
+.svbub{position:relative;background:#F6F1E7;border-radius:26px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 0 rgba(0,0,0,.35)}.svbub::after{content:'';position:absolute;right:-30px;bottom:60px;border:16px solid transparent;border-left:30px solid #F6F1E7;border-right:0}.en .svbub::after{right:auto;left:-30px;border-left:0;border-right:30px solid #F6F1E7}
+.svcards{display:flex;flex-direction:column;gap:14px}.svc{zoom:.82}.svc>div{flex:none!important}.svc.new{animation:svin .5s ease-out}@keyframes svin{from{opacity:0;transform:translateY(16px)}}.svwait{margin:10px;font-size:30px;color:#5A5F73;text-align:center}
+.svsave{display:none;background:#FFFDF8;border:6px solid #161A2E;border-radius:14px;box-shadow:inset 0 0 0 5px #FFFDF8,inset 0 0 0 9px #9FA7C7;padding:22px 30px;direction:ltr}.svsave.on{display:block}.svsave p{margin:0;font:400 26px/1.7 'Press Start 2P',monospace;color:#161A2E;min-height:44px}.svsave.done p::after{content:' ▼';animation:svblink .8s steps(2) infinite}@keyframes svblink{50%{opacity:0}}
+.svlect{flex:none;height:300px;max-width:260px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 0 rgba(0,0,0,.35))}
 .twtrn{position:absolute;width:0;height:0}.twtrn img{position:absolute;left:0;bottom:0;transform:translateX(-50%);image-rendering:pixelated;max-width:none;filter:drop-shadow(0 0 6px rgba(242,201,76,.9))}.twtrn b{position:absolute;left:0;bottom:calc(100% + 0px);transform:translate(-50%,-100%);margin-top:-8px;white-space:nowrap;font-size:20px;color:#F2C94C;text-shadow:0 2px 0 #161A2E,0 0 6px #161A2E}
 .trmeet{position:absolute;top:70px;bottom:90px;width:780px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:0;z-index:60;pointer-events:none;animation:trmin .6s ease-out}.trmeet.r{right:40px}.trmeet.l{left:40px}@keyframes trmin{from{opacity:0;transform:translateY(30px)}}
 .trmeet .trbub{order:1;position:relative;background:#F6F1E7;color:#22263A;border-radius:24px;padding:22px 26px;box-shadow:0 8px 0 rgba(0,0,0,.35);width:100%;box-sizing:border-box;text-align:center}.trmeet .trbub::after{content:'';position:absolute;left:50%;bottom:-22px;border:14px solid transparent;border-top:22px solid #F6F1E7;transform:translateX(-50%)}
@@ -994,7 +1001,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794782364';
+const BUILDV='1794782639';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2419,7 +2426,7 @@ function friendsRunAround(){const cv=$('#cv');if(!cv||cv.querySelector('.frrun')
 function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style.display=(it?.kind==='cmt'||it?.kind==='hof'||it?.kind==='awards'||it?.id==='closing'||/^x-round-/.test(it?.id||''))?'none':'';rb.classList.toggle('mini',!(it?.id==='cover'||it?.id==='agenda'||it?.kind==='lake'))}}
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   const cv=$('#cv');cv.classList.remove('ctron','twcover');document.body.classList.remove('twcov');
-  if(trMeetOn(it))trMeet(it);else if(it.kind==='slide'){
+  if(trMeetOn(it))trMeet(it);else if(svOn(it))svEnter(it);else if(it.kind==='slide'){
     cv.innerHTML=slideHTML(S.slides[it.i].html);cv.firstElementChild?.classList.add('fadein');
     if(it.id==='cover'){const red=cv.querySelector('img[alt="tr-red"]');if(red){red.parentElement.style.visibility='hidden';cv.firstElementChild.insertAdjacentHTML('beforeend','<div id="lobby"></div>');S.lobbyShown=new Set()}}
     const qr=cv.querySelector('img[alt="QR"]');if(qr)qr.parentElement.outerHTML='<div id="dialbox" style="width:800px;height:800px;margin-inline-start:-40px;flex:none;position:relative;display:flex;align-items:center;justify-content:center"></div>';
@@ -2455,7 +2462,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style
   screenOverlay();deckPub();gamePub();
 }
 function go(d){
-  {const ci=cur();if(ci?.kind==='town'&&S.tw&&S.tw.ph!=='done'&&d>0){if(S.tw.ph==='go')twHelp();return}if(d>0&&ci?.kind==='buzz'&&bzNext())return;if(d>0&&ci?.id==='o-friends'&&ofrNext())return}
+  {const ci=cur();if(ci?.kind==='town'&&S.tw&&S.tw.ph!=='done'&&d>0){if(S.tw.ph==='go')twHelp();return}if(d>0&&ci?.kind==='buzz'&&bzNext())return;if(d>0&&ci?.id==='o-friends'&&ofrNext())return;if(d>0&&svOn(ci)&&svNext())return}
   if(d>0&&S.frGo&&cur()?.id==='k-scenario'){const f=S.frGo;S.frGo=null;f();return}
   if($('#photoov.show')){S.photoHidden=(S.stage?.photo||'')+':'+(S.stage?.at||'');stagePhoto();return}
   const it=cur();if(!it)return;
@@ -2922,6 +2929,20 @@ function trImg(t){return S.assets?.['tr-'+t]?.data||'img/tr-silhouette.webp'}
 function trSpot(T){const D=twCells(T,'door'),cx=Math.round(D.reduce((a,p)=>a+p[0],0)/D.length),cy=Math.min(...D.map(p=>p[1]));return [cx,cy-1]}
 function trNpc(t){const tw=S.tw,on=$('#twon');if(!on||!t||!tw)return;on.querySelector('.twtrn')?.remove();const T=TOWN[tw.town],[x,y]=trSpot(T),c=tw.c;
   on.insertAdjacentHTML('beforeend',`<div class="twtrn" style="left:${(x+.5)*c}px;top:${(y+.9)*c}px;z-index:${Math.round(y*10)+5}"><img src="${trImg(t)}" alt="" style="height:${Math.round(c*1.9)}px"><b>${ll('המאמן','Trainer')} ${t}</b></div>`)}
+// the save points: the gym's mini map grows big, the part's lecturer speaks in a bubble, one course takeaway per click,
+// then "SAVING... DON'T TURN OFF THE POWER." types itself letter by letter and the save sound plays; the next click goes on
+const svOn=it=>it?.kind==='slide'&&twOn()&&!ROOM.legacy&&/^x-sum-\d$/.test(it.id);
+function svParts(it){const t=document.createElement('template');t.innerHTML=slideHTML(S.slides[it.i].html);const sec=t.content.querySelector('section');
+  return {cards:[...t.content.querySelectorAll('[data-course]')].map(e=>e.outerHTML),lect:t.content.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp',eyebrow:sec?.querySelector('p')?.textContent||'',title:sec?.querySelector('h2')?.textContent||''}}
+function svEnter(it){S.sv={id:it.id,step:0};svPaint(it,true)}
+function svNext(){const it=cur();if(!S.sv||S.sv.id!==it?.id)return false;const n=svParts(it).cards.length;if(S.sv.step<=n){S.sv.step++;svPaint(it);return true}return false}
+function svPaint(it,fresh){const cv=$('#cv'),V=svParts(it),st=S.sv.step,n=V.cards.length,G=twGymOf(),[x0,y0,x1,y1]=G.view,vw=(x1-x0+1)*G.t,vh=(y1-y0+1)*G.t,k=Math.min(820/vw,900/vh),W=vw*k,H=vh*k;
+  if(fresh||!cv.querySelector('.svst')){cv.innerHTML=`<div class="st twst svst"><div class="svgym" style="width:${W}px;height:${H}px;top:${(1080-H)/2}px">${twGymInner(G,k,G.view)}<b class="twmn">${ll(...TW_NAME[S.tw?.town||'pewter'])} · GYM</b></div>
+      <div class="svp" style="left:${70+W+60}px"><p class="sveb">${esc(V.eyebrow)}</p><h2 class="svti">${esc(V.title)}</h2><div class="svrow"><img class="svlect" src="${V.lect}" alt=""><div class="svbub"><div class="svcards"></div><div class="svsave"><p></p></div></div></div></div></div>`;sfx('sfx-dex-page-added')}
+  const box=cv.querySelector('.svcards');box.innerHTML=V.cards.slice(0,Math.min(st,n)).map((c,i)=>`<div class="svc${i===st-1&&st<=n?' new':''}">${c}</div>`).join('')||`<p class="svwait">${ll('לחיצה: מה לקחנו מכל קורס','Click: what we took from each course')}</p>`;
+  if(st>=1&&st<=n)sfx('sfx-tink');
+  if(st===n+1){const p=cv.querySelector('.svsave p'),T="SAVING... DON'T TURN OFF THE POWER.";cv.querySelector('.svsave').classList.add('on');p.textContent='';let i=0;clearInterval(S.svT);
+    S.svT=setInterval(()=>{if(!p.isConnected){clearInterval(S.svT);return}i++;p.textContent=T.slice(0,i);if(i>=T.length){clearInterval(S.svT);setTimeout(()=>{if(p.isConnected){sfx('sfx-save');p.parentElement.classList.add('done')}},350)}},55)}}
 const trMeetOn=it=>it?.kind==='slide'&&twOn()&&!ROOM.legacy&&/^x-trainer-\d$/.test(it.id);
 function trMeet(it){const t=+it.id.slice(-1),walk=[...SEQ.slice(0,POS)].reverse().find(x=>x.kind==='town'),L=walk&&TW_LEGS[walk.id],leg=L&&L[L.length-1];if(!leg?.place)return;
   const T=TOWN[leg.town];if(!S.tw||S.tw.town!==leg.town){S.tw=twNew(leg.town);S.tw.from='door'}const tw=S.tw;tw.ph='meet';tw.leg=leg;tw.to='door';
