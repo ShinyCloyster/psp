@@ -620,7 +620,19 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .ofclock{position:relative;width:130px;height:130px;flex:none}.ofclock svg{width:100%;height:100%;transform:rotate(-90deg)}.ofclock i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 34px var(--pixel);font-style:normal;color:#F2C94C}
 .ofrun{stroke-dasharray:100;animation:ofrun 30s linear forwards}@keyframes ofrun{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}.ofclock.over i{color:#E5484D}
 .ofwait{position:absolute;left:0;right:0;top:140px;text-align:center;font-size:44px;color:#C9CCE0}
-.ofrow{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}.ofmini{display:flex;flex-direction:column;align-items:center;opacity:.35;transition:all .4s}.ofmini.done{opacity:1}.ofmini.now{opacity:1;transform:translateY(-10px)}.ofmini img{width:auto;height:auto;zoom:3;image-rendering:pixelated}.ofmini small{font-size:18px;color:#C9CCE0}
+.ofrow{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}.ofmini{display:flex;flex-direction:column;align-items:center;opacity:.35;transition:all .4s}.ofmini.done{opacity:1}.ofmini.now{opacity:1;transform:translateY(-10px)}.ofmini img{width:auto;height:auto;zoom:3;image-rendering:pixelated}
+.ofsec{background:#161A2E!important}
+.bzbig{display:block;width:100%;font-size:26px!important;padding:22px!important;margin:6px 0 16px!important;background:#E5484D!important;color:#fff!important;border-radius:18px!important;animation:bzbig .9s ease-in-out infinite}@keyframes bzbig{50%{transform:scale(1.05)}}
+.bzline{background:#F2C94C;color:#1A1E33;border-radius:18px;padding:22px;font:700 30px/1.4 Rubik,Arial,sans-serif}
+.twmini.twpulse{animation:twpulse 1.2s ease-out}@keyframes twpulse{0%{scale:1}25%{scale:1.3}100%{scale:1}}
+#introfab{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:900;background:#F2C94C;color:#1A1E33;border:none;border-radius:999px;padding:14px 22px;font:700 18px Rubik,Arial,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.45);animation:ifab 2s ease-in-out infinite}#introfab.done{background:#2E3352;color:#F6F1E7;animation:none}@keyframes ifab{50%{transform:translateX(-50%) scale(1.06)}}
+#introbox{position:fixed;inset:0;z-index:1000;background:rgba(10,12,24,.8);display:grid;place-items:center;padding:16px}#introbox .ibx{background:#F6F1E7;color:#22263A;border-radius:18px;padding:20px;max-width:440px;width:100%}#introbox h2{margin:0 0 8px;font:400 26px 'Secular One',Arial}#introbox p{margin:0 0 10px;font-size:15px;line-height:1.45}
+#introbox textarea{width:100%;box-sizing:border-box;font:inherit;font-size:18px;border:2px solid #C9CCE0;border-radius:12px;padding:10px}#introbox .ibb{display:flex;gap:8px;margin-top:10px}#introbox .ibb button{flex:1;padding:12px;border-radius:12px;border:none;background:#22263A;color:#fff;font:700 17px Rubik,Arial}#introbox .ibb .ghost{background:#E2DCCD;color:#22263A}.ofsec #ofr{position:static!important}.ofgym{position:absolute;left:64px;top:150px;border:6px solid #2A2E45;border-radius:14px;overflow:hidden;box-shadow:0 8px 0 rgba(0,0,0,.35)}
+.ofgym .ofnow .lks{filter:drop-shadow(0 0 8px #F2C94C)}.ofgym .ofnm{position:absolute;left:50%;top:-180px;transform:translateX(-50%);white-space:nowrap;font-size:30px;color:#F2C94C;background:rgba(22,26,46,.85);padding:2px 12px;border-radius:10px}
+.ofcard2{position:absolute;right:128px;top:300px;width:920px;display:flex;flex-direction:column;gap:22px}.ofhead{display:flex;align-items:center;gap:28px}.ofhead .ofclock{margin-inline-start:auto}
+.ofcard2.wait{top:420px}.oftx2{display:flex;flex-direction:column;gap:6px}.oftx2 b{font:400 64px/1.1 'Secular One',Arial,sans-serif;color:#F6F1E7}.oftx2 span{font-size:30px;color:#C9CCE0}
+.ofsay{position:relative;background:#F6F1E7;color:#22263A;border-radius:22px;padding:24px 30px;font-size:36px;line-height:1.4;box-shadow:0 6px 0 rgba(0,0,0,.3)}.ofsay.empty{color:#7A7F99;font-size:30px}
+.ofcard2 .ofclock{position:relative!important;inset:auto!important;width:120px;height:120px;flex:none}.ofcard2 .ofclock svg{width:100%;height:100%}.ofcard2 .ofclock i{position:absolute!important;inset:0!important;display:grid;place-items:center;transform:none!important;font-style:normal}.ofmini small{font-size:18px;color:#C9CCE0}
 .twover{position:absolute;image-rendering:pixelated;pointer-events:none}.lkala{position:absolute;left:960px;top:560px;transform:translate(-50%,-100%) scale(2.2);z-index:90}
 .twhelp.ala{width:75px;height:75px;background-image:url(img/tw-alakazam.png);animation:twpop .35s,alaidle .5s steps(3) infinite}.twhelp.ala.tele{animation:alatele .2s steps(2) infinite}.twhelp.pid{width:99px;height:81px;background-image:url(img/tw-pidgeot.png);animation:pidflap .33s steps(3) infinite}@keyframes alaidle{from{background-position:0 0}to{background-position:-225px 0}}@keyframes alatele{from{background-position:-225px 0}to{background-position:-375px 0}}@keyframes pidflap{from{background-position:0 0}to{background-position:-297px 0}}
 .twgb{transition:background .9s}.twgb.shrink{background:transparent}.twgbox{position:absolute;overflow:hidden;transform-origin:0 0;transition:transform .9s ease-in-out,clip-path .9s ease-in-out;border-radius:16px;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C}.twgb.shrink .twgbox{box-shadow:none}
@@ -976,7 +988,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794779854';
+const BUILDV='1794781245';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1085,7 +1097,7 @@ async function boot(){
     render()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen())(S.hands||(S.hands={}))[d.id.slice(5)]=+d.data().at||0});if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen())(S.hands||(S.hands={}))[d.id.slice(5)]=+d.data().at||0;if(d.id.startsWith('intro-')&&isScreen())(S.intros||(S.intros={}))[d.id.slice(6)]=String(d.data().t||'').slice(0,240)});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
@@ -1454,6 +1466,7 @@ function render(){
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
+  try{if(S.myIntro==null){try{S.myIntro=RAWSTORE.get('psp-intro')||''}catch(e){S.myIntro=''}}introBtn()}catch(e){}
   if(!S.remoteMode&&S.game?.hand&&!S.game.g&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="handbtn" onclick="twHand()">✋ ${ll('יש לי משהו להגיד','I have something to say')}</button>`);
   if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">${ll(`לא ${esc(person(S.me).name)}? החלפת שם`,`Not ${esc(person(S.me).name)}? Switch name`)}</button>`);
   if(randLeft())app.querySelector('.col').insertAdjacentHTML('afterbegin',`<button class="btn ghost small" data-act="randfill" style="margin-bottom:10px;border-style:dashed">${ll(`🎲 ניסוי: לענות בשבילי באקראי (${randLeft()})`,`🎲 Rehearsal: answer for me at random (${randLeft()})`)}</button>`);
@@ -2912,7 +2925,7 @@ function twBots(B){const tw=S.tw;if(!tw)return;const mv=S.mv||(S.mv={});
       mv[id]={d:bd&&Math.random()<.8?bd:Math.random()<.5?'':brnd(['u','d','l','r']),s:tw.sid}}
     else if(tw.ph==='free'&&Math.random()<.3)mv[id]={d:Math.random()<.4?'':brnd(['u','d','l','r']),s:tw.sid,t:Math.random()<.06?Date.now():(mv[id]?.t||0)}})}
 // the gym room in a corner during the lectures: everyone seated, the lecturer in front; a raised hand shows "!"
-function twMiniOn(){if(!twOn()||!S.slides)return false;const it=cur();return it?.kind==='slide'&&!!twMiniTown()}
+function twMiniOn(){if(!twOn()||!S.slides)return false;const it=cur();return (it?.kind==='slide'||it?.kind==='buzz')&&!!twMiniTown()}
 const twGymOf=()=>{const t=twMiniTown()||S.tw?.town;return TOWN[TOWN.gymOf?.[t]]||TOWN.gym};
 // the gym room: the lecturer at the leader's spot, everyone seated facing them; drawn at k pixels per picture pixel, cut to view [x0,y0,x1,y1] (tiles) or whole
 function twGymInner(G,k,view){const t=G.t,c=t*k,[vx,vy]=view?view:[0,0],P=gamePlayers().filter(p=>lkAv(p)).slice(0,G.seats.length);
@@ -2924,7 +2937,7 @@ function twMiniHTML(){const G=twGymOf(),k=twMiniK(G),w=(G.view[2]-G.view[0]+1)*G
   return `<div class="twmini" id="twmini" style="width:${w}px;height:${h}px">${twGymInner(G,k,G.view)}<b class="twmn">${ll(...TW_NAME[twMiniTown()||S.tw?.town||'pewter'])} · GYM</b></div>`}
 // where the gym mini map goes: tight boxes of what is really drawn (text lines, pictures, boxes with a background or border),
 // four corners then the edges' middles at full size, then 85%; never on a game (its own legend and players are there)
-const TW_NOMINI='.mem,#qboard,.qrow2,.pqrow,.btgw,.btside,.cmarena,#lkcam,.ctrp,.bzw,.frw8,.lgrise';
+const TW_NOMINI='.ofgym,.mem,#qboard,.qrow2,.pqrow,.btgw,.btside,.cmarena,#lkcam,.ctrp,.bzw,.frw8,.lgrise';
 function twMiniBoxes(sec,R,z){const out=[],add=r=>{if(r.width>2&&r.height>2)out.push({x:(r.left-R.left)/z,y:(r.top-R.top)/z,w:r.width/z,h:r.height/z})};
   const big=1920*1080*.35;
   sec.querySelectorAll('*').forEach(e=>{if(e.closest('#twmini'))return;const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden')return;
@@ -2934,7 +2947,7 @@ function twMiniBoxes(sec,R,z){const out=[],add=r=>{if(r.width>2&&r.height>2)out.
     for(const n of e.childNodes)if(n.nodeType===3&&n.textContent.trim()){const rg=document.createRange();rg.selectNodeContents(n);for(const r of rg.getClientRects())add(r)}});
   document.querySelectorAll('#roombadge,.segclock,#cv .mlegbox').forEach(e=>add(e.getBoundingClientRect()));
   return out}
-function twMiniPlace(){const m=$('#twmini'),cv=$('#cv'),sec=cv?.querySelector('section');if(!m||!sec)return;
+function twMiniPlace(){const m=$('#twmini'),cv=$('#cv'),sec=cv?.querySelector('section')||cv?.querySelector('.st');if(!m||!sec)return;
   if(cv.querySelector(TW_NOMINI)){m.style.display='none';return}
   const R=cv.getBoundingClientRect(),z=R.width/1920,boxes=twMiniBoxes(sec,R,z);
   const w0=m.offsetWidth||m.getBoundingClientRect().width/z,h0=m.offsetHeight||m.getBoundingClientRect().height/z;
@@ -2952,8 +2965,19 @@ function twGymBig(it){const G=twGymOf(),kb=Math.min(1600/G.w,1000/G.h),W=G.w*kb,
     box.style.clipPath=`inset(${y0*t*kb}px ${W-(x1+1)*t*kb}px ${H-(y1+1)*t*kb}px ${x0*t*kb}px round ${12/f}px)`;box.style.transform=`translate(${tx}px,${ty}px) scale(${f})`;$('#twgb')?.classList.add('shrink')},2600);
   setTimeout(()=>{if(cur()===it)go(1)},3700)}
 function twHands(){const box=$('#twmini');if(!box)return;const now=Date.now(),G=twGymOf(),k=twMiniK(G);Object.entries(S.hands||{}).forEach(([id,at])=>{const s=box.querySelector(`.twseat[data-p="${id}"]`);if(!s)return;const on=now-at<10000;
-  if(on&&!s.querySelector('.twbang')){s.insertAdjacentHTML('beforeend',`<i class="qbang twbang" style="top:${-Math.round(34*k+30)}px">!</i>`);const p=person(id);if(p&&now-at<3000){toast(`✋ ${p.name}`);sfx('sfx-tink')}}if(!on)s.querySelector('.twbang')?.remove()})}
+  if(on&&!s.querySelector('.twbang')){s.insertAdjacentHTML('beforeend',`<i class="qbang twbang" style="top:${-Math.round(34*k+30)}px">!</i>`);const p=person(id);if(p&&now-at<3000){toast(`✋ ${p.name}`);sfx('sfx-tink');box.classList.remove('twpulse');void box.offsetWidth;box.classList.add('twpulse')}}if(!on)s.querySelector('.twbang')?.remove()})}
 setInterval(()=>{try{if(isScreen())twHands()}catch(e){}},1000);
+// ----- phone side: what I'll say in the friends' intros (open from the moment you join until your turn) -----
+function introOk(){const me=S.me&&person(S.me);return !!(me&&!isScreen()&&!S.remoteMode&&me.role!=='self'&&!isPresenter(me)&&S.game?.io&&!(S.game.iDone||[]).includes(S.me))}
+function introBtn(){let b=document.getElementById('introfab');const on=introOk();if(!on){b?.remove();document.getElementById('introbox')?.remove();return}
+  const has=!!(S.myIntro||'').trim(),lab=has?ll('✍️ ההיכרות שלך ✓','✍️ Your intro ✓'):ll('✍️ מה תגיד כשיגיע תורך?','✍️ What will you say on your turn?');
+  if(!b){b=document.createElement('button');b.id='introfab';b.onclick=introOpen;document.body.appendChild(b)}if(b.textContent!==lab)b.textContent=lab;b.classList.toggle('done',has)}
+function introOpen(){if(document.getElementById('introbox'))return;const n=esc(subjectName()),d=document.createElement('div');d.id='introbox';
+  d.innerHTML=`<div class="ibx"><h2>${ll('✍️ ההיכרות שלך','✍️ Your intro')}</h2><p>${ll(`בתחילת הערב כל אחד עולה לבמה לחצי דקה: מי אני, מאיפה אני מכיר את ${n}, ומשפט אחד על ${n}. מה שתכתוב כאן יופיע על המסך לידך.`,`At the start everyone takes the stage for half a minute: who I am, where I know ${n} from, and one sentence about ${n}. What you write here shows on the screen beside you.`)}</p>
+    <textarea id="introt" maxlength="220" rows="5"></textarea><div class="ibb"><button id="introsave">${ll('שמירה','Save')}</button><button id="introno" class="ghost">${ll('סגירה','Close')}</button></div></div>`;
+  document.body.appendChild(d);const t=d.querySelector('#introt');t.value=S.myIntro||'';t.focus();
+  d.querySelector('#introno').onclick=()=>d.remove();
+  d.querySelector('#introsave').onclick=()=>{S.myIntro=t.value.trim().slice(0,220);try{RAWSTORE.set('psp-intro',S.myIntro)}catch(e){}S.db.doc('stage/intro-'+S.me).set({t:S.myIntro,at:Date.now()}).catch(()=>{});d.remove();introBtn();toast(ll('נשמר ✓','Saved ✓'))}}
 // ----- phone side: the pad in town, and the raise-hand button during the lectures -----
 function townPhone(me,G){const nm=ll(...(TW_NAME[G.town]||TW_NAME.pallet));
   const txt=G.ph==='free'?ll('הדמות שלך על המסך! החצים מזיזים אותה, A זורק פוקה בול.','Your character is on the screen! The arrows move it, A throws a Poké Ball.')
@@ -2964,12 +2988,23 @@ function twHand(){if(!S.db||!S.me)return;if(Date.now()-(S.handAt||0)<6000){toast
 // ---------- course 1: the friends' trainer cards. One click per person: their big sprite, name and how they know the subject, half a minute each; done cards line up below ----------
 function ofrList(){return gamePlayers().filter(p=>p.role!=='self'&&!isPresenter(p))}
 function ofrEnter(){S.ofr=S.ofr&&S.ofr.eve===S.state?.eve?S.ofr:{i:-1,eve:S.state?.eve};ofrPaint()}
+function ofrGym(cur){const G=TOWN.gym,k=3.5,c=G.t*k,W=G.w*k,H=G.h*k,at=(x,y)=>`left:${(x+.5)*c}px;top:${(y+.95)*c}px`;
+  const P=gamePlayers().filter(p=>lkAv(p)&&typeof S.gIn?.[p.id]?.av==='number'&&p.id!==cur?.id).slice(0,G.seats.length),n0=cur&&S.gIn?.[cur.id]?.av;
+  const lect=cur&&typeof n0==='number'?`<div class="twseat lect ofnow" style="${at(G.lect[0],G.lect[1])};z-index:900"><i class="lks" style="${owStyle(n0)};background-position:${owPos(n0,'d',0)};transform:scale(${(k/2).toFixed(3)})"></i><b class="ofnm">${esc(cur.name)}</b></div>`
+    :`<div class="twseat lect" style="${at(G.lect[0],G.lect[1])}"><i class="oaksp" style="${oakStyle()};background-position:${oakPos('d',0)};transform:scale(${(k/3).toFixed(3)})"></i></div>`;
+  return `<div class="ofgym" style="width:${W}px;height:${H}px"><img class="twgimg" src="${G.img}" alt="" style="width:${W}px;height:${H}px;left:0;top:0">${lect}`+
+    P.map((p,i)=>{const[x,y]=G.seats[i],n=S.gIn[p.id].av;return `<div class="twseat" style="${at(x,y)};z-index:${Math.round(y*10)}"><i class="lks" style="${owStyle(n)};background-position:${owPos(n,'u',0)};transform:scale(${(k/2).toFixed(3)})"></i></div>`}).join('')+`</div>`}
 function ofrPaint(){const box=$('#ofr');if(!box||!S.ofr)return;const L=ofrList(),i=S.ofr.i,p=L[i],n=esc(subjectName());
-  const rel=q=>esc(q.relation||ROLES[q.role]||ll('חבר/ה','friend'));
-  box.innerHTML=`${p?`<div class="ofcard" key="${p.id}"><div class="ofav">${avFull(p,330)}</div><div class="oftx"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b>${esc(p.name)}</b><span>${rel(p)}</span><p class="ofq">${ll(`מי אני, מאיפה אני מכיר את ${n}, ומשפט אחד על ${n}`,`Who I am, where I know ${n} from, and one sentence about ${n}`)}</p></div><div class="ofclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf ofrun" pathLength="100"/></svg><i>30</i></div></div>`
-    :`<div class="ofwait">${ll('לחיצה: הראשון מציג את עצמו','Click: the first one introduces themselves')}</div>`}
-   <div class="ofrow">${L.map((q,k)=>`<div class="ofmini${k<i?' done':k===i?' now':''}">${lkAv(q)?`<img src="${lkAv(q)}" alt="">`:avHead(q,46)}<small>${esc(q.name)}</small></div>`).join('')}</div>`;
-  clearInterval(S.ofrT);if(p){let left=30;S.ofrT=setInterval(()=>{left--;const t=box.querySelector('.ofclock i');if(!t||left<0){clearInterval(S.ofrT);return}t.textContent=left;if(left===0){t.parentElement.classList.add('over');sfx('sfx-tink')}},1000);sfx('sfx-dex-page-added')}}
+  const rel=q=>esc(q.relation||ROLES[q.role]||ll('חבר/ה','friend')),said=p&&(S.intros?.[p.id]||'').trim();
+  box.closest('section')?.classList.add('ofsec');
+  box.innerHTML=ofrGym(p)+(p?`<div class="ofcard2" key="${p.id}"><div class="ofhead"><div class="ofav2">${avFull(p,240)}</div><div class="oftx2"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b>${esc(p.name)}</b><span>${rel(p)}</span></div>
+      <div class="ofclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf ofrun" pathLength="100"/></svg><i>30</i></div></div>
+      <div class="ofsay${said?'':' empty'}">${said?esc(said):ll(`מי אני, מאיפה אני מכיר את ${n}, ומשפט אחד על ${n}`,`Who I am, where I know ${n} from, and one sentence about ${n}`)}</div>
+</div>`
+    :`<div class="ofcard2 wait"><div class="ofsay">${i<0?ll('לחיצה: הראשון עולה לבמה. כל אחד חצי דקה, ואז הבא בתור עולה לבד.','Click: the first one takes the stage. Half a minute each, then the next one steps up by themselves.'):ll('כולם הציגו את עצמם!','Everyone has introduced themselves!')}</div></div>`);
+  clearInterval(S.ofrT);if(p){let left=30;const me=i;S.ofrT=setInterval(()=>{left--;const t=box.querySelector('.ofclock i');if(!t){clearInterval(S.ofrT);return}if(left>=0)t.textContent=left;if(left===0){t.parentElement.classList.add('over');sfx('sfx-tink')}
+      if(left===-2){clearInterval(S.ofrT);if(S.ofr.i===me&&cur()?.id==='o-friends')ofrNext()}},1000);sfx('sfx-dex-page-added')}
+  gamePub()}
 function ofrNext(){const L=ofrList();if(!S.ofr||S.ofr.i>=L.length-1)return false;S.ofr.i++;ofrPaint();return true}
 
 // ---------- course 3 opens with a BuzzFeed-style quiz: three silly questions on the phones; on the third, one friend's phone says "tap here",
@@ -2994,20 +3029,20 @@ function bzPaint(){const B=S.bz,cv=$('#cv');if(!B||cur()?.kind!=='buzz'||!cv)ret
   if(B.ph==='q'&&B.q===2&&B.plant&&(S.hands?.[B.plant]||0)>B.at){B.ph='ask';gamePub();sfx('sfx-tink')}
   const Q=BZ[B.q],qt=t=>LL(t).replace('{n}',n);
   let h='';
-  if(B.ph==='intro')h=`<div class="bzhead"><b>BuzzQuiz</b><span>${ll('רגע לפני המדע: חידון קטן!','Before the science: a little quiz!')}</span></div><div class="bzmid"><p class="bzbig">${ll(`שלוש שאלות על ${n}. עונים בטלפון.`,`Three questions about ${n}. Answer on your phone.`)}</p><p class="bzsub">${ll('לחיצה: השאלה הראשונה','Click: the first question')}</p></div>`;
+  if(B.ph==='intro')h=`<div class="bzhead"><b>BuzzQuiz</b><span>${ll('רגע לפני שממשיכים: חידון קטן!','Before we go on: a little quiz!')}</span></div><div class="bzmid"><p class="bzbig">${ll(`שלוש שאלות על ${n}. עונים בטלפון.`,`Three questions about ${n}. Answer on your phone.`)}</p><p class="bzsub">${ll('לחיצה: השאלה הראשונה','Click: the first question')}</p></div>`;
   else if(B.ph==='q'||B.ph==='rev'||B.ph==='ask'){const {c,who}=bzVotes(B.q),w=bzWin(B.q),tot=c.reduce((a,b)=>a+b,0);
     h=`<div class="bzhead"><b>BuzzQuiz</b><span>${ll(`שאלה ${B.q+1} מתוך 3`,`Question ${B.q+1} of 3`)}</span></div><h2 class="bzq">${qt(Q.q)}</h2>
      <div class="bzopts">${Q.o.map((o,i)=>`<div class="bzopt${B.ph==='rev'&&i===w?' win':''}${B.ph==='rev'&&i!==w?' lose':''}"><i>${o[2]}</i><b>${esc(LL([o[0],o[1]]))}</b><div class="bzwho">${who[i].map(p=>lkAv(p)?`<img src="${lkAv(p)}" alt="">`:'').join('')}</div></div>`).join('')}</div>
      ${B.ph==='rev'?`<div class="bzrev"><span>${ll(`${n} הוא…`,`${n} is…`)}</span><b>${Q.o[w][2]} ${esc(LL([Q.o[w][0],Q.o[w][1]]))}!</b></div>`:`<p class="bzcount">${ll(`${tot} ענו`,`${tot} answered`)}</p>`}`;
-    if(B.ph==='ask'){const p=person(B.plant);if(p)h+=`<div class="bzask"><div class="bzav">${avFull(p,300)}<i class="qbang">!</i></div><div><p>✋ ${ll(`${esc(p.name)} ${genderOf(p)==='f'?'רוצה':'רוצה'} לשאול משהו`,`${esc(p.name)} wants to ask something`)}</p><b>"${esc(LL(BZ_LINE))}"</b></div></div>`}}
-  else if(B.ph==='no')h=`<div class="bzno"><b>${ll('לא!','NO!')}</b><p>${ll('כדי להבין למה לא, צריך קודם להבין מה זה מדע, מה זו תיאוריה ומה זו פרדיגמה.','To see why not, we first need to understand what science is, what a theory is, and what a paradigm is.')}</p></div>`;
+    if(B.ph==='ask'){const p=person(B.plant);if(p)h+=`<div class="bzask"><div class="bzav">${avFull(p,300)}<i class="qbang">!</i></div><div><p>✋ ${ll(`${esc(p.name)} ${genderOf(p)==='f'?'הרימה':'הרים'} יד`,`${esc(p.name)} raised a hand`)}</p></div></div>`}}
+  else if(B.ph==='no')h=`<div class="bzno"><b>${ll('לא!','NO!')}</b><p>${ll('אז מה כן? על זה נדבר בחלק השני, אחרי ההפסקה: מה זה מדע, מה זו תיאוריה ומה זו פרדיגמה.','So what is it? That is part two, after the break: what science is, what a theory is, and what a paradigm is.')}</p></div>`;
   const key=B.ph+B.q+(B.ph==='q'?JSON.stringify(bzVotes(B.q).c):'');if(cv.dataset.bz===key)return;cv.dataset.bz=key;
-  cv.innerHTML=`<div class="st bz ${B.ph}">${h}</div>`;if(B.ph==='rev')sfx('sfx-caught-mon')}
+  cv.innerHTML=`<div class="st bz ${B.ph}">${h}</div>`;if(B.ph==='rev')sfx('sfx-caught-mon');if(twMiniOn()){cv.insertAdjacentHTML('beforeend',twMiniHTML());twMiniPlace();twHands()}}
 function buzzPhone(me,G){const Q=BZ[G.q]||BZ[0],mine=S.myG?.['bz'+G.q]??S.gIn?.[me.id]?.['bz'+G.q],n=esc(subjectName());
-  if(G.ph==='intro')return `<p class="eyebrow">BUZZQUIZ</p><h1>${ll('רגע לפני המדע: חידון קטן!','Before the science: a little quiz!')}</h1><p class="muted">${ll('השאלה תופיע כאן בעוד רגע.','The question will show up here in a moment.')}</p>`;
+  if(G.ph==='intro')return `<p class="eyebrow">BUZZQUIZ</p><h1>${ll('רגע לפני שממשיכים: חידון קטן!','Before we go on: a little quiz!')}</h1><p class="muted">${ll('השאלה תופיע כאן בעוד רגע.','The question will show up here in a moment.')}</p>`;
   if(G.ph==='no')return `<p class="eyebrow">BUZZQUIZ</p><h1 style="font-size:60px;margin:20px 0">${ll('לא!','NO!')}</h1>`;
-  if(G.plant===me.id&&(G.ph==='ask'||(G.ph==='q'&&G.q===2&&(S.handAt||0)>0)))return `<p class="eyebrow">✋ ${ll('תורך','Your turn')}</p><p class="muted">${ll('תקריא בקול:','Read out loud:')}</p><h1 style="font-size:30px;line-height:1.4">"${esc(LL(BZ_LINE))}"</h1>`;
-  const plantBtn=G.plant===me.id&&G.ph==='q'&&G.q===2?`<button class="bzpress" onclick="twHand();S.handAt=Date.now();render()">✋ ${ll('לחץ כאן','Tap here')}</button>`:'';
+  if(G.plant===me.id&&(G.ph==='ask'||(G.ph==='q'&&G.q===2&&(S.handAt||0)>0)))return `<p class="eyebrow">✋ ${ll('היד שלך מורמת','Your hand is up')}</p><p style="font-size:20px;margin:6px 0 12px">${ll(genderOf(me)==='f'?'כשאייל פונה אלייך, תקריאי בקול:':'כשאייל פונה אליך, תקריא בקול:','When Eyal turns to you, read this out loud:')}</p><div class="bzline">"${esc(LL(BZ_LINE))}"</div>`;
+  const plantBtn=G.plant===me.id&&G.ph==='q'&&G.q===2?`<button class="bzpress bzbig" onclick="twHand();S.handAt=Date.now();render()">✋ ${ll(genderOf(me)==='f'?'הרימי יד! לחצי כאן עכשיו':'הרם יד! לחץ כאן עכשיו','Raise your hand! Tap here now')}</button>`:'';
   return `<p class="eyebrow">BUZZQUIZ · ${G.q+1}/3</p><h1 style="font-size:26px">${esc(LL(Q.q).replace('{n}',n))}</h1>${plantBtn}<div class="bzpbtns">${Q.o.map((o,i)=>`<button class="${mine===i?'on':''}" onclick="bzAns(${G.q},${i})"><i>${o[2]}</i>${esc(LL([o[0],o[1]]))}</button>`).join('')}</div>`}
 function bzAns(q,i){if(S.game?.g!=='buzz'||S.game.ph!=='q'||S.game.q!==q)return;S.myG={...(S.myG||{}),['bz'+q]:i};try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['bz'+q]:i},{merge:true}).catch(()=>{})}
 // a classic Game Boy pad drawn in CSS (no logos): D-pad to walk, A throws a Poké Ball the way you face
@@ -3261,7 +3296,7 @@ function friendsRun(){const cv=$('#cv'),sec=cv.querySelector('section'),box0=sec
 const PARTS={1:[1,2],2:[3,4],3:[5,6],4:[7,8]},PART_TR={1:[],2:[1],3:[2],4:[3]};
 const COURSE_NAMES=[['היכרות: מי אנחנו','Introductions: who we are'],['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],['מדע, תיאוריה ופרדיגמה','Science, theory and paradigm'],['הסוציולוגיה דרך פוקימון','Sociology through Pokémon'],['18 הסוגים · חלק א׳','The 18 types · part 1'],['18 הסוגים · חלק ב׳','The 18 types · part 2'],['6 הסטטים','The 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
 const TYPES_B=['normal','fighting','poison','ground','flying','bug','rock','ghost','steel'];
-function courseOf(id){if(id==='agenda'||/^o-/.test(id))return 1;if(id==='e-layers'||/^k-/.test(id))return 2;if(id==='f-extra'||id==='e-line')return 8;if(id==='d-battle'||id==='f-divider-2')return 6;{const m=id.match(/^[qt]-([a-z]+)$/);if(m)return TYPES_B.includes(m[1])?6:5}if(/^f-/.test(id))return 5;if(id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|c|d|g|st|h|ev|j)-/);return m?{s:3,c:4,d:4,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
+function courseOf(id){if(id==='agenda'||id==='s-buzz'||/^o-/.test(id))return 1;if(id==='e-layers'||/^k-/.test(id))return 2;if(id==='f-extra'||id==='e-line')return 8;if(id==='d-battle'||id==='f-divider-2')return 6;{const m=id.match(/^[qt]-([a-z]+)$/);if(m)return TYPES_B.includes(m[1])?6:5}if(/^f-/.test(id))return 5;if(id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|c|d|g|st|h|ev|j)-/);return m?{s:3,c:4,d:4,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
 const skipSet=()=>new Set(S.state?.skip||[]);
 const noT4=()=>skipSet().has('t4')||!ROOM.legacy;
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&(sk.has('t'+m[1])||(m[1]==='4'&&!ROOM.legacy)))return false;
@@ -3400,6 +3435,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   else if(S.btg&&it?.id==='d-battle'&&S.btg.phase==='intro')d={g:'bt',phase:'intro',scores:S.btg.scores};
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   if(d.g===null&&twMiniOn())d={g:null,hand:1};
+  {const oi=SEQ.findIndex(x=>x.id==='o-friends');if(oi>=0&&POS<=oi){d.io=1;if(it?.id==='o-friends'&&S.ofr)d.iDone=ofrList().slice(0,S.ofr.i+1).map(p=>p.id)}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.kind==='buzz')bzPaint();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(cur()?.kind==='why')whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn()}
 
