@@ -974,7 +974,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794760038';
+const BUILDV='1794760073';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1930,7 +1930,7 @@ const TR_KEYS=['dwarf','bneiakiva','family','sport'];
 const TR_ERI=[['ביישנות','Shyness'],['מצפה רמון · על אמונה','Mitzpe Ramon · on faith'],['תפקיד · על משפחה','Role · on family'],['ספורט','Sport']];
 function slideHTML(h){
   if(S.setup?.gender==='f')[['שהנבדק קבע','שהנבדקת קבעה'],['הנבדק עצמו','הנבדקת עצמה'],['הנבדק','הנבדקת'],['ערי מספר ','ערי מספרת '],['כשערי ישלח','כשערי תשלח']].forEach(([x,y])=>{h=h.split(x).join(y)});
-  const n=subjectName();if(EN){if(n&&n!=='Eri'&&n!=='ערי')h=h.replace(/\bEri(?=[’'\s.,])/g,esc(n))}else if(n&&n!=='ערי')h=h.split('ערי').join(n);
+  const n=subjectName();if(EN){if(n&&n!=='Eri'&&n!=='ערי')h=h.replace(/\bEri(?=[’'\s.,?!:])/g,esc(n))}else if(n&&n!=='ערי')h=h.split('ערי').join(n);
   if(ROOM.code&&!ROOM.legacy){
     TR_KEYS.forEach((k,i)=>{if(!h.includes('tr-eri-'+k+'.webp'))return;const a=S.assets?.['tr-'+(i+1)];
       h=h.replace(new RegExp('img/tr-eri-'+k+'\\.webp','g'),a?.data||'img/tr-silhouette.webp');
