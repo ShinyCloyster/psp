@@ -600,6 +600,25 @@ body:has(.rcmini) .col{padding-bottom:90px}
 #cv.twcover #lobby,#cv.twcover section>div:has(>img[alt="tr-red"]){display:none!important}#cv.twcover section{padding-left:1110px!important;padding-right:80px!important}
 #cv.twcover section h1{font-size:180px!important}#cv.twcover section p{width:auto!important}#cv.twcover section p[style*="84px"]{font-size:64px!important}body.twcov #roombadge{left:auto!important;right:12px!important}#cv.twcover .cv-dn{left:520px!important}
 .twmini{position:absolute;bottom:76px;left:30px;z-index:30;border:4px solid #2A2E45;border-radius:12px;box-shadow:0 6px 0 rgba(0,0,0,.25)}.en .twmini{left:auto;right:30px}.twmini>img{width:100%;height:100%;display:block;border-radius:8px;image-rendering:pixelated}
+.st.bz{position:absolute;inset:0;background:#FFFFFF;color:#222;display:flex;flex-direction:column;align-items:center;padding:56px 110px}
+.bzhead{width:100%;display:flex;justify-content:space-between;align-items:center;border-bottom:6px solid #EE3322;padding-bottom:14px}.bzhead b{font:900 64px Arial,sans-serif;color:#EE3322;letter-spacing:-2px;direction:ltr}.bzhead span{font-size:34px;font-weight:700}
+.bzmid{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px}.bzbig{font-size:64px;font-weight:800;text-align:center;margin:0}.bzsub{font-size:30px;color:#888;margin:0}
+.bzq{font:800 74px var(--body);margin:44px 0 30px;text-align:center}.bzopts{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;width:100%}
+.bzopt{background:#FFF7D6;border:5px solid #222;border-radius:24px;padding:26px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:330px;transition:all .5s}.bzopt i{font-style:normal;font-size:110px;line-height:1}.bzopt b{font-size:44px}
+.bzwho{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}.bzwho img{width:44px;height:44px;image-rendering:pixelated}.bzopt.win{background:#FFEE00;transform:scale(1.08);box-shadow:0 0 0 10px #EE3322}.bzopt.lose{opacity:.35}
+.bzcount{font-size:30px;color:#666;margin-top:24px}.bzrev{margin-top:26px;display:flex;flex-direction:column;align-items:center}.bzrev span{font-size:40px;color:#666}.bzrev b{font:900 90px var(--body);color:#EE3322;animation:twin .6s cubic-bezier(.3,1.6,.5,1)}
+.bzask{position:absolute;inset:0;background:#161A2E;display:flex;align-items:center;justify-content:center;gap:60px;color:#F6F1E7;animation:twin .4s;padding:0 120px}.bzask .bzav{position:relative;flex:none}.bzask .qbang{position:absolute;left:50%;top:-40px;transform:translateX(-50%) scale(2)}
+.bzask>div:last-child{flex:1;max-width:1050px}.bzask p{font-size:44px;color:#F2C94C;margin:0 0 20px}.bzask b{font:700 56px var(--body);display:block;line-height:1.35}
+.bzno{position:absolute;inset:0;background:#EE3322;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;color:#fff;text-align:center;padding:0 160px}.bzno b{font:900 420px/1 var(--display);animation:bzstamp .5s cubic-bezier(.2,1.8,.5,1)}.bzno p{font-size:46px;max-width:1400px;margin:0}@keyframes bzstamp{from{transform:scale(3) rotate(-12deg);opacity:0}}
+.bzpbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.bzpbtns button{padding:18px 8px;border-radius:14px;border:3px solid #444;background:#1E2238;color:#F6F1E7;font:700 18px var(--body);display:flex;flex-direction:column;align-items:center;gap:6px}.bzpbtns button i{font-style:normal;font-size:40px}.bzpbtns button.on{border-color:#F2C94C;background:#3A3420}
+.bzpress{width:100%;padding:26px;font:800 30px var(--body);border-radius:18px;border:4px solid #F2C94C;background:#EE3322;color:#fff;margin:10px 0}
+.ofcard{position:absolute;left:0;right:0;top:0;margin:0 auto;width:1340px;display:flex;flex-direction:row-reverse;align-items:center;gap:50px;background:#F6F1E7;color:#161A2E;border:8px solid #F2C94C;border-radius:30px;padding:28px 50px;animation:twin .45s cubic-bezier(.3,1.5,.5,1)}.en .ofcard{flex-direction:row}
+.ofav{width:340px;height:340px;flex:none;display:flex;align-items:flex-end;justify-content:center;background:#EFE8D8;border-radius:24px;overflow:hidden}.oftx{flex:1;display:flex;flex-direction:column;gap:10px}.ofno{font:400 22px var(--pixel);color:#E5484D;margin:0}
+.oftx b{font:400 90px/1.05 var(--display)}.oftx span{font-size:40px;color:#4A4F63}.ofq{font-size:30px;color:#6A6F80;margin:10px 0 0}
+.ofclock{position:relative;width:130px;height:130px;flex:none}.ofclock svg{width:100%;height:100%;transform:rotate(-90deg)}.ofclock i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 34px var(--pixel);font-style:normal;color:#F2C94C}
+.ofrun{stroke-dasharray:100;animation:ofrun 30s linear forwards}@keyframes ofrun{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}.ofclock.over i{color:#E5484D}
+.ofwait{position:absolute;left:0;right:0;top:140px;text-align:center;font-size:44px;color:#C9CCE0}
+.ofrow{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}.ofmini{display:flex;flex-direction:column;align-items:center;opacity:.35;transition:all .4s}.ofmini.done{opacity:1}.ofmini.now{opacity:1;transform:translateY(-10px)}.ofmini img{width:68px;height:68px;image-rendering:pixelated}.ofmini small{font-size:18px;color:#C9CCE0}
 .twover{position:absolute;image-rendering:pixelated;pointer-events:none}.lkala{position:absolute;left:960px;top:560px;transform:translate(-50%,-100%) scale(2.2);z-index:90}
 .twhelp.ala{width:75px;height:75px;background-image:url(img/tw-alakazam.png);animation:twpop .35s,alaidle .5s steps(3) infinite}.twhelp.ala.tele{animation:alatele .2s steps(2) infinite}.twhelp.pid{width:99px;height:81px;background-image:url(img/tw-pidgeot.png);animation:pidflap .33s steps(3) infinite}@keyframes alaidle{from{background-position:0 0}to{background-position:-225px 0}}@keyframes alatele{from{background-position:-225px 0}to{background-position:-375px 0}}@keyframes pidflap{from{background-position:0 0}to{background-position:-297px 0}}
 .twgb{transition:background .9s}.twgb.shrink{background:transparent}.twgbox{position:absolute;overflow:hidden;transform-origin:0 0;transition:transform .9s ease-in-out,clip-path .9s ease-in-out;border-radius:16px;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C}.twgb.shrink .twgbox{box-shadow:none}
@@ -955,7 +974,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794757196';
+const BUILDV='1794760038';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2203,9 +2222,10 @@ function applyBuilds(){
   return orders.length;
 }
 // ---------- schedule (3 hours) ----------
-const PLAN=[['open',ll('פתיחה','Opening'),7,'cover'],['c1',ll('חלק 1','Part 1'),46,'x-part-1'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['r1',ll('סבב 1','Round 1'),9,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),10,'x-break-1'],
- ['c2',ll('חלק 2','Part 2'),28,'x-part-2'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['r2',ll('סבב 2','Round 2'),9,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),10,'x-break-2'],
- ['c3',ll('חלק 3','Part 3'),21,'x-part-3'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['r3',ll('סבב 3 ומיו','Round 3 and Mew'),10,'x-round-3'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
+const PLAN=[['open',ll('פתיחה','Opening'),7,'cover'],['c1',ll('חלק 1','Part 1'),22,'x-part-1'],['r1',ll('סבב 1','Round 1'),9,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+ ['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['c2',ll('חלק 2','Part 2'),40,'x-part-2'],['r2',ll('סבב 2','Round 2'),9,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),10,'x-break-2'],
+ ['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['c3',ll('חלק 3','Part 3'),28,'x-part-3'],['r3',ll('סבב 3 ומיו','Round 3 and Mew'),10,'x-round-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],
+ ['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['c4',ll('חלק 4','Part 4'),21,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
 const planOf=k=>PLAN.find(x=>x[0]===k);
@@ -2219,7 +2239,7 @@ const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function seqLabel(it){let label='';
   if(it.id==='d-battle')label=ll('קרבות: מי מנצח?','Battles: who wins?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
-  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
+  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   return label}
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;const label=seqLabel(it);
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
@@ -2395,12 +2415,14 @@ function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style
     breakFacts(it.id);leagueOnBreak(it.id);qAutoStop();
     slideMusic(it.id);
     if(it.id==='cover')twCover();
+    if(it.id==='o-friends')ofrEnter();
     if(twMiniOn()){cv.insertAdjacentHTML('beforeend',twMiniHTML());twMiniPlace();twHands()}
     quizSync();
     if(it.id==='closing'){try{computeResult()}catch(e){}cv.innerHTML=closingHTML()}
   } else if(it.kind==='league'){ cv.innerHTML=leagueHTML();music('mus-badge',{loop:false,vol:.45,delay:3300});sfx('sfx-tink');setTimeout(()=>{if(cur()?.kind==='league')sfx('sfx-tink')},1800);setTimeout(()=>{if(cur()?.kind==='league')sfx('sfx-caught-mon')},3300) }
   else if(it.kind==='lake'){ lakeEnter() }
   else if(it.kind==='town'){ twEnter(it) }
+  else if(it.kind==='buzz'){ $('#cv').dataset.bz='';bzEnter() }
   else if(it.kind==='pika'){ music('mus-ethan',{vol:.24});pikaEnter() }
   else if(it.kind==='cmt'){ cmtEnter() }
   else if(it.kind==='why'){ music(null);whyEnter() }
@@ -2411,7 +2433,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style
   screenOverlay();deckPub();gamePub();
 }
 function go(d){
-  {const ci=cur();if(ci?.kind==='town'&&S.tw&&S.tw.ph!=='done'&&d>0){if(S.tw.ph==='go')twHelp();return}}
+  {const ci=cur();if(ci?.kind==='town'&&S.tw&&S.tw.ph!=='done'&&d>0){if(S.tw.ph==='go')twHelp();return}if(d>0&&ci?.kind==='buzz'&&bzNext())return;if(d>0&&ci?.id==='o-friends'&&ofrNext())return}
   if(d>0&&S.frGo&&cur()?.id==='k-scenario'){const f=S.frGo;S.frGo=null;f();return}
   if($('#photoov.show')){S.photoHidden=(S.stage?.photo||'')+':'+(S.stage?.at||'');stagePhoto();return}
   const it=cur();if(!it)return;
@@ -2888,7 +2910,7 @@ function twMiniK(G){return 290/((G.view[2]-G.view[0]+1)*G.t)}
 function twMiniHTML(){const G=twGymOf(),k=twMiniK(G),w=(G.view[2]-G.view[0]+1)*G.t*k,h=(G.view[3]-G.view[1]+1)*G.t*k;
   return `<div class="twmini" id="twmini" style="width:${w}px;height:${h}px">${twGymInner(G,k,G.view)}<b class="twmn">${ll(...TW_NAME[S.tw?.town||'pewter'])} · GYM</b></div>`}
 function twMiniPlace(){const m=$('#twmini'),cv=$('#cv'),sec=cv?.querySelector('section');if(!m||!sec)return;const R=cv.getBoundingClientRect(),z=R.width/1920;
-  const boxes=[...sec.querySelectorAll('*')].filter(e=>!e.closest('#twmini,#roombadge')).map(e=>{const r=e.getBoundingClientRect();return {x:(r.left-R.left)/z,y:(r.top-R.top)/z,w:r.width/z,h:r.height/z}}).filter(b=>b.w>2&&b.h>2&&b.w*b.h<1920*1080*.35);
+  const boxes=[...sec.querySelectorAll('*'),...document.querySelectorAll('#roombadge,.segclock')].filter(e=>!e.closest('#twmini')).map(e=>{const r=e.getBoundingClientRect();return {x:(r.left-R.left)/z,y:(r.top-R.top)/z,w:r.width/z,h:r.height/z}}).filter(b=>b.w>2&&b.h>2&&b.w*b.h<1920*1080*.35);
   const w0=m.offsetWidth,h0=m.offsetHeight,hit=(x,y,w,h)=>boxes.some(b=>x<b.x+b.w+8&&b.x<x+w+8&&y<b.y+b.h+8&&b.y<y+h+8);
   for(const sc of[1,.7,.5]){const w=w0*sc,h=h0*sc;for(const[x,y]of[[30,1080-76-h],[1920-30-w,1080-76-h],[30,30],[1920-30-w,30]]){if(!hit(x,y,w,h)){m.style.left=x+'px';m.style.top=y+'px';m.style.bottom='auto';m.style.right='auto';m.style.transform=`scale(${sc})`;m.style.transformOrigin='0 0';return}}}
   m.style.display='none'}
@@ -2909,6 +2931,55 @@ function townPhone(me,G){const nm=ll(...(TW_NAME[G.town]||TW_NAME.pallet));
   return `<p class="eyebrow">${nm}</p><h1 style="margin:0 0 6px;font-size:26px">${txt}</h1>${gbPad()}`}
 function twHand(){if(!S.db||!S.me)return;if(Date.now()-(S.handAt||0)<6000){toast(ll('היד כבר מורמת','Your hand is already up'));return}S.handAt=Date.now();try{navigator.vibrate?.(20)}catch(e){}
   S.db.doc('stage/hand-'+S.me).set({at:Date.now()}).catch(()=>{});toast(ll('✋ הרמת יד','✋ Hand raised'))}
+// ---------- course 1: the friends' trainer cards. One click per person: their big sprite, name and how they know the subject, half a minute each; done cards line up below ----------
+function ofrList(){return gamePlayers().filter(p=>p.role!=='self'&&!isPresenter(p))}
+function ofrEnter(){S.ofr=S.ofr&&S.ofr.eve===S.state?.eve?S.ofr:{i:-1,eve:S.state?.eve};ofrPaint()}
+function ofrPaint(){const box=$('#ofr');if(!box||!S.ofr)return;const L=ofrList(),i=S.ofr.i,p=L[i],n=esc(subjectName());
+  const rel=q=>esc(q.relation||ROLES[q.role]||ll('חבר/ה','friend'));
+  box.innerHTML=`${p?`<div class="ofcard" key="${p.id}"><div class="ofav">${avFull(p,330)}</div><div class="oftx"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b>${esc(p.name)}</b><span>${rel(p)}</span><p class="ofq">${ll(`מי אני, מאיפה אני מכיר את ${n}, ומשפט אחד על ${n}`,`Who I am, where I know ${n} from, and one sentence about ${n}`)}</p></div><div class="ofclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf ofrun" pathLength="100"/></svg><i>30</i></div></div>`
+    :`<div class="ofwait">${ll('לחיצה: הראשון מציג את עצמו','Click: the first one introduces themselves')}</div>`}
+   <div class="ofrow">${L.map((q,k)=>`<div class="ofmini${k<i?' done':k===i?' now':''}">${lkAv(q)?`<img src="${lkAv(q)}" alt="">`:avHead(q,46)}<small>${esc(q.name)}</small></div>`).join('')}</div>`;
+  clearInterval(S.ofrT);if(p){let left=30;S.ofrT=setInterval(()=>{left--;const t=box.querySelector('.ofclock i');if(!t||left<0){clearInterval(S.ofrT);return}t.textContent=left;if(left===0){t.parentElement.classList.add('over');sfx('sfx-tink')}},1000);sfx('sfx-dex-page-added')}}
+function ofrNext(){const L=ofrList();if(!S.ofr||S.ofr.i>=L.length-1)return false;S.ofr.i++;ofrPaint();return true}
+
+// ---------- course 3 opens with a BuzzFeed-style quiz: three silly questions on the phones; on the third, one friend's phone says "tap here",
+// they raise a hand and ask (the line is on their phone) "so this is like a BuzzFeed quiz?" and the screen answers: NO! ----------
+const BZ=[{q:['איזו פסטה הוא {n}?','Which pasta is {n}?'],o:[['פוזילי','Fusilli','🌀'],['טורטוליני','Tortellini','🥟'],['פנה','Penne','🖊️'],['פרפאלה','Farfalle','🎀']]},
+ {q:['איזה רהיט מאיקאה הוא {n}?','Which IKEA furniture is {n}?'],o:[['BILLY','BILLY','📚'],['POÄNG','POÄNG','🪑'],['KALLAX','KALLAX','🔲'],['MALM','MALM','🛏️']]},
+ {q:['איזה ממרח הוא {n}?','Which spread is {n}?'],o:[['שוקולד','Chocolate','🍫'],['חומוס','Hummus','🧆'],['חמאה','Butter','🧈'],['ריבה','Jam','🍓']]}];
+const BZ_LINE=['אה! אז מה שאנחנו נעשה הערב זה כמו שאלון של באזפיד כזה?','Oh! So what we\'re doing tonight is like one of those BuzzFeed quizzes?'];
+function bzEnter(){if(!S.bz||S.bz.eve!==S.state?.eve)S.bz={ph:'intro',q:0,plant:null,eve:S.state?.eve,at:0};bzPaint();gamePub();music('mus-ethan',{vol:.2})}
+function bzVotes(q){const c=[0,0,0,0],who=[[],[],[],[]];gamePlayers().forEach(p=>{const v=S.gIn?.[p.id]?.['bz'+q];if(v>=0&&v<4){c[v]++;who[v].push(p)}});return {c,who}}
+function bzWin(q){const {c}=bzVotes(q);let b=0;c.forEach((v,i)=>{if(v>c[b])b=i});return b}
+function bzPlant(){const P=gamePlayers().filter(p=>p.role!=='self'&&!isPresenter(p));const real=P.filter(p=>!botIds().includes(p.id));const L=real.length?real:P;return L.length?L[Math.floor(Math.random()*L.length)].id:null}
+function bzNext(){const B=S.bz;if(!B)return false;
+  if(B.ph==='intro'){B.ph='q';B.q=0;B.at=Date.now()}
+  else if(B.ph==='q'&&B.q<2){B.ph='rev'}
+  else if(B.ph==='rev'){B.ph='q';B.q++;B.at=Date.now();if(B.q===2)B.plant=bzPlant()}
+  else if(B.ph==='q'&&B.q===2){B.ph='ask'}
+  else if(B.ph==='ask'){B.ph='no';sfx('sfx-denied');music(null)}
+  else return false;
+  bzPaint();gamePub();return true}
+function bzPaint(){const B=S.bz,cv=$('#cv');if(!B||cur()?.kind!=='buzz'||!cv)return;const n=esc(subjectName());
+  if(B.ph==='q'&&B.q===2&&B.plant&&(S.hands?.[B.plant]||0)>B.at){B.ph='ask';gamePub();sfx('sfx-tink')}
+  const Q=BZ[B.q],qt=t=>LL(t).replace('{n}',n);
+  let h='';
+  if(B.ph==='intro')h=`<div class="bzhead"><b>BuzzQuiz</b><span>${ll('רגע לפני המדע: חידון קטן!','Before the science: a little quiz!')}</span></div><div class="bzmid"><p class="bzbig">${ll(`שלוש שאלות על ${n}. עונים בטלפון.`,`Three questions about ${n}. Answer on your phone.`)}</p><p class="bzsub">${ll('לחיצה: השאלה הראשונה','Click: the first question')}</p></div>`;
+  else if(B.ph==='q'||B.ph==='rev'||B.ph==='ask'){const {c,who}=bzVotes(B.q),w=bzWin(B.q),tot=c.reduce((a,b)=>a+b,0);
+    h=`<div class="bzhead"><b>BuzzQuiz</b><span>${ll(`שאלה ${B.q+1} מתוך 3`,`Question ${B.q+1} of 3`)}</span></div><h2 class="bzq">${qt(Q.q)}</h2>
+     <div class="bzopts">${Q.o.map((o,i)=>`<div class="bzopt${B.ph==='rev'&&i===w?' win':''}${B.ph==='rev'&&i!==w?' lose':''}"><i>${o[2]}</i><b>${esc(LL([o[0],o[1]]))}</b><div class="bzwho">${who[i].map(p=>lkAv(p)?`<img src="${lkAv(p)}" alt="">`:'').join('')}</div></div>`).join('')}</div>
+     ${B.ph==='rev'?`<div class="bzrev"><span>${ll(`${n} הוא…`,`${n} is…`)}</span><b>${Q.o[w][2]} ${esc(LL([Q.o[w][0],Q.o[w][1]]))}!</b></div>`:`<p class="bzcount">${ll(`${tot} ענו`,`${tot} answered`)}</p>`}`;
+    if(B.ph==='ask'){const p=person(B.plant);if(p)h+=`<div class="bzask"><div class="bzav">${avFull(p,300)}<i class="qbang">!</i></div><div><p>✋ ${ll(`${esc(p.name)} ${genderOf(p)==='f'?'רוצה':'רוצה'} לשאול משהו`,`${esc(p.name)} wants to ask something`)}</p><b>"${esc(LL(BZ_LINE))}"</b></div></div>`}}
+  else if(B.ph==='no')h=`<div class="bzno"><b>${ll('לא!','NO!')}</b><p>${ll('כדי להבין למה לא, צריך קודם להבין מה זה מדע, מה זו תיאוריה ומה זו פרדיגמה.','To see why not, we first need to understand what science is, what a theory is, and what a paradigm is.')}</p></div>`;
+  const key=B.ph+B.q+(B.ph==='q'?JSON.stringify(bzVotes(B.q).c):'');if(cv.dataset.bz===key)return;cv.dataset.bz=key;
+  cv.innerHTML=`<div class="st bz ${B.ph}">${h}</div>`;if(B.ph==='rev')sfx('sfx-caught-mon')}
+function buzzPhone(me,G){const Q=BZ[G.q]||BZ[0],mine=S.myG?.['bz'+G.q]??S.gIn?.[me.id]?.['bz'+G.q],n=esc(subjectName());
+  if(G.ph==='intro')return `<p class="eyebrow">BUZZQUIZ</p><h1>${ll('רגע לפני המדע: חידון קטן!','Before the science: a little quiz!')}</h1><p class="muted">${ll('השאלה תופיע כאן בעוד רגע.','The question will show up here in a moment.')}</p>`;
+  if(G.ph==='no')return `<p class="eyebrow">BUZZQUIZ</p><h1 style="font-size:60px;margin:20px 0">${ll('לא!','NO!')}</h1>`;
+  if(G.plant===me.id&&(G.ph==='ask'||(G.ph==='q'&&G.q===2&&(S.handAt||0)>0)))return `<p class="eyebrow">✋ ${ll('תורך','Your turn')}</p><p class="muted">${ll('תקריא בקול:','Read out loud:')}</p><h1 style="font-size:30px;line-height:1.4">"${esc(LL(BZ_LINE))}"</h1>`;
+  const plantBtn=G.plant===me.id&&G.ph==='q'&&G.q===2?`<button class="bzpress" onclick="twHand();S.handAt=Date.now();render()">✋ ${ll('לחץ כאן','Tap here')}</button>`:'';
+  return `<p class="eyebrow">BUZZQUIZ · ${G.q+1}/3</p><h1 style="font-size:26px">${esc(LL(Q.q).replace('{n}',n))}</h1>${plantBtn}<div class="bzpbtns">${Q.o.map((o,i)=>`<button class="${mine===i?'on':''}" onclick="bzAns(${G.q},${i})"><i>${o[2]}</i>${esc(LL([o[0],o[1]]))}</button>`).join('')}</div>`}
+function bzAns(q,i){if(S.game?.g!=='buzz'||S.game.ph!=='q'||S.game.q!==q)return;S.myG={...(S.myG||{}),['bz'+q]:i};try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['bz'+q]:i},{merge:true}).catch(()=>{})}
 // a classic Game Boy pad drawn in CSS (no logos): D-pad to walk, A throws a Poké Ball the way you face
 function gbPad(){const D=d=>`<button class="gbd gb-${d}${S.padD===d?' on':''}" data-d="${d}" onpointerdown="padDir('${d}',event)" onpointerup="padStop(event)" onpointercancel="padStop(event)" onpointerleave="padStop(event)" oncontextmenu="return false"></button>`;
   return `<div class="gb"><div class="gbpad">${D('u')}${D('l')}<i class="gbc"></i>${D('r')}${D('d')}</div><div class="gbab"><button class="gbbtn gb-b" onpointerdown="event.preventDefault()" oncontextmenu="return false">B</button><button class="gbbtn gb-a" onpointerdown="padA(event)" oncontextmenu="return false">A</button></div><div class="gbss"><span><i></i>SELECT</span><span><i></i>START</span></div></div>`}
@@ -3155,10 +3226,10 @@ function friendsRun(){const cv=$('#cv'),sec=cv.querySelector('section'),box0=sec
     if(alive()){sec.querySelectorAll('.frnow').forEach(r=>r.classList.remove('frnow'))}})()}
 
 // ---------- room plan: which of the 8 courses and 4 trainers this room includes (state.skip: 'c1'..'c8', 't1'..'t4') ----------
-const PARTS={1:[1,2,3,4],2:[5,6],3:[7,8]},PART_TR={1:[1],2:[2],3:[3]};
-const COURSE_NAMES=[['מדע, תיאוריה ופרדיגמה','Science, theory and paradigm'],['אבות הסוציולוגיה','Fathers of sociology'],['פוקימון כסוציולוג','Pokémon as sociologist'],['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],['18 הסוגים · חלק א׳','The 18 types · part 1'],['18 הסוגים · חלק ב׳','The 18 types · part 2'],['6 הסטטים','The 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
+const PARTS={1:[1,2],2:[3,4],3:[5,6],4:[7,8]},PART_TR={1:[],2:[1],3:[2],4:[3]};
+const COURSE_NAMES=[['היכרות: מי אנחנו','Introductions: who we are'],['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],['מדע, תיאוריה ופרדיגמה','Science, theory and paradigm'],['הסוציולוגיה דרך פוקימון','Sociology through Pokémon'],['18 הסוגים · חלק א׳','The 18 types · part 1'],['18 הסוגים · חלק ב׳','The 18 types · part 2'],['6 הסטטים','The 6 stats'],['אבולוציה ומקרים מיוחדים','Evolution and special cases']];
 const TYPES_B=['normal','fighting','poison','ground','flying','bug','rock','ghost','steel'];
-function courseOf(id){if(id==='f-extra'||id==='e-line')return 8;if(id==='e-layers')return 3;if(id==='d-battle'||id==='f-divider-2')return 6;{const m=id.match(/^[qt]-([a-z]+)$/);if(m)return TYPES_B.includes(m[1])?6:5}if(/^f-/.test(id))return 5;if(id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|k|c|d|e|f|q|t|g|st|h|ev|j)-/);return m?{s:1,c:2,d:3,k:4,e:5,f:6,q:6,t:6,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
+function courseOf(id){if(id==='agenda'||/^o-/.test(id))return 1;if(id==='e-layers'||/^k-/.test(id))return 2;if(id==='f-extra'||id==='e-line')return 8;if(id==='d-battle'||id==='f-divider-2')return 6;{const m=id.match(/^[qt]-([a-z]+)$/);if(m)return TYPES_B.includes(m[1])?6:5}if(/^f-/.test(id))return 5;if(id==='pq-stats'||/^pq-st-/.test(id))return 7;if(id==='pq-evo'||/^pq-ev-/.test(id))return 8;if(id==='quizwin')return 6;const m=id.match(/^(s|c|d|g|st|h|ev|j)-/);return m?{s:3,c:4,d:4,g:7,st:7,h:8,ev:8,j:8}[m[1]]:0}
 const skipSet=()=>new Set(S.state?.skip||[]);
 const noT4=()=>skipSet().has('t4')||!ROOM.legacy;
 function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;let m=id.match(/^x-trainer-(\d)$/);if(m&&(sk.has('t'+m[1])||(m[1]==='4'&&!ROOM.legacy)))return false;
@@ -3171,7 +3242,7 @@ function pqShuffle(){S.pqPos={};const seed=String(ROOM.code||'')+String(S.state?
     const items=ord.flatMap(p=>[SEQ[p.a],SEQ[p.a+1]]);if(pairs.every(p=>p.a>=start&&p.a<start+pairs.length*2))SEQ.splice(start,items.length,...items);S.pqPos[key]=ord.map(p=>p.k)})}
 const pqPosOf=(key,k)=>{const o=S.pqPos?.[key];const i=o?o.indexOf(k):-1;return i>=0?i:PQ[key].items.findIndex(x=>x.k===k)};
 function leagueSpot(){const G=['s-memory','c-memory','d-battle','quizwin','pq-stats','pq-evo'];let last=null;for(let i=SEQ.length-1;i>=0;i--){if(!G.includes(SEQ[i].id))continue;if(last&&G.includes(SEQ[i+1]?.id))continue;if(!last&&/^pq-/.test(SEQ[i].id)){SEQ[i].final=true;last=SEQ[i];continue}if(last)continue;const it={kind:'league',id:'league',fin:true};last=it;SEQ.splice(i+1,0,it)}}
-function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-fairy')SEQ.push({kind:'quizwin',id:'quizwin'})});if(twOn()){const c=SEQ.findIndex(x=>x.id==='cover');if(c>=0)SEQ.splice(c+1,0,{kind:'town',id:'w-pewter'});const k=SEQ.findIndex(x=>x.kind==='slide'&&courseOf(x.id)===2);if(k>0)SEQ.splice(k,0,{kind:'town',id:'w-cerulean'})}pqShuffle();leagueSpot()}
+function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});if(s.id==='s-buzz'&&!ROOM.legacy)SEQ.push({kind:'buzz',id:'s-buzz'});else SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-steel')SEQ.push({kind:'quizwin',id:'quizwin'})});if(twOn()){const c=SEQ.findIndex(x=>x.id==='cover');if(c>=0)SEQ.splice(c+1,0,{kind:'town',id:'w-pewter'});const k=SEQ.findIndex(x=>x.kind==='slide'&&courseOf(x.id)===2);if(k>0)SEQ.splice(k,0,{kind:'town',id:'w-cerulean'})}pqShuffle();leagueSpot()}
 function skipSync(){if(!isScreen()||!S.slides||!SEQ.length)return;const k=JSON.stringify([...skipSet()].sort());if(k===S.skipKey)return;const id=cur()?.id,old=SEQ.slice(0,POS+1).map(x=>x.id);buildSeq();
   let p=SEQ.findIndex(x=>x.id===id);if(p<0){p=0;old.forEach(o=>{const j=SEQ.findIndex(x=>x.id===o);if(j>=0)p=j})}POS=p;HOF=0;SUB=0;show(true)}
 function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
@@ -3288,6 +3359,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   else if(it?.id==='x-guess')d={g:'cg'};
   else if(S.lake&&it?.kind==='lake'){const L=S.lake;d={g:'lake',sid:L.sid,ph:L.phase==='q'?'q':L.phase==='done'?'done':'play',pick:L.phase==='land'||L.phase==='oak',end:L.phase==='q'?L.qEnd:0}}
   else if(S.why&&it?.kind==='why')d={g:'why',ph:S.why.ph};
+  else if(S.bz&&it?.kind==='buzz')d={g:'buzz',ph:S.bz.ph,q:S.bz.q,plant:S.bz.plant};
   else if(S.ctr&&it?.id===S.ctr.id)d={g:'center',sid:S.ctr.sid};
   else if(S.pika&&it?.kind==='pika')d={g:'pika',ph:S.pika.ph,end:S.pika.end||0};
   else if(it?.kind==='hof'&&HOF_STEPS[HOF]==='ball'&&!S.opening)d={g:'ball',at:S.ballAt||0};
@@ -3297,10 +3369,10 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   else if(S.btg&&it?.id==='d-battle'&&S.bt){const G=S.btg;d={g:'bt',id:G.id,n:G.n,set:G.set,kind:S.bt.kind,phase:G.phase,end:G.end,A:btgSide(S.bt.A),B:btgSide(S.bt.B),win:G.phase==='result'||G.phase==='table'?S.bt.win:null,scores:G.scores,right:G.right||[]}}
   if(d.g===null&&twMiniOn())d={g:null,hand:1};
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
-function gameIn(){if(!isScreen())return;pqIn();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(cur()?.kind==='why')whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn()}
+function gameIn(){if(!isScreen())return;pqIn();if(cur()?.kind==='buzz')bzPaint();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(cur()?.kind==='why')whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn()}
 
 // ----- phone side -----
-function gameView(me){const G=S.game;if(G.g==='town')return townPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
+function gameView(me){const G=S.game;if(G.g==='town')return townPhone(me,G);if(G.g==='buzz')return buzzPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
 function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores?.[me.id]||0,mine=G.cur===me.id,cp=person(G.cur);
   const picks=(S.mpick&&S.mpick.tid===G.tid)?S.mpick.picks:[];
   const head=`<p class="eyebrow">${set.eb}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('משחק זיכרון','Memory')}</h1><b class="qsc">${my} ${ll('שלישיות','sets')}</b></div>`;
@@ -3553,6 +3625,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   // the lake: swim around, answer the question, offer a theory
   if(S.ctr&&it.id===S.ctr.id){const mv=S.mv||(S.mv={});B.forEach(id=>{const o=mv[id]||{};if(Math.random()<.25)mv[id]={d:Math.random()<.35?'':brnd(['u','d','l','r']),s:S.ctr.sid,t:Math.random()<.08?Date.now():(o.t||0)}})}
   if(S.tw&&(it.id==='cover'||it.kind==='town'))twBots(B);
+  if(S.bz&&it.kind==='buzz'&&S.bz.ph==='q'){const q=S.bz.q;B.forEach(id=>once('bz'+S.bz.at+id,700+Math.random()*5000,()=>put(id,{['bz'+q]:Math.floor(Math.random()*4)})));if(q===2&&B.includes(S.bz.plant))once('bzp'+S.bz.at,3500,()=>{(S.hands||(S.hands={}))[S.bz.plant]=Date.now();bzPaint()})}
   const LB=S.lake;if(LB&&it.kind==='lake'){if(LB.phase==='land'||LB.phase==='oak')B.forEach((id,i)=>once('lkav'+LB.sid+id,600+i*500,()=>put(id,{av:(i*7+3)%LK_MINI})));if(LB.phase==='go')B.forEach(id=>{const P=LB.pos[id];if(!P)return;const[x,y]=lkT(P.x,P.y),d0=LK.dw[y]?.[x];let bd=null;if(d0>0)for(const[dx,dy,k]of[[0,-1,'u'],[1,0,'r'],[-1,0,'l'],[0,1,'d']]){const v=LK.dw[y+dy]?.[x+dx];if(v>=0&&v<d0){bd=k;break}}(S.mv||(S.mv={}))[id]={d:bd&&Math.random()<.85?bd:'',s:LB.sid}});if(LB.phase==='q')B.forEach(id=>once('lkv'+LB.sid+id,800+Math.random()*5000,()=>put(id,{['lkv'+LB.sid]:Math.random()<.75?1:2})));else if(LB.phase!=='done'&&LB.phase!=='go')B.forEach(id=>{const P=LB.pos[id],g=LB.gy,mv=S.mv||(S.mv={}),o=mv[id]||{};if(P&&g&&(LB.phase==='chase'||LB.phase==='rchase')){const[a,b]=lkT(P.x,P.y),[c,d]=lkT(g.x,g.y),ex=c-a,ey=d-b;
       if((ex===0||ey===0)&&Math.abs(ex)+Math.abs(ey)<=2&&Date.now()-(o.t||0)>1400&&Math.random()<.5){P.d=ex>0?'r':ex<0?'l':ey>0?'d':'u';mv[id]={d:'',s:LB.sid,t:Date.now()};return}
       if(Math.random()<.5)mv[id]={d:Math.abs(ex)>Math.abs(ey)?(ex>0?'r':'l'):(ey>0?'d':'u'),s:LB.sid,t:o.t||0};return}
