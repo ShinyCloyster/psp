@@ -709,7 +709,10 @@ function renderLetter(){
   $('#restart').onclick=()=>{if(!confirm(T('restartAsk')))return;try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
   $('#lcol').addEventListener('click',e=>{if(e.target.id==='notme'&&confirm(T('restartAsk'))){delete mem.me;save();location.reload()}});
   // swipe: in Hebrew the next page comes from the left, in English from the right
-  let x0=null,y0=0;const pg=$('#pg');pg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  let x0=null,y0=0;const pg=$('#pg');
+  // a swipe that starts inside something that scrolls sideways (the dates table) scrolls it, and never turns the page
+  const sideScroll=t=>{for(let el=t;el&&el!==pg;el=el.parentElement){if(el.scrollWidth>el.clientWidth+2&&/(auto|scroll)/.test(getComputedStyle(el).overflowX))return true}return false};
+  pg.addEventListener('touchstart',e=>{if(sideScroll(e.target)){x0=null;return}x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
   pg.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>Math.abs(dx))return;goPage(page+((dx>0)===RTL?1:-1))},{passive:true});
   goPage(Math.min(page,PAGES().length-1),true)}
 // how far you may go: past the route only after every stop, past the prep only after every item (an answered invitation is open)
