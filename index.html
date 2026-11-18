@@ -558,7 +558,12 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pq{background:radial-gradient(circle at 50% 40%,#262B4A 0%,#161A2E 70%);color:#F6F1E7}
 .pqeb{color:#F2C94C!important}.pqti{position:absolute;right:128px;top:126px;font-family:var(--display);font-size:68px;font-weight:400;color:#F6F1E7}
 .pqfig{position:absolute;right:110px;top:240px;width:540px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.pqimg{width:400px;height:400px;object-fit:contain}.pqname{font-family:var(--display);font-size:50px;line-height:1.1;text-align:center}
+.pqimg{width:400px;height:400px;object-fit:contain}
+.pq2{flex-direction:row;align-items:flex-start;gap:24px;width:600px;right:80px;top:265px}.pqti.pqti2{font-size:46px;max-width:760px}.pq2c{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+.pq2n{font-family:var(--display);font-size:36px;line-height:1.1;text-align:center;margin:4px 0 0}.pq2w{font-size:21px;line-height:1.35;color:var(--mist);text-align:center;margin:0}
+.pqar{position:absolute;top:-34px;font:700 22px var(--body);padding:3px 14px;border-radius:999px;z-index:2;animation:pqar .5s ease-out}.pqar.up{background:#5BC48A;color:#0E2A1B}.pqar.dn{background:#E5484D;color:#fff}
+.pq2p{font-size:20px;font-weight:700;text-align:center;margin:2px 0 0}.pq2p.up{color:#8EE0B0}.pq2p.dn{color:#FF8A8D}@keyframes pqar{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.en .pq2{right:auto;left:80px;top:300px}.en .pqti.pqti2{font-size:44px;max-width:560px}.pqname{font-family:var(--display);font-size:50px;line-height:1.1;text-align:center}
 .pqh{display:flex;flex-direction:column;gap:10px;width:100%}.pqh p{font-size:27px;line-height:1.38;text-align:center;color:#C9CCE0;opacity:0;transform:translateY(8px);transition:all .5s}.pqh p.on{opacity:1;transform:none}
 .pqopts{position:absolute;left:70px;top:320px;width:1060px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;direction:rtl}
 .pqo{background:rgba(255,255,255,.05);border:3px solid #3A4170;border-radius:22px;padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:all .4s}
@@ -1034,7 +1039,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795038616';
+const BUILDV='1795042161';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3751,9 +3756,21 @@ function castQ(h,t){const ids=castSeats()?.[t];if(!ids||ids.filter(Boolean).leng
     return `<div data-build-in="rise ${k}"${a}>${castCard(id,'n-water-obiwan','width:420px;height:420px;flex:none')}<p${p1}>${rl}${esc(LL(CAST.chars[id].n))}</p><p${p2.replace('style="','style="'+small)}>${rl}${esc(why)}</p></div>${castCard(id,'c-'+CAST_FR[t],st,'data-build-in="fade 5"')}`})}
 // stats and evolution quizzes: the item of each round takes the character in that seat (stats: the high pole for now)
 const PQ_ORIG={};
+// stats = PAIRS (round 44): the high and the low pole of the same stat side by side, which is which stays hidden until the reveal
+const PQ_POLE={hp:[['תקופה ארוכה של לחץ לא שוחקת אותו','A long stretch of pressure doesn’t wear them down'],['אחרי יום קשה צריך הרבה זמן להתאושש','After a hard day, they need a long time to recover']],
+ atk:[['ניגש ישר לעשייה','Goes straight to action'],['משאיר לאחרים את הביצוע בפועל','Leaves the actual doing to others']],def:[['לא מתקפל מול דרישות','Doesn’t fold under demands'],['קשה לו להגיד "לא"','Finds it hard to say “no”']],
+ spa:[['משכנע ברעיונות ובמילים','Persuades with ideas and words'],['מעדיף שהידיים ידברו','Prefers to let their hands do the talking']],spd:[['אווירה רעה לא נדבקת אליו','Bad vibes don’t stick to them'],['סופג את מצב הרוח של החדר','Absorbs the mood of the room']],
+ spe:[['פועל ראשון','Acts first'],['חושב הרבה לפני כל צעד','Thinks long and hard before every step']]};
+const PQ_PAIR_TI=['על איזה סטט הם בקצוות הפוכים?','Which stat are they at opposite ends of?'];
 function castApplyPQ(){const seats=castSeats();Object.entries({'pq-stats':k=>k+'+','pq-evo':k=>k}).forEach(([key,dk])=>{PQ_ORIG[key]=PQ_ORIG[key]||PQ[key].items.map(x=>({...x}));
-  PQ[key].items.forEach((it,j)=>{const o=PQ_ORIG[key][j],id=seats?.[dk(it.k)]?.[0];if(!id||!CAST?.chars[id]){Object.assign(it,o);delete it.cid;return}const r=castRow(id,dk(it.k))||[];
-    Object.assign(it,{cid:id,n:CAST.chars[id].n,h:[[r[4]||'',r[5]||'']]})})})}
+  PQ[key].items.forEach((it,j)=>{const o=PQ_ORIG[key][j];delete it.cid;delete it.pair;Object.assign(it,o);
+    const hi=seats?.[dk(it.k)]?.[0],lo=key==='pq-stats'?seats?.[it.k+'-']?.[0]:null,ok=x=>x&&CAST?.chars[x],why=(x,d)=>{const r=castRow(x,d)||[];return [r[4]||'',r[5]||'']};
+    if(ok(hi)&&ok(lo)){const a=CAST.chars[hi].n,b=CAST.chars[lo].n;Object.assign(it,{cid:hi,pair:[[hi,why(hi,it.k+'+'),1],[lo,why(lo,it.k+'-'),0]],n:[a[0]+' · '+b[0],a[1]+' · '+b[1]],h:[]});return}
+    const id=ok(hi)?hi:ok(lo)?lo:null;if(!id)return;const d=id===hi?dk(it.k):it.k+'-';Object.assign(it,{cid:id,n:CAST.chars[id].n,h:[why(id,d)]})})})}
+// which card stands on which side: random once per stat on the screen, so the high one isn't always first
+function pqPairHTML(it,rev){S.pqSide=S.pqSide||{};if(S.pqSide[it.k]==null)S.pqSide[it.k]=Math.random()<.5?0:1;const P=S.pqSide[it.k]?it.pair:[it.pair[1],it.pair[0]];
+  return `<div class="pqfig pq2">${P.map(([id,w,up])=>`<div class="pq2c">${rev?`<span class="pqar ${up?'up':'dn'}">${up?'▲ '+ll('גבוה','High'):'▼ '+ll('נמוך','Low')}</span>`:''}${castCard(id,'n-pq-mandela','width:250px;height:250px')}
+    <p class="pq2n">${esc(LL(CAST.chars[id].n))}</p><p class="pq2w">${esc(LL(w))}</p>${rev?`<p class="pq2p ${up?'up':'dn'}">${esc(LL(PQ_POLE[it.k][up?0:1]))}</p>`:''}</div>`).join('')}</div>`}
 function pqImgHTML(it,rev){return it.cid?castCard(it.cid,'n-pq-'+(PQ_ORIG['pq-stats']?.[0]?.img||'mandela'),'width:400px;height:400px','class="pqimg"'):`<img src="img/${rev?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg">`}
 // the automatic casting (same as app/cast_solve.py): min-cost flow. Every seat filled if at all possible, then the highest scores,
 // primary before secondary on a tie, 5 and under only as a last resort, each character once, at most 2 per animated-sitcom show.
@@ -3780,7 +3797,7 @@ function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.t0=Date.no
 function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.slide){clearInterval(S.pqT);return}
   if(!Q.revealed&&!Q.done){const n=pqBall(Q);if(n!==Q.stage){Q.stage=n;sfx('sfx-tink');gamePub()}
     const el=$('#pqclock');if(el){const l=Math.max(0,(Q.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/PQ_T*100;el.querySelector('span').innerHTML=`<img src="img/${QBALL[n][0]}.webp" alt="" style="width:30px;height:30px;image-rendering:pixelated;vertical-align:middle"> ${QBALL[n][2]}`}
-    if(Date.now()>Q.end)pqReveal()}},200)}
+    if(Date.now()>Q.end)pqReveal();else if(Q.key==='pq-stats'&&pqItem().pair){const ps=gamePlayers();if(ps.length&&ps.every(p=>S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i])&&!Q.allAt)Q.allAt=Date.now()+900;if(Q.allAt&&Date.now()>Q.allAt){Q.allAt=0;pqReveal()}}}},200)}
 function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;pqReveal()}
 function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;S.pqRev=S.pqRev||{};if(S.pqRev[Q.slide]){Q.got=S.pqRev[Q.slide];pqPaint();gamePub();return}S.pqRev[Q.slide]=Q.got;
   gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){const n=Q.at?.[p.id]||g.n||3;Q.scores[p.id]=(Q.scores[p.id]||0)+(4-n);Q.got.push([p.id,n]);const H=(S.pqHist=S.pqHist||{})[Q.key]||(S.pqHist[Q.key]={});(H[p.id]=H[p.id]||[]).push(n)}});
@@ -3797,20 +3814,20 @@ function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
   if(Q.intro){cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
     <div class="pqfig pqintro"><img src="img/it-poke-ball.webp" alt="" style="width:150px;height:150px;image-rendering:pixelated"><p>${P.set==='stats'?ll('תכף תופיע דמות. איזה סטט בולט אצלה?','A character is about to appear. Which stat stands out?'):ll('תכף תופיע דמות. איך היא התפתחה?','A character is about to appear. How did they evolve?')}</p><p class="pqsm">${ll(`${PQ_T} שניות לכל דמות. הכי מהר = הכי הרבה נקודות.`,`${PQ_T} seconds per character. Fastest = most points.`)}</p></div>
     <div class="pqopts">${opts.map(x=>`<div class="pqo"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`).join('')}</div>${board}</div>`;return}
-  cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(pqPosOf(Q.key,it.k)+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
-   <div class="pqfig">${pqImgHTML(it,Q.revealed)}<p class="pqname">${esc(LL(it.n))}</p>
-    <div class="pqh">${it.h.map((h,j)=>`<p class="on">${esc(LL(h))}</p>`).join('')}</div></div>
+  cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(pqPosOf(Q.key,it.k)+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti${it.pair?' pqti2':''}">${esc(LL(it.pair?PQ_PAIR_TI:P.ti))}</h2>
+   ${it.pair?pqPairHTML(it,Q.revealed):`<div class="pqfig">${pqImgHTML(it,Q.revealed)}<p class="pqname">${esc(LL(it.n))}</p>
+    <div class="pqh">${it.h.map((h,j)=>`<p class="on">${esc(LL(h))}</p>`).join('')}</div></div>`}
    <div class="pqopts">${opts.map(x=>{const past=!pqOpen().includes(x[0]);return `<div class="pqo ${Q.revealed&&x[0]===it.k?'hit':''} ${past?'past':''}"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`}).join('')}</div>
    ${Q.revealed?`<div class="pqans">${ll('התשובה:','The answer:')} <b>${pqLab(o)}</b> · ${esc(LL(o[2]))}</div>`:`<div id="pqclock" class="qclock pqclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>`}
    ${board}</div>`}
 function pqRowIn(Q){return qRowHTML(Q.key,gamePlayers(),p=>{const g=S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i],hit=Q.got?.find(x=>x[0]===p.id);return{bang:Q.done?'':Q.revealed?(g&&!hit?'…':''):(g?'!':''),balls:(S.pqHist?.[Q.key]||{})[p.id]||[]}})}
 function pqIn(){const Q=S.pq;if(!Q||cur()?.id!==Q.slide)return;if(!Q.revealed&&Q.t0){Q.at=Q.at||{};gamePlayers().forEach(p=>{if(S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]&&!Q.at[p.id])Q.at[p.id]=pqBall(Q)})}const b=$('.pqrow');if(!b||Q.revealed)return;const k=gamePlayers().map(p=>S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i]?1:0).join('');if(b.dataset.k===k)return;b.dataset.k=k;b.innerHTML=pqRowIn(Q)}
 function pqPhone(me,G){const P=PQ[G.key];if(!P)return '';const it=P.items[G.item],id=G.key+'-'+G.i,mine=(S.myG||{})['p'+id],my=G.scores?.[me.id]||0;
-  const head=`<p class="eyebrow">${P.eb} · ${(G.pos??G.i)+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
+  const head=`<p class="eyebrow">${P.eb} · ${(G.pos??G.i)+1}/${G.n}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${esc(LL(it?.pair?PQ_PAIR_TI:P.ti))}</h1><b class="qsc">${my} ${ll('נק׳','pts')}</b></div>`;
   if(G.done){const E=Object.entries(G.scores||{}),mx=Math.max(0,...E.map(x=>x[1])),tops=E.filter(x=>x[1]===mx&&mx>0).map(x=>esc(person(x[0])?.name||''));return head+`<div class="card center"><h2 style="margin:0">🏆 ${tops.join(' · ')||'—'}</h2><p class="muted" style="margin:6px 0 0">${ll(`צברת ${my} נקודות`,`You scored ${my} points`)}</p></div>`}
   const b=QBALL[G.stage];
   if(G.intro)return head+`<div class="card center"><p style="margin:0">${ll('מסתכלים על האפשרויות במסך: תכף מתחילים.','Look at the options on the screen: starting in a moment.')}</p></div>`;
-  if(G.revealed){const ok=mine&&mine.v===G.ans,o=pqOpt(P.set,G.ans);return head+`<div class="card center qres ${ok?'ok':'no'}"><p style="margin:0 0 4px;font-weight:700">${esc(LL(it.n))}</p><h2 style="margin:4px 0">${pqLab(o)}</h2>${ok?`<img src="img/${QBALL[mine.n][0]}.webp" alt="" style="width:64px;height:64px;image-rendering:pixelated"><p style="margin:4px 0 0"><b>${ll(`צדקת! ${4-mine.n} נק׳`,`Correct! ${4-mine.n} pts`)}</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}</p>`}</div>`}
+  if(G.revealed){const ok=mine&&mine.v===G.ans,o=pqOpt(P.set,G.ans);return head+`<div class="card center qres ${ok?'ok':'no'}"><p style="margin:0 0 4px;font-weight:700">${it.pair?it.pair.map(([id,w,up])=>`${up?'▲':'▼'} ${esc(LL(CAST.chars[id].n))}`).join(' · '):esc(LL(it.n))}</p><h2 style="margin:4px 0">${pqLab(o)}</h2><p class="muted" style="margin:0 0 6px;font-size:14px">${esc(LL(o[2]))}</p>${ok?`<img src="img/${QBALL[mine.n][0]}.webp" alt="" style="width:64px;height:64px;image-rendering:pixelated"><p style="margin:4px 0 0"><b>${ll(`צדקת! ${4-mine.n} נק׳`,`Correct! ${4-mine.n} pts`)}</b></p>`:`<p class="muted" style="margin:6px 0 0">${mine?ll('לא הפעם.','Not this time.'):ll('לא ניחשת הפעם.','No guess this time.')}</p>`}</div>`}
   return head+`<div class="card qnow"><img src="img/${b[0]}.webp" alt="" style="width:46px;height:46px;image-rendering:pixelated"><span><b>${esc(LL(it.n))}</b><br>${ll(`ניחוש נכון עכשיו: <b>${b[1]} · ${b[2]} נק׳</b>. מהר יותר = כדור טוב יותר.`,`A correct guess now: <b>${b[1]} · ${b[2]} pts</b>. Faster = a better ball.`)}<br><span class="gend" data-end="${G.end}"></span></span></div>
    <div class="qgrid pqgrid">${PQ_OPT[P.set].filter(o=>G.open.includes(o[0])).map(o=>`<button class="qt${mine?.v===o[0]?' on':''}" data-pq="${o[0]}" ${mine?'disabled':''}><img src="img/${o[3]}.webp" alt="" style="width:34px;height:34px;image-rendering:pixelated"><span>${pqLab(o)}</span><small style="font-weight:400;color:var(--mist);font-size:11px">${esc(LL(o[2]))}</small></button>`).join('')}</div>
    ${mine?`<p class="muted center" style="font-size:14px">${ll(`ניחשת <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. מחכים לחשיפה…`,`You guessed <b style="color:var(--cream)">${pqLab(pqOpt(P.set,mine.v))}</b>. Waiting for the reveal…`)}</p>`:''}`}
