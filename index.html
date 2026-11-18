@@ -77,6 +77,19 @@ p{margin:0}
 .labtab{flex:1;border:0;background:transparent;color:var(--mist);border-radius:10px;padding:10px 4px;font:500 15px var(--body);display:flex;align-items:center;justify-content:center;gap:6px}
 .labtab small{font-size:12px;background:var(--night3);border-radius:999px;padding:1px 7px}.labtab.on{background:var(--gold);color:#1B1A12;font-weight:700}.labtab.on small{background:rgba(0,0,0,.12)}
 .labnew{width:100%}.labempty{color:var(--mist);text-align:center;font-size:14px;margin:18px 0}.labnote{margin:0;font-size:14px;color:var(--mist);background:var(--night2);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+.cst{display:flex;flex-direction:column;gap:12px}.cst select{width:100%;min-height:44px;font:inherit;font-size:16px;background:var(--night3);border:1px solid var(--line);border-radius:10px;color:var(--cream);padding:8px 10px}
+.cstw{display:flex;flex-wrap:wrap;gap:6px}.cstw button{border:1px solid var(--line);background:var(--night3);color:var(--mist);border-radius:999px;padding:7px 11px;font:inherit;font-size:14px;cursor:pointer}.cstw button.on{background:rgba(242,201,76,.16);border-color:var(--gold);color:var(--cream)}
+.cstrep{border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5}.cstrep.ok{background:rgba(91,196,138,.14);border:1px solid rgba(91,196,138,.5)}.cstrep.bad{background:rgba(229,72,77,.14);border:1px solid rgba(229,72,77,.6)}
+.cstrep b{font-size:16px}.cstlow{color:#F2C94C}
+.csth{font:700 16px var(--body);display:flex;align-items:center;gap:7px;margin:4px 0}.csth img{width:26px;height:26px}.csth small{font-weight:400;color:var(--mist);font-size:12px}
+.cstrow{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid var(--line)}.csts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.csts.two{grid-template-columns:repeat(2,1fr)}
+.cseat{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--night3);border:1px solid var(--line);border-radius:12px;padding:7px 4px;color:var(--cream);font:inherit;cursor:pointer;min-height:118px}
+.cseat img{width:56px;height:56px;border-radius:50%}.cseat b{font-size:13px;line-height:1.2;text-align:center}.cseat small{font-size:11px;color:var(--mist);text-align:center;line-height:1.25}.cseat em{font-style:normal;font-size:11px;color:var(--gold)}
+.cseat.empty{border:2px dashed #E5484D;color:#FF8A8D;justify-content:center;background:rgba(229,72,77,.08)}.cseat.on{outline:3px solid var(--gold)}.cseat .low{color:#F2C94C}
+.cstc{background:var(--night2);border:1px solid var(--gold);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:5px}
+.cstc button{display:flex;align-items:center;gap:8px;background:var(--night3);border:1px solid var(--line);border-radius:10px;padding:6px 8px;color:var(--cream);font:inherit;font-size:14px;text-align:start;cursor:pointer}
+.cstc button img{width:38px;height:38px;border-radius:50%;flex:none}.cstc button span{flex:1}.cstc button small{display:block;color:var(--mist);font-size:12px}.cstc button.here{border-color:var(--gold)}.cstc .cx{justify-content:center;color:#FF8A8D}
+.cstwl{display:flex;flex-direction:column;gap:4px;font-size:13px}.cstwl div{background:var(--night3);border-radius:10px;padding:6px 10px}.cstwl b{font-size:14px}
 .labh{font-size:18px;color:var(--mist);margin:6px 0 -4px}.lab-l{font-weight:700;font-size:15px;margin:4px 0 -6px}.labsm{font-size:13px}.labcode{font:400 16px var(--pixel);color:var(--gold);direction:ltr}
 .labo{min-height:0!important;padding:8px 14px!important;flex-direction:row!important}
 .labdate{flex:1 1 150px;min-height:44px;font:inherit;font-size:16px;cursor:pointer;background:var(--night3);border:1px solid var(--line);border-radius:10px;color:var(--cream);padding:8px 10px;color-scheme:dark}
@@ -1021,7 +1034,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1794834397';
+const BUILDV='1795038616';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1132,7 +1145,7 @@ async function boot(){
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
   S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen())(S.hands||(S.hands={}))[d.id.slice(5)]=+d.data().at||0;if(d.id.startsWith('intro-')&&isScreen())(S.intros||(S.intros={}))[d.id.slice(6)]=String(d.data().t||'').slice(0,240)});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
-  S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;changed()},()=>{});
+  S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;if(!ROOM.legacy)castLoad().then(()=>castApplyPQ());changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
     q.docChanges().forEach(c=>{if(c.type==='removed')delete S.answers[c.doc.id]});
@@ -1212,6 +1225,53 @@ function invCard(v){const T=Object.values(v.team||{}).filter(x=>x&&x.ans!=='remo
    ${done?`<div class="labdone"><b>ההזמנה מוכנה. לשלוח ל${esc(v.subject)}:</b><div class="row" style="gap:8px;flex-wrap:wrap">${v.test?'':`<a class="btn small" style="text-decoration:none;background:#25D366;color:#0b2b17" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(invMsg(v,v.id))}">בוואטסאפ</a>`}<button class="btn ghost small" data-copy="${esc(invMsg(v,v.id))}">להעתיק</button></div></div>`:''}
    <div class="row" style="gap:8px;flex-wrap:wrap">${v.room?`<a class="btn small" href="#screen=${esc(v.room)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">🎮 הערב · ${esc(v.room)}</a>`:`<button class="btn small" data-inv="${esc(v.id)}">🎮 פתיחת הערב</button>`}
      <a class="btn ghost small" href="${esc(invLink(v,v.id))}" target="_blank" rel="noopener" style="text-decoration:none">לפתוח כנבדק</a><button class="btn ghost small" data-copy="${esc(invMsg(v,v.id))}">קישור לנבדק</button><button class="btn ghost small" data-invdel="${esc(v.id)}">מחיקה</button></div></div>`}
+// ---- the Lab's casting tab: pick an evening, pick the worlds, cast automatically, fix by hand. Saved per room as setup/<code>~asset-cast
+function castDimHe(d){const v=CAST.dims[d];return v?(EN?v[1]:v[2]):d}
+function castLabHTML(L){
+  if(!CAST){castLoad().then(()=>{if(S.labTab==='cast')roomsView()});return `<p class="labempty">טוען את הדמויות…</p>`}
+  const C=S.cs||(S.cs={room:'',worlds:CAST.worlds.map(w=>w[0]),seats:null,sel:null});
+  const rooms=L.filter(r=>r.code!==LEGACY_ROOM&&r.status!=='closed');
+  const wName=k=>(CAST.worlds.find(w=>w[0]===k)||[k,k])[1],ch=id=>CAST.chars[id];
+  const head=`<div class="card"><h2 style="margin:0 0 4px">🎭 ליהוק הדמויות</h2>
+   <p class="muted" style="margin:0 0 10px;font-size:14px">73 מושבים: 18 סוגים × 3, ו-6 סטטים × 2 קטבים, ו-7 דרכי התפתחות. בוחרים עולמות, והמערכת משבצת לפי הציון: כל דמות פעם אחת, ראשי לפני נוסף, ציון 5 ומטה רק אם אין ברירה.</p>
+   <label class="lab-l" for="cs-room">לאיזה ערב?</label>
+   <select id="cs-room" onchange="castPickRoom(this.value)"><option value="">רק לנסות (לא נשמר)</option>${rooms.map(r=>`<option value="${esc(r.code)}" ${C.room===r.code?'selected':''}>${esc(r.subject||'')} · ${esc(r.code)}${r.rehearsal?' · 🧪':''}</option>`).join('')}</select>
+   <p class="np-h" style="margin-top:12px">עולמות התוכן <small class="muted">(${C.worlds.length} מתוך ${CAST.worlds.length})</small></p>
+   <div class="cstw">${CAST.worlds.map(([k,he])=>`<button class="${C.worlds.includes(k)?'on':''}" data-cw="${k}">${C.worlds.includes(k)?'✓ ':''}${esc(he)}</button>`).join('')}</div>
+   <div class="row" style="gap:8px;margin-top:12px"><button class="btn grow" data-crun="1">🎲 שבץ אוטומטית</button><button class="btn ghost small" data-call="1">${C.worlds.length===CAST.worlds.length?'נקה הכול':'בחר הכול'}</button></div>
+   ${C.room&&C.seats?`<p class="muted" style="font-size:12px;margin:8px 0 0">${C.saved?'✓ נשמר לערב '+esc(C.room)+'. השקפים של הסוגים, הסטטים וההתפתחות יציגו את הליהוק הזה.':'שומר…'}</p>`:''}</div>`;
+  if(!C.seats)return `<div class="cst">${head}</div>`;
+  const S2=C.seats,all=Object.entries(CAST.dims),need=all.reduce((a,[d,v])=>a+v[3],0),empties=[],low=[];let got=0;
+  all.forEach(([d,v])=>{const L2=S2[d]||[];got+=L2.filter(Boolean).length;for(let i=0;i<v[3];i++)if(!L2[i])empties.push(castDimHe(d));L2.forEach(id=>{const r=id&&castRow(id,d);if(r&&r[3]<=5)low.push(`${ch(id).n[0]} (${castDimHe(d)}, ${r[3]})`)})});
+  const rep=`<div class="cstrep ${empties.length?'bad':'ok'}"><b>${empties.length?`⚠️ ${got} מתוך ${need} מושבים מלאים`:`✅ כל ${need} המושבים מלאים, בלי כפילויות`}</b>
+   ${empties.length?`<br>חסר: ${empties.map(esc).join(' · ')}<br><small>כדאי להוסיף עולם, או לשבץ ידנית דמות עם מימד נוסף.</small>`:''}${low.length?`<br><span class="cstlow">גיבוי אחרון (ציון 5 ומטה): ${low.map(esc).join(' · ')}</span>`:''}</div>`;
+  const seat=(d,i)=>{const id=(S2[d]||[])[i],on=C.sel===d+'|'+i;if(!id)return `<button class="cseat empty ${on?'on':''}" data-cs="${d}|${i}">ריק<small>לחיצה לבחירה</small></button>`;
+    const r=castRow(id,d)||[];return `<button class="cseat ${on?'on':''}" data-cs="${d}|${i}"><img src="img/ch/${id}.webp" alt=""><b>${esc(ch(id).n[0])}</b><small>${esc(wName(ch(id).w))}</small><em class="${r[3]<=5?'low':''}">${r[3]}${r[2]==='S'?' · נוסף':''}</em></button>`};
+  const cands=d=>{if(!C.sel||C.sel.split('|')[0]!==d)return '';const [dd,ii]=C.sel.split('|'),cur=(S2[dd]||[])[+ii],W=new Set(C.worlds);
+    const where=id=>Object.entries(S2).find(([x,L2])=>(L2||[]).includes(id));
+    const rs=CAST.rows.filter(r=>r[1]===d&&W.has(ch(r[0]).w)).sort((a,b)=>b[3]-a[3]||(a[2]==='P'?-1:1));
+    return `<div class="cstc"><small class="muted">מי יכול לשבת ב${esc(castDimHe(d))}? (מהעולמות שנבחרו)</small>${rs.map(r=>{const w=where(r[0]);
+      return `<button class="${r[0]===cur?'here':''}" data-cc="${r[0]}"><img src="img/ch/${r[0]}.webp" alt=""><span>${esc(ch(r[0]).n[0])} · ${r[3]}${r[2]==='S'?' · נוסף':''}<small>${esc(wName(ch(r[0]).w))}${w?` · ${w[0]===d?'יושב כאן':'יושב ב'+esc(castDimHe(w[0]))+', יעבור לכאן'}`:' · פנוי'}</small></span></button>`}).join('')||'<p class="muted">אין אף אחד בעולמות שנבחרו.</p>'}
+      ${cur?`<button class="cx" data-cx="1">רוקן את המושב</button>`:''}</div>`};
+  const types=all.filter(([d,v])=>v[0]==='type').map(([d])=>`<div class="cstrow"><div class="csth"><img src="img/ic-${d}.webp" alt="">${esc(castDimHe(d))} <small>${esc(CAST.dims[d][1])}</small></div><div class="csts">${[0,1,2].map(i=>seat(d,i)).join('')}</div>${cands(d)}</div>`).join('');
+  const stats=['hp','atk','def','spa','spd','spe'].map(k=>`<div class="cstrow"><div class="csth">${esc(CAST.dims[k+'+'][1].replace('High ',''))} <small>גבוה · נמוך</small></div><div class="csts two">${seat(k+'+',0)}${seat(k+'-',0)}</div>${cands(k+'+')}${cands(k+'-')}</div>`).join('');
+  const evo=all.filter(([d,v])=>v[0]==='evo').map(([d])=>`<div class="cstrow"><div class="csth">${esc(castDimHe(d))} <small>${esc(CAST.dims[d][1])}</small></div><div class="csts">${seat(d,0)}</div>${cands(d)}</div>`).join('');
+  const inW={};Object.entries(S2).forEach(([d,L2])=>(L2||[]).forEach(id=>{if(id)(inW[ch(id).w]=inW[ch(id).w]||[]).push(ch(id).n[0])}));
+  const wl=`<div class="card"><h3 style="margin:0 0 8px">מי נכנס מכל עולם</h3><div class="cstwl">${C.worlds.map(k=>`<div><b>${esc(wName(k))}</b> (${(inW[k]||[]).length}): ${(inW[k]||[]).map(esc).join(', ')||'—'}</div>`).join('')}</div></div>`;
+  return `<div class="cst">${head}${rep}<div class="card"><h3 style="margin:0">סוגים · 54</h3>${types}</div><div class="card"><h3 style="margin:0">סטטים · 12</h3>${stats}</div><div class="card"><h3 style="margin:0">התפתחות · 7</h3>${evo}</div>${wl}</div>`}
+async function castSave(){const C=S.cs;if(!C.room||!C.seats)return;C.saved=false;try{await S.db.raw.doc('setup/'+C.room+'~asset-cast').set({worlds:C.worlds,seats:C.seats,at:Date.now()});C.saved=true}catch(e){console.error(e);toast('לא נשמר')}if(S.labTab==='cast')roomsView()}
+async function castPickRoom(code){const C=S.cs;C.room=code;C.sel=null;C.saved=false;
+  if(code){const d=await rawOnce('setup/'+code+'~asset-cast');if(d&&d.seats){C.worlds=d.worlds||CAST.worlds.map(w=>w[0]);C.seats=d.seats;C.saved=true}else{C.seats=castSolve(C.worlds);castSave()}}
+  roomsView()}
+async function castLabClick(b){const C=S.cs;if(!C)return false;const ds=b.dataset;
+  if(ds.cw){const i=C.worlds.indexOf(ds.cw);if(i>=0)C.worlds.splice(i,1);else C.worlds.push(ds.cw);C.worlds.sort((a,b)=>CAST.worlds.findIndex(w=>w[0]===a)-CAST.worlds.findIndex(w=>w[0]===b));roomsView();return true}
+  if(ds.call){C.worlds=C.worlds.length===CAST.worlds.length?[]:CAST.worlds.map(w=>w[0]);roomsView();return true}
+  if(ds.crun){if(!C.worlds.length){toast('קודם בוחרים עולם');return true}C.seats=castSolve(C.worlds);C.sel=null;roomsView();castSave();return true}
+  if(ds.cs){C.sel=C.sel===ds.cs?null:ds.cs;roomsView();return true}
+  if(ds.cc||ds.cx){const [d,i]=C.sel.split('|'),L2=C.seats[d]||(C.seats[d]=[]);
+    if(ds.cc){Object.values(C.seats).forEach(X=>{const j=(X||[]).indexOf(ds.cc);if(j>=0)X[j]=null});L2[+i]=ds.cc}else L2[+i]=null;
+    C.sel=null;roomsView();castSave();return true}
+  return false}
 function roomsView(){
   const app=$('#app');app.hidden=false;invSub();S.ni=S.ni||{n:'',g:'m',lang:'he',dates:[],place:INV_PLACE,ps:'',time:'20:00'};
   if(!S.db||!S.userReady){app.innerHTML=`<div class="col"><p class="eyebrow">PSP · SCREEN</p><h1>מתחבר…</h1></div>`;return}
@@ -1236,17 +1296,19 @@ function roomsView(){
   const roomCard=r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span class="labcode">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🧪 ניסוי'+(r.fast?' ⏩':''):''}</p>
    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול ותמונות</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length} מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`;
   const empty=t=>`<p class="labempty">${t}</p>`;
-  const body=tab==='inv'?`${S.niOpen?invForm():`<button class="btn labnew" data-niopen="0">+ הזמנה חדשה</button>`}${invs.map(invCard).join('')||empty('עוד אין הזמנות. כל הזמנה מתחילה כאן, וממשיכה עד הערב עצמו.')}`
+  let body=tab==='cast'?'':tab==='inv'?`${S.niOpen?invForm():`<button class="btn labnew" data-niopen="0">+ הזמנה חדשה</button>`}${invs.map(invCard).join('')||empty('עוד אין הזמנות. כל הזמנה מתחילה כאן, וממשיכה עד הערב עצמו.')}`
     :tab==='eve'?`${S.nrOpen?roomForm():`<button class="btn labnew" data-nropen="0">+ ערב חדש</button>`}${evs.map(roomCard).join('')||empty('עוד אין ערבים.')}`
     :`<p class="labnote">🧪 ניסוי הוא הרצה לבדיקה: חברים מדומים עונים לבד, ושום הודעה לא נשלחת באמת.</p>
      ${S.niOpen?invForm():S.nrOpen?roomForm():`<div class="row" style="gap:8px"><button class="btn labnew grow" data-niopen="1">+ הזמנת ניסוי</button><button class="btn labnew grow" data-nropen="1">+ ערב ניסוי</button></div>`}
      ${tinv.length?`<h3 class="labh">הזמנות</h3>${tinv.map(invCard).join('')}`:''}${tevs.length?`<h3 class="labh">ערבים</h3>${tevs.map(roomCard).join('')}`:''}${!tinv.length&&!tevs.length?empty('אין ניסויים פתוחים.'):''}`;
-  const cnt={inv:invs.length,eve:evs.length,test:tinv.length+tevs.length};
+  if(tab==='cast'){body=castLabHTML(L)}
+  const cnt={inv:invs.length,eve:evs.length,test:tinv.length+tevs.length,cast:CAST?Object.keys(CAST.chars).length:''};
   app.innerHTML=`<div class="col lab"><div class="labhead"><img src="img/tr-oak.webp" alt=""><div><h1>המעבדה של אוק</h1><p class="muted">הזמנות, ערבים וניסויים, במקום אחד.</p></div></div>
-  <div class="labtabs">${[['inv','✉️ הזמנות'],['eve','🎮 ערבים'],['test','🧪 ניסויים']].map(([k,nm])=>`<button class="labtab${tab===k?' on':''}" data-labtab="${k}">${nm}<small>${cnt[k]}</small></button>`).join('')}</div>
+  <div class="labtabs">${[['inv','✉️ הזמנות'],['eve','🎮 ערבים'],['test','🧪 ניסויים'],['cast','🎭 ליהוק']].map(([k,nm])=>`<button class="labtab${tab===k?' on':''}" data-labtab="${k}">${nm}<small>${cnt[k]}</small></button>`).join('')}</div>
   ${body}</div>`;
   app.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.labtab){S.labTab=b.dataset.labtab;roomsView();return}
+    if(b.closest('.cst')&&await castLabClick(b))return;
     if(b.dataset.fill){S.fillOpen=S.fillOpen===b.dataset.fill?null:b.dataset.fill;S.fln='';S.flp=null;roomsView();return}
     if(b.dataset.flg){S.flg=b.dataset.flg;roomsView();return}
     if(b.dataset.fladd){const n=String(S.fln||'').trim().slice(0,30);if(!n){toast('מה השם?');return}const k=invId().slice(0,8);
@@ -1981,6 +2043,7 @@ function slideHTML(h){
   if(S.setup?.gender==='f')[['שהנבדק קבע','שהנבדקת קבעה'],['הנבדק עצמו','הנבדקת עצמה'],['הנבדק','הנבדקת'],['ערי מספר ','ערי מספרת '],['כשערי ישלח','כשערי תשלח']].forEach(([x,y])=>{h=h.split(x).join(y)});
   const n=subjectName();if(EN){if(n&&n!=='Eri'&&n!=='ערי')h=h.replace(/\bEri(?=[’'\s.,?!:])/g,esc(n))}else if(n&&n!=='ערי')h=h.split('ערי').join(n);
   if(ROOM.code&&!ROOM.legacy){
+    const qm=CAST&&h.match(/^\s*<section id="q-([a-z]+)"/);if(qm)h=castQ(h,qm[1]);
     TR_KEYS.forEach((k,i)=>{if(!h.includes('tr-eri-'+k+'.webp'))return;const a=S.assets?.['tr-'+(i+1)];
       h=h.replace(new RegExp('img/tr-eri-'+k+'\\.webp','g'),a?.data||'img/tr-silhouette.webp');
 });
@@ -2213,7 +2276,7 @@ async function startScreen(){
   document.body.insertAdjacentHTML('beforeend',`<div class="screen" id="scr"><div class="canvas" id="cv"></div></div><button class="gear" id="gear" aria-label="פאנל מארח">⚙</button><div class="panel card" id="panel" hidden></div>`);
   fit();window.addEventListener('resize',fit);
   $('#cv').innerHTML=`<div class="st"><div class="center"><div class="ball wobble" style="--s:180px"></div>${ll(`<p class="lead">טוען את המצגת…</p>`,`<p class="lead">Loading the presentation…</p>`)}</div></div>`;
-  const [sl,en,sp]=await Promise.all([fetch((EN?'slides_en.json':'slides.json')+'?v='+BUILDV).then(r=>r.json()),fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json()).catch(()=>({}))]);
+  const [sl,en,sp]=await Promise.all([fetch((EN?'slides_en.json':'slides.json')+'?v='+BUILDV).then(r=>r.json()),fetch('engine.json?v='+BUILDV).then(r=>r.json()),fetch('sprites.json?v='+BUILDV).then(r=>r.json()).catch(()=>({})),ROOM.legacy?null:castLoad()]);
   S.slides=sl;S.engine=engFor(en);S.sprites=sp;
   for(let w=0;w<40&&!S.stateLoaded;w++)await new Promise(r=>setTimeout(r,100));
   buildSeq();
@@ -3670,6 +3733,45 @@ function pqNum(id){const m=id.match(/^(st|ev)-([a-z]+)$/)||(id==='h-noevo'?[0,'e
 function pqEnter(id){const r=PQ_ROUND(id);if(r){S.pq={key:r.key,slide:id,ord:PQ[r.key].items.map((_,i)=>i),i:r.i,stage:1,revealed:false,done:false,scores:pqScores(r.key),end:0,got:[]};const done=S.pqRev?.[id];if(!done&&pqPosOf(r.key,PQ[r.key].items[r.i].k)===0){S.pq.intro=true;clearInterval(S.pqT);pqPaint();gamePub();return}if(done){Object.assign(S.pq,{stage:3,revealed:true,got:done});clearInterval(S.pqT);pqPaint();gamePub();return}pqRound();return}
   if(PQ[id]){S.pq={key:id,slide:id,ord:PQ[id].items.map((_,i)=>i),i:PQ[id].items.length-1,stage:3,revealed:true,done:true,scores:pqScores(id),end:0,got:[]};clearInterval(S.pqT);leagueSet(id,S.pq.scores);if(cur()?.final){gamePub();$('#cv').innerHTML=leagueHTML();return}pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}}
 function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
+// ---- CASTING (round 43): the characters of the types, stats and evolution games come from the room's cast.
+// cast.json (app/cast_build.py, from the sheet's "ליהוק" tab): worlds, dims {key:[kind,en,he,seats]}, chars {id:{w,n,f,s}}, rows [id,dim,P|S,score,why he,why en], def = the cast of all worlds.
+// A room's own cast: setup/<code>~asset-cast {worlds, seats:{dim:[ids]}}, made in the Lab's casting tab. ERI1 keeps its fixed slides.
+let CAST=null,CAST_P=null;
+function castLoad(){if(CAST)return Promise.resolve(CAST);return CAST_P||(CAST_P=fetch('cast.json?v='+BUILDV).then(r=>r.json()).then(d=>(CAST=d)).catch(()=>{CAST_P=null;return null}))}
+const CAST_FR={bug:'bug-hiccup',dark:'dark-catwoman',dragon:'dragon-simba',electric:'electric-genie',fairy:'fairy-leia',fighting:'fighting-mulan',fire:'fire-freddie',flying:'flying-moana',ghost:'ghost-snape',
+ grass:'grass-hagrid',ground:'ground-gimli',ice:'ice-elsa',normal:'normal-samwise',poison:'poison-house',psychic:'psychic-luna',rock:'rock-carl',steel:'steel-monica',water:'water-obiwan'};
+const castRow=(id,dim)=>CAST?.rows.find(r=>r[0]===id&&r[1]===dim);
+function castSeats(){if(!CAST||ROOM.legacy)return null;return S.assets?.cast?.seats||CAST.def}
+// a card = the old frame picture with the round photo on top (frame: n-* neutral, c-<type>-* in the type's colour)
+function castCard(id,frame,st,attrs){return `<div class="chc" ${attrs||''} style="position:relative;${st||''}"><img src="img/${frame}.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"><img src="img/ch/${id}.webp" alt="${esc(LL(CAST.chars[id]?.n||['','']))}" style="position:absolute;left:11.4%;top:11.4%;width:77.2%;height:77.2%;border-radius:50%"></div>`}
+// q-<type>: swap the three characters (photo, name, the line of the row they were cast through) for the room's
+function castQ(h,t){const ids=castSeats()?.[t];if(!ids||ids.filter(Boolean).length<3||!CAST_FR[t])return h;let i=0;
+  return h.replace(/<div data-build-in="rise (\d)"([^>]*)>\s*<img src="img\/n-[a-z]+-[a-z]+\.webp"[^>]*>\s*<p([^>]*)>[^<]*<\/p>\s*<p([^>]*)>[^<]*<\/p>\s*<\/div>\s*<img data-build-in="fade 5" src="img\/c-[a-z]+-[a-z]+\.webp"[^>]*style="([^"]*)">/g,(m,k,a,p1,p2,st)=>{
+    const id=ids[i++];if(!id||!CAST.chars[id])return m;const r=castRow(id,t)||[],why=LL([r[4]||'',r[5]||'']),rl=EN?'':'‫',small=why.length>80?'font-size:23px;':why.length>52?'font-size:26px;':'';
+    return `<div data-build-in="rise ${k}"${a}>${castCard(id,'n-water-obiwan','width:420px;height:420px;flex:none')}<p${p1}>${rl}${esc(LL(CAST.chars[id].n))}</p><p${p2.replace('style="','style="'+small)}>${rl}${esc(why)}</p></div>${castCard(id,'c-'+CAST_FR[t],st,'data-build-in="fade 5"')}`})}
+// stats and evolution quizzes: the item of each round takes the character in that seat (stats: the high pole for now)
+const PQ_ORIG={};
+function castApplyPQ(){const seats=castSeats();Object.entries({'pq-stats':k=>k+'+','pq-evo':k=>k}).forEach(([key,dk])=>{PQ_ORIG[key]=PQ_ORIG[key]||PQ[key].items.map(x=>({...x}));
+  PQ[key].items.forEach((it,j)=>{const o=PQ_ORIG[key][j],id=seats?.[dk(it.k)]?.[0];if(!id||!CAST?.chars[id]){Object.assign(it,o);delete it.cid;return}const r=castRow(id,dk(it.k))||[];
+    Object.assign(it,{cid:id,n:CAST.chars[id].n,h:[[r[4]||'',r[5]||'']]})})})}
+function pqImgHTML(it,rev){return it.cid?castCard(it.cid,'n-pq-'+(PQ_ORIG['pq-stats']?.[0]?.img||'mandela'),'width:400px;height:400px','class="pqimg"'):`<img src="img/${rev?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg">`}
+// the automatic casting (same as app/cast_solve.py): min-cost flow. Every seat filled if at all possible, then the highest scores,
+// primary before secondary on a tie, 5 and under only as a last resort, each character once, at most 2 per animated-sitcom show.
+function castSolve(worlds){const W=new Set(worlds),C=CAST.chars,rows=CAST.rows.filter(r=>W.has(C[r[0]]?.w));
+  const id=new Map(),G=[],nd=k=>{if(!id.has(k)){id.set(k,G.length);G.push([])}return id.get(k)};
+  const add=(u,v,c,w)=>{const a=nd(u),b=nd(v);G[a].push([b,c,w,G[b].length]);G[b].push([a,0,-w,G[a].length-1])};
+  const wt=(s,p)=>(s>5?s*10:s)*10+(p==='P'?5:0),shows={};
+  rows.forEach(r=>{add('c'+r[0],'d'+r[1],1,-(100000+wt(r[3],r[2])))});
+  [...new Set(rows.map(r=>r[0]))].forEach(c=>{const s=C[c].s;if(s){const k='g'+C[c].w+s;if(!shows[k]){shows[k]=1;add('s',k,2,0)}add(k,'c'+c,1,0)}else add('s','c'+c,1,0)});
+  Object.entries(CAST.dims).forEach(([d,v])=>add('d'+d,'t',v[3],0));
+  const s=nd('s'),t=nd('t'),N=G.length;
+  for(;;){const dist=new Array(N).fill(Infinity),pv=new Array(N).fill(null),inq=new Array(N).fill(false),q=[s];dist[s]=0;
+    while(q.length){const u=q.shift();inq[u]=false;G[u].forEach((e,i)=>{if(e[1]>0&&dist[u]+e[2]<dist[e[0]]){dist[e[0]]=dist[u]+e[2];pv[e[0]]=[u,i];if(!inq[e[0]]){inq[e[0]]=true;q.push(e[0])}}})}
+    if(!(dist[t]<0))break;let v=t;while(v!==s){const [u,i]=pv[v];G[u][i][1]--;G[v][G[u][i][3]][1]++;v=u}}
+  const seats={};Object.keys(CAST.dims).forEach(d=>seats[d]=[]);
+  rows.forEach(r=>{const a=id.get('c'+r[0]),b=id.get('d'+r[1]);if(G[a].some(e=>e[0]===b&&e[1]===0&&e[2]<0)&&!seats[r[1]].includes(r[0]))seats[r[1]].push(r[0])});
+  Object.entries(seats).forEach(([d,L])=>L.sort((x,y)=>(castRow(y,d)?.[3]||0)-(castRow(x,d)?.[3]||0)));
+  return seats}
 // every round keeps all the options: with only 6 answers, crossing out the past ones would hand away the last rounds
 function pqOpen(){const Q=S.pq,P=PQ[Q.key];return PQ_OPT[P.set].map(o=>o[0])}
 // one 15-second window with all the text showing: the first third is an Ultra Ball, the next a Great Ball, the last a Poké Ball
@@ -3696,7 +3798,7 @@ function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
     <div class="pqfig pqintro"><img src="img/it-poke-ball.webp" alt="" style="width:150px;height:150px;image-rendering:pixelated"><p>${P.set==='stats'?ll('תכף תופיע דמות. איזה סטט בולט אצלה?','A character is about to appear. Which stat stands out?'):ll('תכף תופיע דמות. איך היא התפתחה?','A character is about to appear. How did they evolve?')}</p><p class="pqsm">${ll(`${PQ_T} שניות לכל דמות. הכי מהר = הכי הרבה נקודות.`,`${PQ_T} seconds per character. Fastest = most points.`)}</p></div>
     <div class="pqopts">${opts.map(x=>`<div class="pqo"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`).join('')}</div>${board}</div>`;return}
   cv.innerHTML=`<div class="st pq"><p class="bteb pqeb" dir="ltr">${P.eb} · ${String(pqPosOf(Q.key,it.k)+1).padStart(2,'0')}/${String(Q.ord.length).padStart(2,'0')}</p><h2 class="pqti">${esc(LL(P.ti))}</h2>
-   <div class="pqfig"><img src="img/${Q.revealed?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg"><p class="pqname">${esc(LL(it.n))}</p>
+   <div class="pqfig">${pqImgHTML(it,Q.revealed)}<p class="pqname">${esc(LL(it.n))}</p>
     <div class="pqh">${it.h.map((h,j)=>`<p class="on">${esc(LL(h))}</p>`).join('')}</div></div>
    <div class="pqopts">${opts.map(x=>{const past=!pqOpen().includes(x[0]);return `<div class="pqo ${Q.revealed&&x[0]===it.k?'hit':''} ${past?'past':''}"><img src="img/${x[3]}.webp" alt=""><b>${pqLab(x)}</b><span>${esc(LL(x[2]))}</span></div>`}).join('')}</div>
    ${Q.revealed?`<div class="pqans">${ll('התשובה:','The answer:')} <b>${pqLab(o)}</b> · ${esc(LL(o[2]))}</div>`:`<div id="pqclock" class="qclock pqclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>`}
