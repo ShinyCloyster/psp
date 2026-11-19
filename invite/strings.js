@@ -407,7 +407,7 @@ window.INV_TEXT = {
     // "not sure yet": Oak answers the usual worries (q = the question, a = Oak's answer)
     faqLead: { m: 'על מה תרצה לשאול את אוק?', f: 'על מה תרצי לשאול את אוק?' },
     faq: [
-      { q: '3 שעות שכולן עליי? זה מביך.', a: { m: 'רוב הערב הוא משחקים של כולם, ויש 3 הפסקות. אתה לא על הבמה כל הזמן: רוב הזמן כולם משחקים, צוחקים ומנחשים ביחד. ואם צריך, אפשר גם ערב מקוצר.', f: 'רוב הערב הוא משחקים של כולם, ויש 3 הפסקות. את לא על הבמה כל הזמן: רוב הזמן כולם משחקים, צוחקים ומנחשים ביחד. ואם צריך, אפשר גם ערב מקוצר.' } },
+      { q: '3 שעות שכולן עליי? זה מביך.', a: { m: 'רוב הערב הוא משחקים של כולם, ויש 3 הפסקות. אתה לא על הבמה כל הזמן: רוב הזמן כולם משחקים, צוחקים ומנחשים ביחד.', f: 'רוב הערב הוא משחקים של כולם, ויש 3 הפסקות. את לא על הבמה כל הזמן: רוב הזמן כולם משחקים, צוחקים ומנחשים ביחד.' } },
       { q: 'אני לא בקטע של פוקימון.', a: 'לא צריך להכיר אף פוקימון. הכול מוסבר מאפס, והמשחקים בנויים על דמויות מוכרות מהתרבות, לא על ידע בפוקימון.' },
       { q: 'זה מבחן אישיות?', a: 'לא. PSP היא פרדיגמה, לא אמת: משקפיים שמאפשרים להגיד משהו על מישהו, בלי לטעון שזה כל מה שיש בו. הערב אפילו מתחיל מלהסביר את ההבדל.' },
       { q: 'כמה הכנה זה דורש?', a: 'רק לבחור 3 מאמנים ולכתוב לעצמך כמה נקודות על כל אחד. את כל השאר {host} מכין.' },
@@ -883,7 +883,7 @@ window.INV_TEXT = {
     waYes: 'Hi {host}, Dragonite delivered the invitation and I’m in! So when do we find my Pokémon?',
     faqLead: 'What would you like to ask Oak?',
     faq: [
-      { q: '3 hours all about me? That’s awkward.', a: 'Most of the evening is games for everyone, and there are 3 breaks. You’re not on stage the whole time: mostly everyone plays, laughs and guesses together. And if needed, there’s a shorter version.' },
+      { q: '3 hours all about me? That’s awkward.', a: 'Most of the evening is games for everyone, and there are 3 breaks. You’re not on stage the whole time: mostly everyone plays, laughs and guesses together.' },
       { q: 'I’m not into Pokémon.', a: 'You don’t need to know a single Pokémon. Everything is explained from scratch, and the games are built on familiar characters from pop culture, not Pokémon knowledge.' },
       { q: 'Is this a personality test?', a: 'No. PSP is a paradigm, not the truth: glasses that let us say something about someone, without claiming it’s all there is to them. The evening even starts by explaining the difference.' },
       { q: 'How much preparation is it?', a: 'Just choosing 3 trainers and jotting down a few points on each. {host} prepares everything else.' },
