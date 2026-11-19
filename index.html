@@ -1092,7 +1092,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795090501';
+const BUILDV='1795094246';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3019,7 +3019,7 @@ const twOk=(T,x,y)=>x>=0&&y>=0&&y<T.map.length&&x<T.map[0].length&&T.map[y][x]==
 // round 48: mini cliffs. 'L' = the ground just below a cliff edge (the edge runs along its top): stepping DOWN into it is a little jump (one tile, a hop),
 // leaving it UP is blocked; sideways and from below it is ordinary ground. '>' / '<' = a sideways cliff tile jumped over to the right / left (two tiles).
 // where the feet are drawn: about two thirds down the character's tile (Eyal: lower looked like standing on the trees, higher like standing on the houses)
-const TW_FEET=1.4;
+const TW_FEET=.68;
 const TW_D={r:[1,0],l:[-1,0],d:[0,1],u:[0,-1]};
 const twWalk=(T,x,y)=>{const c=T.map[y]?.[x];return c==='g'||c==='L'};
 // one step from a tile in a direction: {to:[x,y], jump} or null (a wall, or climbing up a cliff)
