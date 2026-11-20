@@ -746,7 +746,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .scmap.off{opacity:0;pointer-events:none}.scmap.pop{animation:svgrow .7s cubic-bezier(.2,.8,.3,1)}
 .scmapin{position:absolute;left:0;top:0;width:946px;height:704px;transform-origin:0 0;transition:transform 1.1s ease-in-out}
 .scmapin .tm{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
-.scst.talk .lectmini{animation:sctalk .26s steps(2) infinite}
+.scst.talk .lectmini,.scst.talk .oaksp{animation:sctalk .26s steps(2) infinite}
+.scvis{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:10px}.scvis.in{animation:svin .6s ease-out both}.scvis svg{width:380px;height:380px}.scvis>div:has(img[src*='img/t-']){zoom:.62}
 @keyframes sctalk{50%{translate:0 -10%}}
 .sctile>div[style*="#161A2E"]{border:2px solid #3A3F5C}
 .scbdg{position:absolute;width:48px;height:48px;object-fit:contain;transform:translate(-50%,-50%) scale(0);transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .4s,filter .4s;filter:drop-shadow(0 3px 0 rgba(0,0,0,.45))}
@@ -1140,7 +1141,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795178717';
+const BUILDV='1795200575';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2471,7 +2472,9 @@ const PLAN=ROOM.legacy?PLAN_OLD:[['open',ll('פתיחה','Opening'),7,'cover'],[
  ['c3',ll('חלק 3','Part 3'),14,'x-part-3'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['c3b',ll('חלק 3 · המשך','Part 3 · continued'),14,'f-divider-2'],['r3',ll('סבב 3 ומיו','Round 3 and Mew'),10,'x-round-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],
  ['c4',ll('חלק 4','Part 4'),11,'x-part-4'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['c4b',ll('חלק 4 · המשך','Part 4 · continued'),10,'h-divider'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
-function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===SEQ[i].id);if(p)seg=p[0]}return seg}
+// a dialogue scene stands where its part's opening slide was
+const planId=it=>it?.kind==='scene'?SC[it.id].drop[0]:it?.id;
+function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===planId(SEQ[i]));if(p)seg=p[0]}return seg}
 const planOf=k=>PLAN.find(x=>x[0]===k);
 // where we are against the plan, from the deck doc the screen keeps up to date
 // lateness = time actually spent in each finished part minus its plan, plus any overrun of the current part
@@ -2483,7 +2486,7 @@ const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function seqLabel(it){let label='';
   if(it.id==='d-battle')label=ll('קרבות: מי מנצח?','Battles: who wins?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
-  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene')label=ll('פתיחה: המסע','Opening: the journey');else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
+  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   return label}
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;const label=seqLabel(it);
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
@@ -2491,7 +2494,7 @@ function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeo
   if(D.seg&&D.seg!==seg&&D.segAt&&POS>0&&D.t0)log[D.seg]=(log[D.seg]||0)+(now-D.segAt)/60000;
   const sa=D.seg===seg&&D.segAt?D.segAt:now;
   // how far through this part's slides we are
-  const st=SEQ.findIndex(x=>planOf(seg)&&x.id===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>x.id===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
+  const st=SEQ.findIndex(x=>planOf(seg)&&planId(x)===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>planId(x)===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
   const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};
   S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer();
   const sk=SEQ.map(x=>x.id).join(',');if(S.seqPub!==sk){S.seqPub=sk;S.db.doc('stage/seq').set({l:SEQ.map(x=>{try{return seqLabel(x).slice(0,60)}catch(er){return x.id}})}).catch(()=>{})}},250)}
@@ -3304,29 +3307,52 @@ function svPaint(it,fresh){const cv=$('#cv'),V=svParts(it),st=S.sv.step,n=V.card
   if(st===n+1){const p=cv.querySelector('.svsave p'),T="SAVING... DON'T TURN OFF THE POWER.";cv.querySelector('.svsave').classList.add('on');p.textContent='';let i=0;clearInterval(S.svT);
     S.svT=setInterval(()=>{if(!p.isConnected){clearInterval(S.svT);return}i++;p.textContent=T.slice(0,i);if(i>=T.length){clearInterval(S.svT);setTimeout(()=>{if(p.isConnected){sfx('sfx-save');p.parentElement.classList.add('done')}},350)}},55)}}
 // ---------- DIALOGUE SCENES (new rooms): the lecturer stands beside a game text box at the bottom; every click (A) types the next line
-// and changes the stage above it. 'op-1' replaces part 1's four opening slides (x-part-1, o-divider, o-me, agenda) ----------
+// and changes the stage above it. 'op-N' replaces part N's opening slides (x-part-N + its first course divider; part 1 also o-me and agenda).
+// Beats: st = the stage from this line on: gym (the gym on stage) · map (the Town Map) · fly (Dragonite flies) · zoom (the part's stop + its tiles) · tile (the first tile flies into its badge in the bar)
 const scOn=it=>it?.kind==='scene';
-const SC_DROP={'op-1':['x-part-1','o-divider','o-me','agenda']};
 // the evening's route on the FireRed Town Map (172 x 128 px, invite/img/townmap.png): city dots, the trainers' buildings, the Indigo Plateau
 const SC_M=5.5,SC_STOPS=[{x:44,y:93},{x:44,y:37,b:1},{x:123,y:29,b:2},{x:123,y:77,b:3},{x:138,y:78,t:1},{x:100,y:53,b:4},{x:107,y:102,b:5},{x:164,y:55,t:2},{x:123,y:53,b:6},{x:44,y:117,b:7},{x:53,y:119,t:3},{x:44,y:70,b:8},{x:28,y:30,goal:1}];
 const SC_HOP=470;
+const scTrs=n=>ll(['','מאמן אחד','שני מאמנים','שלושה מאמנים'][n]||'',['','one trainer','two trainers','three trainers'][n]||'');
+const SC={
+  'op-1':{part:1,town:'pewter',drop:['x-part-1','o-divider','o-me','agenda'],div:'o-divider',name:['פרופ׳ שושו','PROF. SHUSHO'],zoom:[84,33,1.4],
+    lines:(n,town,nT)=>[['gym',`ברוכים הבאים לחדר הכושר של ${town}! אני אייל, המרצה שלכם בחלק הראשון.`,`Welcome to the ${town} Gym! I'm Eyal, your lecturer for part one.`],
+      [0,'אני אוהב פוקימון מגיל 8, אוסף קלפים מאז, ולמדתי סוציולוגיה.','I have loved Pokémon since I was 8, collected the cards ever since, and studied sociology.'],
+      [0,'ובניתי את הערב הזה כדי לראות אנשים דרך העיניים של מי שמכיר אותם.','And I built this evening to see people through the eyes of those who know them.'],
+      ['map',`הערב הזה הוא מסע: מסע למציאת הפוקימון של ${n}.`,`Tonight is a journey: a journey to find ${n}'s Pokémon.`],
+      ['fly',`שמונה תגים, ${nT?scTrs(nT)+' בדרך, ':''}ובסוף: היכל התהילה.`,`Eight badges, ${nT?scTrs(nT)+' on the way, ':''}and at the end: the Hall of Fame.`],
+      ['zoom','התחנה הראשונה: היכרות, ואז השאלון. ובסוף החלק: סבב שאלות ראשון והפסקה.','First stop: introductions, then the questionnaire. At the end of the part: the first round of questions and a break.'],
+      ['tile','אבל קודם, מתחילים מההתחלה: מי אנחנו.','But first, from the very beginning: who we are.']]},
+  'op-2':{part:2,town:'vermilion',drop:['x-part-2','s-divider'],div:'s-divider',name:['פרופ׳ אוק','PROF. OAK'],zoom:[119,65,1.4],
+    lines:(n,town)=>[['gym',`ברוכים הבאים ל${town}! אני פרופסור אוק, המרצה שלכם בחלק השני.`,`Welcome to ${town}! I'm Professor Oak, your lecturer for part two.`],
+      ['fly','שני תגים כבר בכיס. ממשיכים במסע!','Two badges in the bag. On with the journey!'],
+      ['zoom','בחלק הזה: מה זה מדע, ואיך הסוציולוגיה מסתכלת על אנשים.','In this part: what science is, and how sociology looks at people.'],
+      ['tile','נתחיל בשלוש שאלות: מה זה מדע, מה זו תיאוריה, ומה זו פרדיגמה.','We start with three questions: what is science, what is a theory, and what is a paradigm.'],
+      [0,'ובשביל זה, אני שולח אתכם לשטח: לאגם הזעם!','And for that, I am sending you into the field: to the Lake of Rage!']]},
+  'op-3':{part:3,town:'fuchsia',drop:['x-part-3','f-divider'],div:'f-divider',name:['פרופ׳ טורו','PROF. TURO'],zoom:[135,78,1.4],vis:s=>s?.querySelector('img[src*="img/t-"]')?.parentElement,
+    lines:(n,town)=>[['gym',`ברוכים הבאים ל${town}! אני פרופסור טורו, המרצה שלכם בחלק השלישי.`,`Welcome to ${town}! I'm Professor Turo, your lecturer for part three.`],
+      ['fly','ארבעה תגים כבר בכיס. ממשיכים במסע!','Four badges in the bag. On with the journey!'],
+      ['zoom','בחלק הזה: הכוח שכל אדם מביא לעולם, ומי משפיע על מי. ובסוף: הקרבות.','In this part: the power each person brings into the world, and who affects whom. And at the end: the battles.'],
+      ['tile','סוג הוא הכוח שאדם מביא לעולם, וגם המפה של מי משפיע עליו ועל מי הוא משפיע.','A type is the power a person brings into the world, and also the map of who affects them and whom they affect.'],
+      [0,'מתחילים בתשעת הסוגים ה״מיוחדים״: במשחקים הישנים, כל המתקפות שלהם היו Special.','We start with the nine "special" types: in the old games, all their attacks were Special.']]},
+  'op-4':{part:4,town:'cinnabar',drop:['x-part-4','g-divider'],div:'g-divider',name:['ביל','BILL'],zoom:[44,68,1.15],vis:s=>s?.querySelector(':scope>svg'),
+    lines:(n,town)=>[['gym',`ברוכים הבאים ל${town}! אני ביל, המרצה שלכם בחלק הרביעי והאחרון.`,`Welcome to ${town}! I'm Bill, your lecturer for the fourth and last part.`],
+      ['fly','שישה תגים כבר בכיס. עוד שניים, ואז: היכל התהילה.','Six badges in the bag. Two more, and then: the Hall of Fame.'],
+      ['zoom','בחלק הזה: איפה כל אחד חזק, ואיך אנשים משתנים.','In this part: where each person is strong, and how people change.'],
+      ['tile','נתחיל בשישה הסטטים: כמה אתה סופג, איך אתה דוחף, ממה אתה מוגן ובאיזה קצב אתה זז.','We start with the six stats: how much you absorb, how you push, what protects you, and how fast you move.']]}};
+const SC_DROP=Object.fromEntries(Object.entries(SC).map(([k,v])=>[k,v.drop]));
 function scRoute(){return SC_STOPS.filter(s=>!s.t||SEQ.some(x=>x.id==='x-trainer-'+s.t))}
 function scSec(id){const i=S.slides.findIndex(s=>s.id===id);if(i<0)return null;const t=document.createElement('template');t.innerHTML=slideHTML(S.slides[i].html);return t.content.querySelector('section')}
-function scParts(){const P=scSec('x-part-1'),D=scSec('o-divider'),bar=s=>s?.querySelector('div[style*="top:1022px"]')?.outerHTML||'';
-  const cs=[...(P?.querySelectorAll('[data-course]')||[])],dark=cs.length?cs[cs.length-1].nextElementSibling:null;
-  return {eb:P?.querySelector('p')?.textContent||'',tiles:[...cs.map(e=>e.outerHTML),...(dark?[dark.outerHTML]:[])],bar0:bar(P),bar1:bar(D),
-    lect:P?.querySelector('img[alt^="av-"]')?.getAttribute('src')||'img/av-f-eyal.webp'}}
-function scLines(){const n=subjectName(),town=ll(...(TW_NAME[S.tw?.town]||TW_NAME.pewter)),nT=scRoute().filter(s=>s.t).length,
-    trs=ll(['','מאמן אחד','שני מאמנים','שלושה מאמנים'][nT]||'',['','one trainer','two trainers','three trainers'][nT]||'');
-  return [ll(`ברוכים הבאים לחדר הכושר של ${town}! אני אייל, המרצה שלכם בחלק הראשון.`,`Welcome to the ${town} Gym! I'm Eyal, your lecturer for part one.`),
-    ll('אני אוהב פוקימון מגיל 8, אוסף קלפים מאז, ולמדתי סוציולוגיה.','I have loved Pokémon since I was 8, collected the cards ever since, and studied sociology.'),
-    ll('ובניתי את הערב הזה כדי לראות אנשים דרך העיניים של מי שמכיר אותם.','And I built this evening to see people through the eyes of those who know them.'),
-    ll(`הערב הזה הוא מסע: מסע למציאת הפוקימון של ${n}.`,`Tonight is a journey: a journey to find ${n}'s Pokémon.`),
-    ll(`שמונה תגים, ${nT?trs+' בדרך, ':''}ובסוף: היכל התהילה.`,`Eight badges, ${nT?trs+' on the way, ':''}and at the end: the Hall of Fame.`),
-    ll('התחנה הראשונה: היכרות, ואז השאלון. ובסוף החלק: סבב שאלות ראשון והפסקה.','First stop: introductions, then the questionnaire. At the end of the part: the first round of questions and a break.'),
-    ll('אבל קודם, מתחילים מההתחלה: מי אנחנו.','But first, from the very beginning: who we are.')]}
-function scEnter(it,atEnd){const n=scLines().length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd)music('mus-badge',{loop:false,vol:.4})}
-function scBuild(it,fresh){const cv=$('#cv'),G=twGymOf(),A=scParts(),R=scRoute(),M=SC_M;
+function scParts(cf){const P=scSec('x-part-'+cf.part),D=scSec(cf.div),bar=s=>s?.querySelector('div[style*="top:1022px"]')?.outerHTML||'';
+  const sk=skipSet(),tiles=[];for(let e=P?.querySelector('[data-course]');e;e=e.nextElementSibling){const c=e.dataset?.course,t=e.dataset?.tr||e.querySelector?.('[data-tr]')?.dataset.tr;if((c&&sk.has('c'+c))||(t&&sk.has('t'+t)))continue;tiles.push(e.outerHTML)}const v=cf.vis?.(D);
+  return {eb:P?.querySelector('p')?.textContent||'',tiles,bar0:bar(P),bar1:bar(D),vis:v?v.outerHTML:'',
+    lect:P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp'}}
+// the beats: [stage, he, en]; stage 0 = the same stage as the line before
+function scBeats(id){const cf=SC[id],nT=scRoute().filter(s=>s.t).length;
+  return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT).map(([st,he,en])=>({st,t:ll(he,en)}))}
+function scStage(B,b){for(let i=b;i>=0;i--)if(B[i].st)return {st:B[i].st,at:i};return {st:'gym',at:0}}
+function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd)music('mus-badge',{loop:false,vol:.4})}
+function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),G=twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
   const k=Math.min(1640/G.w,700/G.h),W=G.w*k,H=G.h*k,gx=(1920-W)/2,gy=40;
   const [x0,y0,x1,y1]=G.view,vw=(x1-x0+1)*G.t,vh=(y1-y0+1)*G.t,km=Math.min(166/vh,290/vw);
   const mk=R.map((s,i)=>{const at=`left:${s.x*M}px;top:${s.y*M}px`;
@@ -3335,53 +3361,60 @@ function scBuild(it,fresh){const cv=$('#cv'),G=twGymOf(),A=scParts(),R=scRoute()
     if(s.goal)return `<div class="scgoal" data-i="${i}" style="${at}"><span>${esc(ll(`הפוקימון של ${subjectName()}`,`${subjectName()}'s Pokémon`))}</span><img src="img/it-poke-ball.webp" alt=""><i>?</i></div>`;return ''}).join('');
   cv.innerHTML=`<div class="st scst" id="scst" dir="${EN?'ltr':'rtl'}">
     <div class="scgym" id="scgym" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
-    <div class="twname scnm" id="scnm">${ll(...(TW_NAME[S.tw?.town]||TW_NAME.pewter))} · GYM</div>
+    <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town]||TW_NAME.pewter))} · GYM</div>
     <div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
-    <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" data-k="${i}">${t}</div>`).join('')}</div>
+    <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" id="scvis">${A.vis}</div>`:''}</div>
     <div class="scbar0" id="scbar0">${A.bar0}</div><div class="scbar1" id="scbar1" style="display:none">${A.bar1}</div>
     <img class="sclect${fresh?' rise':''}" id="sclect" src="${A.lect}" alt="">
-    <div class="scbox${fresh?' rise':''}"><b class="scname">${ll('פרופ׳ שושו','PROF. SHUSHO')}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini" style="width:${vw*km}px;height:${vh*km}px">${twGymInner(G,km,G.view)}</div></div></div>`;
+    <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini" style="width:${vw*km}px;height:${vh*km}px">${twGymInner(G,km,G.view)}</div></div></div>`;
   $('#scbar1 [style*="top:1022px"]>div')?.classList.add('scnew');
   // coming straight from the walk: the gym starts where the big gym was and settles above the box
   const F=S.scFrom;S.scFrom=null;if(fresh&&F&&Date.now()-F.at<4000){const g=$('#scgym');g.style.transition='none';g.style.transform=`translate(${F.bx-gx}px,${F.by-gy}px) scale(${F.kb/k})`;void g.offsetWidth;g.style.transition='';g.style.transform=''}}
 // put the stage in the state of beat b; anim = play the step into it (typing, flight, zoom, the badge flying into the bar)
-function scApply(b,anim,first){const C=S.sc,run=++C.run,L=scLines(),M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
+function scApply(b,anim,first){const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
-  const atMap=b>=3,side=b>=5;
+  const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','map','fly','zoom','tile'].indexOf(st);
+  const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
+  // where Dragonite flies: in part 1 the whole route; later from the last gym of the part before to this part's gym
+  const ix=f=>R.findIndex(f),toI=op1?R.length-1:ix(s=>s.b===2*P-1),fromI=op1?0:ix(s=>s.b===2*P-2),homeI=ix(s=>s.b===2*P-1);
   g.classList.toggle('gone',atMap);$('#scnm').classList.toggle('gone',atMap);mini.classList.toggle('off',!atMap);
-  if(atMap&&map.classList.contains('off')){map.classList.remove('off');if(anim){map.classList.remove('pop');void map.offsetWidth;map.classList.add('pop')}}else if(!atMap)map.classList.add('off');
+  if(atMap&&map.classList.contains('off')){map.classList.remove('off');if(stepIn){map.classList.remove('pop');void map.offsetWidth;map.classList.add('pop')}}else if(!atMap)map.classList.add('off');
   map.style.left=(side?(EN?1920-60-946:60):(1920-946)/2)+'px';
-  // zoom: the whole map, or the first stop (Pewter and Cerulean)
-  if(side){const z=1.4,tx=Math.max(946-946*z,Math.min(0,473-84*M*z)),ty=Math.max(704-704*z,Math.min(0,352-33*M*z));inner.style.transform=`translate(${tx}px,${ty}px) scale(${z})`}else inner.style.transform='';
-  if(!anim||first)inner.style.transition='none';void inner.offsetWidth;inner.style.transition='';
-  // the route: nothing yet (b<=3), flown (b>=4); from b5 only the first two badges stay bright
-  const mark=(upto,inst)=>{inner.querySelectorAll('[data-i]').forEach(e=>{const i=+e.dataset.i;if(!e.classList.contains('scgoal'))e.classList.toggle('on',i<=upto)})};
+  if(side){const[cx,cy,z]=cf.zoom,tx=Math.max(946-946*z,Math.min(0,473-cx*M*z)),ty=Math.max(704-704*z,Math.min(0,352-cy*M*z));inner.style.transform=`translate(${tx}px,${ty}px) scale(${z})`}else inner.style.transform='';
+  if(!stepIn||first)inner.style.transition='none';void inner.offsetWidth;inner.style.transition='';
+  // markers: part 1 reveals them with the flight; later parts know the whole route (what's behind bright, what's ahead dim);
+  // from the zoom on, only this part's badges and trainer stay bright
+  const mine=s=>s.b===2*P-1||s.b===2*P||s.t===P-1||(P===4&&s.goal),past=s=>(s.b&&s.b<2*P-1)||(s.t&&s.t<P-1);
+  const show=upto=>inner.querySelectorAll('[data-i]').forEach(e=>{const i=+e.dataset.i,s=R[i];if(!e.classList.contains('scgoal'))e.classList.toggle('on',op1?i<=upto:true);
+    e.classList.toggle('dim',side?!mine(s):(!op1&&!past(s)&&!s.goal))});
   const put=(i,inst)=>{if(inst)dn.style.transition='none';dn.style.left=R[i].x*M+'px';dn.style.top=R[i].y*M+'px';if(inst){void dn.offsetWidth;dn.style.transition=''}};
-  inner.querySelectorAll('.scbdg,.scbang,.scgoal').forEach(e=>{const s=R[+e.dataset.i];e.classList.toggle('dim',side&&!(s.b===1||s.b===2))});
-  if(b<4){mark(0,true);put(0,true)}
-  else if(b===4&&anim){mark(0,true);put(0,true);C.fly=1;let i=0;const hop=()=>{if(C.run!==run||cur()?.id!==C.id)return;i++;if(i>=R.length){C.fly=0;return}
-      inner.style.setProperty('--hop',SC_HOP/1000+'s');mark(i,false);put(i,false);C.flyT=setTimeout(()=>{if(C.run!==run)return;const s=R[i];if(s.b||s.t)sfx('sfx-tink',.5);if(s.goal){sfx('sfx-ball-poof',.6);C.fly=0;return}hop()},SC_HOP)};
-    C.flyT=setTimeout(hop,350)}
-  else if(b===4){mark(R.length,true);put(R.length-1,true)}
-  else{mark(R.length,true);put(1,!anim||b>5)}
-  // the course tiles (b5) and the first one flying into its badge in the bar (b6)
-  tl.classList.toggle('off',b<5);const T=[...tl.querySelectorAll('.sctile')],eb=tl.querySelector('.sceb');
-  $('#scbar0').style.display=b>=6?'none':'';$('#scbar1').style.display=b>=6?'':'none';
-  T.forEach((t,i)=>{t.classList.remove('in','gone','scflying');t.style.transform='';t.style.visibility='';if(b===5&&anim){t.style.animationDelay=(.25+i*.35)+'s';t.classList.add('in')}});eb.classList.toggle('gone',b>=6);
-  if(b>=6){T.slice(1).forEach(t=>t.classList.add('gone'));T[0].style.visibility='hidden';
-    if(anim)scFlyTile(T[0],run);else $('#scbar1 .scnew')?.classList.remove('scnew')}
-  scType(L[b],anim)}
-function scFlyTile(t,run){const C=S.sc;$('#scbar0').style.display='';$('#scbar1').style.display='none';t.style.visibility='';
-  const r=t.getBoundingClientRect(),ir=t.querySelector('img').getBoundingClientRect(),d=$('#scbar0 [style*="top:1022px"] img').getBoundingClientRect(),u=r.width/t.offsetWidth;
-  const ox=(ir.left+ir.width/2-r.left)/u,oy=(ir.top+ir.height/2-r.top)/u,tx=(d.left+d.width/2-ir.left-ir.width/2)/u,ty=(d.top+d.height/2-ir.top-ir.height/2)/u;
-  t.style.transformOrigin=`${ox}px ${oy}px`;t.classList.add('scflying');void t.offsetWidth;t.style.transform=`translate(${tx}px,${ty}px) scale(${d.width/ir.width})`;
-  setTimeout(()=>{if(C.run!==run)return;t.style.visibility='hidden';t.classList.remove('scflying');t.style.transform='';$('#scbar0').style.display='none';$('#scbar1').style.display='';sfx('sfx-dex-page-added')},850)}
+  const hopMs=op1?SC_HOP:SC_HOP*2.2;inner.style.setProperty('--hop',hopMs/1000+'s');
+  if(lv<2){show(op1?0:R.length);put(fromI,true)}
+  else if(lv===2&&stepIn){show(op1?0:R.length);put(fromI,true);C.fly=1;let i=fromI;
+    const hop=()=>{if(C.run!==run||cur()?.id!==C.id)return;i=op1?i+1:toI;show(op1?i:R.length);put(i,false);
+      C.flyT=setTimeout(()=>{if(C.run!==run)return;const s=R[i];if(s.b||s.t)sfx('sfx-tink',.5);if(s.goal)sfx('sfx-ball-poof',.6);if(i>=toI){C.fly=0;return}hop()},hopMs)};
+    C.flyT=setTimeout(hop,op1?350:700)}
+  else{show(R.length);put(lv===2?toI:homeI,true)}
+  // the course tiles (zoom) and the first one flying into its badge in the bar (tile); then the course's own picture, if it has one
+  tl.classList.toggle('off',lv<3);const T=[...tl.querySelectorAll('.sctile')],eb=tl.querySelector('.sceb'),vis=$('#scvis');
+  $('#scbar0').style.display=lv>=4?'none':'';$('#scbar1').style.display=lv>=4?'':'none';
+  T.forEach((t,i)=>{t.classList.remove('in','gone','scflying');t.style.transform='';t.style.visibility='';t.style.display='';if(lv===3&&stepIn){t.style.animationDelay=(.25+i*.3)+'s';t.classList.add('in')}});eb.classList.toggle('gone',lv>=4);
+  if(vis){vis.classList.remove('in');vis.style.display=lv>=4?'':'none'}
+  if(lv>=4){if(stepIn){T.slice(1).forEach(t=>t.classList.add('gone'));scFlyTile(T[0],run)}else{$('#scbar1 .scnew')?.classList.remove('scnew');T.forEach(t=>t.style.display='none')}}
+  scType(B[b].t,anim)}
+function scFlyTile(t,run){const C=S.sc,vis=$('#scvis');$('#scbar0').style.display='';$('#scbar1').style.display='none';if(vis)vis.style.display='none';
+  const c=t.querySelector('[data-course]')?.dataset.course,bar=$('#scbar0 [style*="top:1022px"]'),dst=bar.querySelector(`img[src*="badge-${c}."]`)||bar.querySelector('img');
+  const r=t.getBoundingClientRect(),ir=t.querySelector('img').getBoundingClientRect(),dr=dst.getBoundingClientRect(),u=r.width/t.offsetWidth;
+  const ox=(ir.left+ir.width/2-r.left)/u,oy=(ir.top+ir.height/2-r.top)/u,tx=(dr.left+dr.width/2-ir.left-ir.width/2)/u,ty=(dr.top+dr.height/2-ir.top-ir.height/2)/u;
+  t.style.transformOrigin=`${ox}px ${oy}px`;t.classList.add('scflying');void t.offsetWidth;t.style.transform=`translate(${tx}px,${ty}px) scale(${dr.width/ir.width})`;
+  setTimeout(()=>{if(C.run!==run)return;$('#sctiles').querySelectorAll('.sctile').forEach(x=>{x.style.display='none';x.classList.remove('scflying');x.style.transform=''});
+    $('#scbar0').style.display='none';$('#scbar1').style.display='';sfx('sfx-dex-page-added');if(vis){vis.style.display='';vis.classList.add('in')}},850)}
 function scType(t,anim){const el=$('#sctx'),C=S.sc;clearInterval(S.scT);el.classList.remove('done');if(!anim){el.textContent=t;el.classList.add('done');$('#scst')?.classList.remove('talk');return}
   C.typing=1;let i=0;el.textContent='';sfx('sfx-a',.25);$('#scst')?.classList.add('talk');S.scT=setInterval(()=>{if(!el.isConnected){clearInterval(S.scT);return}i+=2;el.textContent=t.slice(0,i);if(i>=t.length){clearInterval(S.scT);el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}},30)}
 // a click while the line is typing or Dragonite is flying finishes it at once; otherwise the next beat (or back)
 function scGo(d){const it=cur(),C=S.sc;if(!C||C.id!==it?.id)return false;
-  if(d>0&&(C.typing||C.fly)){const b=C.b;if(C.fly)scApply(b,false);else{clearInterval(S.scT);const el=$('#sctx');el.textContent=scLines()[b];el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}return true}
-  const nb=C.b+d;if(nb<0||nb>=scLines().length)return false;C.b=nb;scApply(nb,d>0);return true}
+  if(d>0&&(C.typing||C.fly)){const b=C.b;if(C.fly)scApply(b,false);else{clearInterval(S.scT);const el=$('#sctx');el.textContent=scBeats(C.id)[b].t;el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}return true}
+  const nb=C.b+d;if(nb<0||nb>=scBeats(C.id).length)return false;C.b=nb;scApply(nb,d>0);return true}
 const trMeetOn=it=>it?.kind==='slide'&&twOn()&&!ROOM.legacy&&/^x-trainer-\d$/.test(it.id);
 function trMeet(it){const t=+it.id.slice(-1),walk=[...SEQ.slice(0,POS)].reverse().find(x=>x.kind==='town'),L=walk&&TW_LEGS[walk.id],leg=L&&L[L.length-1];if(!leg?.place)return;
   const T=TOWN[leg.town];if(!S.tw||S.tw.town!==leg.town){S.tw=twNew(leg.town);S.tw.from='door'}const tw=S.tw;tw.ph='meet';tw.leg=leg;tw.to='door';
@@ -3417,8 +3450,8 @@ function twGymInner(G,k,view){const t=G.t,c=t*k,[vx,vy]=view?view:[0,0],P=gamePl
   return `<img class="twgimg" src="${G.img}" alt="" style="width:${G.w*k}px;height:${G.h*k}px;left:${-vx*c}px;top:${-vy*c}px">${G.lect?lectHTML(G,k,at,G.lect[0],G.lect[1]):''}`+
     P.map((p,i)=>{const[x,y]=G.seats[i],n=S.gIn[p.id].av;return `<div class="twseat" data-p="${p.id}" style="${at(x,y)};z-index:${Math.round(y*10)}"><i class="lks" style="${owStyle(n)};background-position:${owPos(n,'u',0)};transform:scale(${(k/2*(G.cs||1)).toFixed(3)})"></i></div>`}).join('')}
 const LECT_MINI={1:'eyal',3:'turo',4:'bill'};
-function partNow(){for(let i=Math.max(0,POS);i<SEQ.length;i++){const id=SEQ[i].id,m=id.match(/^x-(part|sum|round|break|trainer)-(\d)/);if(m)return m[1]==='trainer'?+m[2]+1:+m[2];const c=courseOf(id);if(c){for(const p in PARTS)if(PARTS[p].includes(c))return +p}}return 4}
-function lectHTML(G,k,at,x,y){const m=LECT_MINI[partNow()],ala=['w-vermilion','x-part-2','s-divider'].includes(cur()?.id)?`<div class="twseat" style="${at(x+1.3,y)};z-index:${Math.round(y*10)+1}"><i class="xalam" style="transform:scale(${(G.t*k*(G.cs||1)*1.5/75).toFixed(3)})"></i></div>`:'';return m?`<div class="twseat lect" style="${at(x,y)}"><img class="lectmini" src="img/lect-${m}.png" alt="" style="height:${Math.round(30*k*(G.cs||1)*.95)}px"></div>`
+function partNow(){for(let i=Math.max(0,POS);i<SEQ.length;i++){const id=SEQ[i].id;{const o=id.match(/^op-(\d)$/);if(o)return +o[1]}const m=id.match(/^x-(part|sum|round|break|trainer)-(\d)/);if(m)return m[1]==='trainer'?+m[2]+1:+m[2];const c=courseOf(id);if(c){for(const p in PARTS)if(PARTS[p].includes(c))return +p}}return 4}
+function lectHTML(G,k,at,x,y){const m=LECT_MINI[partNow()],ala=['w-vermilion','x-part-2','s-divider','op-2'].includes(cur()?.id)?`<div class="twseat" style="${at(x+1.3,y)};z-index:${Math.round(y*10)+1}"><i class="xalam" style="transform:scale(${(G.t*k*(G.cs||1)*1.5/75).toFixed(3)})"></i></div>`:'';return m?`<div class="twseat lect" style="${at(x,y)}"><img class="lectmini" src="img/lect-${m}.png" alt="" style="height:${Math.round(30*k*(G.cs||1)*.95)}px"></div>`
   :`<div class="twseat lect" style="${at(x,y)}"><i class="oaksp" style="${oakStyle()};background-position:${oakPos('d',0)};transform:scale(${(k/3*(G.cs||1)).toFixed(3)})"></i></div>${ala}`}
 function twMiniK(G){return 290/((G.view[2]-G.view[0]+1)*G.t)}
 function twMiniHTML(){const G=twGymOf(),k=twMiniK(G),w=(G.view[2]-G.view[0]+1)*G.t*k,h=(G.view[3]-G.view[1]+1)*G.t*k;
@@ -3894,7 +3927,7 @@ function leagueSpot(){const G=['s-memory','c-memory','d-battle','quizwin','pq-st
 // round 51: in new rooms trainer n comes between course 2n+1 and course 2n+2 (not at the start of the part)
 function trMid(){if(ROOM.legacy)return;[1,2,3].forEach(n=>{const i=SEQ.findIndex(x=>x.id==='x-trainer-'+n);if(i<0)return;let j=-1;SEQ.forEach((x,k)=>{if(courseOf(x.id)===2*n+1)j=k});if(j<0)return;const it=SEQ.splice(i,1)[0];if(j>i)j--;SEQ.splice(j+1,0,it)})}
 function seqDrop(){if(!ROOM.legacy)SEQ=SEQ.filter(x=>x.id!=='pq-stats'&&x.id!=='quizwin'&&x.id!=='k-questionnaire'&&x.id!=='c-pop'&&x.id!=='d-thinker');else SEQ=SEQ.filter(x=>x.id!=='ev-move'&&x.id!=='pq-ev-move')}
-function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});if(s.id==='s-buzz'&&!ROOM.legacy)SEQ.push({kind:'buzz',id:'s-buzz'});else SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-steel')SEQ.push({kind:'quizwin',id:'quizwin'})});seqDrop();trMid();if(twOn()){Object.entries(SC_DROP).forEach(([id,L])=>{const a=SEQ.findIndex(x=>x.id===L[0]);if(a<0)return;SEQ=SEQ.filter(x=>!L.includes(x.id));SEQ.splice(a,0,{kind:'scene',id})});const c=SEQ.findIndex(x=>x.id==='cover');if(c>=0)SEQ.splice(c+1,0,{kind:'town',id:'w-pewter'});TW_AT.forEach(([id,w])=>{const k=w.course?SEQ.findIndex(x=>x.kind==='slide'&&courseOf(x.id)===w.course):SEQ.findIndex(x=>x.id===w.before);if(k>0)SEQ.splice(k,0,{kind:'town',id})})}pqShuffle();leagueSpot()}
+function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});if(s.id==='s-buzz'&&!ROOM.legacy)SEQ.push({kind:'buzz',id:'s-buzz'});else SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-steel')SEQ.push({kind:'quizwin',id:'quizwin'})});seqDrop();trMid();if(twOn()){const c=SEQ.findIndex(x=>x.id==='cover');if(c>=0)SEQ.splice(c+1,0,{kind:'town',id:'w-pewter'});TW_AT.forEach(([id,w])=>{const k=w.course?SEQ.findIndex(x=>x.kind==='slide'&&courseOf(x.id)===w.course):SEQ.findIndex(x=>x.id===w.before);if(k>0)SEQ.splice(k,0,{kind:'town',id})});Object.entries(SC_DROP).forEach(([id,L])=>{const a=SEQ.findIndex(x=>x.id===L[0]);if(a<0)return;SEQ=SEQ.filter(x=>!L.includes(x.id));SEQ.splice(a,0,{kind:'scene',id})})}pqShuffle();leagueSpot()}
 function skipSync(){if(!isScreen()||!S.slides||!SEQ.length)return;const k=JSON.stringify([...skipSet()].sort());if(k===S.skipKey)return;const id=cur()?.id,old=SEQ.slice(0,POS+1).map(x=>x.id);buildSeq();
   let p=SEQ.findIndex(x=>x.id===id);if(p<0){p=0;old.forEach(o=>{const j=SEQ.findIndex(x=>x.id===o);if(j>=0)p=j})}POS=p;HOF=0;SUB=0;show(true)}
 function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
