@@ -1094,7 +1094,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795172650';
+const BUILDV='1795174816';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3028,6 +3028,8 @@ const twOk=(T,x,y)=>x>=0&&y>=0&&y<T.map.length&&x<T.map[0].length&&T.map[y][x]==
 // leaving it UP is blocked; sideways and from below it is ordinary ground. '>' / '<' = a sideways cliff tile jumped over to the right / left (two tiles).
 // where the feet are drawn: about two thirds down the character's tile (Eyal: lower looked like standing on the trees, higher like standing on the houses)
 const TW_FEET=.7;
+// round 52: the automatic walks (legs with anim) run TW_AK times faster than they used to: walking speed, the gap between people, the pauses (Eyal: the Tower walk 34 s -> 12 s, the rest in proportion)
+const TW_AK=2.9;
 const TW_D={r:[1,0],l:[-1,0],d:[0,1],u:[0,-1]};
 const twWalk=(T,x,y)=>{const c=T.map[y]?.[x];return c==='g'||c==='L'};
 // one step from a tile in a direction: {to:[x,y], jump} or null (a wall, or climbing up a cliff)
@@ -3072,7 +3074,7 @@ function twRun(){const tw=S.tw,run=S.twRun=(S.twRun||0)+1;let last=performance.n
       el.style.transform=`translate(${Math.round((P.x+.5)*c)}px,${Math.round((P.y+TW_FEET-(P.lift||0))*c)}px)`;el.style.zIndex=P.lift?998:Math.round(P.y*10)+5;
       if(!P.to&&!P.lift&&!twWalk(T,Math.round(P.x),Math.round(P.y))){const q=twNear(T,Math.round(P.x),Math.round(P.y));if(q){P.x=q[0];P.y=q[1]}}
       if(tw.leg?.hide){const[h0,h1,h2,h3]=tw.leg.hide;el.style.opacity=(P.x>h0-.5&&P.x<h2+.5&&P.y>h1-.5&&P.y<h3+.5)?'0':''}
-      const sp=el.querySelector('.lks'),n=twAv(p),fr=(P.to||P.walk)?[1,0,2,0][Math.floor(t/125)%4]:0,key=n+'|'+(P.d||'d')+'|'+fr;if(sp.dataset.s!==key){if(!sp.dataset.s)sp.style.cssText=owStyle(n);sp.style.backgroundPosition=owPos(n,P.d||'d',fr);sp.dataset.s=key}});
+      const sp=el.querySelector('.lks'),n=twAv(p),fr=(P.to||P.walk)?[1,0,2,0][Math.floor(t/(P.walk?125/TW_AK:125))%4]:0,key=n+'|'+(P.d||'d')+'|'+fr;if(sp.dataset.s!==key){if(!sp.dataset.s)sp.style.cssText=owStyle(n);sp.style.backgroundPosition=owPos(n,P.d||'d',fr);sp.dataset.s=key}});
     twTick();requestAnimationFrame(step)};requestAnimationFrame(step)}
 // in the free walk (the cover), A throws a ball for fun
 function twAv(p){const a=S.gIn?.[p.id]?.av;if(typeof a==='number'&&a>=0&&a<LK_MINI)return a;const k=+a;if(Number.isInteger(k)&&k>=0&&k<LK_MINI)return k;return [...String(p.id)].reduce((s,c)=>(s*31+c.charCodeAt(0))>>>0,7)%LK_MINI}
@@ -3129,7 +3131,7 @@ function twHelp(){const tw=S.tw;if(tw.ph!=='go')return;tw.ph='help';twTick();con
 function twLegEnd(){const tw=S.tw;if(tw.ph==='done'||tw.ending)return;tw.ending=true;const it=cur(),legs=TW_LEGS[it?.id]||[];
   if(tw.leg?.balls&&tw.got){const w={...(S.league?.walk||{})};Object.entries(tw.got).forEach(([id,v])=>w[id]=(w[id]||0)+v);leagueSet('walk',w)}
   const next=(tw.legI||0)+1;
-  setTimeout(()=>{if(cur()!==it)return;if(next<legs.length)twLeg(it,next);else{tw.ph='done';S.twGym=it.id;gamePub();if(tw.leg?.place)go(1);else twGymBig(it)}},900)}
+  setTimeout(()=>{if(cur()!==it)return;if(next<legs.length)twLeg(it,next);else{tw.ph='done';S.twGym=it.id;gamePub();if(tw.leg?.place)go(1);else twGymBig(it)}},tw.leg?.anim?Math.round(900/TW_AK):900)}
 function twLeg(it,i){const L=TW_LEGS[it.id][i];let tw=S.tw;
   if(!tw||tw.town!==L.town||L.from){tw=S.tw=twNew(L.town);tw.from=L.from||'spawn'}else{tw.sid=(Date.now()%1e9)|0;Object.values(tw.pos).forEach(P=>{P.done=false;P.held=false;P.to=null})}
   tw.leg=L;tw.legI=i;tw.ph='go';tw.to=L.to;tw.end=Date.now()+(twT()+(it.id==='w-celadon'?(S.fastOn?5:10):it.id==='w-viridian'?(S.fastOn?3:5):0))*1000;tw.order=[];tw.got={};tw.ending=false;const T=TOWN[L.town];tw.tgt=new Set(twCells(T,L.to).map(p=>p.join(',')));tw.dist=twBfs(T,twCells(T,L.to));
@@ -3150,14 +3152,14 @@ function twPath(T,a,b){const W=T.map[0].length,key=(x,y)=>y*W+x,prev=new Map([[k
 // a leg that plays by itself: everyone walks in a line, one after the other, to their own spot (or out through the exit)
 function twAuto(it,L){const tw=S.tw,T=TOWN[L.town],pl=L.place?trPlace(L.town):null,P0=twPpl(),ex=twCells(T,'exit');tw.ph='auto';
   const tg=twCells(T,L.to||'exit'),gs=tg.length?tg:ex,goals=P0.map((p,i)=>L.place?(pl.spots[i]||pl.spots[pl.spots.length-1]):gs[i%gs.length]);
-  P0.forEach((p,i)=>{const P=tw.pos[p.id]||(tw.pos[p.id]=twSpot(tw));P.held=true;P.to=null;P.done=false;P.path=twPath(T,[Math.round(P.x),Math.round(P.y)],goals[i]);P.seg=0;P.t0=performance.now()+i*450;P.walk=false});
+  P0.forEach((p,i)=>{const P=tw.pos[p.id]||(tw.pos[p.id]=twSpot(tw));P.held=true;P.to=null;P.done=false;P.path=twPath(T,[Math.round(P.x),Math.round(P.y)],goals[i]);P.seg=0;P.t0=performance.now()+i*450/TW_AK;P.walk=false});
   const run=S.twRun;const stp=t=>{if(S.tw!==tw||tw.ph!=='auto'||S.twRun!==run)return;let all=true;
     P0.forEach((p,i)=>{const P=tw.pos[p.id];if(!P||P.done||P.arr)return;all=false;if(t<P.t0)return;const a=P.path[P.seg],b=P.path[P.seg+1];
       if(!b){P.walk=false;P.arr=true;P.x=a[0];P.y=a[1];if(L.place)P.d=pl.pf;else twGone(p.id,P,L.to==='exit'?'out':'in');return}
-      const jp=Math.abs(b[0]-a[0])===2||(b[1]>a[1]&&TOWN[L.town].map[b[1]]?.[b[0]]==='L'),f=Math.min(1,(t-P.t0)/1000*(jp?2.6:3.6));P.walk=true;P.d=b[0]>a[0]?'r':b[0]<a[0]?'l':b[1]>a[1]?'d':'u';P.x=a[0]+(b[0]-a[0])*f;P.y=a[1]+(b[1]-a[1])*f;
+      const jp=Math.abs(b[0]-a[0])===2||(b[1]>a[1]&&TOWN[L.town].map[b[1]]?.[b[0]]==='L'),f=Math.min(1,(t-P.t0)/1000*(jp?2.6:3.6)*TW_AK);P.walk=true;P.d=b[0]>a[0]?'r':b[0]<a[0]?'l':b[1]>a[1]?'d':'u';P.x=a[0]+(b[0]-a[0])*f;P.y=a[1]+(b[1]-a[1])*f;
       const el=$('#twp-'+p.id);if(jp&&el){if(!P.jsnd){P.jsnd=1;sfx('sfx-jump',.5)}const h=Math.sin(Math.PI*f);el.style.setProperty('--hy',(-h*14).toFixed(1)+'px');el.style.setProperty('--hs',(1+h*.1).toFixed(3));el.style.setProperty('--ho',h>.02&&f<1?'1':'0')}
       if(f>=1){P.seg++;P.t0=t;P.jsnd=0}});
-    if(all){tw.ph='done';P0.forEach(p=>{const P=tw.pos[p.id];if(P){P.arr=false;P.walk=false}});setTimeout(()=>{if(cur()!==it)return;if(L.place){S.twGym=it.id;gamePub();go(1)}else{tw.ending=false;tw.ph='go';twLegEnd()}},900);return}
+    if(all){tw.ph='done';P0.forEach(p=>{const P=tw.pos[p.id];if(P){P.arr=false;P.walk=false}});setTimeout(()=>{if(cur()!==it)return;if(L.place){S.twGym=it.id;gamePub();go(1)}else{tw.ending=false;tw.ph='go';twLegEnd()}},Math.round(900/TW_AK));return}
     requestAnimationFrame(stp)};requestAnimationFrame(stp)}
 const trNum=()=>{const n=SEQ.slice(POS,POS+2).map(x=>x.id.match(/^x-trainer-(\d)$/)).find(Boolean);return n?+n[1]:0};
 function trImg(t){return trBigImg(t)}
