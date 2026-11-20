@@ -796,8 +796,8 @@ function placeIc([x,y],flip,lift){const o=$('#bmo'),d=$('#dnic');if(!o||!d)retur
 // arriving: the city, sharp and at its own size, zooms in over the overview; leaving: it fades out
 function city(i){const c=$('#bmc');if(!c)return;c.classList.remove('in');c.onload=()=>{void c.offsetWidth;c.classList.add('in')};c.src=`img/city-${i}.webp`}
 function cityOut(){const c=$('#bmc');if(c)c.classList.remove('in')}
-// on the way from stop 2 to 3, 4 to 5 and 6 to 7: the map darkens and a trainer's silhouette crosses it (a different one each time)
-const TR_LEG={2:0,4:1,6:2},TR_SIL=['tr-red','tr-cynthia','tr-bruno'],TRD=2800;
+// on the way from stop 3 to 4, 5 to 6 and 7 to 8 (round 51: the trainers sit between a part's two courses): the map darkens and a trainer's silhouette crosses it (a different one each time)
+const TR_LEG={3:0,5:1,7:2},TR_SIL=['tr-red','tr-cynthia','tr-bruno'],TRD=2800;
 const trText=i=>T('trMeet').replace('{n}',(TXR('trOrd')||[])[i]||i+1);
 function trShow(i){const m=$('#tmap');if(!m)return;m.querySelector('.trint')?.remove();const o=document.createElement('div');o.className='trint';o.innerHTML=`<img class="${i===1?'fl':''}" src="../img/${TR_SIL[i]}.webp" alt=""><b>${esc(trText(i))}</b>`;m.appendChild(o);void o.offsetWidth;o.classList.add('on');sfx('page',.35);
   setTimeout(()=>{o.classList.remove('on');setTimeout(()=>o.remove(),450)},TRD-350)}
