@@ -776,6 +776,26 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .scsign .sceb{margin:6px 0 0;font-size:24px}
 .scsign h2{margin:0;font:400 86px/1.1 var(--display);color:#161A2E;text-align:center}
 .scsign.scflying{transition:transform .8s cubic-bezier(.5,0,.3,1),opacity .25s .6s;opacity:0}
+.scboard{position:absolute;top:44px;inset-inline-start:430px;inset-inline-end:70px;z-index:30;background:#FFFDF8;border:6px solid #2A2E45;border-radius:20px;box-shadow:inset 0 0 0 6px #FFFDF8,inset 0 0 0 10px #9FA7C7,0 10px 0 rgba(0,0,0,.35);padding:36px 56px 40px;display:flex;flex-direction:column;gap:12px}
+.scboard.off{display:none}.scboard.in{animation:svgrow .6s cubic-bezier(.2,.8,.3,1)}
+.scboard .sceb{font-size:22px;text-align:left}[dir=rtl] .scboard .sceb{text-align:right}.scboard h2{margin:0 0 8px;font:400 66px/1.1 var(--display);color:#161A2E;text-align:start}
+.scrb>div{flex-direction:row!important;gap:18px!important;margin-bottom:6px}.scrb img{width:64px!important;height:64px!important}
+.scrl{display:flex;flex-direction:column;gap:14px}
+.scri{display:flex;align-items:flex-start;gap:22px;opacity:0;transition:opacity .3s}.scri.on{opacity:1}.scri.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+@keyframes scriin{from{opacity:0;transform:translateY(18px)}}
+.scri>b{flex:none;min-width:76px;height:56px;padding:0 12px;border-radius:12px;background:#161A2E;color:#F2C94C;font:400 20px var(--pixel);display:flex;align-items:center;justify-content:center}
+.scri>span{font-size:34px;line-height:1.35;color:#22263A;padding-top:6px;text-align:start}.scri small{display:block;font-size:22px;line-height:1.4;color:#6A6F88;margin-top:4px}
+.scri.dis>b{background:#8A6D3B;color:#FFFDF8}.scri.dis>span{font-weight:700}
+.scballs{display:flex;gap:14px;margin-top:10px;font-style:normal}.scballs span{display:flex;align-items:center;gap:10px;background:#F6F1E7;border:2px solid #E4DCCB;border-radius:14px;padding:6px 16px 6px 10px;font-size:24px;font-weight:400}.scballs img{width:44px;height:44px;image-rendering:pixelated}
+.scboard.wild{animation:scshake .45s steps(6)}.scboard.wild .sceb{animation:blink .5s steps(1) infinite}
+@keyframes scshake{0%,100%{translate:0}20%{translate:-12px 0}40%{translate:10px 0}60%{translate:-8px 0}80%{translate:6px 0}}
+#scsw{position:fixed;inset:0;z-index:9999;pointer-events:none;animation:swfl .5s steps(1) both,swout .5s 1.35s ease-in forwards}
+@keyframes swfl{0%,50%{background:#fff}25%,75%,100%{background:transparent}}
+@keyframes swout{to{opacity:0}}
+#scsw i{position:absolute;left:0;width:100%;height:16.7%;background:#000;transform:scaleX(0);transform-origin:left;animation:swbar .5s .5s cubic-bezier(.6,0,.4,1) forwards}
+#scsw i:nth-child(even){transform-origin:right;animation-delay:.6s}
+#scsw i:nth-child(1){top:0}#scsw i:nth-child(2){top:16.6%}#scsw i:nth-child(3){top:33.3%}#scsw i:nth-child(4){top:50%}#scsw i:nth-child(5){top:66.6%}#scsw i:nth-child(6){top:83.3%}
+@keyframes swbar{to{transform:scaleX(1)}}
 .scvis.scmid{position:absolute;top:60px;left:120px;right:120px;height:680px;margin:0;align-items:center;align-content:center;flex-direction:column}
 .scvis.scmid>*{flex:none}.scvis.scmid img[src*="th-"]{width:260px;height:260px;object-fit:contain}.scvis.scmid>div:first-child:has(img[src*="th-"]){display:flex;gap:40px}
 .sctile.scflying{position:relative;z-index:90;transition:transform .8s cubic-bezier(.5,0,.3,1),opacity .25s .6s;opacity:0}
@@ -1150,7 +1170,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795201587';
+const BUILDV='1795208470';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2482,7 +2502,7 @@ const PLAN=ROOM.legacy?PLAN_OLD:[['open',ll('פתיחה','Opening'),7,'cover'],[
  ['c4',ll('חלק 4','Part 4'),11,'x-part-4'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['c4b',ll('חלק 4 · המשך','Part 4 · continued'),10,'h-divider'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 // a dialogue scene stands where its part's opening slide was
-const planId=it=>it?.kind==='scene'?SC[it.id].drop[0]:it?.id;
+const planId=it=>it?.kind==='scene'?SC[it.id].drop?.[0]:it?.id;
 function segAt(pos){let seg='open';for(let i=0;i<=pos&&i<SEQ.length;i++){const p=PLAN.find(x=>x[3]===planId(SEQ[i]));if(p)seg=p[0]}return seg}
 const planOf=k=>PLAN.find(x=>x[0]===k);
 // where we are against the plan, from the deck doc the screen keeps up to date
@@ -2495,7 +2515,7 @@ const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function seqLabel(it){let label='';
   if(it.id==='d-battle')label=ll('קרבות: מי מנצח?','Battles: who wins?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
-  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=SC[it.id]?.mid?ll(`פתיחת קורס ${SC[it.id].course}`,`Course ${SC[it.id].course} opening`):P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
+  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=SC[it.id]?.round?ll(`לפני סבב ${SC[it.id].round}`,`Before round ${SC[it.id].round}`):SC[it.id]?.rules?ll('חוקי ״מי הסוג?״',"Rules: Who's that type?"):SC[it.id]?.mid?ll(`פתיחת קורס ${SC[it.id].course}`,`Course ${SC[it.id].course} opening`):P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   return label}
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;const label=seqLabel(it);
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
@@ -3366,12 +3386,39 @@ const SC={
       ['tile','מה צריך לקרות כדי שתגיע לגרסה הבאה של עצמך?','What has to happen for you to reach the next version of yourself?'],
       [0,'זמן, רגע של שבר, סביבה חדשה, או אדם שמאמין בך.','Time, a breaking point, a new place, or someone who believes in you.'],
       [0,'ובסוף: מה שמושך אותך מעבר לסוג שלך.','And at the end: what pulls you beyond your type.']]}};
-// a mid-part scene speaks with its part's lecturer
-Object.values(SC).forEach(c=>{if(c.mid)c.name=Object.values(SC).find(o=>!o.mid&&o.part===c.part).name});
-const SC_DROP=Object.fromEntries(Object.entries(SC).map(([k,v])=>[k,v.drop]));
+// the rules (new rooms): the part's lecturer explains in the box and every rule comes up on a board above it.
+// rl-3 replaces the "Who's that type?" rules slide; rd-k comes before the round's live screen (x-round-k) and ends in a wild-battle transition into it
+const scBalls=()=>`<i class="scballs">${[['ultra',1,3],['great',2,2],['poke',3,1]].map(([b,c,pt])=>`<span><img src="img/it-${b}-ball.webp" alt="">${ll(`דמות ${c} · ${pt} נק׳`,`character ${c} · ${pt} pt${pt>1?'s':''}`)}</span>`).join('')}</i>`;
+SC['rl-3']={rules:1,part:3,drop:['f-disclaimer'],src:'f-disclaimer',bar:'f-divider',
+  items:()=>[['01',ll('לכל סוג: 3 דמויות, אחת אחרי השנייה','Each type: 3 characters, one after another')],['02',ll('ניחוש אחד בטלפון · אין חרטות','One guess on your phone · no take-backs')],
+    ['03',ll('מוקדם יותר = יותר נקודות','Earlier = more points'),scBalls()],['04',ll('סוג שנחשף יורד מהרשימה · בסוף: אלוף המשחק','A revealed type drops off the list · at the end: the champion')],
+    ['!',ll('דעה אישית, לא קביעה','A personal opinion, not a ruling'),`<small>${ll('דמויות מהמציאות ומיצירות: שר הטבעות, משחקי הכס, הארי פוטר, דיסני, מלחמת הכוכבים ועוד','Characters from real life and from culture: The Lord of the Rings, Game of Thrones, Harry Potter, Disney, Star Wars and more')}</small>`,'dis']],
+  lines:()=>[['i1','משחק: מי הסוג? לכל סוג יופיעו שלוש דמויות, אחת אחרי השנייה.',"Game: Who's that type? For each type, three characters appear, one after another."],
+    ['i2','בטלפון בוחרים איזה סוג זה. ניחוש אחד, ואין חרטות.','On your phone, pick which type it is. One guess, and no take-backs.'],
+    ['i3','ככל שמנחשים מוקדם יותר, מרוויחים יותר.','The earlier you guess, the more you earn.'],
+    ['i4','סוג שכבר נחשף יורד מהרשימה. ובסוף: אלוף המשחק.',"A type that's been revealed drops off the list. And at the end: the game's champion."],
+    ['i5','ועוד דבר: כל שיוך של דמות לסוג הוא דעה אישית שלי, לא קביעה.','One more thing: matching a character to a type is my personal opinion, not a ruling.'],
+    [0,'כל אדם, וגם כל דמות טובה, הוא הרבה יותר מסוג אחד.','Every person, and every good character, is much more than one type.'],
+    [0,'אז מותר, ואפילו רצוי, לא להסכים!',"So you're allowed, even encouraged, to disagree!"]]};
+for(let k=1;k<=NR;k++){const last=k===NR,min=()=>PLAN.find(p=>p[3]==='x-round-'+k)?.[2]||9,ord=[['הראשון','one'],['השני','two'],['השלישי והאחרון','three, the last one']][k-1]||[k,k];
+  SC['rd-'+k]={rules:1,part:k,round:k,before:'x-round-'+k,src:'x-round-'+k,bar:'x-round-'+k,wild:1,
+    items:()=>[['50',ll('כ-50 שאלות · סט אקראי לכל אחד','About 50 questions · a random set each')],['?',ll('תמיד אפשר לענות ״לא יודע״','"Don\'t know" is always allowed')],
+      last?['★',ll('בסוף: שאלת הבונוס של מיו','At the end: Mew\'s bonus question')]:[min()+'′',ll(`${min()} דקות · משלימים בהפסקה`,`${min()} minutes · finish in the break`)]],
+    lines:()=>[['gym',`סוף החלק! ולפני ההפסקה: סבב השאלות ${ord[0]}.`,`End of the part! And before the break: question round ${ord[1]}.`],
+      ['i1','כ-50 שאלות בטלפון, וכל אחד מקבל סט אקראי משלו.','About 50 questions on your phone, and each of you gets a random set.'],
+      ['i2','ואפשר תמיד לענות ״לא יודע״.','And you can always answer "don\'t know".'],
+      last?['i3','ובסוף הסבב: שאלת הבונוס של מיו.','And at the end of the round: Mew\'s bonus question.']:['i3',`${min()} דקות. מי שלא מסיים, משלים בהפסקה.`,`${min()} minutes. If you don't finish, you finish in the break.`],
+      ['wild','שאלות פראיות הופיעו!','Wild questions appeared!']]}}
+// a mid-part scene (and a rules scene) speaks with its part's lecturer
+Object.values(SC).forEach(c=>{if(c.mid||c.rules)c.name=Object.values(SC).find(o=>!o.mid&&!o.rules&&o.part===c.part).name});
+const SC_DROP=Object.fromEntries(Object.entries(SC).filter(([k,v])=>v.drop).map(([k,v])=>[k,v.drop]));
 function scRoute(){return SC_STOPS.filter(s=>!s.t||SEQ.some(x=>x.id==='x-trainer-'+s.t))}
 function scSec(id){const i=S.slides.findIndex(s=>s.id===id);if(i<0)return null;const t=document.createElement('template');t.innerHTML=slideHTML(S.slides[i].html);return t.content.querySelector('section')}
 function scParts(cf){const P=scSec('x-part-'+cf.part),D=scSec(cf.div),bar=s=>s?.querySelector('div[style*="top:1022px"]')?.outerHTML||'';
+  if(cf.rules){const R=scSec(cf.src),eb=(R?.querySelector('p')?.textContent||'').replace(/\u202b/g,'').trim(),ti=(R?.querySelector('h1,h2')?.textContent||'').replace(/\u202b/g,'').trim();
+    const balls=cf.round?R?.querySelector('img[alt="it-poke-ball"]')?.parentElement?.outerHTML||'':'';
+    return {rules:1,bar0:bar(scSec(cf.bar)),bar1:'',lect:P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp',
+      board:`<div class="scboard off" id="scboard"><p class="sceb" dir="ltr">${esc(eb)}</p><h2>${esc(ti)}</h2>${balls?`<div class="scrb">${balls}</div>`:''}<div class="scrl">${cf.items().map(([k,t,x,c],i)=>`<div class="scri${c?' '+c:''}" data-i="${i}"><b>${esc(k)}</b><span>${esc(t)}${x||''}</span></div>`).join('')}</div></div>`}}
   if(cf.mid){const v=cf.vis?.(D),b=D?.querySelector('img[src*="badge-"]');return {mid:1,eb:`PSP·0${cf.course} · ${(b?.getAttribute('alt')||'').toUpperCase()}`,ti:(D?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim(),
     bar0:bar(scSec(cf.prev)),bar1:bar(D),vis:v?[].concat(v).filter(Boolean).map(e=>e.outerHTML).join(''):'',lect:P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp'}}
   const sk=skipSet(),tiles=[];for(let e=P?.querySelector('[data-course]');e;e=e.nextElementSibling){const c=e.dataset?.course,t=e.dataset?.tr||e.querySelector?.('[data-tr]')?.dataset.tr;if((c&&sk.has('c'+c))||(t&&sk.has('t'+t)))continue;tiles.push(e.outerHTML)}const v=cf.vis?.(D);
@@ -3382,8 +3429,10 @@ function scBeats(id){const cf=SC[id],nT=scRoute().filter(s=>s.t).length;
   const ti=cf.mid?(scSec(cf.div)?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim():'';
   return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT,ti).map(([st,he,en])=>({st,t:ll(he,en)}))}
 function scStage(B,b){for(let i=b;i>=0;i--)if(B[i].st)return {st:B[i].st,at:i};return {st:'gym',at:0}}
-function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid)music('mus-badge',{loop:false,vol:.4});else if(!atEnd)music(null)}
-function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),G=twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
+function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
+// the town of the last walk before here (a rules scene comes after a save point, where the mini map's own lookup stops)
+function scTownBack(){for(let i=POS;i>=0;i--)if(SEQ[i].kind==='town'){const L=TW_LEGS[SEQ[i].id]||[];return L[L.length-1]?.town||null}return null}
+function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack():null,G=tb?(TOWN[TOWN.gymOf?.[tb]]||TOWN.gym):twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
   const k=Math.min(1640/G.w,700/G.h),W=G.w*k,H=G.h*k,gx=(1920-W)/2,gy=40;
   const [x0,y0,x1,y1]=G.view,vw=(x1-x0+1)*G.t,vh=(y1-y0+1)*G.t,km=Math.min(166/vh,290/vw);
   const mk=A.mid?'':R.map((s,i)=>{const at=`left:${s.x*M}px;top:${s.y*M}px`;
@@ -3393,8 +3442,8 @@ function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),G=twGymOf(),A=scParts(
   const midH=A.mid?`<div class="scsign off" id="scsign"><div data-course="${cf.course}"><img src="img/badge-${cf.course}.webp" alt=""><p class="sceb">${esc(A.eb)}</p><h2>${esc(A.ti)}</h2></div></div>${A.vis?`<div class="scvis scmid" dir="ltr" id="scvis">${A.vis}</div>`:''}`:'';
   cv.innerHTML=`<div class="st scst" id="scst" dir="${EN?'ltr':'rtl'}">
     <div class="scgym" id="scgym" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
-    <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town]||TW_NAME.pewter))} · GYM</div>
-    ${A.mid?midH:`<div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
+    <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town||tb||twMiniTown()]||TW_NAME.pewter))} · GYM</div>
+    ${A.rules?A.board:A.mid?midH:`<div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
     <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" dir="ltr" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" dir="ltr" id="scvis">${A.vis}</div>`:''}</div>`}
     <div class="scbar0" id="scbar0">${A.bar0}</div><div class="scbar1" id="scbar1" style="display:none">${A.bar1}</div>
     <img class="sclect${fresh?' rise':''}" id="sclect" src="${A.lect}" alt="">
@@ -3412,7 +3461,19 @@ function scApplyMid(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run
   if(vis){vis.classList.remove('in');vis.style.display=lv>=2&&!stepIn?'':'none'}
   if(lv>=2&&stepIn)scFlyTile(sign,run);else if(lv>=2)$('#scbar1 .scnew')?.classList.remove('scnew');
   scType(B[b].t,anim)}
-function scApply(b,anim,first){if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
+function scApplyRules(b,anim){const C=S.sc,B=scBeats(C.id),run=++C.run;clearInterval(S.scT);C.typing=C.fly=0;
+  const g=$('#scgym'),bd=$('#scboard');if(!g||!bd)return;
+  const {st,at}=scStage(B,b),stepIn=anim&&at===b,k=st==='gym'?0:st==='wild'?99:+String(st).slice(1);
+  g.classList.toggle('gone',k>0);$('#scnm').classList.toggle('gone',k>0);$('#twmini').classList.toggle('off',k<1);
+  const wasOff=bd.classList.contains('off');bd.classList.toggle('off',k<1);bd.classList.remove('in');if(k>0&&wasOff&&anim){void bd.offsetWidth;bd.classList.add('in')}
+  bd.querySelectorAll('.scri').forEach((e,i)=>{e.classList.toggle('on',i<k);e.classList.remove('in');if(stepIn&&i===k-1){void e.offsetWidth;e.classList.add('in')}});
+  if(stepIn&&k>0&&k<99)sfx('sfx-tink',.4);
+  bd.classList.toggle('wild',st==='wild');if(st==='wild'&&stepIn)sfx('sfx-excl',.65);
+  scType(B[b].t,anim)}
+// the wild-battle transition from a round's scene into the round: two flashes, then black bars close in
+function scWild(cb){document.getElementById('scsw')?.remove();const o=document.createElement('div');o.id='scsw';o.innerHTML='<i></i><i></i><i></i><i></i><i></i><i></i>';document.body.appendChild(o);
+  music('mus-wild',{vol:.25});setTimeout(cb,1250);setTimeout(()=>o.remove(),1900)}
+function scApply(b,anim,first){if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
   const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','map','fly','zoom','tile'].indexOf(st);
   const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
@@ -3455,7 +3516,8 @@ function scType(t,anim){const el=$('#sctx'),C=S.sc;clearInterval(S.scT);el.class
 // a click while the line is typing or Dragonite is flying finishes it at once; otherwise the next beat (or back)
 function scGo(d){const it=cur(),C=S.sc;if(!C||C.id!==it?.id)return false;
   if(d>0&&(C.typing||C.fly)){const b=C.b;if(C.fly)scApply(b,false);else{clearInterval(S.scT);const el=$('#sctx');el.textContent=scBeats(C.id)[b].t;el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}return true}
-  const nb=C.b+d;if(nb<0||nb>=scBeats(C.id).length)return false;C.b=nb;scApply(nb,d>0);return true}
+  const nb=C.b+d;if(d>0&&nb>=scBeats(C.id).length&&SC[C.id].wild&&!C.wild){C.wild=1;scWild(()=>{if(cur()?.id===C.id)go(1)});return true}
+  if(nb<0||nb>=scBeats(C.id).length)return false;C.b=nb;scApply(nb,d>0);return true}
 const trMeetOn=it=>it?.kind==='slide'&&twOn()&&!ROOM.legacy&&/^x-trainer-\d$/.test(it.id);
 function trMeet(it){const t=+it.id.slice(-1),walk=[...SEQ.slice(0,POS)].reverse().find(x=>x.kind==='town'),L=walk&&TW_LEGS[walk.id],leg=L&&L[L.length-1];if(!leg?.place)return;
   const T=TOWN[leg.town];if(!S.tw||S.tw.town!==leg.town){S.tw=twNew(leg.town);S.tw.from='door'}const tw=S.tw;tw.ph='meet';tw.leg=leg;tw.to='door';
@@ -3968,7 +4030,7 @@ function leagueSpot(){const G=['s-memory','c-memory','d-battle','quizwin','pq-st
 // round 51: in new rooms trainer n comes between course 2n+1 and course 2n+2 (not at the start of the part)
 function trMid(){if(ROOM.legacy)return;[1,2,3].forEach(n=>{const i=SEQ.findIndex(x=>x.id==='x-trainer-'+n);if(i<0)return;let j=-1;SEQ.forEach((x,k)=>{if(courseOf(x.id)===2*n+1)j=k});if(j<0)return;const it=SEQ.splice(i,1)[0];if(j>i)j--;SEQ.splice(j+1,0,it)})}
 function seqDrop(){if(!ROOM.legacy)SEQ=SEQ.filter(x=>x.id!=='pq-stats'&&x.id!=='quizwin'&&x.id!=='k-questionnaire'&&x.id!=='c-pop'&&x.id!=='d-thinker');else SEQ=SEQ.filter(x=>x.id!=='ev-move'&&x.id!=='pq-ev-move')}
-function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});if(s.id==='s-buzz'&&!ROOM.legacy)SEQ.push({kind:'buzz',id:'s-buzz'});else SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-steel')SEQ.push({kind:'quizwin',id:'quizwin'})});seqDrop();trMid();if(twOn()){const c=SEQ.findIndex(x=>x.id==='cover');if(c>=0)SEQ.splice(c+1,0,{kind:'town',id:'w-pewter'});TW_AT.forEach(([id,w])=>{const k=w.course?SEQ.findIndex(x=>x.kind==='slide'&&courseOf(x.id)===w.course):SEQ.findIndex(x=>x.id===w.before);if(k>0)SEQ.splice(k,0,{kind:'town',id})});Object.entries(SC_DROP).forEach(([id,L])=>{const a=SEQ.findIndex(x=>x.id===L[0]);if(a<0)return;SEQ=SEQ.filter(x=>!L.includes(x.id));SEQ.splice(a,0,{kind:'scene',id})})}pqShuffle();leagueSpot()}
+function buildSeq(){const sk=skipSet();S.skipKey=JSON.stringify([...sk].sort());SEQ=[];S.slides.forEach((s,i)=>{if(!slideOn(s.id,sk))return;if(s.id==='closing')SEQ.push({kind:'awards',id:'awards'});if(s.id==='s-science')SEQ.push({kind:'lake',id:'s-lake'});if(s.id==='s-paradigm')SEQ.push({kind:'pika',id:'s-pika'});if(s.id==='s-buzz'&&!ROOM.legacy)SEQ.push({kind:'buzz',id:'s-buzz'});else SEQ.push({kind:'slide',i,id:s.id});if(s.id==='c-thinkers')SEQ.push({kind:'cmt',id:'c-cmt'});if(s.id==='s-science')SEQ.push({kind:'why',id:'s-why'});if(s.id==='x-finale')SEQ.push({kind:'hof',id:'hof'});if(s.id==='t-steel')SEQ.push({kind:'quizwin',id:'quizwin'})});seqDrop();trMid();if(twOn()){const c=SEQ.findIndex(x=>x.id==='cover');if(c>=0)SEQ.splice(c+1,0,{kind:'town',id:'w-pewter'});TW_AT.forEach(([id,w])=>{const k=w.course?SEQ.findIndex(x=>x.kind==='slide'&&courseOf(x.id)===w.course):SEQ.findIndex(x=>x.id===w.before);if(k>0)SEQ.splice(k,0,{kind:'town',id})});Object.entries(SC_DROP).forEach(([id,L])=>{const a=SEQ.findIndex(x=>x.id===L[0]);if(a<0)return;SEQ=SEQ.filter(x=>!L.includes(x.id));SEQ.splice(a,0,{kind:'scene',id})});Object.entries(SC).forEach(([id,c])=>{if(!c.before)return;const a=SEQ.findIndex(x=>x.id===c.before);if(a>=0)SEQ.splice(a,0,{kind:'scene',id})})}pqShuffle();leagueSpot()}
 function skipSync(){if(!isScreen()||!S.slides||!SEQ.length)return;const k=JSON.stringify([...skipSet()].sort());if(k===S.skipKey)return;const id=cur()?.id,old=SEQ.slice(0,POS+1).map(x=>x.id);buildSeq();
   let p=SEQ.findIndex(x=>x.id===id);if(p<0){p=0;old.forEach(o=>{const j=SEQ.findIndex(x=>x.id===o);if(j>=0)p=j})}POS=p;HOF=0;SUB=0;show(true)}
 function sumApply(id){const sk=skipSet();if(!sk.size)return;const cv=$('#cv');
