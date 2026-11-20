@@ -769,6 +769,15 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .sctile.in{animation:svin .5s ease-out both}
 .sctile.gone,.sceb.gone{opacity:0;transform:translateY(-14px)}
 .sctiles.off{display:none}
+.scsign{position:absolute;top:70px;left:50%;translate:-50% 0;z-index:30;max-width:1300px}
+.scsign.off{display:none}.scsign.in{animation:svgrow .7s cubic-bezier(.2,.8,.3,1)}
+.scsign>div{display:flex;flex-direction:column;align-items:center;gap:14px;background:#FFFDF8;border:6px solid #2A2E45;border-radius:20px;box-shadow:inset 0 0 0 6px #FFFDF8,inset 0 0 0 10px #C9A43B,0 10px 0 rgba(0,0,0,.35);padding:44px 80px 50px}
+.scsign img{width:170px;height:170px;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25))}
+.scsign .sceb{margin:6px 0 0;font-size:24px}
+.scsign h2{margin:0;font:400 86px/1.1 var(--display);color:#161A2E;text-align:center}
+.scsign.scflying{transition:transform .8s cubic-bezier(.5,0,.3,1),opacity .25s .6s;opacity:0}
+.scvis.scmid{position:absolute;top:60px;left:120px;right:120px;height:680px;margin:0;align-items:center;align-content:center;flex-direction:column}
+.scvis.scmid>*{flex:none}.scvis.scmid img[src*="th-"]{width:260px;height:260px;object-fit:contain}.scvis.scmid>div:first-child:has(img[src*="th-"]){display:flex;gap:40px}
 .sctile.scflying{position:relative;z-index:90;transition:transform .8s cubic-bezier(.5,0,.3,1),opacity .25s .6s;opacity:0}
 .scbar1 .scnew{animation:scbadge .7s ease-out}
 @keyframes scbadge{0%{transform:scale(2.4)}60%{transform:scale(.9)}}
@@ -1141,7 +1150,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795200575';
+const BUILDV='1795201587';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2486,7 +2495,7 @@ const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function seqLabel(it){let label='';
   if(it.id==='d-battle')label=ll('קרבות: מי מנצח?','Battles: who wins?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
-  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
+  else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=SC[it.id]?.mid?ll(`פתיחת קורס ${SC[it.id].course}`,`Course ${SC[it.id].course} opening`):P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   return label}
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;const label=seqLabel(it);
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
@@ -3339,31 +3348,54 @@ const SC={
     lines:(n,town)=>[['gym',`ברוכים הבאים ל${town}! אני ביל, המרצה שלכם בחלק הרביעי והאחרון.`,`Welcome to ${town}! I'm Bill, your lecturer for the fourth and last part.`],
       ['fly','שישה תגים כבר בכיס. עוד שניים, ואז: היכל התהילה.','Six badges in the bag. Two more, and then: the Hall of Fame.'],
       ['zoom','בחלק הזה: איפה כל אחד חזק, ואיך אנשים משתנים.','In this part: where each person is strong, and how people change.'],
-      ['tile','נתחיל בשישה הסטטים: כמה אתה סופג, איך אתה דוחף, ממה אתה מוגן ובאיזה קצב אתה זז.','We start with the six stats: how much you absorb, how you push, what protects you, and how fast you move.']]}};
+      ['tile','נתחיל בשישה הסטטים: כמה אתה סופג, איך אתה דוחף, ממה אתה מוגן ובאיזה קצב אתה זז.','We start with the six stats: how much you absorb, how you push, what protects you, and how fast you move.']]},
+  // the second course of parts 2-4 (after the trainer): the gym's sign instead of the dark divider slide
+  'cd-4':{mid:1,part:2,course:4,town:'celadon',drop:['c-divider'],div:'c-divider',prev:'s-divider',vis:s=>s?.querySelector('img[src*="th-durkheim"]')?.parentElement,
+    lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג הרביעי.`,`Welcome to ${town}! The fourth badge is waiting here.`],
+      ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
+      ['tile','גם אבות הסוציולוגיה הרכיבו משקפיים, וכל אחד צודק במשהו ומפספס משהו.','The fathers of sociology wore glasses too, and each got something right and missed something.'],
+      [0,'ופוקימון? המיון המפורט ביותר שיש לנו.','And Pokémon? The most detailed sorting we have.']]},
+  'cd-6':{mid:1,part:3,course:6,town:'saffron',drop:['f-divider-2'],div:'f-divider-2',prev:'f-divider',vis:s=>s?.querySelector('img[src*="img/t-"]')?.parentElement,
+    lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג השישי.`,`Welcome to ${town}! The sixth badge is waiting here.`],
+      ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
+      ['tile','תשעת הסוגים ה״פיזיים״: במשחקים הישנים, כל המתקפות שלהם היו Physical.','The nine "physical" types: in the old games, all their attacks were Physical.'],
+      [0,'ובסוף, הקרבות: אפשר לחשב מראש מי ינצח?','And at the end, the battles: can you work out in advance who will win?']]},
+  'cd-8':{mid:1,part:4,course:8,town:'viridian',drop:['h-divider'],div:'h-divider',prev:'g-divider',music:'mus-evolution',vis:s=>{const im=s?.querySelector('img[src*="s129"]')?.parentElement;return im?[im,im.nextElementSibling]:null},
+    lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג האחרון.`,`Welcome to ${town}! The last badge is waiting here.`],
+      ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
+      ['tile','מה צריך לקרות כדי שתגיע לגרסה הבאה של עצמך?','What has to happen for you to reach the next version of yourself?'],
+      [0,'זמן, רגע של שבר, סביבה חדשה, או אדם שמאמין בך.','Time, a breaking point, a new place, or someone who believes in you.'],
+      [0,'ובסוף: מה שמושך אותך מעבר לסוג שלך.','And at the end: what pulls you beyond your type.']]}};
+// a mid-part scene speaks with its part's lecturer
+Object.values(SC).forEach(c=>{if(c.mid)c.name=Object.values(SC).find(o=>!o.mid&&o.part===c.part).name});
 const SC_DROP=Object.fromEntries(Object.entries(SC).map(([k,v])=>[k,v.drop]));
 function scRoute(){return SC_STOPS.filter(s=>!s.t||SEQ.some(x=>x.id==='x-trainer-'+s.t))}
 function scSec(id){const i=S.slides.findIndex(s=>s.id===id);if(i<0)return null;const t=document.createElement('template');t.innerHTML=slideHTML(S.slides[i].html);return t.content.querySelector('section')}
 function scParts(cf){const P=scSec('x-part-'+cf.part),D=scSec(cf.div),bar=s=>s?.querySelector('div[style*="top:1022px"]')?.outerHTML||'';
+  if(cf.mid){const v=cf.vis?.(D),b=D?.querySelector('img[src*="badge-"]');return {mid:1,eb:`PSP·0${cf.course} · ${(b?.getAttribute('alt')||'').toUpperCase()}`,ti:(D?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim(),
+    bar0:bar(scSec(cf.prev)),bar1:bar(D),vis:v?[].concat(v).filter(Boolean).map(e=>e.outerHTML).join(''):'',lect:P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp'}}
   const sk=skipSet(),tiles=[];for(let e=P?.querySelector('[data-course]');e;e=e.nextElementSibling){const c=e.dataset?.course,t=e.dataset?.tr||e.querySelector?.('[data-tr]')?.dataset.tr;if((c&&sk.has('c'+c))||(t&&sk.has('t'+t)))continue;tiles.push(e.outerHTML)}const v=cf.vis?.(D);
   return {eb:P?.querySelector('p')?.textContent||'',tiles,bar0:bar(P),bar1:bar(D),vis:v?v.outerHTML:'',
     lect:P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp'}}
 // the beats: [stage, he, en]; stage 0 = the same stage as the line before
 function scBeats(id){const cf=SC[id],nT=scRoute().filter(s=>s.t).length;
-  return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT).map(([st,he,en])=>({st,t:ll(he,en)}))}
+  const ti=cf.mid?(scSec(cf.div)?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim():'';
+  return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT,ti).map(([st,he,en])=>({st,t:ll(he,en)}))}
 function scStage(B,b){for(let i=b;i>=0;i--)if(B[i].st)return {st:B[i].st,at:i};return {st:'gym',at:0}}
-function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd)music('mus-badge',{loop:false,vol:.4})}
+function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid)music('mus-badge',{loop:false,vol:.4});else if(!atEnd)music(null)}
 function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),G=twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
   const k=Math.min(1640/G.w,700/G.h),W=G.w*k,H=G.h*k,gx=(1920-W)/2,gy=40;
   const [x0,y0,x1,y1]=G.view,vw=(x1-x0+1)*G.t,vh=(y1-y0+1)*G.t,km=Math.min(166/vh,290/vw);
-  const mk=R.map((s,i)=>{const at=`left:${s.x*M}px;top:${s.y*M}px`;
+  const mk=A.mid?'':R.map((s,i)=>{const at=`left:${s.x*M}px;top:${s.y*M}px`;
     if(s.b)return `<img class="scbdg" data-i="${i}" src="img/badge-${s.b}.webp" alt="" style="left:${s.x*M}px;top:${(s.y-8)*M}px">`;
     if(s.t)return `<b class="scbang" data-i="${i}" style="${at}">!</b>`;
     if(s.goal)return `<div class="scgoal" data-i="${i}" style="${at}"><span>${esc(ll(`הפוקימון של ${subjectName()}`,`${subjectName()}'s Pokémon`))}</span><img src="img/it-poke-ball.webp" alt=""><i>?</i></div>`;return ''}).join('');
+  const midH=A.mid?`<div class="scsign off" id="scsign"><div data-course="${cf.course}"><img src="img/badge-${cf.course}.webp" alt=""><p class="sceb">${esc(A.eb)}</p><h2>${esc(A.ti)}</h2></div></div>${A.vis?`<div class="scvis scmid" dir="ltr" id="scvis">${A.vis}</div>`:''}`:'';
   cv.innerHTML=`<div class="st scst" id="scst" dir="${EN?'ltr':'rtl'}">
     <div class="scgym" id="scgym" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
     <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town]||TW_NAME.pewter))} · GYM</div>
-    <div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
-    <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" id="scvis">${A.vis}</div>`:''}</div>
+    ${A.mid?midH:`<div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
+    <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" dir="ltr" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" dir="ltr" id="scvis">${A.vis}</div>`:''}</div>`}
     <div class="scbar0" id="scbar0">${A.bar0}</div><div class="scbar1" id="scbar1" style="display:none">${A.bar1}</div>
     <img class="sclect${fresh?' rise':''}" id="sclect" src="${A.lect}" alt="">
     <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini" style="width:${vw*km}px;height:${vh*km}px">${twGymInner(G,km,G.view)}</div></div></div>`;
@@ -3371,7 +3403,16 @@ function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),G=twGymOf(),A=scParts(
   // coming straight from the walk: the gym starts where the big gym was and settles above the box
   const F=S.scFrom;S.scFrom=null;if(fresh&&F&&Date.now()-F.at<4000){const g=$('#scgym');g.style.transition='none';g.style.transform=`translate(${F.bx-gx}px,${F.by-gy}px) scale(${F.kb/k})`;void g.offsetWidth;g.style.transition='';g.style.transform=''}}
 // put the stage in the state of beat b; anim = play the step into it (typing, flight, zoom, the badge flying into the bar)
-function scApply(b,anim,first){const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
+function scApplyMid(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run;clearInterval(S.scT);C.typing=C.fly=0;
+  const g=$('#scgym'),sign=$('#scsign'),vis=$('#scvis'),mini=$('#twmini');if(!g)return;
+  const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','sign','tile'].indexOf(st);
+  g.classList.toggle('gone',lv>=1);$('#scnm').classList.toggle('gone',lv>=1);mini.classList.toggle('off',lv<1);
+  sign.classList.remove('in','scflying');sign.style.transform='';sign.style.display='';sign.classList.toggle('off',lv!==1&&!(lv===2&&stepIn));if(lv===1&&stepIn){sign.classList.add('in');sfx('sfx-tink',.5)}
+  $('#scbar0').style.display=lv>=2?'none':'';$('#scbar1').style.display=lv>=2?'':'none';
+  if(vis){vis.classList.remove('in');vis.style.display=lv>=2&&!stepIn?'':'none'}
+  if(lv>=2&&stepIn)scFlyTile(sign,run);else if(lv>=2)$('#scbar1 .scnew')?.classList.remove('scnew');
+  scType(B[b].t,anim)}
+function scApply(b,anim,first){if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
   const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','map','fly','zoom','tile'].indexOf(st);
   const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
@@ -3407,8 +3448,8 @@ function scFlyTile(t,run){const C=S.sc,vis=$('#scvis');$('#scbar0').style.displa
   const r=t.getBoundingClientRect(),ir=t.querySelector('img').getBoundingClientRect(),dr=dst.getBoundingClientRect(),u=r.width/t.offsetWidth;
   const ox=(ir.left+ir.width/2-r.left)/u,oy=(ir.top+ir.height/2-r.top)/u,tx=(dr.left+dr.width/2-ir.left-ir.width/2)/u,ty=(dr.top+dr.height/2-ir.top-ir.height/2)/u;
   t.style.transformOrigin=`${ox}px ${oy}px`;t.classList.add('scflying');void t.offsetWidth;t.style.transform=`translate(${tx}px,${ty}px) scale(${dr.width/ir.width})`;
-  setTimeout(()=>{if(C.run!==run)return;$('#sctiles').querySelectorAll('.sctile').forEach(x=>{x.style.display='none';x.classList.remove('scflying');x.style.transform=''});
-    $('#scbar0').style.display='none';$('#scbar1').style.display='';sfx('sfx-dex-page-added');if(vis){vis.style.display='';vis.classList.add('in')}},850)}
+  setTimeout(()=>{if(C.run!==run)return;[t,...($('#sctiles')?.querySelectorAll('.sctile')||[])].forEach(x=>{x.style.display='none';x.classList.remove('scflying');x.style.transform=''});
+    $('#scbar0').style.display='none';$('#scbar1').style.display='';sfx('sfx-dex-page-added');if(vis){vis.style.display='';vis.classList.add('in')}if(SC[C.id].music)music(SC[C.id].music,{loop:false,vol:.3})},850)}
 function scType(t,anim){const el=$('#sctx'),C=S.sc;clearInterval(S.scT);el.classList.remove('done');if(!anim){el.textContent=t;el.classList.add('done');$('#scst')?.classList.remove('talk');return}
   C.typing=1;let i=0;el.textContent='';sfx('sfx-a',.25);$('#scst')?.classList.add('talk');S.scT=setInterval(()=>{if(!el.isConnected){clearInterval(S.scT);return}i+=2;el.textContent=t.slice(0,i);if(i>=t.length){clearInterval(S.scT);el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}},30)}
 // a click while the line is typing or Dragonite is flying finishes it at once; otherwise the next beat (or back)
@@ -3450,7 +3491,7 @@ function twGymInner(G,k,view){const t=G.t,c=t*k,[vx,vy]=view?view:[0,0],P=gamePl
   return `<img class="twgimg" src="${G.img}" alt="" style="width:${G.w*k}px;height:${G.h*k}px;left:${-vx*c}px;top:${-vy*c}px">${G.lect?lectHTML(G,k,at,G.lect[0],G.lect[1]):''}`+
     P.map((p,i)=>{const[x,y]=G.seats[i],n=S.gIn[p.id].av;return `<div class="twseat" data-p="${p.id}" style="${at(x,y)};z-index:${Math.round(y*10)}"><i class="lks" style="${owStyle(n)};background-position:${owPos(n,'u',0)};transform:scale(${(k/2*(G.cs||1)).toFixed(3)})"></i></div>`}).join('')}
 const LECT_MINI={1:'eyal',3:'turo',4:'bill'};
-function partNow(){for(let i=Math.max(0,POS);i<SEQ.length;i++){const id=SEQ[i].id;{const o=id.match(/^op-(\d)$/);if(o)return +o[1]}const m=id.match(/^x-(part|sum|round|break|trainer)-(\d)/);if(m)return m[1]==='trainer'?+m[2]+1:+m[2];const c=courseOf(id);if(c){for(const p in PARTS)if(PARTS[p].includes(c))return +p}}return 4}
+function partNow(){for(let i=Math.max(0,POS);i<SEQ.length;i++){const id=SEQ[i].id;{if(SC[id])return SC[id].part}const m=id.match(/^x-(part|sum|round|break|trainer)-(\d)/);if(m)return m[1]==='trainer'?+m[2]+1:+m[2];const c=courseOf(id);if(c){for(const p in PARTS)if(PARTS[p].includes(c))return +p}}return 4}
 function lectHTML(G,k,at,x,y){const m=LECT_MINI[partNow()],ala=['w-vermilion','x-part-2','s-divider','op-2'].includes(cur()?.id)?`<div class="twseat" style="${at(x+1.3,y)};z-index:${Math.round(y*10)+1}"><i class="xalam" style="transform:scale(${(G.t*k*(G.cs||1)*1.5/75).toFixed(3)})"></i></div>`:'';return m?`<div class="twseat lect" style="${at(x,y)}"><img class="lectmini" src="img/lect-${m}.png" alt="" style="height:${Math.round(30*k*(G.cs||1)*.95)}px"></div>`
   :`<div class="twseat lect" style="${at(x,y)}"><i class="oaksp" style="${oakStyle()};background-position:${oakPos('d',0)};transform:scale(${(k/3*(G.cs||1)).toFixed(3)})"></i></div>${ala}`}
 function twMiniK(G){return 290/((G.view[2]-G.view[0]+1)*G.t)}
