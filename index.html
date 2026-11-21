@@ -1300,7 +1300,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795284250';
+const BUILDV='1795285298';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3740,6 +3740,7 @@ const LS={x0:30,y0:23,bw:946,bh:704};LS.z=Math.min(LS.bw/(33*LK.t),LS.bh/(24*LK.
   // spread spots on the water, the ones nearest the shore first
   W.sort((a,b)=>b[1]-a[1]||a[0]-b[0]);const pick=[];W.forEach(w=>{if(pick.every(p=>Math.abs(p[0]-w[0])+Math.abs(p[1]-w[1])>=6))pick.push(w)});LS.wat=pick;
   LS.shore=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c==='g'&&LK.dw[y][x]>=1&&LK.dw[y][x]<=2&&x>LS.x0&&x<vx1-1&&y>LS.y0+1&&y<vy1-1)LS.shore.push([x,y])}));
+  LS.dry=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c==='g'&&LK.dw[y][x]>=2&&LK.dw[y][x]<=3&&x>LS.x0&&x<vx1-1&&y>LS.y0+1&&y<vy1-1)LS.dry.push([x,y])}));
   const[sx,sy]=LK.shore;LS.shore.sort((a,b)=>Math.hypot(a[0]-sx,a[1]-sy)-Math.hypot(b[0]-sx,b[1]-sy))})();
 // round 75: the paradigm on the lake. s-lth ends with Pikachu walking in ("try to catch him!" → the wild transition → the Pikachu game, no poll);
 // s-lpar (replaces s-paradigm): back on the lake, Oak, then Nurse Joy and Ash walk in, each says how they see it; the definition; Alakazam takes everyone back to the gym
@@ -3757,7 +3758,7 @@ const lsNpcPos=(k,d,f)=>{const[,c,n]=LS_NPC[k];return `${-f*c*2}px ${-'dlru'.ind
 function lsNpcHTML(k){const[img,c,n]=LS_NPC[k];return `<div class="lsp lsnpc" id="lsn-${k}" style="display:none"><i class="lks" style="width:${c*2}px;height:${c*2}px;left:${-c}px;top:${-c*2}px;background-image:url(${img});background-size:${n*c*2}px ${4*c*2}px;background-position:0 0"></i></div>`}
 // free shore tiles for Pikachu, Joy and Ash: away from the group, Pikachu nearest the middle
 function lsSpots(){const{took}=lsPos(),dist=(a,b)=>Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]),far=(t,L,n)=>L.every(q=>dist(q,t)>=n),all=[...took];
-  const pika=LS.shore.find(t=>far(t,all,3))||LK.shore;all.push(pika);const near=[...LS.shore].sort((a,b)=>dist(a,pika)-dist(b,pika)),out=[];
+  const pika=LS.shore.find(t=>far(t,all,3))||LK.shore;all.push(pika);const near=LS.dry.filter(t=>dist(t,pika)<=6).sort((a,b)=>dist(a,pika)-dist(b,pika)),out=[];
   for(const t of near){if(out.length>=2)break;if(far(t,all,2)){out.push(t);all.push(t)}}while(out.length<2)out.push(pika);return {pika,joy:out[0],ash:out[1]}}
 // a mini walks from one tile to another (straight, frame by frame), then stands facing `end`
 function lsWalk(k,from,to,ms,end){const el=$('#lsn-'+k);if(!el)return;const sp=el.querySelector('.lks'),fy=LK.t*.38,[fx,fyy]=lkC(...from),[tx,ty]=lkC(...to),wf=LS_NPC[k][3];
@@ -3765,12 +3766,27 @@ function lsWalk(k,from,to,ms,end){const el=$('#lsn-'+k);if(!el)return;const sp=e
   if(!ms){el.style.left=tx+'px';el.style.top=(ty+fy)+'px';sp.style.backgroundPosition=lsNpcPos(k,end||d,0);return}
   el.style.transition=`left ${ms}ms linear,top ${ms}ms linear`;el.style.left=tx+'px';el.style.top=(ty+fy)+'px';let i=0;el._w=setInterval(()=>{sp.style.backgroundPosition=lsNpcPos(k,d,wf[i++%wf.length])},130);
   setTimeout(()=>{clearInterval(el._w);if(el.isConnected)sp.style.backgroundPosition=lsNpcPos(k,end||d,0)},ms)}
-function lsNpcAt(k,t,d,anim,from,ms){if(anim)lsWalk(k,from,t,ms,d);else lsWalk(k,t,t,0,d)}
+function lsNpcAt(k,t,d,anim,side){const el=$('#lsn-'+k);if(el){clearTimeout(el._t);clearInterval(el._w)}if(anim)lsWalkPath(k,lsRoute(t,side),d);else lsWalk(k,t,t,0,d)}
+const lsLand=(x,y)=>lkIn(x,y)&&lkAt(x,y)==='g';
+// the way in: from the side of the view (right or bottom) to the target, over land, around the group and the other minis
+function lsRoute(t,side){const av=new Set([...lsPos().took,...Object.values(lsSpots())].map(q=>q.join(','))),key=t.join(',');av.delete(key);
+  const D={[key]:{n:0,nx:null}},q=[t];for(let i=0;i<q.length;i++){const[x,y]=q[i];for(const[dx,dy]of[[0,1],[1,0],[-1,0],[0,-1]]){const a=x+dx,b=y+dy,kk=a+','+b;if(kk in D||!lsLand(a,b)||av.has(kk))continue;D[kk]={n:D[x+','+y].n+1,nx:[x,y]};q.push([a,b])}}
+  const vx1=LS.x0+LS.bw/LS.z/LK.t,vy1=LS.y0+LS.bh/LS.z/LK.t;let best=null,bs=-1e9;
+  for(const kk in D){const[x,y]=kk.split(',').map(Number),n=D[kk].n;if(n<5||n>18||x<=LS.x0||y<=LS.y0||x>=vx1-1||y>=vy1-1)continue;const sc=(side==='r'?x:y)*3-n*.6;if(sc>bs){bs=sc;best=[x,y]}}
+  if(!best)return[t];const path=[best];let c=best;while(D[c.join(',')].nx){c=D[c.join(',')].nx;path.push(c)}return path}
+function lsWalkPath(k,path,end,ms){ms=ms||230;const el=$('#lsn-'+k);if(!el)return;const sp=el.querySelector('.lks'),fy=LK.t*.38,wf=LS_NPC[k][3];lsWalk(k,path[0],path[0],0,'u');let i=0,d='u',f=0;
+  const put=t=>{const[x,y]=lkC(...t);el.style.left=x+'px';el.style.top=(y+fy)+'px';el.style.zIndex=Math.round(y)};
+  el._w=setInterval(()=>{sp.style.backgroundPosition=lsNpcPos(k,d,wf[f++%wf.length])},130);
+  const step=()=>{if(!el.isConnected)return;if(++i>=path.length){clearInterval(el._w);sp.style.backgroundPosition=lsNpcPos(k,end||'d',0);return}
+    const[a,b]=path[i-1],[x,y]=path[i];d=x>a?'r':x<a?'l':y>b?'d':'u';el.style.transition=`left ${ms}ms linear,top ${ms}ms linear`;put(path[i]);el._t=setTimeout(step,ms)};el._t=setTimeout(step,60)}
+// the camera on the lake: f = how much closer than the normal view, around tile t
+function lsZoom(t,f,anim){const inn=$('#lsin');if(!inn)return;let tr=lsCam();if(t&&f>1){const z=LS.z*f,[cx,cy]=lkC(...t),tx=Math.min(0,Math.max(LS.bw-LK.W*z,LS.bw/2-cx*z)),ty=Math.min(0,Math.max(LS.bh-LK.H*z,LS.bh*.56-cy*z));tr=`translate(${tx}px,${ty}px) scale(${z})`}
+  if(inn.style.transform===tr)return;if(!anim)inn.classList.add('nott');inn.style.transform=tr;if(!anim){void inn.offsetWidth;inn.classList.remove('nott')}}
 function lsSay(k,html,cls){const el=$('#lsn-'+k);if(!el)return;el.querySelector('.lsbub')?.remove();if(html)el.insertAdjacentHTML('beforeend',`<i class="lsbub ${cls||''}">${html}</i>`)}
 // the paradigm scene's stage: Pikachu sits on the shore; Joy and Ash walk in from the south when it's their turn
-function lsParApply(st,k,stepIn){const sp=lsSpots(),south=t=>[t[0],t[1]+7];
+function lsParApply(st,k,stepIn){const sp=lsSpots();lsZoom(k<=2?sp.pika:null,1.6,stepIn&&k===3);
   lsNpcAt('pika',sp.pika,'d',false);lsSay('pika',k<1?'💢':'',k<1?'mk':'');
-  ['joy','ash'].forEach((n,i)=>{const at=i+1;if(k<at){const e=$('#lsn-'+n);if(e)e.style.display='none';return}lsNpcAt(n,sp[n],sp[n][0]>sp.pika[0]?'l':sp[n][0]<sp.pika[0]?'r':'u',stepIn&&k===at,south(sp[n]),1600);lsSay(n,'')});
+  ['joy','ash'].forEach((n,i)=>{const at=i+1;if(k<at){const e=$('#lsn-'+n);if(e)e.style.display='none';return}lsNpcAt(n,sp[n],'d',stepIn&&k===at,'b');lsSay(n,'')});
   st.querySelectorAll('.lsg').forEach((e,i)=>{e.classList.toggle('on',k>=i);e.classList.remove('in');if(stepIn&&k===i){void e.offsetWidth;e.classList.add('in')}});
   $('#lsh2').textContent=k>=3?ll('פרדיגמה: המשקפיים שדרכם מסתכלים','Paradigm: the glasses you look through'):ll('למה פיקאצ׳ו מסרב להיכנס לפוקבול?','Why does Pikachu refuse to go into his Poké Ball?');
   $('#lsdid').classList.toggle('on',k>=3);$('#lseb').textContent=k>=3?'WHAT IS A PARADIGM':'PARADIGM · PIKACHU';
@@ -3839,7 +3855,8 @@ function lsApply(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id);++C.run;clearI
     $('#lsrk').classList.toggle('on',k===2);$('#lsdid').classList.toggle('on',k===3);$('#lstwo').classList.toggle('on',k===4);
     if(k>=5){$('#lseb').textContent='PARADIGM';$('#lsh2').textContent=ll('פרדיגמה','Paradigm')}
     {const tr=st.querySelector('.lspan .trio');if(tr&&tr.dataset.i!==String(k>=5?2:1)){tr.outerHTML=trioHTML(k>=5?2:1);st.querySelector('.lspan .trio').dataset.i=k>=5?2:1}}
-    {const sp=lsSpots().pika;if(k<5){const e=$('#lsn-pika');if(e)e.style.display='none'}else{lsNpcAt('pika',sp,'d',stepIn&&k===5,[sp[0]+9,sp[1]],2200)}
+    {const sp=lsSpots().pika;if(k<5){const e=$('#lsn-pika');if(e)e.style.display='none'}else{lsNpcAt('pika',sp,'d',stepIn&&k===5,'r')}
+     lsZoom(k>=5?sp:null,1.8,stepIn&&k===5);
      lsSay('pika',k===6?'!':'',k===6?'bang':'');if(stepIn&&k===6)sfx('sfx-excl',.6)}
     if(stepIn&&k>=3)sfx('sfx-dex-page-added',.5);
     S.lsKey=null;lsWhyPaint()}
@@ -3852,7 +3869,7 @@ function lsWhyPaint(){const W=S.why,st=$('#scst');if(!W||!st||cur()?.id!=='s-lth
   const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,last=W.ph==='run'&&Date.now()-(W.lastAt||0)<LS_BUB?W.ord[W.ord.length-1]:null,nw=pl.filter(p=>th(p.id)).length;
   st.classList.toggle('cl1',n>=1&&k<3);st.classList.toggle('cl2',n>=2&&k<3);st.classList.toggle('rk',k===2);st.classList.toggle('glow',k>=3);
   const key=[k,W.ph,n,last,nw,...pl.map(p=>th(p.id))].join('|');if(S.lsKey===key)return;S.lsKey=key;
-  st.querySelectorAll('.lsp[data-p]').forEach(e=>{e.querySelector('.lsbub')?.remove();e.style.zIndex=e.dataset.z||(e.dataset.z=e.style.zIndex);const t=th(e.dataset.p);if(!t||W.ph==='ask'||e.dataset.p!==last)return;const big=true;e.insertAdjacentHTML('beforeend',big?`<i class="lsbub big"><small>${esc(person(e.dataset.p)?.name||'')}</small><span dir="auto">${esc(t)}</span></i>`:'<i class="lsbub mk">💬</i>');if(big)e.style.zIndex=9999});
+  st.querySelectorAll('.lsp[data-p]').forEach(e=>{e.querySelector('.lsbub')?.remove();e.style.zIndex=e.dataset.z||(e.dataset.z=e.style.zIndex);const t=th(e.dataset.p);if(!t||W.ph==='ask')return;const big=e.dataset.p===last;e.insertAdjacentHTML('beforeend',big?`<i class="lsbub big"><small>${esc(person(e.dataset.p)?.name||'')}</small><span dir="auto">${esc(t)}</span></i>`:'<i class="lsbub mk">💬</i>');if(big)e.style.zIndex=9999});
   const box=$('#lswhy');if(!box)return;
   if(k>=2){box.innerHTML='';return}
   const clk=W.ph==='run'?`<div class="lsclk" id="whyclk"><b>${Math.max(0,Math.ceil(whyT()-(Date.now()-W.t0)/1000))}</b><span>${ll('שניות','sec')}</span></div>`:'';
