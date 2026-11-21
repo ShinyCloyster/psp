@@ -640,6 +640,10 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .bzask{position:absolute;inset:0;background:#161A2E;display:flex;align-items:center;justify-content:center;gap:60px;color:#F6F1E7;animation:twin .4s;padding:0 120px}.bzask .bzav{position:relative;flex:none}.bzask .qbang{position:absolute;left:50%;top:-40px;transform:translateX(-50%) scale(2)}
 .bzask>div:last-child{flex:1;max-width:1050px}.bzask p{font-size:44px;color:#F2C94C;margin:0 0 20px}.bzask b{font:700 56px var(--body);display:block;line-height:1.35}
 .bzno{position:absolute;inset:0;background:#EE3322;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;color:#fff;text-align:center;padding:0 160px}.bzno b{font:900 420px/1 var(--display);animation:bzstamp .5s cubic-bezier(.2,1.8,.5,1)}.bzno p{font-size:46px;max-width:1400px;margin:0}@keyframes bzstamp{from{transform:scale(3) rotate(-12deg);opacity:0}}
+.urgrid{display:grid;gap:8px;margin-top:12px}.urgrid.c3{grid-template-columns:repeat(3,1fr)}.urgrid.c2{grid-template-columns:1fr 1fr}.urgrid button{padding:8px 4px;border-radius:14px;border:3px solid #444;background:#1E2238;color:#F6F1E7;font:700 15px var(--body);display:flex;flex-direction:column;align-items:center;gap:4px}.urgrid button img{width:58px;height:58px;image-rendering:pixelated}.urgrid.c2 button img{width:84px;height:84px}.urgrid button:active{border-color:#F2C94C}.urdk{width:100%;margin-top:10px;padding:14px;border-radius:14px;border:3px solid #444;background:#2A2F4A;color:#F6F1E7;font:700 18px var(--body)}
+.urdone{display:flex;gap:14px;justify-content:center;margin:16px 0 8px}.urdone button{flex:1;max-width:150px;padding:12px 6px;border-radius:16px;border:3px solid #F2C94C;background:#1E2238;color:#F6F1E7;font:700 16px var(--body);display:flex;flex-direction:column;align-items:center;gap:6px}.urdone img{width:72px;height:72px;image-rendering:pixelated}.urx{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:12px;background:#5A5F73;color:#fff;font:400 36px var(--pixel)}
+.urb{position:absolute;left:0;transform:translateX(-50%);width:var(--s);height:var(--s);z-index:650;font-style:normal;pointer-events:none}.urb>img,.urb>.urx{width:var(--s);height:var(--s);image-rendering:pixelated;filter:drop-shadow(0 2px 0 rgba(0,0,0,.45))}.urb .urx{font-size:calc(var(--s)*.5);border-radius:calc(var(--s)*.18)}.urb em{position:absolute;left:calc(var(--s)*.19);top:calc(var(--s)*1.04);width:calc(var(--s)*.62);height:calc(var(--s)*.62);font-style:normal}.urb em img,.urb em .urx{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 1px 0 rgba(0,0,0,.6))}.urb em .urx{font-size:calc(var(--s)*.3)}.urb em.solo{right:0;bottom:0;width:100%;height:100%}.urb.pop{animation:urpop .45s cubic-bezier(.3,1.6,.5,1)}@keyframes urpop{0%{scale:0}100%{scale:1}}
+.urcnt{position:absolute;top:60px;display:flex;flex-direction:column;gap:14px;font:400 30px var(--pixel);color:#F6F1E7}.urcnt span{display:flex;align-items:center;gap:14px}.urcnt img{width:56px;height:56px;image-rendering:pixelated}
 .bzpbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.bzpbtns button{padding:18px 8px;border-radius:14px;border:3px solid #444;background:#1E2238;color:#F6F1E7;font:700 18px var(--body);display:flex;flex-direction:column;align-items:center;gap:6px}.bzpbtns button i{font-style:normal;font-size:40px}.bzpbtns button.on{border-color:#F2C94C;background:#3A3420}
 .bzpress{width:100%;padding:26px;font:800 30px var(--body);border-radius:18px;border:4px solid #F2C94C;background:#EE3322;color:#fff;margin:10px 0}
 .ofcard{position:absolute;left:0;right:0;top:0;margin:0 auto;width:1340px;display:flex;flex-direction:row-reverse;align-items:center;gap:50px;background:#F6F1E7;color:#161A2E;border:8px solid #F2C94C;border-radius:30px;padding:28px 50px;animation:twin .45s cubic-bezier(.3,1.5,.5,1)}.en .ofcard{flex-direction:row}
@@ -1172,7 +1176,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795252689';
+const BUILDV='1795254627';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2359,6 +2363,8 @@ function bindPhone(){
     if(b.dataset.mp!=null){const G=S.game;if(G?.g!=='mem'||G.cur!==S.me||G.done)return;const i=+b.dataset.mp;if(!S.mpick||S.mpick.tid!==G.tid)S.mpick={tid:G.tid,picks:[]};const P=S.mpick.picks;if(P.length>=3||P.includes(i)||G.faces?.[i])return;
       P.push(i);sfx('sfx-tink');try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({mk:G.key,tid:G.tid,picks:[...P]},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')));return}
     if(b.dataset.bv){const G=S.game;if(G?.g!=='bt'||G.phase!=='guess'||(S.myG||{})['b'+G.id])return;S.myG={...(S.myG||{}),['b'+G.id]:b.dataset.bv};sfx('sfx-ball-toss');try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['b'+G.id]:b.dataset.bv},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
+    if(b.dataset.urg){const[k,v]=b.dataset.urg.split(':');urgeAns(k,v);return}
+    if(b.dataset.ured){S.urEdit=b.dataset.ured;render();return}
     if(b.dataset.scn!=null){if(S.game?.g!=='scn'||S.game.revealed)return;const v=+b.dataset.scn;S.myG={...(S.myG||{}),scn:v};sfx('sfx-tink');render();S.db.doc('stage/g-'+S.me).set({scn:v},{merge:true}).catch(()=>toast(ll('לא נשלח','Not sent')));return}
     if(b.dataset.cgt||b.dataset.cgs||b.dataset.cge){if(S.game?.g!=='cg')return;const g={t:[],...((S.myG||{}).cg||{})};g.t=[...(g.t||[])];
       if(b.dataset.cgt){const t=b.dataset.cgt,i=g.t.indexOf(t);if(i>=0)g.t.splice(i,1);else{if(g.t.length>=2)g.t.shift();g.t.push(t)}}if(b.dataset.cgs)g.s=b.dataset.cgs;if(b.dataset.cge)g.e=b.dataset.cge;
@@ -3415,10 +3421,11 @@ SC['sm-psp']={rules:1,part:2,drop:['s-psp'],src:'s-psp',bar:'s-psp',title:'PSP',
     ['i2','S, סוציולוגית: מסתכלים על אדם דרך העיניים של מי שמכיר אותו.','S, Sociological: we look at a person through the eyes of those who know them.'],
     ['i3','P, פרדיגמה: משקפיים שדרכם כולנו נלמד יחד איך מסתכלים.',"P, Paradigm: glasses through which we'll all learn, together, how to look."],
     ['wild','ועכשיו מהר, חברים! יש לנו אונייה לתפוס!','And now hurry, friends! We have a ship to catch!']]};
-// round 59: "the urge to sort" (c-urge) as Oak talking over the big gym: he asks for hands, the phones' ✋ shows as "!" over the seats
+// round 59: "the urge to sort" (c-urge) as Oak talking over the big gym. Round 60: every phone picks its star sign, then its Hogwarts
+// house (or "don't know"), in its own time from the first line; each answer pops up as an icon over that player's seat (urgePaint)
 SC['cu-4']={rules:1,part:2,drop:['c-urge'],src:'c-urge',bar:'c-urge',label:['הדחף למיין','The urge to sort'],items:()=>[],
-  lines:()=>[['gym','הרימו יד: מי יודע מה המזל שלו?','Hands up: who knows their star sign?'],
-    [0,'ומי יודע מאיזה בית הוא בהוגוורטס?','And who knows which Hogwarts house they are in?'],
+  lines:()=>[['gym','מה המזל שלכם? בחרו בטלפון.',"What's your star sign? Pick it on your phone."],
+    [0,'ומאיזה בית אתם בהוגוורטס?','And which Hogwarts house are you in?'],
     [0,'הרצון לסדר אנשים בטיפוסים הוא בעצמו תופעה חברתית.','The urge to sort people into types is itself a social phenomenon.'],
     [0,'גם אבות הסוציולוגיה עשו את זה, כל אחד בדרך שלו.','The founders of sociology did it too, each in their own way.']]};
 for(let k=1;k<=NR;k++){const last=k===NR,min=()=>PLAN.find(p=>p[3]==='x-round-'+k)?.[2]||9,ord=[['הראשון','one'],['השני','two'],['השלישי והאחרון','three, the last one']][k-1]||[k,k];
@@ -3462,7 +3469,7 @@ function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack
     if(s.goal)return `<div class="scgoal" data-i="${i}" style="${at}"><span>${esc(ll(`הפוקימון של ${subjectName()}`,`${subjectName()}'s Pokémon`))}</span><img src="img/it-poke-ball.webp" alt=""><i>?</i></div>`;return ''}).join('');
   const midH=A.mid?`<div class="scsign off" id="scsign"><div data-course="${cf.course}"><img src="img/badge-${cf.course}.webp" alt=""><p class="sceb">${esc(A.eb)}</p><h2>${esc(A.ti)}</h2></div></div>${A.vis?`<div class="scvis scmid" dir="ltr" id="scvis">${A.vis}</div>`:''}`:'';
   cv.innerHTML=`<div class="st scst" id="scst" dir="${EN?'ltr':'rtl'}">
-    <div class="scgym" id="scgym" data-k="${k}" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
+    <div class="scgym" id="scgym" data-k="${k}" data-c="${G.t*k}" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
     <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town||tb||twMiniTown()]||TW_NAME.pewter))} · GYM</div>
     ${A.rules?A.board:A.mid?midH:`<div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
     <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" dir="ltr" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" dir="ltr" id="scvis">${A.vis}</div>`:''}</div>`}
@@ -3616,6 +3623,25 @@ function twHands(){const now=Date.now(),G=twGymOf(),boxes=[[$('#twmini'),twMiniK
       if(on&&!s.querySelector('.twbang')){s.insertAdjacentHTML('beforeend',`<i class="qbang twbang" style="top:${-Math.round(34*k+30)}px${box.id==='scgym'?';scale:1.6':''}">!</i>`);if(now-at<3000){fresh=true;box.classList.remove('twpulse');void box.offsetWidth;box.classList.add('twpulse')}}if(!on)s.querySelector('.twbang')?.remove()});
     const p=person(id);if(fresh&&p){toast(`✋ ${p.name}`);sfx('sfx-tink')}})}
 setInterval(()=>{try{if(isScreen())twHands()}catch(e){}},1000);
+const URG_ZD=[['aries','טלה','Aries'],['taurus','שור','Taurus'],['gemini','תאומים','Gemini'],['cancer','סרטן','Cancer'],['leo','אריה','Leo'],['virgo','בתולה','Virgo'],['libra','מאזניים','Libra'],['scorpio','עקרב','Scorpio'],['sagittarius','קשת','Sagittarius'],['capricorn','גדי','Capricorn'],['aquarius','דלי','Aquarius'],['pisces','דגים','Pisces']];
+const URG_HP=[['gryffindor','גריפינדור','Gryffindor'],['slytherin','סלית׳רין','Slytherin'],['ravenclaw','רייבנקלו','Ravenclaw'],['hufflepuff','הפלפאף','Hufflepuff']];
+const urgImg=(k,v)=>v==='x'?'<b class="urx">?</b>':`<img src="img/${k}-${v}.png" alt="">`;
+function urgePhone(me){const mine=k=>S.myG?.[k]??S.gIn?.[me.id]?.[k],zd=mine('zd'),hp=mine('hp'),f=genderOf(me)==='f',dk=ll(f?'🤷 לא יודעת':'🤷 לא יודע',"🤷 Don't know");
+  const grid=(k,L,cols)=>`<div class="urgrid c${cols}">${L.map(([v,he,en])=>`<button data-urg="${k}:${v}"><img src="img/${k}-${v}.png" alt=""><span>${esc(ll(he,en))}</span></button>`).join('')}</div><button class="urdk" data-urg="${k}:x">${dk}</button>`;
+  if(!zd||S.urEdit==='zd')return `<p class="eyebrow">${ll('שאלה 1 מתוך 2','Question 1 of 2')}</p><h1 style="font-size:26px">${ll('מה המזל שלך?','What is your star sign?')}</h1>${grid('zd',URG_ZD,3)}`;
+  if(!hp||S.urEdit==='hp')return `<p class="eyebrow">${ll('שאלה 2 מתוך 2','Question 2 of 2')}</p><h1 style="font-size:26px">${ll(f?'ומאיזה בית את בהוגוורטס?':'ומאיזה בית אתה בהוגוורטס?','And which Hogwarts house are you in?')}</h1>${grid('hp',URG_HP,2)}`;
+  const nm=(L,v)=>v==='x'?ll(f?'לא יודעת':'לא יודע',"Don't know"):ll(...L.find(x=>x[0]===v).slice(1));
+  return `<p class="eyebrow">✓ ${ll('נשלח','Sent')}</p><h1 style="font-size:24px">${ll('תסתכלו על המסך','Look at the screen')}</h1><div class="urdone"><button data-ured="zd">${urgImg('zd',zd)}<span>${esc(nm(URG_ZD,zd))}</span></button><button data-ured="hp">${urgImg('hp',hp)}<span>${esc(nm(URG_HP,hp))}</span></button></div><p class="muted" style="font-size:15px">${ll('נגיעה בתשובה משנה אותה','Tap an answer to change it')}</p>`}
+function urgeAns(k,v){if(S.game?.g!=='urge')return;S.myG={...(S.myG||{}),[k]:v};S.urEdit=null;sfx('sfx-tink');try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({[k]:v},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')))}
+// the screen: each seat in the big gym shows its star sign and house as they come in, and a counter beside the gym
+function urgePaint(){if(cur()?.id!=='cu-4')return;const g=$('#scgym');if(!g)return;const k=+(g.dataset.k||2),sz=Math.max(22,Math.min(44,Math.round(+(g.dataset.c||32)*.92))),P=gamePlayers().filter(p=>g.querySelector(`.twseat[data-p="${p.id}"]`));let nz=0,nh=0,fresh=0;
+  P.forEach(p=>{const s=g.querySelector(`.twseat[data-p="${p.id}"]`),a=S.gIn?.[p.id]||{},key=(a.zd||'')+'|'+(a.hp||'');if(a.zd)nz++;if(a.hp)nh++;let b=s.querySelector('.urb');
+    if(!a.zd&&!a.hp){b?.remove();return}if(b&&b.dataset.v===key)return;if(!b){s.insertAdjacentHTML('beforeend',`<i class="urb" style="--s:${sz}px;top:${-Math.round(34*k/2+sz*1.45)}px"></i>`);b=s.querySelector('.urb')}
+    b.dataset.v=key;b.innerHTML=a.zd?urgImg('zd',a.zd)+(a.hp?`<em>${urgImg('hp',a.hp)}</em>`:''):`<em class="solo">${urgImg('hp',a.hp)}</em>`;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');fresh=1});
+  if(fresh)sfx('sfx-tink',.35);let c=$('#urcnt');if(!c){$('#scst')?.insertAdjacentHTML('beforeend','<div class="urcnt" id="urcnt"></div>');c=$('#urcnt')}
+  if(c){const n=P.length||1;c.innerHTML=`<span><img src="img/zd-leo.png" alt="">${nz}/${n}</span><span><img src="img/hp-gryffindor.png" alt="">${nh}/${n}</span>`;c.style.left=(parseFloat(g.style.left)+parseFloat(g.style.width)+28)+'px'}}
+setInterval(()=>{try{if(isScreen())urgePaint()}catch(e){}},400);
+
 // ----- phone side: what I'll say in the friends' intros (open from the moment you join until your turn) -----
 function introOk(){const me=S.me&&person(S.me);return !!(me&&!isScreen()&&!S.remoteMode&&me.role!=='self'&&!isPresenter(me)&&S.game?.io&&!(S.game.iDone||[]).includes(S.me))}
 function introBtn(){let b=document.getElementById('introfab');const on=introOk();if(!on){b?.remove();document.getElementById('introbox')?.remove();return}
@@ -4175,6 +4201,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   else if(S.bz&&it?.kind==='buzz')d={g:'buzz',ph:S.bz.ph,q:S.bz.q,plant:S.bz.plant};
   else if(S.ctr&&it?.id===S.ctr.id)d={g:'center',sid:S.ctr.sid};
   else if(S.pika&&it?.kind==='pika')d={g:'pika',ph:S.pika.ph,end:S.pika.end||0};
+  else if(it?.id==='cu-4')d={g:'urge'};
   else if(it?.kind==='hof'&&HOF_STEPS[HOF]==='ball'&&!S.opening)d={g:'ball',at:S.ballAt||0};
   else if(S.cmt&&it?.kind==='cmt'){const C=S.cmt;d={g:'cmt',ph:C.ph,r:C.r,end:C.end||0,ord:C.ord[C.r],scores:C.scores};if(C.gm){const sp=C.sp[C.r],pl=lkPpl();d.gm=1;d.gl=C.gl;d.np=pl.filter(p=>C.gl[p.id]).length;d.nn=pl.length;d.sp=sp&&(C.ph==='ask'||C.ph==='guess'||C.ph==='reveal')?{id:sp.id,k:sp.k,n:pl.find(p=>p.id===sp.id)?.name||''}:null;if(C.ph==='reveal')d.res=C.right[C.r]||null}}
   else if(S.pq&&it?.id===S.pq.slide){const Q=S.pq;d={g:'pq',intro:!!Q.intro,key:Q.key,i:Q.i,pos:pqPosOf(Q.key,pqItem().k),n:Q.ord.length,item:Q.ord[Q.i],stage:Q.stage,revealed:Q.revealed,ans:Q.revealed?pqItem().k:null,open:pqOpen(),end:Q.end,scores:Q.scores,done:Q.done}}
@@ -4186,7 +4213,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.kind==='buzz')bzPaint();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(cur()?.kind==='why')whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn()}
 
 // ----- phone side -----
-function gameView(me){const G=S.game;if(G.g==='town')return townPhone(me,G);if(G.g==='buzz')return buzzPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
+function gameView(me){const G=S.game;if(G.g==='urge')return urgePhone(me);if(G.g==='town')return townPhone(me,G);if(G.g==='buzz')return buzzPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
 function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores?.[me.id]||0,mine=G.cur===me.id,cp=person(G.cur);
   const picks=(S.mpick&&S.mpick.tid===G.tid)?S.mpick.picks:[];
   const head=`<p class="eyebrow">${set.eb}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('משחק זיכרון','Memory')}</h1><b class="qsc">${my} ${ll('שלישיות','sets')}</b></div>`;
@@ -4500,6 +4527,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   // the lake: swim around, answer the question, offer a theory
   if(S.ctr&&it.id===S.ctr.id){const mv=S.mv||(S.mv={});B.forEach(id=>{const o=mv[id]||{};if(Math.random()<.25)mv[id]={d:Math.random()<.35?'':brnd(['u','d','l','r']),s:S.ctr.sid,t:Math.random()<.08?Date.now():(o.t||0)}})}
   if(S.tw&&(it.id==='cover'||it.kind==='town'))twBots(B);
+  if(it.id==='cu-4')B.forEach(id=>{once('urz'+id,800+Math.random()*4000,()=>put(id,{zd:Math.random()<.12?'x':brnd(URG_ZD.map(x=>x[0]))}));once('urh'+id,4000+Math.random()*5000,()=>put(id,{hp:Math.random()<.2?'x':brnd(URG_HP.map(x=>x[0]))}))});
   if(S.bz&&it.kind==='buzz'&&S.bz.ph==='q'){const q=S.bz.q;B.forEach(id=>once('bz'+S.bz.at+id,700+Math.random()*5000,()=>put(id,{['bz'+q]:Math.floor(Math.random()*4)})));if(q===2&&B.includes(S.bz.plant))once('bzp'+S.bz.at,3500,()=>{(S.hands||(S.hands={}))[S.bz.plant]=Date.now();bzPaint()})}
   const LB=S.lake;if(LB&&it.kind==='lake'){if(LB.phase==='land'||LB.phase==='oak')B.forEach((id,i)=>once('lkav'+LB.sid+id,600+i*500,()=>put(id,{av:(i*7+3)%LK_MINI})));if(LB.phase==='go')B.forEach(id=>{const P=LB.pos[id];if(!P)return;const[x,y]=lkT(P.x,P.y),d0=LK.dw[y]?.[x];let bd=null;if(d0>0)for(const[dx,dy,k]of[[0,-1,'u'],[1,0,'r'],[-1,0,'l'],[0,1,'d']]){const v=LK.dw[y+dy]?.[x+dx];if(v>=0&&v<d0){bd=k;break}}(S.mv||(S.mv={}))[id]={d:bd&&Math.random()<.85?bd:'',s:LB.sid}});if(LB.phase==='q')B.forEach(id=>once('lkv'+LB.sid+id,800+Math.random()*5000,()=>put(id,{['lkv'+LB.sid]:Math.random()<.75?1:2})));else if(LB.phase!=='done'&&LB.phase!=='go')B.forEach(id=>{const P=LB.pos[id],g=LB.gy,mv=S.mv||(S.mv={}),o=mv[id]||{};if(P&&g&&(LB.phase==='chase'||LB.phase==='rchase')){const[a,b]=lkT(P.x,P.y),[c,d]=lkT(g.x,g.y),ex=c-a,ey=d-b;
       if((ex===0||ey===0)&&Math.abs(ex)+Math.abs(ey)<=2&&Date.now()-(o.t||0)>1400&&Math.random()<.5){P.d=ex>0?'r':ex<0?'l':ey>0?'d':'u';mv[id]={d:'',s:LB.sid,t:Date.now()};return}
