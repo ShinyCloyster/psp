@@ -1172,7 +1172,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795251915';
+const BUILDV='1795252689';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3415,6 +3415,12 @@ SC['sm-psp']={rules:1,part:2,drop:['s-psp'],src:'s-psp',bar:'s-psp',title:'PSP',
     ['i2','S, סוציולוגית: מסתכלים על אדם דרך העיניים של מי שמכיר אותו.','S, Sociological: we look at a person through the eyes of those who know them.'],
     ['i3','P, פרדיגמה: משקפיים שדרכם כולנו נלמד יחד איך מסתכלים.',"P, Paradigm: glasses through which we'll all learn, together, how to look."],
     ['wild','ועכשיו מהר, חברים! יש לנו אונייה לתפוס!','And now hurry, friends! We have a ship to catch!']]};
+// round 59: "the urge to sort" (c-urge) as Oak talking over the big gym: he asks for hands, the phones' ✋ shows as "!" over the seats
+SC['cu-4']={rules:1,part:2,drop:['c-urge'],src:'c-urge',bar:'c-urge',label:['הדחף למיין','The urge to sort'],items:()=>[],
+  lines:()=>[['gym','הרימו יד: מי יודע מה המזל שלו?','Hands up: who knows their star sign?'],
+    [0,'ומי יודע מאיזה בית הוא בהוגוורטס?','And who knows which Hogwarts house they are in?'],
+    [0,'הרצון לסדר אנשים בטיפוסים הוא בעצמו תופעה חברתית.','The urge to sort people into types is itself a social phenomenon.'],
+    [0,'גם אבות הסוציולוגיה עשו את זה, כל אחד בדרך שלו.','The founders of sociology did it too, each in their own way.']]};
 for(let k=1;k<=NR;k++){const last=k===NR,min=()=>PLAN.find(p=>p[3]==='x-round-'+k)?.[2]||9,ord=[['הראשון','one'],['השני','two'],['השלישי והאחרון','three, the last one']][k-1]||[k,k];
   SC['rd-'+k]={rules:1,part:k,round:k,before:'x-round-'+k,src:'x-round-'+k,bar:'x-round-'+k,wild:1,
     items:()=>[['50',ll('כ-50 שאלות · סט אקראי לכל אחד','About 50 questions · a random set each')],['?',ll('תמיד אפשר לענות ״לא יודע״','"Don\'t know" is always allowed')],
@@ -3456,7 +3462,7 @@ function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack
     if(s.goal)return `<div class="scgoal" data-i="${i}" style="${at}"><span>${esc(ll(`הפוקימון של ${subjectName()}`,`${subjectName()}'s Pokémon`))}</span><img src="img/it-poke-ball.webp" alt=""><i>?</i></div>`;return ''}).join('');
   const midH=A.mid?`<div class="scsign off" id="scsign"><div data-course="${cf.course}"><img src="img/badge-${cf.course}.webp" alt=""><p class="sceb">${esc(A.eb)}</p><h2>${esc(A.ti)}</h2></div></div>${A.vis?`<div class="scvis scmid" dir="ltr" id="scvis">${A.vis}</div>`:''}`:'';
   cv.innerHTML=`<div class="st scst" id="scst" dir="${EN?'ltr':'rtl'}">
-    <div class="scgym" id="scgym" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
+    <div class="scgym" id="scgym" data-k="${k}" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
     <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town||tb||twMiniTown()]||TW_NAME.pewter))} · GYM</div>
     ${A.rules?A.board:A.mid?midH:`<div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
     <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" dir="ltr" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" dir="ltr" id="scvis">${A.vis}</div>`:''}</div>`}
@@ -3604,8 +3610,11 @@ function twGymBig(it){const G=twGymOf(),kb=Math.min(1600/G.w,1000/G.h),W=G.w*kb,
       ml=EN?1920-30-mw:30,mt=1080-76-mh,tx=ml-bx-x0*t*kb*f,ty=mt-by-y0*t*kb*f;
     box.style.clipPath=`inset(${y0*t*kb}px ${W-(x1+1)*t*kb}px ${H-(y1+1)*t*kb}px ${x0*t*kb}px round ${12/f}px)`;box.style.transform=`translate(${tx}px,${ty}px) scale(${f})`;$('#twgb')?.classList.add('shrink')},2600);
   setTimeout(()=>{if(cur()===it)go(1)},3700)}
-function twHands(){const box=$('#twmini');if(!box)return;const now=Date.now(),G=twGymOf(),k=twMiniK(G);Object.entries(S.hands||{}).forEach(([id,at])=>{const s=box.querySelector(`.twseat[data-p="${id}"]`);if(!s)return;const on=now-at<10000;
-  if(on&&!s.querySelector('.twbang')){s.insertAdjacentHTML('beforeend',`<i class="qbang twbang" style="top:${-Math.round(34*k+30)}px">!</i>`);const p=person(id);if(p&&now-at<3000){toast(`✋ ${p.name}`);sfx('sfx-tink');box.classList.remove('twpulse');void box.offsetWidth;box.classList.add('twpulse')}}if(!on)s.querySelector('.twbang')?.remove()})}
+function twHands(){const now=Date.now(),G=twGymOf(),boxes=[[$('#twmini'),twMiniK(G)],[$('#scgym:not(.gone)'),+($('#scgym')?.dataset.k||0)]].filter(b=>b[0]);if(!boxes.length)return;
+  Object.entries(S.hands||{}).forEach(([id,at])=>{const on=now-at<10000;let fresh=false;
+    boxes.forEach(([box,k])=>{const s=box.querySelector(`.twseat[data-p="${id}"]`);if(!s)return;
+      if(on&&!s.querySelector('.twbang')){s.insertAdjacentHTML('beforeend',`<i class="qbang twbang" style="top:${-Math.round(34*k+30)}px${box.id==='scgym'?';scale:1.6':''}">!</i>`);if(now-at<3000){fresh=true;box.classList.remove('twpulse');void box.offsetWidth;box.classList.add('twpulse')}}if(!on)s.querySelector('.twbang')?.remove()});
+    const p=person(id);if(fresh&&p){toast(`✋ ${p.name}`);sfx('sfx-tink')}})}
 setInterval(()=>{try{if(isScreen())twHands()}catch(e){}},1000);
 // ----- phone side: what I'll say in the friends' intros (open from the moment you join until your turn) -----
 function introOk(){const me=S.me&&person(S.me);return !!(me&&!isScreen()&&!S.remoteMode&&me.role!=='self'&&!isPresenter(me)&&S.game?.io&&!(S.game.iDone||[]).includes(S.me))}
