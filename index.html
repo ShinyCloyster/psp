@@ -739,6 +739,19 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .lsimg{position:absolute;left:0;top:0;image-rendering:pixelated}
 .lsmap .lsname{position:absolute;inset-inline-start:14px;bottom:12px;z-index:5;background:rgba(22,26,46,.85);color:#F2C94C;font:400 18px var(--pixel);padding:8px 14px;border-radius:10px}
 .lsp{position:absolute;width:0;height:0}
+/* round 75: the paradigm on the lake */
+.lsnpc .lks{position:absolute;background-repeat:no-repeat;image-rendering:pixelated}
+.lsala{transform:translate(-50%,-100%)}
+.lsgl{display:flex;flex-direction:column;gap:10px}
+.lsg{display:flex;align-items:center;gap:16px;background:#F6F1E7;border-radius:14px;padding:5px 16px;border-inline-start:12px solid var(--c)}
+.lsg:not(.on){visibility:hidden}
+.lsg.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.lsg img{height:62px;width:60px;object-fit:contain;object-position:bottom;image-rendering:pixelated;flex:none}
+.lsg b{display:block;font-size:20px;color:var(--c);text-align:start}
+.lsg p{margin:0;font:400 30px/1.15 var(--display);color:#161A2E;text-align:start}
+.ls-par .lsdid{font-size:24px;font-weight:700;color:#161A2E}
+#lsn-pika .lsbub{top:-70px}
+
 .lsp .lks{position:absolute;left:-34px;top:-68px}
 .lsp>b{display:none;position:absolute;left:0;top:-96px;transform:translateX(-50%);white-space:nowrap;font-size:22px;color:#fff;text-shadow:0 2px 0 #161A2E,0 0 6px #161A2E}
 .lsoak>b{color:#F2C94C}
@@ -1287,7 +1300,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795282305';
+const BUILDV='1795284250';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3131,7 +3144,7 @@ function lkCamGoal(L){if(L.phase==='land'||L.phase==='oak')return{z:1.5,c:lkC(..
   if(L.phase==='go'){const pts=lkPpl().filter(p=>lkAv(p)&&L.pos[p.id]).map(p=>L.pos[p.id]);if(L.oakP)pts.push(L.oakP);const md=k=>{const v=pts.map(q=>q[k]).sort((a,b)=>a-b);return v.length?v[Math.floor(v.length/2)]:0};return{z:1.2,c:pts.length?[md('x'),md('y')]:lkC(...LK.start)}}
   return{z:1,c:LK.lakeC}}
 function lkCamClamp(c,z){const hw=960/z,hh=540/z;return[Math.min(Math.max(c[0],hw),LK.W-hw),Math.min(Math.max(c[1],hh),LK.H-hh)]}
-const TRIO={'s-lake':0,'s-science':0,'s-lsci':0,'s-lth':1,'s-why':1,'s-theory':1,'s-pika':2,'s-paradigm':2,'s-fairy':2};
+const TRIO={'s-lake':0,'s-science':0,'s-lsci':0,'s-lth':1,'s-lpar':2,'s-why':1,'s-theory':1,'s-pika':2,'s-paradigm':2,'s-fairy':2};
 function trioHTML(i){return `<div class="trio">${[['מדע','Science'],['תיאוריה','Theory'],['פרדיגמה','Paradigm']].map((t,j)=>`<span class="${j===i?'on':j<i?'done':''}"><b>${j+1}</b>${LL(t)}</span>`).join('<i></i>')}</div>`}
 function lkPpl(){return gamePlayers()}
 // each player picks a character from img/mini (cut from Eyal's sprite sheet); until then, the plain boy or girl
@@ -3609,7 +3622,7 @@ function scBeats(id){const cf=SC[id],nT=scRoute().filter(s=>s.t).length;
   const ti=cf.mid?(scSec(cf.div)?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim():'';
   return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT,ti).map(([st,he,en])=>({st,t:ll(he,en)}))}
 function scStage(B,b){for(let i=b;i>=0;i--)if(B[i].st)return {st:B[i].st,at:i};return {st:'gym',at:0}}
-function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};if(SC[it.id].lake){lsBuild(it,!atEnd);lsApply(S.sc.b,!atEnd);if(!atEnd)music(SC[it.id].lake==='sci'?'mus-surfing':null,{vol:.16});gamePub();return}scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
+function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};if(SC[it.id].lake){lsBuild(it,!atEnd);lsApply(S.sc.b,!atEnd);if(!atEnd&&SC[it.id].lake!=='par')music(SC[it.id].lake==='sci'?'mus-surfing':null,{vol:.16});gamePub();return}scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
 // the town of the last walk before here (a rules scene comes after a save point, where the mini map's own lookup stops)
 function scTownBack(){for(let i=POS;i>=0;i--)if(SEQ[i].kind==='town'){const L=TW_LEGS[SEQ[i].id]||[];return L[L.length-1]?.town||null}return null}
 function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack():null,G=tb?(TOWN[TOWN.gymOf?.[tb]]||TOWN.gym):twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
@@ -3697,6 +3710,7 @@ function scType(t,anim){const el=$('#sctx'),C=S.sc;clearInterval(S.scT);el.class
 function scGo(d){const it=cur(),C=S.sc;if(!C||C.id!==it?.id)return false;
   if(d>0&&(C.typing||C.fly)){const b=C.b;if(C.fly)scApply(b,false);else{clearInterval(S.scT);const el=$('#sctx');el.textContent=scBeats(C.id)[b].t;el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}return true}
   if(d>0&&C.id==='s-lth'&&S.why?.ph==='run'&&lsK(C.b).k===1){whyGo(1);return true}
+  {const nb=C.b+d;if(d>0&&nb>=scBeats(C.id).length&&SC[C.id].tele&&!C.tele){C.tele=1;lkTeleport();setTimeout(()=>{if(cur()?.id===C.id)go(1)},1150);return true}}
   const nb=C.b+d;if(d>0&&nb>=scBeats(C.id).length&&SC[C.id].wild&&!C.wild){C.wild=1;scWild(()=>{if(cur()?.id===C.id)go(1)});return true}
   if(nb<0||nb>=scBeats(C.id).length)return false;C.b=nb;scApply(nb,d>0);return true}
 // round 74: science and theory on the Lake of Rage, in the scene language: the lake (where the game just ended) on the stage,
@@ -3714,9 +3728,11 @@ SC['s-lth']={lake:'th',part:2,drop:['s-why','s-theory'],bar:'s-theory',label:['�
     ['run','כתבו בטלפון את התיאוריה שלכם. הרמזים יגיעו לבד, ואפשר לשנות אחרי כל רמז.','Write your theory on your phone. The clues come by themselves, and you can change it after each one.'],
     ['rocket','והתשובה האמיתית: צוות רוקט! הם שידרו אות שמכריח מג׳יקארפים להתפתח.','And the real answer: Team Rocket! They broadcast a signal that forces Magikarp to evolve.'],
     ['def','וזה מה שעשיתם הרגע: לקחתם תצפיות מבולגנות, ובניתם מהן הסבר.','And that is what you just did: you took messy observations, and built an explanation out of them.'],
-    ['two','נזק של גיאראדוס אפשר למדוד. בני אדם לא חוזרים על ניסוי, אז התיאוריה עוזרת לפרש.','A Gyarados\'s damage can be measured. People don\'t replay an experiment, so theory helps us interpret.']]};
+    ['two','נזק של גיאראדוס אפשר למדוד. בני אדם לא חוזרים על ניסוי, אז התיאוריה עוזרת לפרש.','A Gyarados\'s damage can be measured. People don\'t replay an experiment, so theory helps us interpret.'],
+    ['pk','ועכשיו הגענו לחלק הכי חשוב: פרדיגמה. רגע… מי זה?','And now we reach the most important part: paradigm. Wait… who is that?'],
+    ['catch','פיקאצ׳ו פראי! תנסו לתפוס אותו!','A wild Pikachu! Try to catch him!']],wild:1};
 ['s-lsci','s-lth'].forEach(id=>{const c=SC[id];c.name=Object.values(SC).find(o=>!o.mid&&!o.rules&&!o.lake&&o.part===c.part).name;SC_DROP[id]=c.drop});
-const LS_ST={sci:['l0','c1','c2','c3','c4','arc','pop'],th:['q','run','rocket','def','two']};
+const LS_ST={sci:['l0','c1','c2','c3','c4','arc','pop'],th:['q','run','rocket','def','two','pk','catch']};
 // the view of the lake: the water and its south shore, at a zoom that fits the stage box
 const LS={x0:30,y0:23,bw:946,bh:704};LS.z=Math.min(LS.bw/(33*LK.t),LS.bh/(24*LK.t));
 (()=>{const ok=(x,y)=>[-2,-1,0,1,2].every(a=>[-2,-1,0,1,2].every(b=>LK.m[y+b]?.[x+a]==='w')),vx1=LS.x0+LS.bw/LS.z/LK.t,vy1=LS.y0+LS.bh/LS.z/LK.t,W=[];
@@ -3725,17 +3741,53 @@ const LS={x0:30,y0:23,bw:946,bh:704};LS.z=Math.min(LS.bw/(33*LK.t),LS.bh/(24*LK.
   W.sort((a,b)=>b[1]-a[1]||a[0]-b[0]);const pick=[];W.forEach(w=>{if(pick.every(p=>Math.abs(p[0]-w[0])+Math.abs(p[1]-w[1])>=6))pick.push(w)});LS.wat=pick;
   LS.shore=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c==='g'&&LK.dw[y][x]>=1&&LK.dw[y][x]<=2&&x>LS.x0&&x<vx1-1&&y>LS.y0+1&&y<vy1-1)LS.shore.push([x,y])}));
   const[sx,sy]=LK.shore;LS.shore.sort((a,b)=>Math.hypot(a[0]-sx,a[1]-sy)-Math.hypot(b[0]-sx,b[1]-sy))})();
+// round 75: the paradigm on the lake. s-lth ends with Pikachu walking in ("try to catch him!" → the wild transition → the Pikachu game, no poll);
+// s-lpar (replaces s-paradigm): back on the lake, Oak, then Nurse Joy and Ash walk in, each says how they see it; the definition; Alakazam takes everyone back to the gym
+SC['s-lpar']={lake:'par',part:2,drop:['s-paradigm'],bar:'s-paradigm',tele:1,label:['פרדיגמה: שלושה זוגות משקפיים','Paradigm: three pairs of glasses'],
+  lines:()=>[['o','מעניין למה הוא מסרב להיכנס… צריך לאלף אותו!','I wonder why he refuses to go in… He needs training!','oak'],
+    ['j','אולי הוא פצוע! צריך לקחת אותו ישר למרכז הפוקימונים!','Maybe he\'s hurt! We need to take him straight to the Pokémon Center!','joy'],
+    ['a','זאת לא הסיבה. הוא פשוט רוצה חבר, לא מאמן!','That\'s not the reason. He just wants a friend, not a trainer!','ash'],
+    ['def','אותו פיקאצ׳ו, שלוש תמונות. מה שמשתנה הוא המשקפיים: זו פרדיגמה.','The same Pikachu, three pictures. What changes is the glasses: that is a paradigm.','oak'],
+    ['tele','אלקזם, תחזיר אותנו לג׳ים!','Alakazam, take us back to the gym!','oak']]};
+LS_ST.par=['o','j','a','def','tele'];
+const LS_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],joy:[['האחות ג׳וי','Nurse Joy'],'img/tr-nurse.webp'],ash:[['אש','Ash'],'img/tr-ash.webp']};
+// the minis that walk in (cut by app/mini_build.py): [sheet, cell, frames, walking frames]
+const LS_NPC={pika:['img/ow-pika.png',32,4,[1,2,3,0]],joy:['img/ow-joy.png',34,3,[1,0,2,0]],ash:['img/ow-ash.png',34,3,[1,0,2,0]]};
+const lsNpcPos=(k,d,f)=>{const[,c,n]=LS_NPC[k];return `${-f*c*2}px ${-'dlru'.indexOf(d)*c*2}px`};
+function lsNpcHTML(k){const[img,c,n]=LS_NPC[k];return `<div class="lsp lsnpc" id="lsn-${k}" style="display:none"><i class="lks" style="width:${c*2}px;height:${c*2}px;left:${-c}px;top:${-c*2}px;background-image:url(${img});background-size:${n*c*2}px ${4*c*2}px;background-position:0 0"></i></div>`}
+// free shore tiles for Pikachu, Joy and Ash: away from the group, Pikachu nearest the middle
+function lsSpots(){const{took}=lsPos(),dist=(a,b)=>Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]),far=(t,L,n)=>L.every(q=>dist(q,t)>=n),all=[...took];
+  const pika=LS.shore.find(t=>far(t,all,3))||LK.shore;all.push(pika);const near=[...LS.shore].sort((a,b)=>dist(a,pika)-dist(b,pika)),out=[];
+  for(const t of near){if(out.length>=2)break;if(far(t,all,2)){out.push(t);all.push(t)}}while(out.length<2)out.push(pika);return {pika,joy:out[0],ash:out[1]}}
+// a mini walks from one tile to another (straight, frame by frame), then stands facing `end`
+function lsWalk(k,from,to,ms,end){const el=$('#lsn-'+k);if(!el)return;const sp=el.querySelector('.lks'),fy=LK.t*.38,[fx,fyy]=lkC(...from),[tx,ty]=lkC(...to),wf=LS_NPC[k][3];
+  const d=Math.abs(tx-fx)>Math.abs(ty-fyy)?(tx>fx?'r':'l'):(ty>fyy?'d':'u');clearInterval(el._w);el.style.display='';el.style.transition='none';el.style.left=fx+'px';el.style.top=(fyy+fy)+'px';el.style.zIndex=Math.round(Math.max(fyy,ty));void el.offsetWidth;
+  if(!ms){el.style.left=tx+'px';el.style.top=(ty+fy)+'px';sp.style.backgroundPosition=lsNpcPos(k,end||d,0);return}
+  el.style.transition=`left ${ms}ms linear,top ${ms}ms linear`;el.style.left=tx+'px';el.style.top=(ty+fy)+'px';let i=0;el._w=setInterval(()=>{sp.style.backgroundPosition=lsNpcPos(k,d,wf[i++%wf.length])},130);
+  setTimeout(()=>{clearInterval(el._w);if(el.isConnected)sp.style.backgroundPosition=lsNpcPos(k,end||d,0)},ms)}
+function lsNpcAt(k,t,d,anim,from,ms){if(anim)lsWalk(k,from,t,ms,d);else lsWalk(k,t,t,0,d)}
+function lsSay(k,html,cls){const el=$('#lsn-'+k);if(!el)return;el.querySelector('.lsbub')?.remove();if(html)el.insertAdjacentHTML('beforeend',`<i class="lsbub ${cls||''}">${html}</i>`)}
+// the paradigm scene's stage: Pikachu sits on the shore; Joy and Ash walk in from the south when it's their turn
+function lsParApply(st,k,stepIn){const sp=lsSpots(),south=t=>[t[0],t[1]+7];
+  lsNpcAt('pika',sp.pika,'d',false);lsSay('pika',k<1?'💢':'',k<1?'mk':'');
+  ['joy','ash'].forEach((n,i)=>{const at=i+1;if(k<at){const e=$('#lsn-'+n);if(e)e.style.display='none';return}lsNpcAt(n,sp[n],sp[n][0]>sp.pika[0]?'l':sp[n][0]<sp.pika[0]?'r':'u',stepIn&&k===at,south(sp[n]),1600);lsSay(n,'')});
+  st.querySelectorAll('.lsg').forEach((e,i)=>{e.classList.toggle('on',k>=i);e.classList.remove('in');if(stepIn&&k===i){void e.offsetWidth;e.classList.add('in')}});
+  $('#lsh2').textContent=k>=3?ll('פרדיגמה: המשקפיים שדרכם מסתכלים','Paradigm: the glasses you look through'):ll('למה פיקאצ׳ו מסרב להיכנס לפוקבול?','Why does Pikachu refuse to go into his Poké Ball?');
+  $('#lsdid').classList.toggle('on',k>=3);$('#lseb').textContent=k>=3?'WHAT IS A PARADIGM':'PARADIGM · PIKACHU';
+  const al=$('#lsala');if(al)al.style.display=k>=4?'':'none';if(stepIn&&k===4){cmtCry(65,.5)}
+  if(stepIn&&k>=1&&k<=3)sfx('sfx-dex-page-added',.45)}
+{const c=SC['s-lpar'];c.name=SC['s-lth'].name;SC_DROP['s-lpar']=c.drop}
 const lsIn=(x,y)=>{const[tx,ty]=lkT(x,y);return tx>LS.x0&&ty>LS.y0+1&&tx<LS.x0+LS.bw/LS.z/LK.t-1&&ty<LS.y0+LS.bh/LS.z/LK.t-1&&lkAt(tx,ty)==='g'};
 // where everyone stands: where the lake game left them if it's on the shore in view, else the next free shore tile
 function lsPos(){const L=S.lake,out={},took=[];const pl=lkPpl().filter(p=>lkAv(p));const oak=L?.oakP&&lsIn(L.oakP.x,L.oakP.y)?[L.oakP.x,L.oakP.y]:lkC(...LK.shore);took.push(lkT(...oak));
   pl.forEach(p=>{const P=L?.pos?.[p.id];if(P&&lsIn(P.x,P.y)){const t=lkT(P.x,P.y);if(took.every(q=>q[0]!==t[0]||q[1]!==t[1])){took.push(t);out[p.id]={x:lkC(...t)[0],y:lkC(...t)[1],d:P.d||'u'}}}});
   pl.forEach(p=>{if(out[p.id])return;const t=LS.shore.find(s=>took.every(q=>Math.abs(q[0]-s[0])+Math.abs(q[1]-s[1])>=2))||LS.shore[0]||LK.shore;took.push(t);out[p.id]={x:lkC(...t)[0],y:lkC(...t)[1],d:'u'}});
-  return {pp:out,oak}}
+  return {pp:out,oak,took}}
 function lsGy(i,red,cls){const[x,y]=lkC(...(LS.wat[i%LS.wat.length]||LK.shore));return `<i class="lsgy${red?' red':''} ${cls||''}" style="left:${x}px;top:${y}px;background-image:url(img/gy-${red?'red-':''}sheet.png)"></i>`}
 function lsLakeHTML(){const{pp,oak}=lsPos(),fy=LK.t*.38;
   const ppl=lkPpl().filter(p=>pp[p.id]).map(p=>{const P=pp[p.id],n=S.gIn[p.id].av;return `<div class="lsp" data-p="${p.id}" style="left:${P.x}px;top:${P.y+fy}px;z-index:${Math.round(P.y)}"><b>${esc(p.name)}</b><i class="lks" style="${owStyle(n)};background-position:${owPos(n,P.d,0)}"></i></div>`}).join('');
   const gys=[0,1,2].map(i=>lsGy(i,0,'b'+i)).join('')+[3,4,5,6,7].map(i=>lsGy(i,0,'m'+i)).join('')+lsGy(4,1,'rd'),karp=[1,3,5].map(i=>{const[x,y]=lkC(...(LS.wat[(i+5)%LS.wat.length]||LK.shore));return `<img class="lskarp" src="anim/129.gif" alt="" style="left:${x}px;top:${y}px">`}).join('');
-  return `<div class="lsin" id="lsin" style="width:${LK.W}px;height:${LK.H}px"><img class="lsimg" src="img/lake2.webp" alt="" style="width:${LK.W}px;height:${LK.H}px">${karp}${gys}<div class="lsp lsoak" style="left:${oak[0]}px;top:${oak[1]+fy}px;z-index:${Math.round(oak[1])}"><b>${ll('פרופסור אוק','Prof. Oak')}</b><i class="lks" style="${oakStyle()};background-position:${oakPos('d',0)}"></i></div>${ppl}<div class="lsradio"><i></i><i></i><i></i></div></div><div class="lsredtag" id="lsredtag"></div>`}
+  return `<div class="lsin" id="lsin" style="width:${LK.W}px;height:${LK.H}px"><img class="lsimg" src="img/lake2.webp" alt="" style="width:${LK.W}px;height:${LK.H}px">${karp}${gys}<div class="lsp lsoak" style="left:${oak[0]}px;top:${oak[1]+fy}px;z-index:${Math.round(oak[1])}"><b>${ll('פרופסור אוק','Prof. Oak')}</b><i class="lks" style="${oakStyle()};background-position:${oakPos('d',0)}"></i></div>${ppl}${['pika','joy','ash'].map(lsNpcHTML).join('')}<i class="twhelp ala lsala" id="lsala" style="display:none;left:${oak[0]-LK.t*1.6}px;top:${oak[1]+fy}px"></i><div class="lsradio"><i></i><i></i><i></i></div></div><div class="lsredtag" id="lsredtag"></div>`}
 const lsCam=()=>`translate(${-LS.x0*LK.t*LS.z}px,${-LS.y0*LK.t*LS.z}px) scale(${LS.z})`;
 function lsBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),P=scSec('x-part-'+cf.part),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',lect=P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp',sci=cf.lake==='sci';
   const R=S.lakeRes,yes=R?ll(`‫${R.y} מכם הימרו עליה`,`${R.y} of you backed it`):'';
@@ -3743,6 +3795,9 @@ function lsBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),P=scSec('x-part-'+cf.p
     <div class="lscards" id="lscards">${[[ll('תצפית','Observation'),ll('גיאראדוס כחול. ועוד אחד. ועוד אחד.','A blue Gyarados. And another. And another.')],[ll('השערה','Hypothesis'),ll('כל הגיאראדוסים כחולים.','All Gyarados are blue.'),yes],[ll('ניסוי','Experiment'),ll('לא מחפשים עוד כחולים, אלא את מה שיפיל אותה.','Not more blue ones: what would bring it down.')],[ll('נפילה','It falls'),ll('אדום אחד מפיל הכול, וחוזרים להתחלה.','One red one brings it all down. Back to the start.')]].map(([h,t,x],i)=>`<div class="lsc${i===3?' dk':''}" data-i="${i}"><b>${i+1}</b><h3>${h}</h3><p>${t}</p>${x?`<em>${x}</em>`:''}</div>`).join('')}</div>
     <div class="lsarc" id="lsarc"><img src="img/s493.webp" alt=""><div><em>${ll('ועכשיו, טענה שאי אפשר להפריך:','And now, a claim you can\'t refute:')}</em><p>${ll('ארסאוס בקע מביצה בתוך הריק, וברא את העולם.','Arceus hatched from an egg in the void, and created the world.')}</p><small>${ll('זה לא אומר שזה לא נכון. זה אומר שזה לא מדע.','That doesn\'t mean it isn\'t true. It means it isn\'t science.')}</small></div></div>
     <div class="lspop" id="lspop"><img src="img/th-popper.webp" alt=""><div><i dir="ltr">SIDE NOTE</i><p>${ll('קרל פופר, 1934: טענה שאי אפשר להפריך היא לא טענה מדעית.','Karl Popper, 1934: a claim that can\'t be refuted is not a scientific claim.')}</p></div></div>`
+   :cf.lake==='par'?`${trioHTML(2)}<p class="sceb" dir="ltr" id="lseb">PARADIGM · PIKACHU</p><h2 id="lsh2"></h2>
+    <div class="lsgl">${PIKA_OPT.map(([k,he,en])=>`<div class="lsg" style="--c:${LENS_COL[k]}"><img src="img/${LENS_SPR[k]}.webp" alt=""><div><b>${ll('המשקפיים של '+PIKA_WHO[k][0],PIKA_WHO[k][1]+'’s glasses')}</b><p>"${ll(he,en)}"</p></div></div>`).join('')}</div>
+    <p class="lsdid" id="lsdid">${ll('מסגרת שקובעת מה בכלל רואים, ואילו שאלות שואלים.','A frame that decides what we see, and which questions we ask.')}</p>`
    :`${trioHTML(1)}<p class="sceb" dir="ltr" id="lseb">LAKE OF RAGE · WHY?</p><h2 id="lsh2"></h2><div id="lswhy"></div>
     <div class="lsrk" id="lsrk"><img src="img/tr-giovanni.webp" alt=""><div><h3>${ll('צוות רוקט.','Team Rocket.')}</h3><p>${ll('הם שידרו אות שמכריח מג׳יקארפים להתפתח, כדי לייצר כמה שיותר גיאראדוסים.','They broadcast a signal that forces Magikarp to evolve, to make as many Gyarados as they could.')}</p><div class="whyev"><img src="anim/129.gif" alt=""><b>→</b><img src="anim/130.gif" alt=""></div></div></div>
     <p class="lsdid" id="lsdid">${ll('זה מה שעשיתם הרגע: לקחתם תצפיות מבולגנות, ובניתם מושגים וקשרים ביניהם שמסבירים אותן.','That is what you just did: you took messy observations, and built concepts and links between them that explain them.')}</p>
@@ -3758,11 +3813,13 @@ function lsBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),P=scSec('x-part-'+cf.p
   const m=$('#lsmap'),inn=$('#lsin'),c=S.lake?.cam,full=fresh&&sci&&SEQ[POS-1]?.kind==='lake'&&c;
   if(full){m.classList.add('nott');inn.classList.add('nott');Object.assign(m.style,{left:'0px',top:'0px',width:'1920px',height:'1080px',borderRadius:'0'});inn.style.transform=`translate(${960-c.c[0]*c.z}px,${540-c.c[1]*c.z}px) scale(${c.z})`;void m.offsetWidth;
     m.classList.remove('nott');inn.classList.remove('nott');Object.assign(m.style,{left:ml+'px',top:'44px',width:LS.bw+'px',height:LS.bh+'px',borderRadius:''});inn.style.transform=lsCam();$('#lspan').classList.add('late');$('#scst').classList.add('late')}
-  else inn.style.transform=lsCam()}
+  else{inn.classList.add('nott');inn.style.transform=lsCam();void inn.offsetWidth;inn.classList.remove('nott')}}
 function lsK(b){const C=S.sc,B=scBeats(C.id),{st}=scStage(B,b);return {st,k:LS_ST[SC[C.id].lake].indexOf(st)}}
 function lsApply(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id);++C.run;clearInterval(S.scT);C.typing=C.fly=0;const st=$('#scst');if(!st)return;
   const {k}=lsK(b),stepIn=anim&&scStage(B,b).at===b;st.dataset.k=k;
-  if(cf.lake==='sci'){
+  {const w=LS_WHO[cf.lines()[b]?.[3]||'oak'],nm=st.querySelector('.scname'),lc=$('#sclect');if(nm)nm.textContent=ll(...w[0]);if(lc&&!lc.src.endsWith(w[1])){lc.src=w[1];lc.classList.remove('rise');void lc.offsetWidth;lc.classList.add('rise')}}
+  if(cf.lake==='par')lsParApply(st,k,stepIn);
+  else if(cf.lake==='sci'){
     st.querySelectorAll('.lsc').forEach((e,i)=>{e.classList.toggle('on',k>i);e.classList.remove('in');if(stepIn&&k===i+1){void e.offsetWidth;e.classList.add('in')}});
     // the lake: three blue ones come up one by one (c1), the yes-voters say so (c2), the blue ones dim (c3), the red one surfaces (c4)
     st.querySelectorAll('.lsgy.b0,.lsgy.b1,.lsgy.b2').forEach((g,i)=>{g.classList.toggle('on',k>=1);g.classList.remove('pop');if(stepIn&&k===1){g.style.animationDelay=(i*.7)+'s';void g.offsetWidth;g.classList.add('pop')}g.classList.toggle('dim',k>=3)});
@@ -3779,7 +3836,11 @@ function lsApply(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id);++C.run;clearI
     if(k>=2&&W.ph!=='rocket'){clearInterval(S.whyT);W.ph='rocket';W.n=2;music(null);if(stepIn)sfx('sfx-denied');gamePub()}
     st.querySelectorAll('.lsgy:not(.rd)').forEach(g=>g.classList.add('on'));
     $('#lseb').textContent=k>=3?'WHAT IS A THEORY':'LAKE OF RAGE · WHY?';$('#lsh2').textContent=k>=3?ll('תיאוריה: מערכת שמאפשרת להגיד משהו על משהו','Theory: a system that lets you say something about something'):ll('למה יש פתאום כל כך הרבה גיאראדוסים באגם?','Why are there suddenly so many Gyarados in the lake?');
-    $('#lsrk').classList.toggle('on',k===2);$('#lsdid').classList.toggle('on',k===3);$('#lstwo').classList.toggle('on',k>=4);
+    $('#lsrk').classList.toggle('on',k===2);$('#lsdid').classList.toggle('on',k===3);$('#lstwo').classList.toggle('on',k===4);
+    if(k>=5){$('#lseb').textContent='PARADIGM';$('#lsh2').textContent=ll('פרדיגמה','Paradigm')}
+    {const tr=st.querySelector('.lspan .trio');if(tr&&tr.dataset.i!==String(k>=5?2:1)){tr.outerHTML=trioHTML(k>=5?2:1);st.querySelector('.lspan .trio').dataset.i=k>=5?2:1}}
+    {const sp=lsSpots().pika;if(k<5){const e=$('#lsn-pika');if(e)e.style.display='none'}else{lsNpcAt('pika',sp,'d',stepIn&&k===5,[sp[0]+9,sp[1]],2200)}
+     lsSay('pika',k===6?'!':'',k===6?'bang':'');if(stepIn&&k===6)sfx('sfx-excl',.6)}
     if(stepIn&&k>=3)sfx('sfx-dex-page-added',.5);
     S.lsKey=null;lsWhyPaint()}
   scType(B[b].t,anim)}
@@ -4057,10 +4118,12 @@ const PIKA_OPT=[['edu','צריך לאלף אותו','He needs training'],['med',
 const pikaT=()=>S.fastOn?5:12,pikaQ=()=>S.fastOn?6:15;
 function pikaEnter(){let P=S.pika;if(!P){P=S.pika={ph:'throw',seen:{},n:0,end:Date.now()+pikaT()*1000};lkPpl().forEach(p=>P.seen[p.id]=S.gIn?.[p.id]?.pk||0)}pikaPaint();gamePub();pikaTick()}
 function pikaTick(){const P=S.pika;clearInterval(S.pikaT);S.pikaT=setInterval(()=>{if(S.pika!==P||cur()?.kind!=='pika'){clearInterval(S.pikaT);return}const l=Math.max(0,Math.ceil((P.end-Date.now())/1000)),c=$('#pkclk b');if(c)c.textContent=l;
-  if(P.ph==='throw'&&Date.now()>P.end)pikaWhy();else if(P.ph==='why'&&Date.now()>P.end)pikaReveal()},250)}
+  if(P.ph==='throw'&&Date.now()>P.end){if(pkNoPoll())pikaDone();else pikaWhy()}else if(P.ph==='why'&&Date.now()>P.end)pikaReveal()},250)}
+function pikaDone(){const P=S.pika;P.ph='done';sfx('sfx-denied');const c=$('#pkclk');if(c)c.innerHTML=`<span>${ll('נגמר!','Over!')}</span>`;const t=$('.pika .pkti');if(t)t.textContent=ll(`פיקאצ׳ו סירב ${P.n} פעמים!`,`Pikachu refused ${P.n} times!`);gamePub()}
 function pikaWhy(){const P=S.pika;P.ph='why';P.end=Date.now()+pikaQ()*1000;P.allIn=false;pikaPaint();gamePub()}
 function pikaReveal(){const P=S.pika;if(P.ph!=='why')return;P.ph='reveal';P.votes=pikaVotes();sfx('sfx-dex-page-added');pikaPaint();gamePub()}
-function pikaGo(d){const P=S.pika;if(!P||d<0)return false;if(P.ph==='throw'){pikaWhy();return true}if(P.ph==='why'){pikaReveal();return true}return false}
+const pkNoPoll=()=>SEQ.some(x=>x.id==='s-lpar');
+function pikaGo(d){const P=S.pika;if(!P||d<0)return false;if(P.ph==='throw'){if(pkNoPoll()){pikaDone();return true}pikaWhy();return true}if(P.ph==='done')return false;if(P.ph==='why'){pikaReveal();return true}return false}
 const pikaVotes=()=>{const c={edu:0,med:0,soc:0};lkPpl().forEach(p=>{const v=S.gIn?.[p.id]?.pv;if(v)c[PIKA_OPT[v-1][0]]++});return c};
 function pikaIn(){const P=S.pika;if(!P)return;
   if(P.ph==='throw')lkPpl().forEach(p=>{const n=S.gIn?.[p.id]?.pk||0,was=P.seen[p.id]||0;if(n>was){P.seen[p.id]=n;for(let i=0;i<Math.min(3,n-was);i++)setTimeout(()=>pikaBall(p),i*180)}});
