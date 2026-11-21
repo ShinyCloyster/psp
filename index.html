@@ -697,7 +697,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .cscell{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:18px;border:2px dashed #DDD4C2;background:transparent;transition:background .35s,border-color .35s}
 .cscell>*{opacity:0;transform:scale(.6);transition:opacity .3s,transform .35s cubic-bezier(.2,1.6,.4,1);transition-delay:inherit}.cscell.on>*{opacity:1;transform:none}
 .cscell.on{border-style:solid}.cscell b{font:800 40px var(--body)}.cscell small{font:600 18px/1.2 var(--body);color:#5A5F73}
-.cscell.cn.on{background:#FFFDF8;border-color:#E4DCCB}.cscell.cn b{color:#161A2E}.cscell.cx b,.cscell.cs b,.cscell.cr b{font:700 23px/1.2 var(--body);padding:0 12px}.cscell.cx small,.cscell.cs small,.cscell.cr small{font:800 17px var(--body);border-radius:10px;padding:1px 12px;margin-top:7px;color:#fff}.cscell.cx.on{background:#EFEBE3;border-color:#D6CFC1}.cscell.cx b{color:#7F796D}.cscell.cx small{background:#A39C8E}.cscell.cs.on{background:#FCE7D6;border-color:#EBAE7E}.cscell.cs b{color:#8A3F10}.cscell.cs small{background:#D9762F}.cscell.cr.on{background:#FFF3D0;border-color:#E8C35A}.cscell.cr b{color:#7A5500}.cscell.cr small{background:#B8860B}
+.cscell.cn.on{background:#FFFDF8;border-color:#E4DCCB}.cscell.cn b{color:#161A2E}.cscell.cx b,.cscell.cm b,.cscell.cgr b{font:700 24px/1.2 var(--body);padding:0 12px}.cscell.cx.on{background:#EFEBE3;border-color:#D6CFC1}.cscell.cx b{color:#8A8478}.cscell.cm.on{background:#FFF3D0;border-color:#E8C35A}.cscell.cm b{color:#7A5500}.cscell.cgr.on{background:#E3F3E8;border-color:#7AC74C}.cscell.cgr b{color:#1F7A3A}.csbz{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .2s}.csbz.on{opacity:1}.csbz>div{direction:rtl;background:#EE3322;color:#fff;border:8px solid #fff;outline:6px solid #EE3322;border-radius:28px;padding:30px 70px;text-align:center;transform:rotate(-4deg);box-shadow:0 24px 60px rgba(22,26,46,.35)}.csbz.on>div{animation:csbzst .5s cubic-bezier(.2,1.8,.5,1)}@keyframes csbzst{from{transform:rotate(-4deg) scale(2.2);opacity:0}to{transform:rotate(-4deg) scale(1);opacity:1}}.csbz small{display:block;font:700 40px var(--body)}.csbz b{display:block;font:400 84px/1.15 'Secular One',Arial,sans-serif}.en .csbz>div{direction:ltr}.en .csbz b{font-size:76px}
 .cspk{height:126px;opacity:.18;filter:grayscale(1);transition:opacity .5s,filter .5s}.cspk.on{opacity:1;filter:none}.cspk .cslab{background:#161A2E;border-color:#161A2E}.cspk .cslab b{color:#F2C94C}.cspk .csim img{width:64px;height:64px}
 .cscell.cy{border-color:#7AC74C;border-style:solid}.cspk.on .cscell.cy{background:#E3F3E8;animation:cspk .5s var(--dl) both}.cspk.on .cscell.cy>*{opacity:1;transform:none;transition-delay:var(--dl)}.cscell.cy b{font-size:26px;line-height:1.2;color:#1F7A3A;padding:0 10px}.cscell.cy small{font:700 20px var(--body);color:#1F7A3A;background:#fff;border-radius:12px;padding:1px 12px;margin-top:6px}
 @keyframes cspk{from{transform:scale(.85)}60%{transform:scale(1.05)}}
@@ -1192,7 +1192,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795257872';
+const BUILDV='1795258714';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1294,6 +1294,7 @@ async function boot(){
   // presenter remote: the phone sends next/back to stage/ctl, the screen publishes where it is to stage/deck
   S.db.doc('stage/ctl').onSnapshot(sn=>{if(!isScreen())return;const d=sn.exists?sn.data():null;if(S.ctlN==null){S.ctlN=d?.n||0;return}if(d&&d.n!==S.ctlN){S.ctlN=d.n;if(S.screenOn){if(d.cmd)ctlCmd(d);else go(d.d>0?1:-1)}}},()=>{});
   S.db.doc('stage/seq').onSnapshot(sn=>{if(isScreen())return;S.seqL=sn.exists?sn.data().l:null;ctlJumpFill()},()=>{});
+  S.db.doc('stage/note').onSnapshot(sn=>{if(isScreen())return;S.note=sn.exists?sn.data().t||'':'';noteFill()},()=>{});
   S.db.doc('stage/deck').onSnapshot(sn=>{const d=sn.exists?sn.data():null;if(isScreen()){if(!S.deckLoaded){S.deck=d;S.deckLoaded=true}return}const had=!!S.deck?.t0,os=S.deck?.seg;S.deck=d;if((!had&&d?.t0)||os!==d?.seg)render();else deckLabels()},()=>{});
   S.db.doc('stage/league').onSnapshot(sn=>{S.league=sn.exists?clone(sn.data()):{};if(isScreen()&&cur()?.kind==='league'&&!S.lgRun)$('#cv').innerHTML=leagueHTML()},()=>{});
   S.db.doc('stage/game').onSnapshot(sn=>{if(isScreen())return;const was=S.game;S.game=sn.exists?sn.data():null;const G=S.game;
@@ -1745,9 +1746,10 @@ function remoteClock(){const I=schedInfo(S.deck,Date.now());
   document.querySelectorAll('.rcmini .rmn').forEach(e=>e.textContent=I?I.name:'');
   document.querySelectorAll('.rcmini .rml').forEach(e=>{const lt=I?Math.round(I.late):0;e.textContent=!I?'':lt>0?`${ll(`מאחרים ${lt} דק׳`,`${lt} min behind`)}`:lt<0?`${ll(`מקדימים ${-lt} דק׳`,`${-lt} min ahead`)}`:ll('בזמן','on time');e.style.color=lt>0?'#FF8A80':'#6EE7A0'});
   document.querySelectorAll('.rcmini .rmt').forEach(e=>{e.textContent=I?mmss(I.left):'';e.style.color=I&&I.left<0?'#FF6B6B':'var(--gold)'})}
-function deckLabels(){remoteClock();ctlJumpFill();const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n)}
+function deckLabels(){remoteClock();ctlJumpFill();const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n);noteFill()}
 function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}</p>${ll(`<h1 style="margin:0">שלט המצגת</h1>`,`<h1 style="margin:0">Presentation remote</h1>`)}
   <div class="card" style="text-align:center;padding:16px"><p class="muted" style="margin:0;font-size:13px">${ll(`על המסך עכשיו <span`,`On screen now <span`)} class="rcn"></span></p><p class="rcl" style="margin:6px 0 0;font-weight:700;font-size:19px;min-height:1.4em"></p></div>
+  <div class="card rcnote" ${S.note?'':'hidden'} style="padding:14px 16px;border-color:var(--gold)"><p class="muted" style="margin:0 0 6px;font-size:13px">${ll('📝 מה להגיד','📝 What to say')}</p><p class="rcnt" style="margin:0;font-size:17px;line-height:1.5">${esc(S.note||'')}</p></div>
   <div class="card rctime" style="padding:14px 16px"><div class="row" style="justify-content:space-between;align-items:baseline"><b class="rtn"></b><span class="rtl" style="font:400 26px var(--pixel)"></span></div><div class="rtrow">${ll(`<span>זמן</span>`,`<span>Time</span>`)}<div class="rtbar"><i></i></div></div><div class="rtrow">${ll(`<span>שקפים</span>`,`<span>Slides</span>`)}<div class="rtbar sl"><i></i></div></div><p class="rts muted" style="margin:8px 0 0;font-size:14px"></p></div>
   ${glHost()}
   <button class="rcbig" data-act="ctlnext">${ll(`◀ הבא</button>`,`Next ▶</button>`)}<button class="rcback" data-act="ctlprev">${ll(`חזרה ▶</button>`,`◀ Back</button>`)}
@@ -2544,6 +2546,13 @@ function seqLabel(it){let label='';
   if(it.id==='d-battle')label=ll('קרבות: מי מנצח?','Battles: who wins?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=SC[it.id]?.round?ll(`לפני סבב ${SC[it.id].round}`,`Before round ${SC[it.id].round}`):SC[it.id]?.label?ll(...SC[it.id].label):SC[it.id]?.rules?ll('חוקי ״מי הסוג?״',"Rules: Who's that type?"):SC[it.id]?.mid?ll(`פתיחת קורס ${SC[it.id].course}`,`Course ${SC[it.id].course} opening`):P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   return label}
+// round 72: the host's phone shows what to say on the current slide (stage/note {t,pos}): the slide's own notes (<aside>),
+// or a per-click line where a slide has one (the sorting table, CS_NOTE).
+function noteNow(){const it=cur();if(!it)return '';if(csOn(it)&&S.cs&&S.cs.id===it.id)return ll(...CS_NOTE[csNoteK(S.cs)]);
+  if(it.kind==='slide'){const h=S.slides[it.i]?.html||'',m=h.match(/<aside[^>]*>([\s\S]*?)<\/aside>/);if(m){const d=document.createElement('div');d.innerHTML=m[1];return d.textContent.replace(/‫/g,'').trim()}}
+  return ''}
+function notePub(){if(!isScreen()||!S.db||roomClosed())return;const t=noteNow().slice(0,900),k=POS+'|'+t;if(S.notePubK===k)return;S.notePubK=k;S.db.doc('stage/note').set({t,pos:POS+1}).catch(()=>{})}
+function noteFill(){const t=S.note||'';document.querySelectorAll('.rcnote').forEach(e=>{e.hidden=!t;const q=e.querySelector('.rcnt');if(q)q.textContent=t})}
 function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeout(()=>{if(!S.deckLoaded&&(S.deckWait=(S.deckWait||0)+1)<12){deckPub();return}const it=cur();if(!it||!S.db)return;const label=seqLabel(it);
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
   if(POS===0){t0=null;log={}}else if(!t0)t0=now;
@@ -2551,7 +2560,7 @@ function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeo
   const sa=D.seg===seg&&D.segAt?D.segAt:now;
   // how far through this part's slides we are
   const st=SEQ.findIndex(x=>planOf(seg)&&planId(x)===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>planId(x)===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
-  const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};
+  const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
   S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer();
   const sk=SEQ.map(x=>x.id).join(',');if(S.seqPub!==sk){S.seqPub=sk;S.db.doc('stage/seq').set({l:SEQ.map(x=>{try{return seqLabel(x).slice(0,60)}catch(er){return x.id}})}).catch(()=>{})}},250)}
 // big countdown on the screen during question rounds and breaks
@@ -3321,35 +3330,45 @@ function emPaint(){const st=S.em.st,sec=$('#cv .emsec');if(!sec)return;
 // the Pokémon row (each answer = a course still to come) and the bottom line follows by itself. 5 clicks.
 const CS_ROWS=[{k:'th',t:['שלושת ההוגים','The three thinkers'],img:['img/p-durkheim.webp','img/p-marx.webp','img/p-weber.webp']},{k:'hp',t:['בתי הוגוורטס','Hogwarts houses'],img:['img/pop-hp.webp']},{k:'fr',t:['דמויות מ״חברים״','Friends characters'],img:['img/pop-friends.webp']},{k:'zo',t:['מזלות','Star signs'],img:['img/pop-zodiac.webp']}];
 const CS_Q=[{t:['כמה קופסאות?','How many boxes?'],s:['כמה טיפוסים יש','How many types there are']},{t:['כמה?','How much?'],s:['דרגה, לא רק כן או לא','A degree, not just yes or no']},{t:['כלפי מי?','Towards whom?'],s:['מה אתה עושה לאחרים','What you do to others']},{t:['משתנים?','Do you change?'],s:['אפשר להתפתח','You can grow']}];
-// round 72: no more ✓/✗. Every way of sorting answers the four questions; the difference is the language of the answer:
-// cells: [text, kind] kind: n = a count (column 1), x = no answer, s = a story (words), r = a rule. Pokémon's row is all numbers.
-const CS_LV={x:['לא','No'],s:['סיפור','Story'],r:['כלל','Rule'],y:['מספר','Number']};
-const CS_CELL={th:[['1 · 2 · 4','n'],[['וובר: כל פעולה היא תערובת','Weber: every act is a mix'],'s'],[['מרקס: מעמד מול מעמד','Marx: class against class'],'r'],[['חברות שלמות, לא אדם','Whole societies, not a person'],'r']],
-  hp:[['4','n'],[['הכובע התלבט','The Hat hesitated'],'s'],[['גריפינדור מול סלית׳רין','Gryffindor vs. Slytherin'],'s'],[['לא: נקבע בגיל 11','No: sorted at 11'],'x']],
-  fr:[['6','n'],[['״אתה קצת צ׳נדלר״','"You’re a bit of a Chandler"'],'s'],[['יחסים בין דמויות, לא טיפוסים','Between characters, not types'],'s'],[['הדמויות גדלות, הטיפוס נשאר','They grow, the type stays'],'s']],
-  zo:[['12','n'],[['שמש, ירח ואופק: תערובת','Sun, moon, rising: a mix'],'s'],[['התאמה לפי יסודות','Matches by element'],'r'],[['השמיים זזים, אתה לא','The sky moves, you don’t'],'x']]};
+// round 72: no more ✓/✗. Each cell says in a few words HOW the system answers; the colour is one scale everyone reads at a glance:
+// gr = yes, really (green: Pokémon, and anyone else who truly does it, e.g. Marx on relations), m = sort of (yellow), x = no (grey).
+// n = a plain count (column 1). What to SAY about each column goes to the host's phone (CS_NOTE), not on the screen.
+const CS_CELL={th:[['1 · 2 · 4','n'],[['וובר: כל פעולה היא תערובת','Weber: every act is a mix'],'m'],[['מרקס: מעמד מול מעמד','Marx: class against class'],'gr'],[['חברות שלמות, לא אדם','Whole societies, not a person'],'m']],
+  hp:[['4','n'],[['הכובע התלבט','The Hat hesitated'],'m'],[['גריפינדור מול סלית׳רין','Gryffindor vs. Slytherin'],'m'],[['לא: נקבע בגיל 11','No: sorted at 11'],'x']],
+  fr:[['6','n'],[['״אתה קצת צ׳נדלר״','"You’re a bit of a Chandler"'],'m'],[['יחסים בין דמויות, לא טיפוסים','Between characters, not types'],'m'],[['הדמויות גדלות, הטיפוס נשאר','They grow, the type stays'],'m']],
+  zo:[['12','n'],[['שמש, ירח ואופק: תערובת','Sun, moon, rising: a mix'],'m'],[['התאמה לפי יסודות','Matches by element'],'m'],[['השמיים זזים, אתה לא','The sky moves, you don’t'],'x']]};
+// the host's phone: what to say now (0 = before the first click, 1-4 = the columns, 5 = the Pokémon row, 6 = the BuzzFeed stamp)
+const CS_NOTE=[['ארבע שאלות שכל שיטת מיון צריכה לענות עליהן. בודקים כל שיטה מול כל שאלה, ולא מזלזלים באף אחת.','Four questions any way of sorting must answer. We check each system against each one, and look down on none of them.'],
+  ['אף אחד לא משקר, כל אחד רואה ברזולוציה אחרת. לשאול את הקהל: זה שקר? לא, רק פחות פיקסלים. ופיקאצ׳ו באמת צהוב ושחור.','Nobody is lying, each sees at a different resolution. Ask the room: is this a lie? No, just fewer pixels. And Pikachu really is yellow and black.'],
+  ['כולן יודעות להגיד ״בערך״: וובר אומר שכל פעולה היא תערובת, הכובע מתלבט, ובמזלות יש שמש, ירח ואופק. אבל אף אחת לא אומרת כמה.','They can all say "sort of": Weber says every act is a mix, the Hat hesitates, star signs have sun, moon and rising. But none of them says how much.'],
+  ['פה מרקס חזק באמת: כל התורה שלו היא יחס בין מעמדות, ולכן ירוק. למזלות יש תורת התאמה, אבל במילים ולשני הכיוונים. ב״חברים״ היחסים הם בין דמויות מסוימות, לא בין טיפוסים.','Here Marx is truly strong: his whole theory is a relation between classes, so it is green. Star signs have a theory of matches, but in words and both ways. In Friends the relations are between specific characters, not types.'],
+  ['ההוגים מדברים על שינוי של חברות שלמות, לא של אדם אחד. ב״חברים״ הדמויות גדלות אבל נשארות אותו טיפוס. הוגוורטס ומזלות: נקבע פעם אחת.','The thinkers talk about whole societies changing, not one person. In Friends the characters grow but stay the same type. Hogwarts and star signs: set once.'],
+  ['כולם יודעים לספר, פוקימון יודע לחשב. וכשזה מספר, אפשר לבדוק ולתקן: דרקון היה חזק מדי, אז נוסף פיירי. כל משבצת ירוקה כאן היא קורס שעוד מחכה לנו הערב.','Everyone can tell it, Pokémon can calculate it. And a number can be tested and fixed: Dragon was too strong, so Fairy was added. Every green cell here is a course still waiting for us tonight.'],
+  ['ולכן, מה שנעשה הערב הוא לא עוד שאלון של BuzzFeed. (חוזרים ל״לא!״ מהשאלון המזויף בקורס 3.)','So what we do tonight is not another BuzzFeed quiz. (Back to the "NO!" from the fake quiz in course 3.)']];
+const csNoteK=C=>C.bz?6:C.pk?5:C.st;
 const CS_PK=[[['600 ליינים','600 lines'],['כל הערב','All evening']],[['6 סטטים, כל אחד מספר','6 stats, each a number'],['קורס 7','Course 7']],[['18×18: ‏×2, ×½, ×0, לכל כיוון','18×18: ×2, ×½, ×0, each way'],['קורסים 5–6','Courses 5–6']],[['7 דרכים, תנאים מדויקים','7 ways, exact conditions'],['קורס 8','Course 8']]];
 const CS_PX=[['img/px-1.webp',['דורקהיים · קבוצה אחת','Durkheim · one group']],['img/px-1x2.webp',['מרקס · שני מעמדות','Marx · two classes']],['img/px-2.webp',['וובר · ארבעה סוגי פעולה','Weber · four kinds of action']],['img/px-12.webp',['12×12 · כבר מתחילים לזהות','12×12 · you start to see it']],['img/px-full.webp',['הספרייט המלא · פיקאצ׳ו','The full sprite · Pikachu']]];
 const csOn=it=>it?.kind==='slide'&&it.id==='c-pixels'&&!ROOM.legacy;
-function csEnter(it){S.cs={id:it.id,st:0,tok:0,fill:0,pk:false,end:false};const cv=$('#cv');cv.innerHTML=slideHTML(S.slides[it.i].html);const sec=cv.querySelector('section');if(!sec)return;
+function csEnter(it){S.cs={id:it.id,st:0,tok:0,fill:0,pk:false,end:false,bz:false};const cv=$('#cv');cv.innerHTML=slideHTML(S.slides[it.i].html);const sec=cv.querySelector('section');if(!sec)return;
   [...sec.children].forEach(c=>{if(!/top:\s*1022px/.test(c.getAttribute('style')||''))c.remove()});sec.classList.add('cssec');
-  const cell=(q,r)=>{const c=CS_CELL[r.k][q];return c[1]==='n'?`<div class="cscell cn" data-q="${q}"><b>${c[0]}</b></div>`:`<div class="cscell c${c[1]}" data-q="${q}"><b>${ll(...c[0])}</b><small>${ll(...CS_LV[c[1]])}</small></div>`};
+  const cell=(q,r)=>{const c=CS_CELL[r.k][q];return c[1]==='n'?`<div class="cscell cn" data-q="${q}"><b>${c[0]}</b></div>`:`<div class="cscell c${c[1]}" data-q="${q}"><b>${ll(...c[0])}</b></div>`};
   sec.insertAdjacentHTML('beforeend',`<p class="cseb">WHAT MAKES A GOOD WAY TO SORT PEOPLE?</p><h2 class="csti">${ll('מה צריכה שיטה טובה למיין אנשים?','What does a good way to sort people need?')}</h2>
     <div class="cstab"><div class="csrow cshd"><div class="cslab"></div>${CS_Q.map((Q,q)=>`<div class="csqh" data-q="${q}"><b>${ll(...Q.t)}</b><span>${ll(...Q.s)}</span></div>`).join('')}</div>
     ${CS_ROWS.map(r=>`<div class="csrow"><div class="cslab"><span class="csim ${r.img.length>1?'tri':''}">${r.img.map(s=>`<img src="${s}" alt="">`).join('')}</span><b>${ll(...r.t)}</b></div>${[0,1,2,3].map(q=>cell(q,r)).join('')}</div>`).join('')}
-    <div class="csrow cspk"><div class="cslab"><span class="csim"><img src="img/px-full.webp" alt="" style="image-rendering:pixelated;object-fit:contain;background:#FFFDF8"></span><b>${ll('פוקימון','Pokémon')}</b></div>${CS_PK.map((P,q)=>`<div class="cscell cy" data-q="${q}" style="--dl:${q*.55}s"><b>${ll(...P[0])}</b><small>${ll(...CS_LV.y)} · ${ll(...P[1])}</small></div>`).join('')}</div></div>
-    <p class="csend">${ll('כולם יודעים לספר. פוקימון יודע לחשב.','Everyone can tell it. Pokémon can calculate it.')}<small>${ll('וכשהתשובה היא מספר, אפשר לבדוק אותה ולתקן אותה: ככה נוסף פיירי.','And when the answer is a number, you can test it and fix it: that is how Fairy was added.')}</small></p><div class="cspop" id="cspop"></div>`);
+    <div class="csrow cspk"><div class="cslab"><span class="csim"><img src="img/px-full.webp" alt="" style="image-rendering:pixelated;object-fit:contain;background:#FFFDF8"></span><b>${ll('פוקימון','Pokémon')}</b></div>${CS_PK.map((P,q)=>`<div class="cscell cy" data-q="${q}" style="--dl:${q*.55}s"><b>${ll(...P[0])}</b><small>${ll(...P[1])}</small></div>`).join('')}</div></div>
+    <p class="csend">${ll('כולם יודעים לספר. פוקימון יודע לחשב.','Everyone can tell it. Pokémon can calculate it.')}<small>${ll('וכשהתשובה היא מספר, אפשר לבדוק אותה ולתקן אותה: ככה נוסף פיירי.','And when the answer is a number, you can test it and fix it: that is how Fairy was added.')}</small></p><div class="csbz"><div><small>${ll('ולכן, מה שנעשה הערב','So what we do tonight')}</small><b>${ll('הוא לא עוד שאלון של BuzzFeed.','is not another BuzzFeed quiz.')}</b></div></div><div class="cspop" id="cspop"></div>`);
   csPaint()}
 function csNext(){const it=cur();if(!S.cs||S.cs.id!==it?.id)return false;const C=S.cs;
   if($('#cspop.on')){csPopClose(true);return true}           // a click during a pop-up: close it now and fill its column
   if(C.st<4){C.st++;csPop(C.st-1);return true}
   if(!C.pk){C.pk=true;csPaint();sfx('sfx-dex-page-added');const t=++C.tok;setTimeout(()=>{if(S.cs===C&&C.tok===t){C.end=true;csPaint()}},3200);return true}
   if(!C.end){C.end=true;csPaint();return true}
+  if(!C.bz){C.bz=true;C.tok++;csPaint();sfx('sfx-denied');return true}
   return false}
 function csPaint(){const C=S.cs,sec=$('#cv .cssec');if(!C||!sec)return;
   sec.querySelectorAll('.csqh').forEach(e=>e.classList.toggle('on',+e.dataset.q<C.st||(+e.dataset.q===C.st-1)));
   sec.querySelectorAll('.csrow:not(.cspk) .cscell').forEach(e=>{const q=+e.dataset.q;e.classList.toggle('on',q<C.fill)});
-  sec.querySelector('.cspk')?.classList.toggle('on',C.pk);sec.querySelector('.csend')?.classList.toggle('on',C.end)}
+  sec.querySelector('.cspk')?.classList.toggle('on',C.pk);sec.querySelector('.csend')?.classList.toggle('on',C.end);sec.querySelector('.csbz')?.classList.toggle('on',C.bz);notePub()}
 function csPopClose(now){const C=S.cs,p=$('#cspop');if(!C||!p)return;C.tok++;p.classList.remove('on');C.fill=Math.max(C.fill,C.st);
   const sec=$('#cv .cssec');sec?.querySelectorAll(`.csrow:not(.cspk) .cscell[data-q="${C.st-1}"]`).forEach((e,i)=>e.style.transitionDelay=(now?0:i*.18)+'s');csPaint();sfx('sfx-tink')}
 function csPop(q){const C=S.cs,p=$('#cspop');if(!p)return;const t=++C.tok,at=(ms,fn)=>setTimeout(()=>{if(S.cs===C&&C.tok===t&&cur()?.id===C.id)fn()},ms*(S.fastOn?.5:1));
