@@ -732,6 +732,97 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .svlect{flex:none;height:300px;max-width:260px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 0 rgba(0,0,0,.35))}
 /* dialogue scenes: the lecturer beside a game text box at the bottom, the stage above it */
 .scst{background:#161A2E}
+/* round 74: science and theory on the Lake of Rage (s-lsci, s-lth) */
+.lsmap{position:absolute;overflow:hidden;border-radius:14px;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C;background:#3C7A52;z-index:20;transition:left 1.1s cubic-bezier(.4,.1,.3,1),top 1.1s cubic-bezier(.4,.1,.3,1),width 1.1s cubic-bezier(.4,.1,.3,1),height 1.1s cubic-bezier(.4,.1,.3,1),border-radius 1.1s}
+.lsin{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform 1.1s cubic-bezier(.4,.1,.3,1)}
+.lsmap.nott,.lsin.nott{transition:none!important}
+.lsimg{position:absolute;left:0;top:0;image-rendering:pixelated}
+.lsmap .lsname{position:absolute;inset-inline-start:14px;bottom:12px;z-index:5;background:rgba(22,26,46,.85);color:#F2C94C;font:400 18px var(--pixel);padding:8px 14px;border-radius:10px}
+.lsp{position:absolute;width:0;height:0}
+.lsp .lks{position:absolute;left:-34px;top:-68px}
+.lsp>b{display:none;position:absolute;left:0;top:-96px;transform:translateX(-50%);white-space:nowrap;font-size:22px;color:#fff;text-shadow:0 2px 0 #161A2E,0 0 6px #161A2E}
+.lsoak>b{color:#F2C94C}
+.lsgy{position:absolute;width:68px;height:68px;margin:-42px 0 0 -34px;background-size:272px 272px;background-repeat:no-repeat;image-rendering:pixelated;opacity:0;transform:scale(1.5);transition:opacity .4s,filter .4s;animation:lsgyf .6s steps(4) infinite}
+.lsgy.on{opacity:1}
+.lsgy.dim{opacity:.35;filter:grayscale(.6)}
+.lsgy.pop{animation:lsgyf .6s steps(4) infinite,lsup .7s cubic-bezier(.2,1.5,.5,1) backwards}
+@keyframes lsgyf{to{background-position-x:-272px}}
+@keyframes lsup{from{opacity:0;transform:scale(.2) translateY(40px)}}
+.lsgy.red.on{filter:drop-shadow(0 0 12px #fff)}
+.lskarp{position:absolute;height:64px;width:auto;margin:-32px 0 0 -32px;image-rendering:pixelated;opacity:0}
+.cl1 .lskarp{animation:lskarp 2.4s ease-in forwards}
+.cl1 .lskarp:nth-of-type(2){animation-delay:.4s}.cl1 .lskarp:nth-of-type(3){animation-delay:.8s}
+@keyframes lskarp{0%{opacity:0}25%{opacity:1}60%{opacity:1;filter:none}100%{opacity:.18;filter:grayscale(1) brightness(1.6)}}
+.lsradio{position:absolute;left:1980px;top:1460px;width:0;height:0;display:none}
+.cl2 .lsradio,.rk .lsradio{display:block}
+.lsradio i{position:absolute;left:-60px;top:-60px;width:120px;height:120px;border-radius:50%;border:8px solid #F2C94C;opacity:0;animation:lsring 2.4s ease-out infinite}
+.lsradio i:nth-child(2){animation-delay:.8s}.lsradio i:nth-child(3){animation-delay:1.6s}
+.rk .lsradio i{border-color:#E5484D}
+@keyframes lsring{0%{opacity:.95;transform:scale(.3)}100%{opacity:0;transform:scale(9)}}
+.lsbub{position:absolute;left:0;top:-122px;transform:translate(-50%,-100%);background:#fff;color:#161A2E;border-radius:16px;padding:6px 16px;font:700 26px/1.25 'Rubik',Arial,sans-serif;font-style:normal;box-shadow:0 4px 0 rgba(0,0,0,.35);white-space:nowrap;animation:twin .35s cubic-bezier(.3,1.6,.5,1)}
+.lsbub::after{content:'';position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);border:9px solid transparent;border-top:12px solid #fff;border-bottom:0}
+.lsbub.big{white-space:normal;width:max-content;max-width:520px;font-size:34px;padding:12px 22px;text-align:center}
+.lsbub.big small{display:block;font-size:20px;color:#6B7088;font-weight:700}.lsbub.big span{display:block}
+.lsbub.mk{font-size:30px;padding:2px 10px}
+.lsbub.sm{font-size:24px;background:#6390F0;color:#fff}.lsbub.sm::after{border-top-color:#6390F0}
+.lsbub.bang{background:#E5484D;color:#fff;font-size:40px;padding:0 18px}.lsbub.bang::after{border-top-color:#E5484D}
+.glow .lsbub.mk{box-shadow:0 0 0 4px #F2C94C,0 4px 0 rgba(0,0,0,.35)}
+.lsredtag{position:absolute;inset-inline-end:16px;top:16px;z-index:6;background:#E5484D;color:#fff;font:700 30px 'Rubik',Arial,sans-serif;padding:10px 20px;border-radius:14px;box-shadow:0 4px 0 rgba(0,0,0,.35);opacity:0;transform:scale(.6);transition:opacity .4s,transform .4s cubic-bezier(.3,1.6,.5,1)}
+.lsredtag.on{opacity:1;transform:none}
+.lspan{position:absolute;top:44px;inset-inline-start:60px;width:800px;max-height:500px;z-index:30;background:#FFFDF8;border:6px solid #2A2E45;border-radius:20px;box-shadow:inset 0 0 0 6px #FFFDF8,inset 0 0 0 10px #9FA7C7,0 10px 0 rgba(0,0,0,.35);padding:22px 34px 26px;display:flex;flex-direction:column;gap:12px;color:#161A2E}
+.lspan.late,.lsst.late .scbox,.lsst.late .sclect{animation:lslate .7s 1s cubic-bezier(.2,.8,.3,1) backwards}
+@keyframes lslate{from{opacity:0;transform:translateY(30px)}}
+.lspan .trio{position:static;transform:none;align-self:center;margin:0 0 4px}
+.lspan .trio span{font-size:22px;padding:6px 18px}
+.lspan .sceb{margin:0;font:400 18px var(--pixel);color:#E5484D;text-align:start}
+.lspan h2{margin:0;font:400 44px/1.12 var(--display);color:#161A2E;text-align:start}
+.lscards{display:grid;grid-template-columns:1fr 1fr;gap:12px;transition:opacity .4s}
+.lscards.gone{display:none}
+.lsc{position:relative;background:#F6F1E7;border:2px solid #E4DCCB;border-radius:16px;padding:10px 16px}
+.lsc:not(.on),.lsc.dk:not(.on){background:none;border:3px dashed #D6CCB6}.lsc:not(.on)>:not(b){visibility:hidden}
+.lsc.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.lsc>b{position:absolute;top:12px;inset-inline-end:16px;font:400 18px var(--pixel);color:#6390F0}
+.lsc h3{margin:0 0 2px;font-size:29px;text-align:start}
+.lsc p{margin:0;font-size:21px;line-height:1.28;color:#4A4F63;text-align:start}
+.lsc em{display:block;margin-top:4px;font-style:normal;font-weight:700;font-size:21px;color:#6390F0;text-align:start}
+.lsc.dk{background:#161A2E;border-color:#161A2E}.lsc.dk h3{color:#F6F1E7}.lsc.dk p{color:#C9CCE0}.lsc.dk>b{color:#F2C94C}
+.lsarc,.lspop,.lsrk,.lsdid,.lstwo{display:none}
+.lsarc.on,.lspop.on,.lsrk.on,.lstwo.on{display:flex;animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.lsdid.on{display:block}
+.lsarc{align-items:center;gap:20px;background:#161A2E;border-radius:18px;padding:14px 22px}
+.lsarc img{height:140px;width:auto;flex:none}
+.lsarc em{display:block;font-style:normal;font-weight:700;font-size:22px;color:#F2C94C;text-align:start}
+.lsarc p{margin:4px 0;font:400 32px/1.2 var(--display);color:#F6F1E7;text-align:start}
+.lsarc small{display:block;font-size:21px;color:#C9CCE0;text-align:start}
+.lspop{align-items:center;gap:16px;background:#EDE6D6;border:2px solid #DCD2BC;border-radius:16px;padding:8px 18px}
+.lspop img{height:110px;width:auto;image-rendering:pixelated;flex:none}
+.lspop i{font:400 13px var(--pixel);color:#9A8F78;font-style:normal;display:block;text-align:start}
+.lspop p{margin:4px 0 0;font-size:22px;line-height:1.35;color:#4A4F63;text-align:start}
+.lsrow{display:flex;align-items:center;gap:18px}
+.lsclk{flex:none;width:92px;height:92px;border-radius:50%;border:6px solid #E5484D;color:#E5484D;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.lsclk b{font:400 36px var(--pixel)}.lsclk span{font-size:16px;margin-top:4px}
+.lshow{margin:0;font-size:26px;color:#4A4F63;text-align:start}
+.lscl{display:flex;flex-direction:column;gap:8px}
+.lscl p{margin:0;background:#F2C94C;border-radius:14px;padding:10px 18px;font-size:24px;line-height:1.3;text-align:start;animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.lscl i{font:400 14px var(--pixel);font-style:normal;margin-inline-end:12px;color:#5A4A1A}
+.lsths{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lsths>div{display:flex;align-items:center;gap:10px;background:#F6F1E7;border-radius:12px;padding:6px 10px;min-width:0}
+.lsths span{display:flex;flex-direction:column;min-width:0;text-align:start}
+.lsths b{font-size:16px;color:#6B7088}
+.lsths em{font-style:normal;font-size:21px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.lsnone{margin:0;font-size:24px;color:#6B7088}
+.lsrk{align-items:center;gap:20px;background:#161A2E;border:4px solid #E5484D;border-radius:18px;padding:12px 22px}
+.lsrk>img{height:150px;width:auto;image-rendering:pixelated;flex:none}
+.lsrk h3{margin:0;font:400 46px var(--display);color:#F6F1E7;text-align:start}
+.lsrk p{margin:4px 0 6px;font-size:23px;line-height:1.3;color:#C9CCE0;text-align:start}
+.lsrk .whyev img{height:80px}.lsrk .whyev b{font-size:36px}
+.lsdid{margin:0;font-size:26px;line-height:1.35;color:#4A4F63;text-align:start}
+.lstwo{flex-direction:column;gap:10px}
+.lstwo>div{background:#F6F1E7;border-radius:14px;padding:10px 18px;border-inline-start:12px solid #6390F0}
+.lstwo>div.soc{border-inline-start-color:#F95587}
+.lstwo h3{margin:0 0 2px;font-size:28px;text-align:start}
+.lstwo p{margin:0;font-size:21px;line-height:1.3;color:#4A4F63;text-align:start}
+
 .scgym{position:absolute;overflow:hidden;border-radius:14px;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C;transform-origin:0 0;transition:transform .9s cubic-bezier(.3,.7,.3,1),opacity .6s}
 .scgym.gone{opacity:0;transform:translateY(260px) scale(.5)!important;pointer-events:none}
 .scst .scnm{z-index:40;transition:opacity .4s}.scst .scnm.gone{opacity:0}
@@ -1196,7 +1287,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795279029';
+const BUILDV='1795281002';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3040,7 +3131,7 @@ function lkCamGoal(L){if(L.phase==='land'||L.phase==='oak')return{z:1.5,c:lkC(..
   if(L.phase==='go'){const pts=lkPpl().filter(p=>lkAv(p)&&L.pos[p.id]).map(p=>L.pos[p.id]);if(L.oakP)pts.push(L.oakP);const md=k=>{const v=pts.map(q=>q[k]).sort((a,b)=>a-b);return v.length?v[Math.floor(v.length/2)]:0};return{z:1.2,c:pts.length?[md('x'),md('y')]:lkC(...LK.start)}}
   return{z:1,c:LK.lakeC}}
 function lkCamClamp(c,z){const hw=960/z,hh=540/z;return[Math.min(Math.max(c[0],hw),LK.W-hw),Math.min(Math.max(c[1],hh),LK.H-hh)]}
-const TRIO={'s-lake':0,'s-science':0,'s-why':1,'s-theory':1,'s-pika':2,'s-paradigm':2,'s-fairy':2};
+const TRIO={'s-lake':0,'s-science':0,'s-lsci':0,'s-lth':1,'s-why':1,'s-theory':1,'s-pika':2,'s-paradigm':2,'s-fairy':2};
 function trioHTML(i){return `<div class="trio">${[['מדע','Science'],['תיאוריה','Theory'],['פרדיגמה','Paradigm']].map((t,j)=>`<span class="${j===i?'on':j<i?'done':''}"><b>${j+1}</b>${LL(t)}</span>`).join('<i></i>')}</div>`}
 function lkPpl(){return gamePlayers()}
 // each player picks a character from img/mini (cut from Eyal's sprite sheet); until then, the plain boy or girl
@@ -3499,7 +3590,7 @@ for(let k=1;k<=NR;k++){const last=k===NR,min=()=>PLAN.find(p=>p[3]==='x-round-'+
       last?['i3','ובסוף הסבב: שאלת הבונוס של מיו.','And at the end of the round: Mew\'s bonus question.']:['i3',`${min()} דקות. מי שלא מסיים, משלים בהפסקה.`,`${min()} minutes. If you don't finish, you finish in the break.`],
       ['wild','שאלות פראיות הופיעו!','Wild questions appeared!']]}}
 // a mid-part scene (and a rules scene) speaks with its part's lecturer
-Object.values(SC).forEach(c=>{if(c.mid||c.rules)c.name=Object.values(SC).find(o=>!o.mid&&!o.rules&&o.part===c.part).name});
+Object.values(SC).forEach(c=>{if(c.mid||c.rules||c.lake)c.name=Object.values(SC).find(o=>!o.mid&&!o.rules&&!o.lake&&o.part===c.part).name});
 const SC_DROP=Object.fromEntries(Object.entries(SC).filter(([k,v])=>v.drop).map(([k,v])=>[k,v.drop]));
 function scRoute(){return SC_STOPS.filter(s=>!s.t||SEQ.some(x=>x.id==='x-trainer-'+s.t))}
 function scSec(id){const i=S.slides.findIndex(s=>s.id===id);if(i<0)return null;const t=document.createElement('template');t.innerHTML=slideHTML(S.slides[i].html);return t.content.querySelector('section')}
@@ -3518,7 +3609,7 @@ function scBeats(id){const cf=SC[id],nT=scRoute().filter(s=>s.t).length;
   const ti=cf.mid?(scSec(cf.div)?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim():'';
   return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT,ti).map(([st,he,en])=>({st,t:ll(he,en)}))}
 function scStage(B,b){for(let i=b;i>=0;i--)if(B[i].st)return {st:B[i].st,at:i};return {st:'gym',at:0}}
-function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
+function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};if(SC[it.id].lake){lsBuild(it,!atEnd);lsApply(S.sc.b,!atEnd);if(!atEnd)music(SC[it.id].lake==='sci'?'mus-surfing':null,{vol:.16});gamePub();return}scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
 // the town of the last walk before here (a rules scene comes after a save point, where the mini map's own lookup stops)
 function scTownBack(){for(let i=POS;i>=0;i--)if(SEQ[i].kind==='town'){const L=TW_LEGS[SEQ[i].id]||[];return L[L.length-1]?.town||null}return null}
 function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack():null,G=tb?(TOWN[TOWN.gymOf?.[tb]]||TOWN.gym):twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
@@ -3562,7 +3653,7 @@ function scApplyRules(b,anim){const C=S.sc,B=scBeats(C.id),run=++C.run;clearInte
 // the wild-battle transition from a round's scene into the round: two flashes, then black bars close in
 function scWild(cb){document.getElementById('scsw')?.remove();const o=document.createElement('div');o.id='scsw';o.innerHTML='<i></i><i></i><i></i><i></i><i></i><i></i>';document.body.appendChild(o);
   music('mus-wild',{vol:.25});setTimeout(cb,1250);setTimeout(()=>o.remove(),1900)}
-function scApply(b,anim,first){if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
+function scApply(b,anim,first){if(SC[S.sc.id].lake)return lsApply(b,anim);if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
   const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','map','fly','zoom','tile'].indexOf(st);
   const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
@@ -3605,8 +3696,107 @@ function scType(t,anim){const el=$('#sctx'),C=S.sc;clearInterval(S.scT);el.class
 // a click while the line is typing or Dragonite is flying finishes it at once; otherwise the next beat (or back)
 function scGo(d){const it=cur(),C=S.sc;if(!C||C.id!==it?.id)return false;
   if(d>0&&(C.typing||C.fly)){const b=C.b;if(C.fly)scApply(b,false);else{clearInterval(S.scT);const el=$('#sctx');el.textContent=scBeats(C.id)[b].t;el.classList.add('done');C.typing=0;$('#scst')?.classList.remove('talk')}return true}
+  if(d>0&&C.id==='s-lth'&&S.why?.ph==='run'&&lsK(C.b).k===1){whyGo(1);return true}
   const nb=C.b+d;if(d>0&&nb>=scBeats(C.id).length&&SC[C.id].wild&&!C.wild){C.wild=1;scWild(()=>{if(cur()?.id===C.id)go(1)});return true}
   if(nb<0||nb>=scBeats(C.id).length)return false;C.b=nb;scApply(nb,d>0);return true}
+// round 74: science and theory on the Lake of Rage, in the scene language: the lake (where the game just ended) on the stage,
+// what is shown in a panel beside it, Oak's lines in the text box. s-lsci replaces s-science; s-lth = the Gyarados theories game + what a theory is
+SC['s-lsci']={lake:'sci',part:2,drop:['s-science'],bar:'s-science',label:['מדע: טענה שאפשר להפריך','Science: a claim that can be falsified'],
+  lines:()=>[['l0','מה שעשיתם עכשיו באגם, זה מדע. בואו נראה למה.','What you just did at the lake was science. Let\'s see why.'],
+    ['c1','קודם תצפית: גיאראדוס כחול. ועוד אחד. ועוד אחד.','First an observation: a blue Gyarados. And another. And another.'],
+    ['c2','ואז השערה: כל הגיאראדוסים כחולים.','Then a hypothesis: all Gyarados are blue.'],
+    ['c3','ניסוי: לא מחפשים עוד כחולים, אלא בכוונה את מה שיפיל אותה.','An experiment: you don\'t look for more blue ones. You look on purpose for what would bring it down.'],
+    ['c4','ואז הוא הופיע. אדום אחד מפיל הכול, וחוזרים להתחלה.','And then it showed up. One red one brings it all down, and it\'s back to the start.'],
+    ['arc','ועכשיו טענה שאי אפשר להפריך: ארסאוס בקע מביצה בתוך הריק, וברא את העולם.','And now a claim you can\'t refute: Arceus hatched from an egg in the void, and created the world.'],
+    ['pop','זה לא אומר שזה לא נכון. זה אומר שזה לא מדע.','That doesn\'t mean it isn\'t true. It means it isn\'t science.']]};
+SC['s-lth']={lake:'th',part:2,drop:['s-why','s-theory'],bar:'s-theory',label:['תיאוריה: למה כל כך הרבה גיאראדוסים?','Theory: why so many Gyarados?'],
+  lines:()=>[['q','ועכשיו תעלומה: למה יש פתאום כל כך הרבה גיאראדוסים באגם?','And now a mystery: why are there suddenly so many Gyarados in the lake?'],
+    ['run','כתבו בטלפון את התיאוריה שלכם. הרמזים יגיעו לבד, ואפשר לשנות אחרי כל רמז.','Write your theory on your phone. The clues come by themselves, and you can change it after each one.'],
+    ['rocket','והתשובה האמיתית: צוות רוקט! הם שידרו אות שמכריח מג׳יקארפים להתפתח.','And the real answer: Team Rocket! They broadcast a signal that forces Magikarp to evolve.'],
+    ['def','וזה מה שעשיתם הרגע: לקחתם תצפיות מבולגנות, ובניתם מהן הסבר.','And that is what you just did: you took messy observations, and built an explanation out of them.'],
+    ['two','נזק של גיאראדוס אפשר למדוד. בני אדם לא חוזרים על ניסוי, אז התיאוריה עוזרת לפרש.','A Gyarados\'s damage can be measured. People don\'t replay an experiment, so theory helps us interpret.']]};
+['s-lsci','s-lth'].forEach(id=>{const c=SC[id];c.name=Object.values(SC).find(o=>!o.mid&&!o.rules&&!o.lake&&o.part===c.part).name;SC_DROP[id]=c.drop});
+const LS_ST={sci:['l0','c1','c2','c3','c4','arc','pop'],th:['q','run','rocket','def','two']};
+// the view of the lake: the water and its south shore, at a zoom that fits the stage box
+const LS={x0:30,y0:23,bw:946,bh:704};LS.z=Math.min(LS.bw/(33*LK.t),LS.bh/(24*LK.t));
+(()=>{const ok=(x,y)=>[-2,-1,0,1,2].every(a=>[-2,-1,0,1,2].every(b=>LK.m[y+b]?.[x+a]==='w')),vx1=LS.x0+LS.bw/LS.z/LK.t,vy1=LS.y0+LS.bh/LS.z/LK.t,W=[];
+  for(let y=LS.y0+1;y<vy1-1;y++)for(let x=LS.x0+1;x<vx1-1;x++)if(ok(x,y))W.push([x,y]);
+  // spread spots on the water, the ones nearest the shore first
+  W.sort((a,b)=>b[1]-a[1]||a[0]-b[0]);const pick=[];W.forEach(w=>{if(pick.every(p=>Math.abs(p[0]-w[0])+Math.abs(p[1]-w[1])>=6))pick.push(w)});LS.wat=pick;
+  LS.shore=[];LK.m.forEach((r,y)=>r.forEach((c,x)=>{if(c==='g'&&LK.dw[y][x]>=1&&LK.dw[y][x]<=2&&x>LS.x0&&x<vx1-1&&y>LS.y0+1&&y<vy1-1)LS.shore.push([x,y])}));
+  const[sx,sy]=LK.shore;LS.shore.sort((a,b)=>Math.hypot(a[0]-sx,a[1]-sy)-Math.hypot(b[0]-sx,b[1]-sy))})();
+const lsIn=(x,y)=>{const[tx,ty]=lkT(x,y);return tx>LS.x0&&ty>LS.y0+1&&tx<LS.x0+LS.bw/LS.z/LK.t-1&&ty<LS.y0+LS.bh/LS.z/LK.t-1&&lkAt(tx,ty)==='g'};
+// where everyone stands: where the lake game left them if it's on the shore in view, else the next free shore tile
+function lsPos(){const L=S.lake,out={},took=[];const pl=lkPpl().filter(p=>lkAv(p));const oak=L?.oakP&&lsIn(L.oakP.x,L.oakP.y)?[L.oakP.x,L.oakP.y]:lkC(...LK.shore);took.push(lkT(...oak));
+  pl.forEach(p=>{const P=L?.pos?.[p.id];if(P&&lsIn(P.x,P.y)){const t=lkT(P.x,P.y);if(took.every(q=>q[0]!==t[0]||q[1]!==t[1])){took.push(t);out[p.id]={x:lkC(...t)[0],y:lkC(...t)[1],d:P.d||'u'}}}});
+  pl.forEach(p=>{if(out[p.id])return;const t=LS.shore.find(s=>took.every(q=>Math.abs(q[0]-s[0])+Math.abs(q[1]-s[1])>=2))||LS.shore[0]||LK.shore;took.push(t);out[p.id]={x:lkC(...t)[0],y:lkC(...t)[1],d:'u'}});
+  return {pp:out,oak}}
+function lsGy(i,red,cls){const[x,y]=lkC(...(LS.wat[i%LS.wat.length]||LK.shore));return `<i class="lsgy${red?' red':''} ${cls||''}" style="left:${x}px;top:${y}px;background-image:url(img/gy-${red?'red-':''}sheet.png)"></i>`}
+function lsLakeHTML(){const{pp,oak}=lsPos(),fy=LK.t*.38;
+  const ppl=lkPpl().filter(p=>pp[p.id]).map(p=>{const P=pp[p.id],n=S.gIn[p.id].av;return `<div class="lsp" data-p="${p.id}" style="left:${P.x}px;top:${P.y+fy}px;z-index:${Math.round(P.y)}"><b>${esc(p.name)}</b><i class="lks" style="${owStyle(n)};background-position:${owPos(n,P.d,0)}"></i></div>`}).join('');
+  const gys=[0,1,2].map(i=>lsGy(i,0,'b'+i)).join('')+[3,4,5,6,7].map(i=>lsGy(i,0,'m'+i)).join('')+lsGy(4,1,'rd'),karp=[1,3,5].map(i=>{const[x,y]=lkC(...(LS.wat[(i+5)%LS.wat.length]||LK.shore));return `<img class="lskarp" src="anim/129.gif" alt="" style="left:${x}px;top:${y}px">`}).join('');
+  return `<div class="lsin" id="lsin" style="width:${LK.W}px;height:${LK.H}px"><img class="lsimg" src="img/lake2.webp" alt="" style="width:${LK.W}px;height:${LK.H}px">${karp}${gys}<div class="lsp lsoak" style="left:${oak[0]}px;top:${oak[1]+fy}px;z-index:${Math.round(oak[1])}"><b>${ll('פרופסור אוק','Prof. Oak')}</b><i class="lks" style="${oakStyle()};background-position:${oakPos('d',0)}"></i></div>${ppl}<div class="lsradio"><i></i><i></i><i></i></div></div><div class="lsredtag" id="lsredtag"></div>`}
+const lsCam=()=>`translate(${-LS.x0*LK.t*LS.z}px,${-LS.y0*LK.t*LS.z}px) scale(${LS.z})`;
+function lsBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),P=scSec('x-part-'+cf.part),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',lect=P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp',sci=cf.lake==='sci';
+  const R=S.lakeRes,yes=R?ll(`‫${R.y} מכם הימרו עליה`,`${R.y} of you backed it`):'';
+  const pan=sci?`${trioHTML(0)}<p class="sceb" dir="ltr">WHAT IS SCIENCE</p><h2>${ll('מדע: טענה שאפשר להפריך','Science: a claim that can be falsified')}</h2>
+    <div class="lscards" id="lscards">${[[ll('תצפית','Observation'),ll('גיאראדוס כחול. ועוד אחד. ועוד אחד.','A blue Gyarados. And another. And another.')],[ll('השערה','Hypothesis'),ll('כל הגיאראדוסים כחולים.','All Gyarados are blue.'),yes],[ll('ניסוי','Experiment'),ll('לא מחפשים עוד כחולים, אלא את מה שיפיל אותה.','Not more blue ones: what would bring it down.')],[ll('נפילה','It falls'),ll('אדום אחד מפיל הכול, וחוזרים להתחלה.','One red one brings it all down. Back to the start.')]].map(([h,t,x],i)=>`<div class="lsc${i===3?' dk':''}" data-i="${i}"><b>${i+1}</b><h3>${h}</h3><p>${t}</p>${x?`<em>${x}</em>`:''}</div>`).join('')}</div>
+    <div class="lsarc" id="lsarc"><img src="img/s493.webp" alt=""><div><em>${ll('ועכשיו, טענה שאי אפשר להפריך:','And now, a claim you can\'t refute:')}</em><p>${ll('ארסאוס בקע מביצה בתוך הריק, וברא את העולם.','Arceus hatched from an egg in the void, and created the world.')}</p><small>${ll('זה לא אומר שזה לא נכון. זה אומר שזה לא מדע.','That doesn\'t mean it isn\'t true. It means it isn\'t science.')}</small></div></div>
+    <div class="lspop" id="lspop"><img src="img/th-popper.webp" alt=""><div><i dir="ltr">SIDE NOTE</i><p>${ll('קרל פופר, 1934: טענה שאי אפשר להפריך היא לא טענה מדעית.','Karl Popper, 1934: a claim that can\'t be refuted is not a scientific claim.')}</p></div></div>`
+   :`${trioHTML(1)}<p class="sceb" dir="ltr" id="lseb">LAKE OF RAGE · WHY?</p><h2 id="lsh2"></h2><div id="lswhy"></div>
+    <div class="lsrk" id="lsrk"><img src="img/tr-giovanni.webp" alt=""><div><h3>${ll('צוות רוקט.','Team Rocket.')}</h3><p>${ll('הם שידרו אות שמכריח מג׳יקארפים להתפתח, כדי לייצר כמה שיותר גיאראדוסים.','They broadcast a signal that forces Magikarp to evolve, to make as many Gyarados as they could.')}</p><div class="whyev"><img src="anim/129.gif" alt=""><b>→</b><img src="anim/130.gif" alt=""></div></div></div>
+    <p class="lsdid" id="lsdid">${ll('זה מה שעשיתם הרגע: לקחתם תצפיות מבולגנות, ובניתם מושגים וקשרים ביניהם שמסבירים אותן.','That is what you just did: you took messy observations, and built concepts and links between them that explain them.')}</p>
+    <div class="lstwo" id="lstwo"><div class="nat"><h3>${ll('תיאוריה במדעי הטבע','Theory in the natural sciences')}</h3><p>${ll('כמה נזק עושה גיאראדוס אפשר לחשב. אפשר למדוד, לחזור על הניסוי ולהפריך.','How much damage a Gyarados does can be calculated: measured, repeated, refuted.')}</p></div><div class="soc"><h3>${ll('תיאוריה חברתית','Social theory')}</h3><p>${ll('למה אנשים עושים מה שהם עושים אי אפשר לשחזר בניסוי. התיאוריה עוזרת לפרש, לזהות דפוסים ולשאול שאלות טובות יותר.','Why people do what they do can\'t be replayed in an experiment. Theory helps us interpret, spot patterns and ask better questions.')}</p></div></div>`;
+  const ml=EN?1920-60-LS.bw:60;
+  cv.innerHTML=`<div class="st scst lsst ls-${cf.lake}" id="scst" dir="${EN?'ltr':'rtl'}">
+    <div class="lsmap" id="lsmap" style="left:${ml}px;top:44px;width:${LS.bw}px;height:${LS.bh}px">${lsLakeHTML()}<div class="lsname">${ll('אגם הזעם','LAKE OF RAGE')}</div></div>
+    <div class="lspan" id="lspan">${pan}</div>
+    <div class="scbar0" id="scbar0">${bar}</div>
+    <img class="sclect${fresh?' rise':''}" id="sclect" src="${lect}" alt="">
+    <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini"></div></div></div>`;
+  // straight from the lake game: the whole screen of the lake shrinks into the stage box
+  const m=$('#lsmap'),inn=$('#lsin'),c=S.lake?.cam,full=fresh&&sci&&SEQ[POS-1]?.kind==='lake'&&c;
+  if(full){m.classList.add('nott');inn.classList.add('nott');Object.assign(m.style,{left:'0px',top:'0px',width:'1920px',height:'1080px',borderRadius:'0'});inn.style.transform=`translate(${960-c.c[0]*c.z}px,${540-c.c[1]*c.z}px) scale(${c.z})`;void m.offsetWidth;
+    m.classList.remove('nott');inn.classList.remove('nott');Object.assign(m.style,{left:ml+'px',top:'44px',width:LS.bw+'px',height:LS.bh+'px',borderRadius:''});inn.style.transform=lsCam();$('#lspan').classList.add('late');$('#scst').classList.add('late')}
+  else inn.style.transform=lsCam()}
+function lsK(b){const C=S.sc,B=scBeats(C.id),{st}=scStage(B,b);return {st,k:LS_ST[SC[C.id].lake].indexOf(st)}}
+function lsApply(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id);++C.run;clearInterval(S.scT);C.typing=C.fly=0;const st=$('#scst');if(!st)return;
+  const {k}=lsK(b),stepIn=anim&&scStage(B,b).at===b;st.dataset.k=k;
+  if(cf.lake==='sci'){
+    st.querySelectorAll('.lsc').forEach((e,i)=>{e.classList.toggle('on',k>i);e.classList.remove('in');if(stepIn&&k===i+1){void e.offsetWidth;e.classList.add('in')}});
+    // the lake: three blue ones come up one by one (c1), the yes-voters say so (c2), the blue ones dim (c3), the red one surfaces (c4)
+    st.querySelectorAll('.lsgy.b0,.lsgy.b1,.lsgy.b2').forEach((g,i)=>{g.classList.toggle('on',k>=1);g.classList.remove('pop');if(stepIn&&k===1){g.style.animationDelay=(i*.7)+'s';void g.offsetWidth;g.classList.add('pop')}g.classList.toggle('dim',k>=3)});
+    const rd=st.querySelector('.lsgy.rd');rd.classList.toggle('on',k>=4);rd.classList.remove('pop');if(stepIn&&k===4){void rd.offsetWidth;rd.classList.add('pop')}
+    st.querySelectorAll('.lsbub').forEach(e=>e.remove());const L=S.lake;
+    if(k===2&&L)st.querySelectorAll('.lsp[data-p]').forEach(e=>{if(S.gIn?.[e.dataset.p]?.['lkv'+L.sid]===1)e.insertAdjacentHTML('beforeend','<i class="lsbub sm">✓</i>')});
+    const tag=$('#lsredtag'),by=L?.redBy&&person(L.redBy);tag.classList.toggle('on',k>=4);
+    if(k>=4){tag.innerHTML=by?ll(`${esc(by.name)} ${genderOf(by)==='f'?'תפסה':'תפס'} אותו!`,`${esc(by.name)} caught it!`):ll('גיאראדוס אדום!','A red Gyarados!');if(by)st.querySelector(`.lsp[data-p="${L.redBy}"]`)?.insertAdjacentHTML('beforeend','<i class="lsbub bang">!</i>')}
+    if(stepIn&&k>=1&&k<=3)sfx('sfx-tink',.4);if(stepIn&&k===4){sfx('sfx-shooting-star',.6);try{const c=new Audio('cries/130.ogg?v='+BUILDV);c.volume=.6;c.play().catch(()=>{})}catch(e){}}
+    $('#lscards').classList.toggle('gone',k>=5);$('#lsarc').classList.toggle('on',k>=5);$('#lspop').classList.toggle('on',k>=6);if(stepIn&&k>=5)sfx('sfx-dex-page-added',.5)}
+  else{const W=S.why||(S.why={ph:'ask'});
+    if(k===1&&stepIn&&W.ph==='ask')whyGo(1);
+    if(k===1&&W.ph==='rocket'){W.ph='end';gamePub()}
+    if(k>=2&&W.ph!=='rocket'){clearInterval(S.whyT);W.ph='rocket';W.n=2;music(null);if(stepIn)sfx('sfx-denied');gamePub()}
+    st.querySelectorAll('.lsgy:not(.rd)').forEach(g=>g.classList.add('on'));
+    $('#lseb').textContent=k>=3?'WHAT IS A THEORY':'LAKE OF RAGE · WHY?';$('#lsh2').textContent=k>=3?ll('תיאוריה: מערכת שמאפשרת להגיד משהו על משהו','Theory: a system that lets you say something about something'):ll('למה יש פתאום כל כך הרבה גיאראדוסים באגם?','Why are there suddenly so many Gyarados in the lake?');
+    $('#lsrk').classList.toggle('on',k===2);$('#lsdid').classList.toggle('on',k===3);$('#lstwo').classList.toggle('on',k>=4);
+    if(stepIn&&k>=3)sfx('sfx-dex-page-added',.5);
+    S.lsKey=null;lsWhyPaint()}
+  scType(B[b].t,anim)}
+// the theories game inside the theory screen: the clock and clues in the panel; on the lake the newest theory as a bubble over its author,
+// a small speech mark over everyone else who wrote one; after the clock, everyone's theory in the panel
+function lsWhyPaint(){const W=S.why,st=$('#scst');if(!W||!st||cur()?.id!=='s-lth')return;const k=+st.dataset.k||0,pl=lkPpl().filter(p=>!isPresenter(p)),th=id=>String(S.gIn?.[id]?.th||'').trim();
+  W.ord=W.ord||[];W.seen=W.seen||{};pl.forEach(p=>{const t=th(p.id);if(t&&W.seen[p.id]!==t){W.seen[p.id]=t;W.ord=W.ord.filter(x=>x!==p.id);W.ord.push(p.id)}});
+  const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,last=W.ph==='run'?W.ord[W.ord.length-1]:null,nw=pl.filter(p=>th(p.id)).length;
+  st.classList.toggle('cl1',n>=1&&k<3);st.classList.toggle('cl2',n>=2&&k<3);st.classList.toggle('rk',k===2);st.classList.toggle('glow',k>=3);
+  const key=[k,W.ph,n,last,nw,...pl.map(p=>th(p.id))].join('|');if(S.lsKey===key)return;S.lsKey=key;
+  st.querySelectorAll('.lsp[data-p]').forEach(e=>{e.querySelector('.lsbub')?.remove();e.style.zIndex=e.dataset.z||(e.dataset.z=e.style.zIndex);const t=th(e.dataset.p);if(!t||W.ph==='ask')return;const big=e.dataset.p===last;e.insertAdjacentHTML('beforeend',big?`<i class="lsbub big"><small>${esc(person(e.dataset.p)?.name||'')}</small><span dir="auto">${esc(t)}</span></i>`:'<i class="lsbub mk">💬</i>');if(big)e.style.zIndex=9999});
+  const box=$('#lswhy');if(!box)return;
+  if(k>=2){box.innerHTML='';return}
+  const clk=W.ph==='run'?`<div class="lsclk" id="whyclk"><b>${Math.max(0,Math.ceil(whyT()-(Date.now()-W.t0)/1000))}</b><span>${ll('שניות','sec')}</span></div>`:'';
+  const cl=`<div class="lscl">${WHY_CLUES.slice(0,n).map((c,i)=>`<p><i>${ll('רמז','CLUE')} ${i+1}</i>${esc(LL(c))}</p>`).join('')}</div>`;
+  if(W.ph==='end')box.innerHTML=`<div class="lsths">${pl.filter(p=>th(p.id)).map(p=>`<div>${avHead(p,40)}<span><b>${esc(p.name)}</b><em dir="auto">${esc(th(p.id))}</em></span></div>`).join('')||`<p class="lsnone">${ll('אף אחד לא כתב תיאוריה.','Nobody wrote a theory.')}</p>`}</div>`;
+  else box.innerHTML=(k===1?`<div class="lsrow">${clk}<p class="lshow">${ll(`📱 כותבים בטלפון · ${nw} מתוך ${pl.length} כתבו`,`📱 Write on your phone · ${nw} of ${pl.length} wrote`)}</p></div>`:'')+cl}
 const trMeetOn=it=>it?.kind==='slide'&&twOn()&&!ROOM.legacy&&/^x-trainer-\d$/.test(it.id);
 function trMeet(it){const t=+it.id.slice(-1),walk=[...SEQ.slice(0,POS)].reverse().find(x=>x.kind==='town'),L=walk&&TW_LEGS[walk.id],leg=L&&L[L.length-1];if(!leg?.place)return;
   const T=TOWN[leg.town];if(!S.tw||S.tw.town!==leg.town){S.tw=twNew(leg.town);S.tw.from='door'}const tw=S.tw;tw.ph='meet';tw.leg=leg;tw.to='door';
@@ -3838,14 +4028,15 @@ function lakePhone(me,G){const head=`<p class="eyebrow">LAKE OF RAGE</p>`;if(G.p
 const WHY_CLUES=[['עד לפני שבוע האגם היה מלא מג\'יקארפים. עכשיו אין כאן אף אחד.','A week ago the lake was full of Magikarp. Now there isn\'t a single one.'],['בכל האזור קולטים אות רדיו מוזר, בתדר שלא שייך לאף תחנה.','All over the area, radios pick up a strange signal on a frequency that belongs to no station.']];
 const WHY_BOTS=()=>EN?['Something in the water','They came here to breed','A trainer dumped them here','Global warming','Magikarp ran away from them']:['משהו במים','הם באו להטיל ביצים','מאמן זרק אותם כאן','התחממות גלובלית','המג\'יקארפים ברחו מהם'];
 const whyT=()=>S.fastOn?10:25,WHY_AT=[2,7],whyN=el=>WHY_AT.filter(t=>el>=t*(whyT()/15)).length;
+const whyCur=()=>cur()?.kind==='why'||cur()?.id==='s-lth';
 function whyEnter(){S.why=S.why||{ph:'ask'};const W=S.why;whyPaint(true);gamePub();if(W.ph==='run')whyTick();
-  if(W.ph==='ask'){clearTimeout(S.whyGoT);S.whyGoT=setTimeout(()=>{if(S.why===W&&W.ph==='ask'&&cur()?.kind==='why')whyGo(1)},2000)}if(W.ph==='end')whyAuto()}
-function whyAuto(){const W=S.why;clearTimeout(S.whyRk);S.whyRk=setTimeout(()=>{if(S.why===W&&W.ph==='end'&&cur()?.kind==='why')whyGo(1)},2000)}
+  if(W.ph==='ask'){clearTimeout(S.whyGoT);S.whyGoT=setTimeout(()=>{if(S.why===W&&W.ph==='ask'&&whyCur())whyGo(1)},2000)}if(W.ph==='end')whyAuto()}
+function whyAuto(){if(cur()?.id==='s-lth')return;const W=S.why;clearTimeout(S.whyRk);S.whyRk=setTimeout(()=>{if(S.why===W&&W.ph==='end'&&whyCur())whyGo(1)},2000)}
 function whyAllIn(){const pl=lkPpl().filter(p=>!isPresenter(p));return pl.length>0&&pl.every(p=>String(S.gIn?.[p.id]?.th||'').trim())}
-function whyTick(){const W=S.why;clearInterval(S.whyT);S.whyT=setInterval(()=>{if(S.why!==W||cur()?.kind!=='why'||W.ph!=='run'){clearInterval(S.whyT);return}const T=whyT(),el=(Date.now()-W.t0)/1000,n=whyN(el);
+function whyTick(){const W=S.why;clearInterval(S.whyT);S.whyT=setInterval(()=>{if(S.why!==W||!whyCur()||W.ph!=='run'){clearInterval(S.whyT);return}const T=whyT(),el=(Date.now()-W.t0)/1000,n=whyN(el);
   if(el>=T||(n>=2&&el>=WHY_AT[1]*(T/15)+1&&whyAllIn())){W.ph='end';W.n=2;clearInterval(S.whyT);music(null);sfx('sfx-dex-page-added');whyPaint(true);gamePub();whyAuto();return}if(n!==W.n){W.n=n;sfx('sfx-tink');whyPaint(true)}const c=$('#whyclk b');if(c)c.textContent=Math.ceil(T-el)},250)}
 function whyGo(d){const W=S.why;if(!W||d<0)return false;if(W.ph==='ask'){W.ph='run';W.t0=Date.now();W.n=0;music('mus-alph',{vol:.3});whyPaint(true);gamePub();whyTick();return true}if(W.ph==='run'){W.ph='end';W.n=2;music(null);whyPaint(true);gamePub();whyAuto();return true}if(W.ph==='end'){W.ph='rocket';sfx('sfx-denied');whyPaint(true);gamePub();return true}return false}
-function whyPaint(full){const W=S.why,cv=$('#cv');if(!W||cur()?.kind!=='why')return;const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,pl=lkPpl().filter(p=>!isPresenter(p));
+function whyPaint(full){if(cur()?.id==='s-lth')return lsWhyPaint();const W=S.why,cv=$('#cv');if(!W||!whyCur())return;const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,pl=lkPpl().filter(p=>!isPresenter(p));
   const cards=pl.map(p=>{const t=String(S.gIn?.[p.id]?.th||'').trim();return `<div class="whyb ${t?'':'off'}">${avHead(p,52)}<span><b>${esc(p.name)}</b>${t?`<em dir="auto">${esc(t)}</em>`:`<em>…</em>`}</span></div>`}).join('');
   if(!full&&$('#whyg')){$('#whyg').innerHTML=cards;return}
   cv.innerHTML=`<div class="st why"><p class="lkeb" dir="ltr">LAKE OF RAGE · WHY?</p><h2 class="whyti">${ll('למה יש פתאום כל כך הרבה גיאראדוסים באגם?','Why are there suddenly so many Gyarados in the lake?')}</h2><p class="whyhow">${W.ph==='rocket'?'':ll('כתבו בטלפון את התיאוריה שלכם. הרמזים יגיעו לבד, ואפשר לשנות אחרי כל רמז.','Write your theory on your phone. The clues come by themselves, and you can change it after each one.')}</p>${W.ph==='ask'?`<div class="whyclk"><span>${ll('מתחילים…','Starting…')}</span></div>`:W.ph==='run'?`<div class="whyclk" id="whyclk"><b>${Math.ceil(whyT()-(Date.now()-W.t0)/1000)}</b><span>${ll('שניות','seconds')}</span></div>`:W.ph==='end'?`<div class="whyclk"><span>${ll('והתשובה האמיתית…','And the real answer…')}</span></div>`:''}
@@ -4295,7 +4486,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
     d={g:'mem',key:M.key,n:M.layout.length,cur:memCur(),end:M.end,tid:M.tid,flips:M.flips,matched:M.matched,faces,scores:M.scores,started:M.started,done:M.done,bonus:M.bonus}}
   else if(it?.id==='x-guess')d={g:'cg'};
   else if(S.lake&&it?.kind==='lake'){const L=S.lake;d={g:'lake',sid:L.sid,ph:L.phase==='q'?'q':L.phase==='done'?'done':'play',pick:false,end:L.phase==='q'?L.qEnd:0}}
-  else if(S.why&&it?.kind==='why')d={g:'why',ph:S.why.ph};
+  else if(S.why&&(it?.kind==='why'||it?.id==='s-lth'))d={g:'why',ph:S.why.ph};
   else if(S.bz&&it?.kind==='buzz')d={g:'buzz',ph:S.bz.ph,q:S.bz.q,plant:S.bz.plant};
   else if(S.ctr&&it?.id===S.ctr.id)d={g:'center',sid:S.ctr.sid};
   else if(S.pika&&it?.kind==='pika')d={g:'pika',ph:S.pika.ph,end:S.pika.end||0};
@@ -4309,7 +4500,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   if(d.g===null&&twMiniOn())d={g:null,hand:1};
   {const oi=SEQ.findIndex(x=>x.id==='o-friends');if(oi>=0&&POS<=oi){d.io=1;if(it?.id==='o-friends'&&S.ofr)d.iDone=ofrList().slice(0,S.ofr.i+1).map(p=>p.id)}}
   const k=JSON.stringify(d);if(k===S.gameKey)return;S.gameKey=k;S.db.doc('stage/game').set(d).catch(()=>{})}
-function gameIn(){if(!isScreen())return;pqIn();if(cur()?.kind==='buzz')bzPaint();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(cur()?.kind==='why')whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn();if(cur()?.id==='c-thinkers'&&S.cmt?.gm)glIn()}
+function gameIn(){if(!isScreen())return;pqIn();if(cur()?.kind==='buzz')bzPaint();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(whyCur())whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn();if(cur()?.id==='c-thinkers'&&S.cmt?.gm)glIn()}
 
 // ----- phone side -----
 function gameView(me){const G=S.game;if(G.g==='urge')return urgePhone(me);if(G.g==='town')return townPhone(me,G);if(G.g==='buzz')return buzzPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
@@ -4639,7 +4830,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
     if(CM.ph==='ask'){const sp=CM.sp[r];if(sp&&B.includes(sp.id))once('gld'+r+sp.id,S.fastOn?2500:7000,()=>put(sp.id,{['gld'+r]:Date.now()}))}
     if(CM.ph==='guess'){const sp=CM.sp[r];B.forEach(id=>{if(id!==sp?.id)once('gl'+r+id,1500+Math.random()*7000,()=>put(id,{['gl'+r]:Math.random()<.6&&sp?sp.k:brnd(['d','m','w'])}))})}}
   else if(CM&&it.kind==='cmt'&&CM.ph==='guess'){const r=CM.r,o=CM.ord[r];B.forEach(id=>once('cm'+r+id,1500+Math.random()*8000,()=>{const a=['d','m','w'];for(let i=2;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}put(id,{['cm'+r]:(Math.random()<.55?o:a).join('')})}))}
-  if(S.why&&it.kind==='why')B.forEach(id=>once('th'+id,1200+Math.random()*7000,()=>put(id,{th:brnd(WHY_BOTS())})));
+  if(S.why&&(it.kind==='why'||(it.id==='s-lth'&&S.why.ph==='run')))B.forEach(id=>once('th'+id,1200+Math.random()*7000,()=>put(id,{th:brnd(WHY_BOTS())})));
   // who's that type: guesses go through the real docs, like phones
   if(/^q-/.test(it.id)){const t=it.id.slice(2),n=Math.min(3,BUILD);if(n>0)B.forEach(id=>{if(S.guesses?.[id]?.[t])return;if(Math.random()<.15*n){const g=Math.random()<.2+.25*n?t:brnd(Object.keys(TYPE_HE));S.db.doc('stage/q-'+id).set({[t]:{g,n,at:now}},{merge:true}).catch(()=>{})}})}
   if(it.id==='x-guess')B.forEach(id=>{if(roster().find(p=>p.id===id)?.role==='self')return;once('cg'+id,1500+Math.random()*9000,()=>{const T=Object.keys(TYPE_HE);put(id,{cg:{t:[brnd(T),brnd(T)].filter((x,i,a)=>a.indexOf(x)===i),s:brnd(CG_ST),e:brnd(CG_EV)}})})});
