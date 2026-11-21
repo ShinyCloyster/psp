@@ -1287,7 +1287,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795281331';
+const BUILDV='1795282305';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3784,13 +3784,14 @@ function lsApply(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id);++C.run;clearI
     S.lsKey=null;lsWhyPaint()}
   scType(B[b].t,anim)}
 // the theories game inside the theory screen: the clock and clues in the panel; on the lake the newest theory as a bubble over its author,
-// a small speech mark over everyone else who wrote one; after the clock, everyone's theory in the panel
+// for 4.5 s, then it goes; after the clock, everyone's theory in the panel
+const LS_BUB=4500;
 function lsWhyPaint(){const W=S.why,st=$('#scst');if(!W||!st||cur()?.id!=='s-lth')return;const k=+st.dataset.k||0,pl=lkPpl().filter(p=>!isPresenter(p)),th=id=>String(S.gIn?.[id]?.th||'').trim();
-  W.ord=W.ord||[];W.seen=W.seen||{};pl.forEach(p=>{const t=th(p.id);if(t&&W.seen[p.id]!==t){W.seen[p.id]=t;W.ord=W.ord.filter(x=>x!==p.id);W.ord.push(p.id)}});
-  const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,last=W.ph==='run'?W.ord[W.ord.length-1]:null,nw=pl.filter(p=>th(p.id)).length;
+  W.ord=W.ord||[];W.seen=W.seen||{};pl.forEach(p=>{const t=th(p.id);if(t&&W.seen[p.id]!==t){W.seen[p.id]=t;W.ord=W.ord.filter(x=>x!==p.id);W.ord.push(p.id);W.lastAt=Date.now();clearTimeout(S.lsBubT);S.lsBubT=setTimeout(()=>{S.lsKey=null;lsWhyPaint()},LS_BUB+50)}});
+  const n=W.ph==='ask'?0:W.ph==='run'?(W.n||0):2,last=W.ph==='run'&&Date.now()-(W.lastAt||0)<LS_BUB?W.ord[W.ord.length-1]:null,nw=pl.filter(p=>th(p.id)).length;
   st.classList.toggle('cl1',n>=1&&k<3);st.classList.toggle('cl2',n>=2&&k<3);st.classList.toggle('rk',k===2);st.classList.toggle('glow',k>=3);
   const key=[k,W.ph,n,last,nw,...pl.map(p=>th(p.id))].join('|');if(S.lsKey===key)return;S.lsKey=key;
-  st.querySelectorAll('.lsp[data-p]').forEach(e=>{e.querySelector('.lsbub')?.remove();e.style.zIndex=e.dataset.z||(e.dataset.z=e.style.zIndex);const t=th(e.dataset.p);if(!t||W.ph==='ask')return;const big=e.dataset.p===last;e.insertAdjacentHTML('beforeend',big?`<i class="lsbub big"><small>${esc(person(e.dataset.p)?.name||'')}</small><span dir="auto">${esc(t)}</span></i>`:'<i class="lsbub mk">💬</i>');if(big)e.style.zIndex=9999});
+  st.querySelectorAll('.lsp[data-p]').forEach(e=>{e.querySelector('.lsbub')?.remove();e.style.zIndex=e.dataset.z||(e.dataset.z=e.style.zIndex);const t=th(e.dataset.p);if(!t||W.ph==='ask'||e.dataset.p!==last)return;const big=true;e.insertAdjacentHTML('beforeend',big?`<i class="lsbub big"><small>${esc(person(e.dataset.p)?.name||'')}</small><span dir="auto">${esc(t)}</span></i>`:'<i class="lsbub mk">💬</i>');if(big)e.style.zIndex=9999});
   const box=$('#lswhy');if(!box)return;
   if(k>=2){box.innerHTML='';return}
   const clk=W.ph==='run'?`<div class="lsclk" id="whyclk"><b>${Math.max(0,Math.ceil(whyT()-(Date.now()-W.t0)/1000))}</b><span>${ll('שניות','sec')}</span></div>`:'';
