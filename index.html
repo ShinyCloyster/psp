@@ -784,7 +784,11 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .scboard{position:absolute;top:44px;inset-inline-start:430px;inset-inline-end:70px;z-index:30;background:#FFFDF8;border:6px solid #2A2E45;border-radius:20px;box-shadow:inset 0 0 0 6px #FFFDF8,inset 0 0 0 10px #9FA7C7,0 10px 0 rgba(0,0,0,.35);padding:36px 56px 40px;display:flex;flex-direction:column;gap:12px}
 .scboard.off{display:none}.scboard.in{animation:svgrow .6s cubic-bezier(.2,.8,.3,1)}
 .scboard .sceb{font-size:22px;text-align:left}[dir=rtl] .scboard .sceb{text-align:right}.scboard h2{margin:0 0 8px;font:400 66px/1.1 var(--display);color:#161A2E;text-align:start}
-.scrb>div{flex-direction:row!important;gap:18px!important;margin-bottom:6px}.scrb img{width:64px!important;height:64px!important}
+.rtrack{display:flex;flex-direction:column;align-items:flex-start;gap:22px}.rtballs{display:flex;gap:26px}.rtballs img{width:104px;height:104px;object-fit:contain;image-rendering:pixelated}
+.rtballs img.off{opacity:.25;filter:grayscale(1)}.rtballs img.now{animation:glwob 1.6s ease-in-out infinite}
+.rtpath{display:flex;align-items:center;gap:12px;background:rgba(22,26,46,.1);border-radius:20px;padding:10px 20px}.rtpath img{object-fit:contain;image-rendering:pixelated}
+.rtpath .bd{width:54px;height:54px}.rtpath .tr{height:78px;width:58px}.rtpath .off{filter:brightness(0);opacity:.3}.rtpath i{width:3px;height:44px;border-radius:2px;background:rgba(22,26,46,.22);margin:0 4px}
+.scrb{margin-bottom:6px}.scrb .rtrack{gap:14px}.scrb .rtballs{gap:18px}.scrb .rtballs img{width:64px;height:64px}.scrb .rtpath{gap:9px;padding:8px 16px}.scrb .rtpath .bd{width:40px;height:40px}.scrb .rtpath .tr{height:58px;width:44px}.scrb .rtpath i{height:34px}
 .scrl{display:flex;flex-direction:column;gap:14px}
 .scri{display:flex;align-items:flex-start;gap:22px;opacity:0;transition:opacity .3s}.scri.on{opacity:1}.scri.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
 @keyframes scriin{from{opacity:0;transform:translateY(18px)}}
@@ -1192,7 +1196,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795258714';
+const BUILDV='1795259562';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2228,6 +2232,7 @@ function slideHTML(h){
     if(noT4()&&/המאמן ה-4|trainer 4|4th trainer/i.test(h)){const t=document.createElement('template');t.innerHTML=h;t.content.querySelectorAll('p').forEach(p=>{if(!/המאמן ה-4|trainer 4|4th trainer/i.test(p.textContent)||p.closest('section')?.id==='x-trainer-4')return;if(/ואז ההיכל|then the Hall/i.test(p.textContent)){p.textContent=ll('\u202bואז: היכל התהילה','Then: the Hall of Fame');return}const row=p.parentElement;if(row&&row.tagName==='DIV')row.style.display='none';else p.style.display='none'});h=t.innerHTML}
     if(noT4())h=h.split('שני מאמנים').join('מאמן אחד').split('two trainers').join('one trainer');
     if(S.qr){h=h.split('img/qr-app.webp').join(S.qr).split('סורקים, בוחרים שם, עונים').join('סורקים, או נכנסים עם הקוד '+ROOM.code).split('Scan, pick your name, answer').join('Scan, or join with the code '+ROOM.code)}}
+  if(h.includes('data-rtrack'))h=h.replace(/<div data-rtrack="(\d)"><\/div>/g,(m,k)=>roundTrack(+k));
   return h;
 }
 // who runs the evening; Oak calls them his grandchild. Set per room; the first evening (ERI1) was Shusho's
@@ -3401,6 +3406,15 @@ function svPaint(it,fresh){const cv=$('#cv'),V=svParts(it),st=S.sv.step,n=V.card
 const scOn=it=>it?.kind==='scene';
 // the evening's route on the FireRed Town Map (172 x 128 px, invite/img/townmap.png): city dots, the trainers' buildings, the Indigo Plateau
 const SC_M=5.5,SC_STOPS=[{x:44,y:93},{x:44,y:37,b:1},{x:123,y:29,b:2},{x:123,y:77,b:3},{x:138,y:78,t:1},{x:100,y:53,b:4},{x:107,y:102,b:5},{x:164,y:55,t:2},{x:123,y:53,b:6},{x:44,y:117,b:7},{x:53,y:119,t:3},{x:44,y:70,b:8},{x:28,y:30,goal:1}];
+// the round card's progress (x-round-k slides and the rd-k board): the 3 rounds as Poké Balls, then one strip of the journey in its real order:
+// badges and trainers, done in colour, still ahead in the dark (a skipped course or trainer is left out)
+function trImg(t){return ROOM.legacy||!ROOM.code?`img/tr-eri-${TR_KEYS[t-1]}.webp`:S.assets?.['tr-'+t]?.data||'img/tr-silhouette.webp'}
+function roundTrack(k){const sk=skipSet(),end=SC_STOPS.findIndex(s=>s.b===2*k);let last=0;
+  const balls=Array.from({length:NR},(_,i)=>`<img class="${i+1<k?'':i+1===k?'now':'off'}" src="img/it-poke-ball.webp" alt="">`).join('');
+  const path=scRoute().filter(s=>(s.b&&!sk.has('c'+s.b))||(s.t&&!sk.has('t'+s.t))).map(s=>{const done=SC_STOPS.indexOf(s)<=end,p=s.b?Math.ceil(s.b/2):0,
+      gap=s.b&&last&&p!==last?'<i></i>':'';if(s.b)last=p;
+      return gap+(s.b?`<img class="bd${done?'':' off'}" src="img/badge-${s.b}.webp" alt="">`:`<img class="tr${done?'':' off'}" src="${trImg(s.t)}" alt="">`)}).join('');
+  return `<div class="rtrack" dir="${EN?'ltr':'rtl'}"><div class="rtballs">${balls}</div><div class="rtpath">${path}</div></div>`}
 const SC_HOP=470;
 const scTrs=n=>ll(['','מאמן אחד','שני מאמנים','שלושה מאמנים'][n]||'',['','one trainer','two trainers','three trainers'][n]||'');
 const SC={
@@ -3491,7 +3505,7 @@ function scRoute(){return SC_STOPS.filter(s=>!s.t||SEQ.some(x=>x.id==='x-trainer
 function scSec(id){const i=S.slides.findIndex(s=>s.id===id);if(i<0)return null;const t=document.createElement('template');t.innerHTML=slideHTML(S.slides[i].html);return t.content.querySelector('section')}
 function scParts(cf){const P=scSec('x-part-'+cf.part),D=scSec(cf.div),bar=s=>s?.querySelector('div[style*="top:1022px"]')?.outerHTML||'';
   if(cf.rules){const R=scSec(cf.src),eb=(R?.querySelector('p')?.textContent||'').replace(/\u202b/g,'').trim(),ti=cf.title||(R?.querySelector('h1,h2')?.textContent||'').replace(/\u202b/g,'').trim();
-    const balls=cf.round?R?.querySelector('img[alt="it-poke-ball"]')?.parentElement?.outerHTML||'':'';
+    const balls=cf.round?R?.querySelector('.rtrack')?.outerHTML||'':'';
     return {rules:1,bar0:bar(scSec(cf.bar)),bar1:'',lect:P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp',
       board:`<div class="scboard off" id="scboard"><p class="sceb" dir="ltr">${esc(eb)}</p><h2>${esc(ti)}</h2>${balls?`<div class="scrb">${balls}</div>`:''}<div class="scrl">${cf.items().map(([k,t,x,c],i)=>`<div class="scri${c?' '+c:''}" data-i="${i}"><b>${esc(k)}</b><span>${esc(t)}${x||''}</span></div>`).join('')}</div></div>`}}
   if(cf.mid){const v=cf.vis?.(D),b=D?.querySelector('img[src*="badge-"]');return {mid:1,eb:`PSP·0${cf.course} · ${(b?.getAttribute('alt')||'').toUpperCase()}`,ti:(D?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim(),
