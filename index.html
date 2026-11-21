@@ -1176,7 +1176,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795255109';
+const BUILDV='1795255577';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3382,11 +3382,10 @@ const SC={
       ['zoom','בחלק הזה: איפה כל אחד חזק, ואיך אנשים משתנים.','In this part: where each person is strong, and how people change.'],
       ['tile','נתחיל בשישה הסטטים: כמה אתה סופג, איך אתה דוחף, ממה אתה מוגן ובאיזה קצב אתה זז.','We start with the six stats: how much you absorb, how you push, what protects you, and how fast you move.']]},
   // the second course of parts 2-4 (after the trainer): the gym's sign instead of the dark divider slide
-  'cd-4':{mid:1,part:2,course:4,town:'celadon',drop:['c-divider'],div:'c-divider',prev:'s-divider',vis:s=>s?.querySelector('img[src*="th-durkheim"]')?.parentElement,
+  'cd-4':{mid:1,part:2,course:4,town:'celadon',drop:['c-divider'],div:'c-divider',prev:'s-divider',gymBack:1,
     lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג הרביעי.`,`Welcome to ${town}! The fourth badge is waiting here.`],
       ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
-      ['tile','גם אבות הסוציולוגיה הרכיבו משקפיים, וכל אחד צודק במשהו ומפספס משהו.','The fathers of sociology wore glasses too, and each got something right and missed something.'],
-      [0,'ופוקימון? המיון המפורט ביותר שיש לנו.','And Pokémon? The most detailed sorting we have.']]},
+      ['tile','אבל קודם, שאלה קטנה אליכם.','But first, a little question for you.']]},
   'cd-6':{mid:1,part:3,course:6,town:'saffron',drop:['f-divider-2'],div:'f-divider-2',prev:'f-divider',vis:s=>s?.querySelector('img[src*="img/t-"]')?.parentElement,
     lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג השישי.`,`Welcome to ${town}! The sixth badge is waiting here.`],
       ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
@@ -3427,7 +3426,7 @@ SC['cu-4']={rules:1,part:2,drop:['c-urge'],src:'c-urge',bar:'c-urge',label:['ה�
   lines:()=>[['gym','מה המזל שלכם? בחרו בטלפון.',"What's your star sign? Pick it on your phone."],
     [0,'ומאיזה בית אתם בהוגוורטס?','And which Hogwarts house are you in?'],
     [0,'הרצון לסדר אנשים בטיפוסים הוא בעצמו תופעה חברתית.','The urge to sort people into types is itself a social phenomenon.'],
-    [0,'גם אבות הסוציולוגיה עשו את זה, כל אחד בדרך שלו.','The founders of sociology did it too, each in their own way.']]};
+    [0,'גם אבות הסוציולוגיה הרכיבו משקפיים, וכל אחד צודק במשהו ומפספס משהו.','The fathers of sociology wore glasses too, and each got something right and missed something.']]};
 for(let k=1;k<=NR;k++){const last=k===NR,min=()=>PLAN.find(p=>p[3]==='x-round-'+k)?.[2]||9,ord=[['הראשון','one'],['השני','two'],['השלישי והאחרון','three, the last one']][k-1]||[k,k];
   SC['rd-'+k]={rules:1,part:k,round:k,before:'x-round-'+k,src:'x-round-'+k,bar:'x-round-'+k,wild:1,
     items:()=>[['50',ll('כ-50 שאלות · סט אקראי לכל אחד','About 50 questions · a random set each')],['?',ll('תמיד אפשר לענות ״לא יודע״','"Don\'t know" is always allowed')],
@@ -3483,7 +3482,7 @@ function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack
 function scApplyMid(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run;clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),sign=$('#scsign'),vis=$('#scvis'),mini=$('#twmini');if(!g)return;
   const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','sign','tile'].indexOf(st);
-  g.classList.toggle('gone',lv>=1);$('#scnm').classList.toggle('gone',lv>=1);mini.classList.toggle('off',lv<1);
+  const gb=lv>=2&&cf.gymBack;g.classList.toggle('gone',lv>=1&&!gb);$('#scnm').classList.toggle('gone',lv>=1&&!gb);mini.classList.toggle('off',lv<1||gb);
   sign.classList.remove('in','scflying');sign.style.transform='';sign.style.display='';sign.classList.toggle('off',lv!==1&&!(lv===2&&stepIn));if(lv===1&&stepIn){sign.classList.add('in');sfx('sfx-tink',.5)}
   $('#scbar0').style.display=lv>=2?'none':'';$('#scbar1').style.display=lv>=2?'':'none';
   if(vis){vis.classList.remove('in');vis.style.display=lv>=2&&!stepIn?'':'none'}
