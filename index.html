@@ -46,7 +46,7 @@ function hostLogin(){
 }
 </script>
 <title>PSP · היכל התהילה</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Secular+One&family=Press+Start+2P&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Secular+One&family=Press+Start+2P&family=Roboto+Condensed:ital,wght@0,500;0,700;0,800;1,700&display=swap">
 <style>
 /* Layout: phone = one centered column; screen = a 1920×1080 canvas scaled to the display, running the deck, live snapshots and the Hall of Fame. Single dark look matching the deck. */
 :root{
@@ -567,6 +567,57 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pq3{right:70px;top:215px;width:620px;align-items:center;gap:6px}.pq3r{display:flex;flex-direction:row-reverse;align-items:center;gap:8px}.en .pq3{right:auto;left:70px}.en .pq3r,.en .pq3l{flex-direction:row}
 .pq3l{display:flex;flex-direction:row-reverse;justify-content:space-between;width:560px;font:700 20px var(--body);color:var(--mist);margin-top:-2px}.pq3l span{width:240px;text-align:center}
 .pqmid{width:66px;height:66px;flex:none;display:grid;place-items:center;font:400 60px var(--display);color:#F2C94C;image-rendering:pixelated;object-fit:contain;animation:pqar .5s ease-out}.pqmid.q{animation:none;opacity:.85}
+/* round 76: Pokémon-style character cards (cards.json, pkCard/pkFlip). Sized by the font: font-size = card width / 34, everything in em */
+.pkf{position:relative;flex:none;perspective:1800px;isolation:isolate}
+.pkin{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.3,.75,.3,1)}
+.pkfr,.pkbk{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.pkbk{transform:rotateY(180deg)}.pkbk img{display:block;width:100%;height:100%;filter:drop-shadow(0 .5em 1.2em rgba(0,0,0,.45))}
+.pkf.fl .pkin{transform:rotateY(180deg)}.pkf.fl[data-b=show] .pkin{transform:none}
+.canvas .pkf[data-b=hide]{opacity:1!important;transform:none!important}
+.pkf.ft .pkin{animation:pkflip .65s cubic-bezier(.3,.75,.3,1) both;animation-delay:var(--d,0ms)}
+@keyframes pkflip{from{transform:rotateY(180deg)}to{transform:none}}
+.pkglow{position:absolute;inset:0;border-radius:4.2%;pointer-events:none;z-index:2;transition:opacity 1s ease-out!important;
+  box-shadow:0 0 1.6em .5em var(--tc),0 0 4em 1.4em color-mix(in srgb,var(--tc) 55%,transparent),inset 0 0 2.2em .4em color-mix(in srgb,var(--tc) 70%,transparent);
+  background:linear-gradient(180deg,transparent 35%,color-mix(in srgb,var(--tc) 22%,transparent));animation:pkglow 2.4s ease-in-out infinite alternate}
+.pkglow[data-b=hide]{animation:none}
+@keyframes pkglow{from{filter:brightness(1)}to{filter:brightness(1.35)}}
+.pkc{direction:ltr;text-align:left;width:100%;background:linear-gradient(145deg,#ffe57a,#f3cf3b 40%,#c99a12);border-radius:1.4em;padding:.75em;box-sizing:border-box;
+  box-shadow:0 .6em 1.6em rgba(0,0,0,.4),inset 0 0 0 .12em rgba(255,255,255,.5);position:relative}
+.pkc *{box-sizing:border-box;margin:0}
+.pkface{border-radius:.8em;overflow:hidden;padding:.55em .7em .6em;display:flex;flex-direction:column;gap:.45em;color:var(--ink);
+  background:radial-gradient(circle at 20% 0%,rgba(255,255,255,.35),transparent 55%),repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 .35em,transparent .35em .7em),linear-gradient(170deg,var(--f1),var(--f2) 55%,var(--f3))}
+.pktop{display:flex;align-items:center;gap:.5em;height:2.6em}
+.pkcat{width:2.3em;height:2.3em;flex:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--i1),var(--i2) 75%);box-shadow:0 0 0 .14em #fff,0 .1em .25em rgba(0,0,0,.35);display:grid;place-items:center}
+.pkcat svg{width:64%;height:64%}
+.pkname{font:800 2em/1 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pkhp{font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-weight:800;display:flex;align-items:baseline;gap:.15em;flex:none}
+.pkhp small{font-size:.95em;font-weight:700}.pkhp b{font-size:2.3em;line-height:1;color:var(--hpc);text-shadow:0 .04em 0 rgba(255,255,255,.35)}
+.pkpic{position:relative;aspect-ratio:597/540;border-radius:.2em;overflow:hidden;padding:.28em;box-shadow:0 .15em .4em rgba(0,0,0,.35);
+  background:linear-gradient(135deg,#f4f5f7,#a9aeb6 30%,#ffffff 50%,#8d929b 75%,#e3e5e9)}
+.pkpic img{display:block;width:100%;height:100%;object-fit:cover;border-radius:.1em}
+.pkstrip{position:relative;z-index:1;margin:-.28em -.45em 0 -.25em;height:1.55em;display:flex;align-items:center;justify-content:center;padding-right:1.2em;
+  background:linear-gradient(180deg,#ffffff 0%,#e6e8ec 35%,#b7bcc4 70%,#8f949c 100%);clip-path:polygon(0 0,100% 0,100% 8%,96.5% 100%,.8% 100%,0 60%);
+  font:500 .85em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.02em;color:#2f333a;white-space:nowrap}
+.pkatk{display:flex;align-items:center;gap:.55em;height:2.4em;padding-inline:.15em}
+.pkcost{display:flex;gap:.32em;flex:none}
+.pknrg{width:1.6em;height:1.6em;border-radius:50%;box-shadow:0 .08em .18em rgba(0,0,0,.4)}
+.pknrg.pkcat{box-shadow:0 0 0 .1em #fff,0 .08em .18em rgba(0,0,0,.4)}
+.pkcl{background:radial-gradient(circle at 35% 30%,#fff,#ddd 55%,#a9a9a9)}
+.pkcl::after{content:"";display:block;width:100%;height:100%;background:no-repeat center/60% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 1l2.2 6.2L19 7.6l-5.3 4.1L15.6 19 10 15.1 4.4 19l1.9-7.3L1 7.6l6.8-.4z' fill='%23fff' stroke='%23999' stroke-width='1.4'/%3E%3C/svg%3E")}
+.pkan{font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-weight:800;letter-spacing:.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden}
+.pkdmg{font:800 2em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;flex:none}
+.pkrule{height:.12em;background:currentColor;opacity:.28;border-radius:1em;margin-inline:.15em}
+.pkret{display:flex;align-items:center;gap:.4em;padding-inline:.15em;height:1.4em}
+.pkret span{font:700 .95em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.04em}
+.pkret .pknrg{width:1.15em;height:1.15em}.pkret .pknone{font-weight:500;opacity:.7}
+.pkpre{position:absolute;z-index:2;top:.2em;left:.2em;width:3.9em;height:3.9em;border-radius:50%;padding:.22em;background:linear-gradient(135deg,#ffffff,#a9aeb6 35%,#f4f5f7 55%,#8d929b);box-shadow:0 .1em .3em rgba(0,0,0,.45)}
+.pkpre img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}
+.pkc.evo .pktop{padding-left:3.35em}
+.pknm{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.12em}.pkc.evo .pkname{font-size:1.55em;flex:none}
+.pkstg{display:flex;align-items:center;gap:.4em;white-space:nowrap;overflow:hidden;font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-size:.72em;line-height:1}
+.pkstg b{font-weight:800;font-style:italic;padding:.12em .45em .1em;border-radius:.2em;color:#2f333a;background:linear-gradient(180deg,#fff,#c9cdd3);letter-spacing:.03em}
+.pkstg i{font-weight:700;opacity:.9;overflow:hidden;text-overflow:ellipsis}
+.pq3k{gap:10px}.pq3it{height:70px;display:flex;align-items:center;justify-content:center}.pq3it .pqmid{width:70px;height:70px}
 .pqfl{position:absolute;left:10%;top:10%;width:80%;height:80%;border-radius:50%;background:#fff;box-shadow:0 0 40px 20px #fff;opacity:0;pointer-events:none;animation:evoflash 1.4s ease-out}@keyframes evoflash{0%{opacity:0}30%{opacity:1}55%{opacity:1}100%{opacity:0}}.en .pqti.pqti2{font-size:44px;max-width:560px}.pqname{font-family:var(--display);font-size:50px;line-height:1.1;text-align:center}
 .pqh{display:flex;flex-direction:column;gap:10px;width:100%}.pqh p{font-size:27px;line-height:1.38;text-align:center;color:#C9CCE0;opacity:0;transform:translateY(8px);transition:all .5s}.pqh p.on{opacity:1;transform:none}
 .pqopts{position:absolute;left:70px;top:320px;width:1060px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;direction:rtl}
@@ -1300,7 +1351,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795285298';
+const BUILDV='1795298871';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2745,18 +2796,23 @@ function slideMusic(id){
   if(id==='closing')return music('mus-ending',{vol:.35});
   music(null)}
 // characters come up by themselves: 12 s for the first, 10 for the second, 8 for the third; the host can also move on by hand
-const QD=[10,9,8],qDur=()=>QD[Math.max(0,Math.min(2,BUILD-1))];
+const QD=[10,9,8],qDur=()=>{const d=QD[Math.max(0,Math.min(2,BUILD-1))];return S.qAuto?.all?Math.min(Q_ALL,d):d};
+// round 76: everyone answered -> 4 s for the running character and each one after it
+const Q_ALL=4;function qAllIn(){const it=cur();if(!S.qAuto||S.qAuto.all||!/^q-/.test(it?.id||''))return;const t=it.id.slice(2),pl=inRoom().filter(p=>!isPresenter(p)),G=S.guesses||{};
+  if(!pl.length||!pl.every(p=>G[p.id]?.[t]))return;S.qAuto.all=1;if(S.qAuto.next-Date.now()>Q_ALL*1000){S.qAuto.next=Date.now()+Q_ALL*1000;S.qAuto.len=Q_ALL;quizSync()}}
+// the slide opens on three face-down cards; a second later the first one flips by itself and its clock starts
+function qCardsGo(){const k0=POS,it=cur();if(!/^q-/.test(it?.id||'')||!$('#cv .pkf.fl'))return;setTimeout(()=>{if(POS!==k0||BUILD!==0||cur()!==it)return;BUILD=1;applyBuilds();sfx('sfx-flip',.8);qAutoStart();quizSync()},1000)}
 function qAutoStop(){clearInterval(S.qT);S.qAuto=null;$('#qclock')?.remove()}
 function qPlaceClock(){const el=$('#qclock'),cv=$('#cv');if(!el||!cv)return;const t=[...cv.querySelectorAll('div[data-build-in]')].find(e=>(e.getAttribute('data-build-in')||'').split(' ')[1]===String(BUILD));if(!t)return;
-  const cr=cv.getBoundingClientRect(),k=cr.width/1920||1,r=t.getBoundingClientRect();el.style.left=Math.round((r.right-cr.left)/k-100)+'px';el.style.top=Math.round((r.top-cr.top)/k-55)+'px'}
+  const cr=cv.getBoundingClientRect(),k=cr.width/1920||1,r=t.getBoundingClientRect();if(t.classList.contains('pkf')){el.style.left=Math.round((r.left-cr.left)/k-170)+'px';el.style.top=Math.round((r.top-cr.top)/k+60)+'px';return}el.style.left=Math.round((r.right-cr.left)/k-100)+'px';el.style.top=Math.round((r.top-cr.top)/k-55)+'px'}
 function qAdvance(){const n=buildOrders().length;if(!S.qAuto)return;
-  if(BUILD<3){BUILD++;applyBuilds();S.qAuto.next=Date.now()+qDur()*1000;S.qAuto.len=qDur();qPlaceClock();quizSync()}
+  if(BUILD<3){BUILD++;applyBuilds();if($('#cv .pkf.fl'))sfx('sfx-flip',.8);S.qAuto.next=Date.now()+qDur()*1000;S.qAuto.len=qDur();qPlaceClock();quizSync()}
   else{BUILD=n;applyBuilds();qAutoStop();sfx('sfx-dex-page-added');quizSync()}}
-function qAutoStart(){qAutoStop();S.qAuto={pos:POS,next:Date.now()+qDur()*1000,len:qDur()};
+function qAutoStart(){qAutoStop();S.qAuto={pos:POS,next:Date.now()+QD[0]*1000,len:QD[0]};
   $('#cv').insertAdjacentHTML('beforeend','<div id="qclock" class="qclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf" pathLength="100"/></svg><b></b><span></span></div>');
   qPlaceClock();
   S.qT=setInterval(()=>{const it=cur();if(!S.qAuto||POS!==S.qAuto.pos||!/^q-/.test(it?.id||'')){qAutoStop();return}
-    const left=(S.qAuto.next-Date.now())/1000,el=$('#qclock');
+    qAllIn();const left=(S.qAuto.next-Date.now())/1000,el=$('#qclock');
     if(el){el.querySelector('b').textContent=Math.max(0,Math.ceil(left));el.querySelector('.qcf').style.strokeDashoffset=100-Math.max(0,left)/(S.qAuto.len||12)*100;el.querySelector('span').textContent=BUILD<3?ll('הדמות הבאה','next character'):ll('חשיפה','reveal')}
     if(left<=0)qAdvance()},200)}
 function quizTypes(){return SEQ.filter(x=>/^q-/.test(x.id)).map(x=>x.id.slice(2))}
@@ -2836,7 +2892,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style
     if(PQ[it.id]||PQ_ROUND(it.id))pqEnter(it.id);
     if(it.id==='x-guess')cgScreen();
     sumApply(it.id);pqNum(it.id);
-    breakFacts(it.id);leagueOnBreak(it.id);qAutoStop();
+    breakFacts(it.id);leagueOnBreak(it.id);qAutoStop();if(!atEnd)qCardsGo();
     slideMusic(it.id);
     if(it.id==='cover')twCover();
     if(it.id==='o-friends')ofrEnter();
@@ -2867,7 +2923,7 @@ function go(d){
     if(d>0&&it.id==='c-thinkers'&&S.cmt?.ph==='pick'&&S.cmt.at==='th'){glHold();return}
     if(it.id==='c-thinkers')setTimeout(gamePub,0);
     if(/^q-/.test(it.id)&&S.qAuto&&d>0&&BUILD<n){qAdvance();return}
-    if(d>0&&BUILD<n){BUILD++;applyBuilds();if(/^q-/.test(it.id)&&BUILD===1)qAutoStart();quizSync();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
+    if(d>0&&BUILD<n){BUILD++;applyBuilds();if(/^q-/.test(it.id)&&BUILD===1){qAutoStart();if($('#cv .pkf.fl'))sfx('sfx-flip',.8)}quizSync();if(it.id.startsWith('q-')&&BUILD===n)sfx('sfx-dex-page-added');return}
     if(d<0&&BUILD>0){qAutoStop();BUILD--;applyBuilds();quizSync();return}
   }
   if(it.kind==='hof'){ if(hofStep(d))return; }
@@ -4644,18 +4700,34 @@ function pqItem(){const Q=S.pq;return PQ[Q.key].items[Q.ord[Q.i]]}
 // ---- CASTING (round 43): the characters of the types, stats and evolution games come from the room's cast.
 // cast.json (app/cast_build.py, from the sheet's "ליהוק" tab): worlds, dims {key:[kind,en,he,seats]}, chars {id:{w,n,f,s}}, rows [id,dim,P|S,score,why he,why en], def = the cast of all worlds.
 // A room's own cast: setup/<code>~asset-cast {worlds, seats:{dim:[ids]}}, made in the Lab's casting tab. ERI1 keeps its fixed slides.
-let CAST=null,CAST_P=null;
-function castLoad(){if(CAST)return Promise.resolve(CAST);return CAST_P||(CAST_P=fetch('cast.json?v='+BUILDV).then(r=>r.json()).then(d=>(CAST=d)).catch(()=>{CAST_P=null;return null}))}
+let CAST=null,CAST_P=null,CARDS=null;
+function castLoad(){if(CAST)return Promise.resolve(CAST);return CAST_P||(CAST_P=Promise.all([fetch('cast.json?v='+BUILDV).then(r=>r.json()),fetch('cards.json?v='+BUILDV).then(r=>r.json()).catch(()=>null)]).then(([d,c])=>{CARDS=c;return (CAST=d)}).catch(()=>{CAST_P=null;return null}))}
 const CAST_FR={bug:'bug-hiccup',dark:'dark-catwoman',dragon:'dragon-simba',electric:'electric-genie',fairy:'fairy-leia',fighting:'fighting-mulan',fire:'fire-freddie',flying:'flying-moana',ghost:'ghost-snape',
  grass:'grass-hagrid',ground:'ground-gimli',ice:'ice-elsa',normal:'normal-samwise',poison:'poison-house',psychic:'psychic-luna',rock:'rock-carl',steel:'steel-monica',water:'water-obiwan'};
 const castRow=(id,dim)=>CAST?.rows.find(r=>r[0]===id&&r[1]===dim);
 function castSeats(){if(!CAST||ROOM.legacy)return null;return S.assets?.cast?.seats||CAST.def}
 // a card = the old frame picture with the round photo on top (frame: n-* neutral, c-<type>-* in the type's colour)
 function castCard(id,frame,st,attrs){return `<div class="chc" ${attrs||''} style="position:relative;${st||''}"><img src="img/${frame}.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"><img src="img/ch/${id}.webp" alt="${esc(LL(CAST.chars[id]?.n||['','']))}" style="position:absolute;left:11.4%;top:11.4%;width:77.2%;height:77.2%;border-radius:50%"></div>`}
+// round 76: Pokémon-style cards (app/cards_build.py -> cards.json: the world = the card's "type": colours + icon; HP, attack, damage per character).
+// pkFlip wraps a card with the card back (img/card-back.webp): opt.w width px; opt.fl = flipped by a build (data-build-in="flip N" in opt.attrs);
+// opt.d = flips by itself after d ms (negative = already flipped); opt.tc = the type colour of the reveal glow (opt.glow = its build attrs).
+const pkOK=id=>!!(CARDS?.chars?.[id]&&CARDS.worlds?.[CARDS.chars[id].w]);
+function pkVars(w){const p=CARDS.worlds[w];return `--f1:${p.f[0]};--f2:${p.f[1]};--f3:${p.f[2]};--ink:${p.ink};--hpc:${p.hp};--i1:${p.ic[0]};--i2:${p.ic[1]}`}
+function pkIcon(w,cls){return `<i class="pkcat ${cls||''}"><svg viewBox="0 0 24 24" aria-hidden="true">${CARDS.worlds[w].svg}</svg></i>`}
+function pkCard(id){const c=CARDS.chars[id],w=c.w,p=CARDS.worlds[w],an=c.atk,fs=an.length>16?1.3:an.length>13?1.5:1.75;
+  const nm=c.evo?`<div class="pknm"><div class="pkname">${esc(c.en)}</div><div class="pkstg"><b>STAGE 1</b><i>Evolves from ${esc(c.evo)}</i></div></div>`:`<div class="pkname">${esc(c.en)}</div>`;
+  return `<div class="pkc${c.evo?' evo':''}" style="${pkVars(w)}" dir="ltr">${c.pre?`<div class="pkpre"><img src="img/ch/${c.pre}.webp" alt=""></div>`:''}<div class="pkface">
+   <div class="pktop">${nm}<div class="pkhp"><small>HP</small><b>${c.hp}</b></div>${pkIcon(w)}</div>
+   <div class="pkpic"><img src="img/card/${id}.webp" alt="${esc(c.en)}"></div><div class="pkstrip">${esc(p.en)} Character</div>
+   <div class="pkatk"><div class="pkcost">${pkIcon(w,'pknrg').repeat(c.cost[0])}${'<i class="pknrg pkcl"></i>'.repeat(c.cost[1])}</div><div class="pkan" style="font-size:${fs}em">${esc(an)}</div><div class="pkdmg">${c.dmg}</div></div>
+   <div class="pkrule"></div><div class="pkret"><span>RETREAT</span>${c.ret?'<i class="pknrg pkcl"></i>'.repeat(c.ret):'<span class="pknone">—</span>'}</div></div></div>`}
+function pkFlip(id,o){o=o||{};const w=o.w||300,h=Math.round(w*1.1963),cls=o.fl?' fl':o.d!=null?' ft':'';
+  return `<div class="pkf${cls}" ${o.attrs||''} style="width:${w}px;height:${h}px;font-size:${(w/34).toFixed(3)}px;${o.d!=null?`--d:${Math.round(o.d)}ms;`:''}${o.st||''}"><div class="pkin"><div class="pkfr">${pkCard(id)}</div><div class="pkbk"><img src="img/card-back.webp" alt=""></div></div>${o.tc?`<i class="pkglow" ${o.glow||''} style="--tc:${o.tc}"></i>`:''}${o.extra||''}</div>`}
 // q-<type>: swap the three characters (photo, name, the line of the row they were cast through) for the room's
 function castQ(h,t){const ids=castSeats()?.[t];if(!ids||ids.filter(Boolean).length<3||!CAST_FR[t])return h;let i=0;
   return h.replace(/<div data-build-in="rise (\d)"([^>]*)>\s*<img src="img\/n-[a-z]+-[a-z]+\.webp"[^>]*>\s*<p([^>]*)>[^<]*<\/p>\s*<p([^>]*)>[^<]*<\/p>\s*<\/div>\s*<img data-build-in="fade 5" src="img\/c-[a-z]+-[a-z]+\.webp"[^>]*style="([^"]*)">/g,(m,k,a,p1,p2,st)=>{
     const id=ids[i++];if(!id||!CAST.chars[id])return m;const r=castRow(id,t)||[],why=LL([r[4]||'',r[5]||'']),rl=EN?'':'‫',small=why.length>80?'font-size:23px;':why.length>52?'font-size:26px;':'';
+    if(pkOK(id))return `<div${a}>${pkFlip(id,{w:320,st:'margin-top:24px',fl:true,attrs:`data-build-in="flip ${k}"`,tc:TYPE_COL[t],glow:'data-build-in="fade 5"'})}<div data-build-in="rise ${k}" style="display:flex;flex-direction:column;align-items:center;gap:10px"><p${p1}>${rl}${esc(LL(CAST.chars[id].n))}</p><p${p2.replace('style="','style="'+small)}>${rl}${esc(why)}</p></div></div>`;
     return `<div data-build-in="rise ${k}"${a}>${castCard(id,'n-water-obiwan','width:420px;height:420px;flex:none')}<p${p1}>${rl}${esc(LL(CAST.chars[id].n))}</p><p${p2.replace('style="','style="'+small)}>${rl}${esc(why)}</p></div>${castCard(id,'c-'+CAST_FR[t],st,'data-build-in="fade 5"')}`})}
 // stats and evolution quizzes: the item of each round takes the character in that seat (stats: the high pole for now)
 const PQ_ORIG={};
@@ -4672,15 +4744,18 @@ function castApplyPQ(){const seats=castSeats();Object.entries({'pq-stats':k=>k+'
     const id=ok(hi)?hi:ok(lo)?lo:null;if(!id)return;const d=id===hi?dk(it.k):it.k+'-';Object.assign(it,{cid:id,n:CAST.chars[id].n,h:[why(id,d)]})})})}
 // evolution (round 46): before ? after; at the reveal the "?" becomes the way's item and the after picture flashes like an evolution.
 // Everstone: one card while guessing, then "before = after". No before/after pictures: one card as before.
-function pqEvoHTML(it,rev,anim){if(!it.cid||!CAST?.chars[it.cid])return '';const C=CAST.chars[it.cid],ev=C.ev||(it.k==='none'&&rev?[it.cid,it.cid]:null);if(!ev)return '';
+function pqEvoHTML(it,rev,anim){if(!it.cid||!CAST?.chars[it.cid])return '';if(pkOK(pqCardId(it))){const C=CAST.chars[it.cid],o=pqOpt('evo',it.k);
+    const mid=rev?(it.k==='none'?'<b class="pqmid">=</b>':`<img class="pqmid" src="img/${o[3]}.webp" alt="">`):'<b class="pqmid q">?</b>';
+    return `<div class="pqfig pq3 pq3k">${pkFlip(pqCardId(it),{w:350,d:(S.pq?.flipAt||0)-Date.now(),extra:rev&&anim?'<i class="pqfl"></i>':''})}<div class="pq3it">${mid}</div><p class="pq2n">${esc(LL(C.n))}</p><p class="pq2w">${esc(LL(it.h?.[0]||['','']))}</p></div>`}
+  const C=CAST.chars[it.cid],ev=C.ev||(it.k==='none'&&rev?[it.cid,it.cid]:null);if(!ev)return '';
   const o=pqOpt('evo',it.k),mid=rev?(it.k==='none'?'<b class="pqmid">=</b>':`<img class="pqmid" src="img/${o[3]}.webp" alt="">`):'<b class="pqmid q">?</b>';
   const card=(img,fl)=>`<div class="pq3c" style="position:relative;width:240px;height:240px;flex:none"><img src="img/n-pq-mandela.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%"><img src="img/ch/${img}.webp" alt="" style="position:absolute;left:11.4%;top:11.4%;width:77.2%;height:77.2%;border-radius:50%">${fl&&anim?'<i class="pqfl"></i>':''}</div>`;
   return `<div class="pqfig pq3"><div class="pq3r">${card(ev[0],0)}${mid}${card(ev[1],1)}</div><div class="pq3l"><span>${ll('לפני','Before')}</span><span>${ll('אחרי','After')}</span></div><p class="pq2n">${esc(LL(C.n))}</p><p class="pq2w">${esc(LL(it.h?.[0]||['','']))}</p></div>`}
 // which card stands on which side: random once per stat on the screen, so the high one isn't always first
 function pqPairHTML(it,rev){S.pqSide=S.pqSide||{};if(S.pqSide[it.k]==null)S.pqSide[it.k]=Math.random()<.5?0:1;const P=S.pqSide[it.k]?it.pair:[it.pair[1],it.pair[0]];
-  return `<div class="pqfig pq2">${P.map(([id,w,up])=>`<div class="pq2c">${rev?`<span class="pqar ${up?'up':'dn'}">${up?'▲ '+ll('גבוה','High'):'▼ '+ll('נמוך','Low')}</span>`:''}${castCard(id,'n-pq-mandela','width:250px;height:250px')}
+  return `<div class="pqfig pq2">${P.map(([id,w,up],j)=>`<div class="pq2c">${rev?`<span class="pqar ${up?'up':'dn'}">${up?'▲ '+ll('גבוה','High'):'▼ '+ll('נמוך','Low')}</span>`:''}${pkOK(id)?pkFlip(id,{w:280,d:(S.pq?.flipAt||0)-Date.now()+j*500}):castCard(id,'n-pq-mandela','width:250px;height:250px')}
     <p class="pq2n">${esc(LL(CAST.chars[id].n))}</p><p class="pq2w">${esc(LL(w))}</p>${rev?`<p class="pq2p ${up?'up':'dn'}">${esc(LL(PQ_POLE[it.k][up?0:1]))}</p>`:''}</div>`).join('')}</div>`}
-function pqImgHTML(it,rev){return it.cid&&CAST?castCard(it.cid,'n-pq-'+(PQ_ORIG['pq-stats']?.[0]?.img||'mandela'),'width:400px;height:400px','class="pqimg"'):`<img src="img/${rev?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg">`}
+function pqImgHTML(it,rev){if(it.cid&&CAST&&pkOK(it.cid))return pkFlip(it.cid,{w:330,d:(S.pq?.flipAt||0)-Date.now(),attrs:'class="pqimg"'});return it.cid&&CAST?castCard(it.cid,'n-pq-'+(PQ_ORIG['pq-stats']?.[0]?.img||'mandela'),'width:400px;height:400px','class="pqimg"'):`<img src="img/${rev?'c':'n'}-pq-${it.img}.webp" alt="" class="pqimg">`}
 // the automatic casting (same as app/cast_solve.py): min-cost flow. Every seat filled if at all possible, then the highest scores,
 // primary before secondary on a tie, 5 and under only as a last resort, each character once, at most 2 per animated-sitcom show.
 function castSolve(worlds){const W=new Set(worlds),C=CAST.chars,rows=CAST.rows.filter(r=>W.has(C[r[0]]?.w));
@@ -4702,10 +4777,13 @@ function castSolve(worlds){const W=new Set(worlds),C=CAST.chars,rows=CAST.rows.f
 function pqOpen(){const Q=S.pq,P=PQ[Q.key];return PQ_OPT[P.set].map(o=>o[0])}
 // one 15-second window with all the text showing: the first third is an Ultra Ball, the next a Great Ball, the last a Poké Ball
 let PQ_T=15;const pqBall=Q=>{const e=(Date.now()-Q.t0)/1000;return e<PQ_T/3?1:e<PQ_T*2/3?2:3};
-function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];Q.t0=Date.now();Q.end=Q.t0+PQ_T*1000;Q.at={};pqPaint();gamePub();pqClock()}
+function pqRound(){const Q=S.pq;Q.stage=1;Q.revealed=false;Q.got=[];const it=pqItem(),cards=it.cid&&pkOK(pqCardId(it));Q.flipAt=Date.now()+(cards?1000:0);
+  Q.t0=Date.now()+(cards?(it.pair?1700:1250):0);Q.end=Q.t0+PQ_T*1000;Q.at={};pqPaint();gamePub();pqClock();if(cards){const k=Q.i;[0,it.pair?500:-1].forEach(t=>t>=0&&setTimeout(()=>{if(S.pq===Q&&Q.i===k&&!Q.revealed)sfx('sfx-flip',.8)},1000+t))}}
+// the card a stats/evolution item shows (evolution with a before/after pair: the after card, the before in its corner circle)
+function pqCardId(it){const ev=CAST?.chars[it.cid]?.ev;return ev&&pkOK(ev[1])?ev[1]:it.cid}
 function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.slide){clearInterval(S.pqT);return}
   if(!Q.revealed&&!Q.done){const n=pqBall(Q);if(n!==Q.stage){Q.stage=n;sfx('sfx-tink');gamePub()}
-    const el=$('#pqclock');if(el){const l=Math.max(0,(Q.end-Date.now())/1000);el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/PQ_T*100;el.querySelector('span').innerHTML=`<img src="img/${QBALL[n][0]}.webp" alt="" style="width:30px;height:30px;image-rendering:pixelated;vertical-align:middle"> ${QBALL[n][2]}`}
+    const el=$('#pqclock');if(el){const l=Math.min(PQ_T,Math.max(0,(Q.end-Date.now())/1000));el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/PQ_T*100;el.querySelector('span').innerHTML=`<img src="img/${QBALL[n][0]}.webp" alt="" style="width:30px;height:30px;image-rendering:pixelated;vertical-align:middle"> ${QBALL[n][2]}`}
     if(Date.now()>Q.end)pqReveal();else if(Q.key==='pq-stats'&&pqItem().pair){const ps=gamePlayers();if(ps.length&&ps.every(p=>S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i])&&!Q.allAt)Q.allAt=Date.now()+900;if(Q.allAt&&Date.now()>Q.allAt){Q.allAt=0;pqReveal()}}}},200)}
 function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;pqReveal()}
 function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;Q.revAt=Date.now();S.pqRev=S.pqRev||{};if(S.pqRev[Q.slide]){Q.got=S.pqRev[Q.slide];pqPaint();gamePub();return}S.pqRev[Q.slide]=Q.got;
