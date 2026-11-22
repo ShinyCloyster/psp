@@ -369,6 +369,14 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .ovnote{margin:0;font-size:18px;color:#2A2E45;background:rgba(255,253,248,.8);border-radius:10px;padding:2px 10px}
 .gbbox{position:absolute;left:70px;right:70px;bottom:50px;height:350px;background:#F8F8F8;border:10px solid #303840;border-radius:22px;box-shadow:inset 0 0 0 8px #F8F8F8,inset 0 0 0 14px #6890B0,0 10px 0 rgba(0,0,0,.25);padding:46px 70px;direction:rtl}
 .gbbox p{font-family:'Rubik',sans-serif;font-weight:700;font-size:50px;line-height:1.5;color:#202830;white-space:pre-wrap}
+/* Oak's PSP sentence (the human meaning of the Pokémon): a gold label instead of the "In PSP terms:" prefix, a gold glowing frame, heavier text, the Pokémon glows */
+.gbpsp{display:none;position:absolute;top:-36px;left:50%;transform:translateX(-50%);z-index:4;background:linear-gradient(180deg,#FFE27A,#E8B923);color:#202830;border:5px solid #303840;border-radius:999px;padding:4px 34px 6px;font:400 34px var(--display);white-space:nowrap;box-shadow:0 6px 0 rgba(0,0,0,.2)}
+.oakscene.psp .gbpsp{display:block;animation:gbpspin .55s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes gbpspin{from{transform:translateX(-50%) scale(.3);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+.oakscene.psp .gbbox{background:#FFFBEA;border-color:#8A6400;box-shadow:inset 0 0 0 8px #FFFBEA,inset 0 0 0 14px #E8B923,0 0 0 6px rgba(242,201,76,.55),0 0 50px 10px rgba(242,201,76,.45);animation:gbpspg 2.4s ease-in-out infinite alternate}
+@keyframes gbpspg{to{box-shadow:inset 0 0 0 8px #FFFBEA,inset 0 0 0 14px #E8B923,0 0 0 8px rgba(242,201,76,.7),0 0 90px 24px rgba(242,201,76,.6)}}
+.oakscene.psp .gbbox p{color:#141A33;font-weight:800}
+.oakscene.psp .oakmon{filter:drop-shadow(0 0 28px rgba(242,201,76,.95)) drop-shadow(0 0 8px rgba(255,236,150,.9))}
 .gbtri{position:absolute;left:46px;bottom:26px;font-size:40px;color:#E04848;animation:gbbl .8s steps(2) infinite}
 .gbpage{position:absolute;right:46px;bottom:22px;font-family:var(--pixel);font-size:18px;color:#8890A0}
 @keyframes gbbl{50%{opacity:0}}
@@ -433,12 +441,14 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .bd-chip.mew{border-color:#E879F9}
 .bd-p{position:absolute;width:600px;height:450px;background:rgba(32,37,63,.85);border:2px solid var(--line);border-radius:26px;padding:22px 26px}
 .bd-h{font-family:var(--display);font-size:32px;color:var(--cream);margin-bottom:12px}
-.tbars{position:relative;height:440px}
+.tbars{position:relative;height:400px}
 .tb{position:absolute;top:0;bottom:0;width:28.5px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:right 1s cubic-bezier(.2,.8,.2,1)}
 .tbt{flex:1;width:100%;display:flex;align-items:flex-end;border-radius:6px;background:rgba(255,255,255,.05)}
 .tbf{width:100%;height:0;border-radius:6px;transition:height .9s cubic-bezier(.2,.8,.2,1);opacity:.55}
 .tb .tbt.hot .tbf{opacity:1;box-shadow:0 0 18px rgba(242,201,76,.6)}
-.ebars{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.ebars{display:flex;flex-direction:column;gap:6px;margin-top:0}
+/* 7 ways to evolve (since Move Mastery): compact rows so all seven fit inside the panel */
+.bd-ev .bd-h{margin-bottom:8px}.bd-ev .ebr img{width:34px;height:34px}.bd-ev .ebr .en b{line-height:1.2}.bd-ev .ebr .en small{font-size:15px;line-height:1.2;margin-top:1px}html.en .bd-ev .ebr .en b{text-align:left}
 .ebr{display:grid;grid-template-columns:40px 230px 1fr 64px;gap:12px;align-items:center;font-size:24px;color:var(--mist);transition:color .4s}
 .ebr img{width:40px;height:40px;object-fit:contain;image-rendering:pixelated}
 .ebr .en b{display:block;font:400 14px var(--pixel);color:inherit;direction:ltr;text-align:right;line-height:1.4}
@@ -576,6 +586,12 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .canvas .pkf[data-b=hide]{opacity:1!important;transform:none!important}
 .pkf.ft .pkin{animation:pkflip .65s cubic-bezier(.3,.75,.3,1) both;animation-delay:var(--d,0ms)}
 @keyframes pkflip{from{transform:rotateY(180deg)}to{transform:none}}
+/* a face-down card shows NOTHING of its face, on every browser: the face is hidden outright (not only by backface-visibility,
+   which some engines ignore for children with their own layers), switching when the card is edge-on (~20% of the flip's time) */
+.pkf.fl .pkfr,.pkbk{transition:visibility 0s .13s}.pkf.fl .pkfr{visibility:hidden}.pkf.fl[data-b=show] .pkfr{visibility:visible}
+.pkf.fl[data-b=show] .pkbk,.pkf:not(.fl):not(.ft) .pkbk{visibility:hidden}
+.pkf.ft .pkfr{animation:pkfrv .65s linear both;animation-delay:var(--d,0ms)}.pkf.ft .pkbk{animation:pkbkv .65s linear both;animation-delay:var(--d,0ms)}
+@keyframes pkfrv{0%,19.5%{visibility:hidden}20%,100%{visibility:visible}}@keyframes pkbkv{0%,19.5%{visibility:visible}20%,100%{visibility:hidden}}
 .pkglow{position:absolute;inset:0;border-radius:4.2%;pointer-events:none;z-index:2;transition:opacity 1s ease-out!important;
   box-shadow:0 0 1.6em .5em var(--tc),0 0 4em 1.4em color-mix(in srgb,var(--tc) 55%,transparent),inset 0 0 2.2em .4em color-mix(in srgb,var(--tc) 70%,transparent);
   background:linear-gradient(180deg,transparent 35%,color-mix(in srgb,var(--tc) 22%,transparent));animation:pkglow 2.4s ease-in-out infinite alternate}
@@ -1352,7 +1368,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795308462';
+const BUILDV='1795364889';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2086,7 +2102,7 @@ async function drawDeep(me){
   for(let i=0;i<sp.length;i++){const x=W-80-step*(i+1)+(step-170)/2;await drawSp(win,sp[i],x,y+20,170)}
   const meth=ax.evo.filter((k,i)=>win.evo[i]>0);
   T(sp.length>1?(ll('הדרך של ','The path of ')+finalName(win)+': '+(meth.map(k=>EVO_META[k][2]).join(' + ')||'—')):ll('בלי התפתחות: מגיע שלם לכל מסגרת','No evolution: arrives whole in every setting'),W-90,y+245,'bold 30px Rubik',GOLD);y+=310;
-  rr(50,y,W-100,5*96+30,28,CARD,LINE);let ey=y+22;
+  rr(50,y,W-100,ax.evo.length*96+30,28,CARD,LINE);let ey=y+22;
   for(const k of ax.evo){const on=meth.includes(k);barRow(ey,EVO_META[k][2]+(on?' ★':''),'',agg('evo',k),on,null,sv(mine,'evo',k),null,EVO_META[k][1]);ey+=96}
   y=ey+20;
   // extra trait, with its three sources
@@ -2277,6 +2293,7 @@ function remoteView(){
   if(!d||!d.name||!d.started){const g=d?.gender||'';
     return `<p class="eyebrow">PSP · REMOTE TRAINER</p><h1>${ll(`שאלון PSP על ${esc(subj)}`,`PSP questionnaire about ${esc(subj)}`)}</h1>
     <div class="card"><p>${ll(`${esc(subj)} רוצה לשמוע גם ממך. השאלון מורכב מ־150 משפטים קצרים, ועל כל אחד עונים עד כמה הוא נכון לגבי ${esc(subj)}, מ־1 עד 5. לוקח בערך 20 דקות, ואפשר לעצור ולחזור לאותו קישור מאותו טלפון. התשובות נשמרות לבד.`,`${esc(subj)} wants to hear from you too. The questionnaire has 150 short statements, and for each you answer how true it is of ${esc(subj)}, from 1 to 5. It takes about 20 minutes, and you can stop and come back to the same link on the same phone. Answers save automatically.`)}</p>
+    <p style="color:var(--gold);font-weight:700">${ll(`🤫 בבקשה לא לגלות ל${esc(subj)} לפני הערב מה יש בשאלון: ההפתעה היא חלק מהכיף.`,`🤫 Please don't tell ${esc(subj)} what's in the questionnaire before the evening: the surprise is part of the fun.`)}</p>
     <p class="muted">${ll(`חשוב: אם השאלון לא יושלם עד שהתוצאות של ${esc(subj)} נסגרות, התשובות החלקיות יימחקו ולא ייכנסו לחישוב.`,`Important: if the questionnaire isn't finished by the time ${esc(subj)}'s results close, partial answers are deleted and won't count.`)}</p>
     <p class="muted">${ll(`התשובות פרטיות: על המסך מופיע רק השקלול של כולם יחד.`,`Answers are private: the screen only shows everyone combined.`)}</p></div>
     <div class="card">${ll(`<label class="muted" for="r-name">השם שלך</label>`,`<label class="muted" for="r-name">Your name</label>`)}<input type="text" id="r-name" value="${esc(d?.name||'')}" ${ll(`placeholder="השם שלך"`,`placeholder="Your name"`)}>
@@ -3394,7 +3411,7 @@ function twTick(){const tw=S.tw,hud=$('#twhud');if(!hud)return;
     if(hud.dataset.k!==k){hud.dataset.k=k;const dest=tw.to==='exit'?ll(`כולם אל החץ! בדרך ל${twNextName()}`,`Everyone to the arrow! On to ${twNextName()}`):tw.leg?.place?ll('כולם לנקודת המפגש! שם מחכה המאמן','Everyone to the meeting point! The trainer is waiting there'):(tw.leg?.end?ll('כולם אל הליגה! הדלת המסומנת','Everyone into the League! The marked door'):ll('כולם לג׳ים! הדלת המסומנת','Everyone into the gym! The marked door'));
       hud.innerHTML=`<div class="twclock${left<=5?' low':''}"><b>${left}</b><span>${dest}</span>${tw.leg?.balls?`<em>${ll('הראשונים מקבלים','The first ones get')} <img src="img/${QBALL[1][0]}.webp" alt=""><img src="img/${QBALL[2][0]}.webp" alt=""><img src="img/${QBALL[3][0]}.webp" alt=""></em>`:''}</div>`}
     const ppl=twPpl();if(ppl.length&&ppl.every(p=>tw.pos[p.id]?.done))twLegEnd();else if(Date.now()>=tw.end)twHelp();return}
-  if(tw.ph==='help'&&hud.dataset.k!=='help'){hud.dataset.k='help';hud.innerHTML=`<div class="twclock help"><span>${tw.to==='exit'?ll('אלקזם עושה טלפורט למי שלא הגיע!','Alakazam teleports whoever is late!'):ll('פיג׳וט מעיף לג׳ים את מי שלא הגיע!','Pidgeot flies the latecomers to the gym!')}</span></div>`}}
+  if(tw.ph==='help'&&hud.dataset.k!=='help'){hud.dataset.k='help';hud.innerHTML=''}}   // Alakazam / Pidgeot just help, with no caption
 // the League's doors close behind everyone: the door sound, a white flash, then on to the Hall of Fame
 function twLeague(it){const cv=$('#cv');sfx('sfx-door',.6);cv?.insertAdjacentHTML('beforeend','<i class="twblink twleague"></i>');setTimeout(()=>{if(cur()===it)go(1)},900)}
 function twNextName(){const it=cur(),legs=TW_LEGS[it?.id]||[],L=legs[(S.tw.legI||0)+1];return L?ll(...TW_NAME[L.town]):''}
@@ -5185,9 +5202,9 @@ function boardFrame(B){
   const ev=ax.evo.map(k=>`<div class="ebr"><img src="img/${EVO_META[k][1]}.webp" alt=""><span class="en"><b>${EVO_META[k][0]}</b><small>${EVO_META[k][2]}</small></span><div class="etr"><div class="ebf" id="ebf-${k}"></div></div><b id="ebv-${k}">0%</b></div>`).join('');
   return `<div class="st board">
    <div class="bd-head"><div><p class="bd-eb">POKÉMON LEAGUE · HALL OF FAME</p>${ll(`<p class="bd-title">היכל התהילה של ${n}</p>`,`<p class="bd-title">${n}\'s Hall of Fame</p>`)}</div><div class="bd-chips">${chips}</div></div>
-   <div class="bd-p" style="right:40px;top:150px;height:540px">${ll(`<p class="bd-h">סוגים <span`,`<p class="bd-h">Types <span`)} class="bd-w">40%</span></p><div class="tbars" id="bdT">${tb}</div></div>
+   <div class="bd-p" style="right:40px;top:150px;height:500px">${ll(`<p class="bd-h">סוגים <span`,`<p class="bd-h">Types <span`)} class="bd-w">40%</span></p><div class="tbars" id="bdT">${tb}</div></div>
    <div class="bd-p" style="left:40px;top:150px;height:600px">${ll(`<p class="bd-h">סטטים <span`,`<p class="bd-h">Stats <span`)} class="bd-w">30%</span></p><svg viewBox="0 0 400 380" width="500" height="475" style="display:block;margin:0 auto">${grid}<polygon id="radpoly" points="" fill="rgba(242,201,76,.32)" stroke="#F2C94C" stroke-width="4"/>${labs}</svg></div>
-   <div class="bd-p" style="right:40px;top:710px;height:360px">${ll(`<p class="bd-h">צורת התפתחות <span`,`<p class="bd-h">Evolution <span`)} class="bd-w">18%</span></p><div class="ebars">${ev}</div></div>
+   <div class="bd-p bd-ev" style="right:40px;top:670px;height:400px">${ll(`<p class="bd-h">צורת התפתחות <span`,`<p class="bd-h">Evolution <span`)} class="bd-w">18%</span></p><div class="ebars">${ev}</div></div>
    <div class="bd-p" style="left:40px;top:770px;height:300px">${ll(`<p class="bd-h">אפיון נוסף <span`,`<p class="bd-h">Extra trait <span`)} class="bd-w">7%</span></p><div class="xrows" id="bdX"></div></div>
    <div class="bd-c"><p class="bd-h" id="bdTop">TOP 20</p><div class="rows" id="bdRows"></div><div id="bdMew" class="bd-mew"></div></div>
    <div class="bd-step" id="bdStep"></div>
@@ -5425,9 +5442,9 @@ function oakPages(R){if(EN)return oakPagesEN(R);
   const m=S.state?.mew;const ms=m?.statements?.find(s=>s.lineId===l.id);
   if(ms){const v=voterNames(ms.id);P.push(v.length?`וזוכרים את שאלת מיו? ההיגד "${ms.text}" נכתב בדיוק על ${name}. ${(a=>a.length>1?a.slice(0,-1).join(', ')+' ו'+a[a.length-1]:a[0])(v.map(x=>x.name))} ${v.length>1?'בחרו':'בחר'} בו, וזה נתן לו עוד דחיפה קטנה.`:`וזוכרים את שאלת מיו? ההיגד "${ms.text}" נכתב בדיוק על ${name}. הפעם אף אחד לא בחר בו, אבל עכשיו אתם יודעים.`)}
   const o=S.oak?.[l.id];
-  if(o){P.push(o[0]);P.push(gs(o[1],o[2]||o[1]))}
+  let pspI=-9;if(o){P.push(o[0]);pspI=P.length;P.push(gs(o[1],o[2]||o[1]).replace(/^ובשפה של PSP:\s*/,''))}   // the PSP sentence: its own label + emphasis (oakGo)
   P.push(`${name} הוא שותף נהדר, ${n}, ואני בטוח שתעשו דברים גדולים ביחד.`);
-  return P.flatMap((x,i)=>splitPages(x,190).map(y=>[y,i===1?'types':i===2?'stats':-1]));
+  return P.flatMap((x,i)=>splitPages(x,190).map(y=>[y,i===1?'types':i===2?'stats':i===pspI?'psp':-1]));
 }
 function oakPagesEN(R){
   const n=subjectName(),t=R.main[0],l=t.line,ax=S.engine.axes,name=ISO(finalName(l)),lt=l.stage_types.at(-1);
@@ -5466,9 +5483,9 @@ function oakPagesEN(R){
   const m=S.state?.mew;const ms=m?.statements?.find(s=>s.lineId===l.id);
   if(ms){const v=voterNames(ms.id);P.push(v.length?`And remember Mew's question? The statement "${ms.text}" was written precisely about ${name}. ${and(v.map(x=>x.name))} picked it, and that gave it one more little push.`:`And remember Mew's question? The statement "${ms.text}" was written precisely about ${name}. Nobody picked it this time, but now you know.`)}
   const o=S.oak?.[l.id];
-  if(o){P.push(o[0]);P.push(gs(o[1],o[2]||o[1]))}
+  let pspI=-9;if(o){P.push(o[0]);pspI=P.length;P.push(gs(o[1],o[2]||o[1]).replace(/^In PSP terms:\s*/i,''))}
   P.push(`${name} is a wonderful partner, ${n}, and I'm sure you'll do great things together.`);
-  return P.flatMap((x,i)=>splitPages(x,220).map(y=>[y,i===1?'types':i===2?'stats':-1]));
+  return P.flatMap((x,i)=>splitPages(x,220).map(y=>[y,i===1?'types':i===2?'stats':i===pspI?'psp':-1]));
 }
 // Oak dialog shared by the oak / gaps / legend scenes: pages are [text, highlight-index]
 // next to Oak: the subject's top three types against the Pokémon's types, and the two stat shapes on one web
@@ -5483,9 +5500,9 @@ function oakVis(R){const l=R.main[0].line,ax=S.engine.axes,lt=l.stage_types.at(-
   const stats=`<div class="ovbox ovst" data-v="stats"><svg viewBox="0 0 600 600" class="ovradar">${grid}${mon?`<polygon points="${poly(mon)}" fill="rgba(99,144,240,.28)" stroke="#3E6FD8" stroke-width="5"/>`:''}<polygon points="${poly(me)}" fill="rgba(242,201,76,.35)" stroke="#D9A800" stroke-width="5"/>${labs}</svg><div class="ovleg"><span><i style="background:#D9A800"></i>${n}</span><span><i style="background:#3E6FD8"></i>${name}</span></div><p class="ovnote">${ll('הצורה, לא הגודל: כל אחד ביחס לסטט הכי גבוה שלו','The shape, not the size: each relative to its own highest stat')}</p></div>`;
   return `<div class="oakvis">${types}${stats}</div>`}
 function oakPrep(key,make){if(S.oakFor!==key){S.oakAll=make();S.oakFor=key;S.oakPage=0}S.oakPages=S.oakAll.map(x=>x[0])}
-function oakBox(){return `<div class="gbname">${ll("פרופ' אוק",'Prof. Oak')}</div><div class="gbbox"><p id="gbtext"></p><span class="gbtri">▼</span><span class="gbpage"></span></div>`}
+function oakBox(){return `<div class="gbname">${ll("פרופ' אוק",'Prof. Oak')}</div><div class="gbbox"><span class="gbpsp">${ll('ובשפה של PSP','IN PSP TERMS')}</span><p id="gbtext"></p><span class="gbtri">▼</span><span class="gbpage"></span></div>`}
 function oakGo(){const pg=$('.gbpage');if(pg)pg.textContent=(S.oakPage+1)+'/'+S.oakPages.length;
-  const hi=S.oakAll?.[S.oakPage]?.[1]??-1;document.querySelectorAll('.oakvis [data-v]').forEach(e=>e.classList.toggle('on',e.dataset.v===hi));$('.oakscene')?.classList.toggle('vis',typeof hi==='string');document.querySelectorAll('.gaprow').forEach((r,j)=>{r.classList.toggle('on',j===hi);r.classList.toggle('dim',hi>=0&&j!==hi)});oakType()}
+  const hi=S.oakAll?.[S.oakPage]?.[1]??-1;document.querySelectorAll('.oakvis [data-v]').forEach(e=>e.classList.toggle('on',e.dataset.v===hi));$('.oakscene')?.classList.toggle('vis',typeof hi==='string'&&hi!=='psp');$('.oakscene')?.classList.toggle('psp',hi==='psp');document.querySelectorAll('.gaprow').forEach((r,j)=>{r.classList.toggle('on',j===hi);r.classList.toggle('dim',hi>=0&&j!==hi)});oakType()}
 function paged(list){const out=[];list.forEach(([txt,hi])=>splitPages(txt,190).forEach(x=>out.push([x,hi])));return out}
 function gapList(R){return (R.gaps||[]).slice(0,4)}
 function gapInfo(g){
@@ -5543,9 +5560,9 @@ function mapPagesEN(R){const n=subjectName(),name=ISO(finalName(R.main[0].line))
   return paged([[`${n}, ${name} isn\'t you. It\'s the best map we have of you: what power you bring, who you affect, and how you change.`,-1],
     [`The map is yours now. Thank you all for answering, and have a wonderful rest of the evening!`,-1]])}
 function oakType(){
-  sfx('sfx-a');
+  const psp=S.oakAll?.[S.oakPage]?.[1]==='psp';sfx(psp?'sfx-shooting-star':'sfx-a');   // the PSP sentence types slower, one letter at a time
   const el=$('#gbtext');if(!el)return;const txt=S.oakPages[S.oakPage]||'';let i=0;clearInterval(S.oakT);S.oakTyping=true;el.textContent='';$('.gbtri').style.visibility='hidden';
-  S.oakT=setInterval(()=>{i+=2;el.textContent=txt.slice(0,i);if(i>=txt.length)oakFinish()},26);
+  S.oakT=setInterval(()=>{i+=psp?1:2;el.textContent=txt.slice(0,i);if(i>=txt.length)oakFinish()},psp?38:26);
 }
 function oakFinish(){clearInterval(S.oakT);S.oakTyping=false;const el=$('#gbtext');if(el)el.textContent=S.oakPages[S.oakPage]||'';const tri=$('.gbtri');if(tri)tri.style.visibility='visible'}
 async function runAI(){
