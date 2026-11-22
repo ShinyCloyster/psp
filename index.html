@@ -589,16 +589,17 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pktop{display:flex;align-items:center;gap:.5em;height:2.6em}
 .pkcat{width:2.3em;height:2.3em;flex:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--i1),var(--i2) 75%);box-shadow:0 0 0 .14em #fff,0 .1em .25em rgba(0,0,0,.35);display:grid;place-items:center}
 .pkcat svg{width:64%;height:64%}
+.pktop>.pkcat{width:5.4em;height:5.4em;position:relative;z-index:3;top:1.35em;margin-right:-.65em;margin-left:-.35em;box-shadow:0 0 0 .2em #fff,0 .15em .4em rgba(0,0,0,.45)}
 .pkname{font:800 2em/1 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pkhp{font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-weight:800;display:flex;align-items:baseline;gap:.15em;flex:none}
 .pkhp small{font-size:.95em;font-weight:700}.pkhp b{font-size:2.3em;line-height:1;color:var(--hpc);text-shadow:0 .04em 0 rgba(255,255,255,.35)}
 .pkpic{position:relative;aspect-ratio:597/540;border-radius:.2em;overflow:hidden;padding:.28em;box-shadow:0 .15em .4em rgba(0,0,0,.35);
   background:linear-gradient(135deg,#f4f5f7,#a9aeb6 30%,#ffffff 50%,#8d929b 75%,#e3e5e9)}
 .pkpic img{display:block;width:100%;height:100%;object-fit:cover;border-radius:.1em}
-.pkstrip{position:relative;z-index:1;margin:-.28em -.45em 0 -.25em;height:1.55em;display:flex;align-items:center;justify-content:center;padding-right:1.2em;
+.pkstrip{position:relative;z-index:1;margin:-.18em -.29em 0 -.16em;height:1.3em;display:flex;align-items:center;justify-content:center;padding-right:1.2em;
   background:linear-gradient(180deg,#ffffff 0%,#e6e8ec 35%,#b7bcc4 70%,#8f949c 100%);clip-path:polygon(0 0,100% 0,100% 8%,96.5% 100%,.8% 100%,0 60%);
-  font:500 .85em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.02em;color:#2f333a;white-space:nowrap}
-.pkatk{display:flex;align-items:center;gap:.55em;height:2.4em;padding-inline:.15em}
+  font:800 1.3em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.03em;color:#1c1f24;white-space:nowrap}
+.pkatk{display:flex;align-items:center;gap:.55em;height:2.3em;padding-inline:.15em}
 .pkcost{display:flex;gap:.32em;flex:none}
 .pknrg{width:1.6em;height:1.6em;border-radius:50%;box-shadow:0 .08em .18em rgba(0,0,0,.4)}
 .pknrg.pkcat{box-shadow:0 0 0 .1em #fff,0 .08em .18em rgba(0,0,0,.4)}
@@ -607,7 +608,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pkan{font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-weight:800;letter-spacing:.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden}
 .pkdmg{font:800 2em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;flex:none}
 .pkrule{height:.12em;background:currentColor;opacity:.28;border-radius:1em;margin-inline:.15em}
-.pkret{display:flex;align-items:center;gap:.4em;padding-inline:.15em;height:1.4em}
+.pkret{display:flex;align-items:center;gap:.4em;padding-inline:.15em;height:1.1em}
 .pkret span{font:700 .95em 'Roboto Condensed','Arial Narrow',Arial,sans-serif;letter-spacing:.04em}
 .pkret .pknrg{width:1.15em;height:1.15em}.pkret .pknone{font-weight:500;opacity:.7}
 .pkpre{position:absolute;z-index:2;top:.2em;left:.2em;width:3.9em;height:3.9em;border-radius:50%;padding:.22em;background:linear-gradient(135deg,#ffffff,#a9aeb6 35%,#f4f5f7 55%,#8d929b);box-shadow:0 .1em .3em rgba(0,0,0,.45)}
@@ -1351,7 +1352,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795298871';
+const BUILDV='1795308462';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -4712,10 +4713,15 @@ function castCard(id,frame,st,attrs){return `<div class="chc" ${attrs||''} style
 // pkFlip wraps a card with the card back (img/card-back.webp): opt.w width px; opt.fl = flipped by a build (data-build-in="flip N" in opt.attrs);
 // opt.d = flips by itself after d ms (negative = already flipped); opt.tc = the type colour of the reveal glow (opt.glow = its build attrs).
 const pkOK=id=>!!(CARDS?.chars?.[id]&&CARDS.worlds?.[CARDS.chars[id].w]);
-function pkVars(w){const p=CARDS.worlds[w];return `--f1:${p.f[0]};--f2:${p.f[1]};--f3:${p.f[2]};--ink:${p.ink};--hpc:${p.hp};--i1:${p.ic[0]};--i2:${p.ic[1]}`}
+// round 76c: the face is the world's colour lightened by the same amount on every card (it only marks the family, it should not
+// pull the eye from the photo); the type icon keeps the full colour of the face, so the icon and the face are always the same colour
+const PK_LIGHT=.5,pkHex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),pkMix=(h,t,a)=>'#'+pkHex(h).map((v,i)=>Math.round(v+(t[i]-v)*a).toString(16).padStart(2,'0')).join(''),
+  pkLum=h=>{const [r,g,b]=pkHex(h);return (.299*r+.587*g+.114*b)/255};
+function pkVars(w){const p=CARDS.worlds[w],f=p.f.map(c=>pkMix(c,[255,255,255],PK_LIGHT)),dark=pkLum(p.ink)>.6;
+  return `--f1:${f[0]};--f2:${f[1]};--f3:${f[2]};--ink:${dark?p.f[2]:p.ink};--hpc:${dark?pkMix(p.f[1],[0,0,0],.1):p.hp};--i1:${p.f[1]};--i2:${p.f[2]}`}
 function pkIcon(w,cls){return `<i class="pkcat ${cls||''}"><svg viewBox="0 0 24 24" aria-hidden="true">${CARDS.worlds[w].svg}</svg></i>`}
 function pkCard(id){const c=CARDS.chars[id],w=c.w,p=CARDS.worlds[w],an=c.atk,fs=an.length>16?1.3:an.length>13?1.5:1.75;
-  const nm=c.evo?`<div class="pknm"><div class="pkname">${esc(c.en)}</div><div class="pkstg"><b>STAGE 1</b><i>Evolves from ${esc(c.evo)}</i></div></div>`:`<div class="pkname">${esc(c.en)}</div>`;
+  const nm=c.evo?`<div class="pknm"><div class="pkname">${esc(c.en)}</div><div class="pkstg"><b>STAGE 1</b><i>Evolves from ${esc(c.evo)}</i></div></div>`:`<div class="pkname"${c.en.length>15?` style="font-size:${c.en.length>17?1.65:1.8}em"`:''}>${esc(c.en)}</div>`;
   return `<div class="pkc${c.evo?' evo':''}" style="${pkVars(w)}" dir="ltr">${c.pre?`<div class="pkpre"><img src="img/ch/${c.pre}.webp" alt=""></div>`:''}<div class="pkface">
    <div class="pktop">${nm}<div class="pkhp"><small>HP</small><b>${c.hp}</b></div>${pkIcon(w)}</div>
    <div class="pkpic"><img src="img/card/${id}.webp" alt="${esc(c.en)}"></div><div class="pkstrip">${esc(p.en)} Character</div>
