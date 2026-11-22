@@ -1378,7 +1378,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795376277';
+const BUILDV='1795377933';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1932,12 +1932,13 @@ function remoteClock(){const I=schedInfo(S.deck,Date.now());
   document.querySelectorAll('.rcmini .rmn').forEach(e=>e.textContent=I?I.name:'');
   document.querySelectorAll('.rcmini .rml').forEach(e=>{const lt=I?Math.round(I.late):0;e.textContent=!I?'':lt>0?`${ll(`מאחרים ${lt} דק׳`,`${lt} min behind`)}`:lt<0?`${ll(`מקדימים ${-lt} דק׳`,`${-lt} min ahead`)}`:ll('בזמן','on time');e.style.color=lt>0?'#FF8A80':'#6EE7A0'});
   document.querySelectorAll('.rcmini .rmt').forEach(e=>{e.textContent=I?mmss(I.left):'';e.style.color=I&&I.left<0?'#FF6B6B':'var(--gold)'})}
-function deckLabels(){remoteClock();ctlJumpFill();const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n);noteFill()}
+function deckLabels(){remoteClock();ctlJumpFill();const t=S.deck?.label||'',n=S.deck?`${S.deck.pos} / ${S.deck.len}`:'';document.querySelectorAll('.rcl').forEach(e=>e.textContent=t);document.querySelectorAll('.rcn').forEach(e=>e.textContent=n);noteFill();btCardFill()}
 function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}</p>${ll(`<h1 style="margin:0">שלט המצגת</h1>`,`<h1 style="margin:0">Presentation remote</h1>`)}
   <div class="card" style="text-align:center;padding:16px"><p class="muted" style="margin:0;font-size:13px">${ll(`על המסך עכשיו <span`,`On screen now <span`)} class="rcn"></span></p><p class="rcl" style="margin:6px 0 0;font-weight:700;font-size:19px;min-height:1.4em"></p></div>
   <div class="card rcnote" ${S.note?'':'hidden'} style="padding:14px 16px;border-color:var(--gold)"><p class="muted" style="margin:0 0 6px;font-size:13px">${ll('📝 מה להגיד','📝 What to say')}</p><p class="rcnt" style="margin:0;font-size:17px;line-height:1.5">${esc(S.note||'')}</p></div>
   <div class="card rctime" style="padding:14px 16px"><div class="row" style="justify-content:space-between;align-items:baseline"><b class="rtn"></b><span class="rtl" style="font:400 26px var(--pixel)"></span></div><div class="rtrow">${ll(`<span>זמן</span>`,`<span>Time</span>`)}<div class="rtbar"><i></i></div></div><div class="rtrow">${ll(`<span>שקפים</span>`,`<span>Slides</span>`)}<div class="rtbar sl"><i></i></div></div><p class="rts muted" style="margin:8px 0 0;font-size:14px"></p></div>
   ${glHost()}
+  <div id="rcbt" class="card" style="padding:14px 16px;border:2px solid var(--gold)"${btCardHTML()?'':' hidden'}>${btCardHTML()}</div>
   <button class="rcbig" data-act="ctlnext">${ll(`◀ הבא</button>`,`Next ▶</button>`)}<button class="rcback" data-act="ctlprev">${ll(`חזרה ▶</button>`,`◀ Back</button>`)}
   <div class="row" style="gap:8px"><button class="btn ghost grow" data-act="ctlnextslide">${ll('⏩ לשקף הבא','⏩ Next slide')}</button><button class="btn ghost grow" data-act="ctlpopx">${ll('✕ סגירת חלון קופץ','✕ Close the popup')}</button></div>
   <details class="card rcset" ${S.rcSet?'open':''} ontoggle="S.rcSet=this.open"><summary>${ll('⚙ הגדרות הערב','⚙ Evening settings')}</summary>
@@ -2582,7 +2583,7 @@ function bindPhone(){
     if(b.dataset.act==='tchart'){S.tchart=!S.tchart;render();return}
     if(b.dataset.act==='say'){sayOpen();return}
     if(b.dataset.act==='randfill'){randFill();return}
-    if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctljump'){const s=$('#rcjump');if(s&&s.value!=='')sendCmd({cmd:'jump',i:+s.value});return}if(b.dataset.act==='ctlnextslide'){sendCmd({cmd:'nextslide'});return}if(b.dataset.act==='ctlpopx'){sendCmd({cmd:'popx'});return}if(b.dataset.act==='ctlqr'){sendCmd({cmd:'qr'});return}if(b.dataset.act==='ctlskipbt'){if(confirm(ll('לדלג על הקרבות? הנקודות שלהם לא ייספרו.','Skip the battles? Their points will not count.')))sendCmd({cmd:'skipbt'});return}if(b.dataset.act==='ctlopen'){sendCmd({cmd:'open',k:+b.dataset.k});return}if(b.dataset.act==='ctlclock'){sendCmd({cmd:'clock'});return}if(b.dataset.act==='ctlmew'){sendCmd({cmd:'mew'});return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
+    if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctljump'){const s=$('#rcjump');if(s&&s.value!=='')sendCmd({cmd:'jump',i:+s.value});return}if(b.dataset.act==='ctlnextslide'){sendCmd({cmd:'nextslide'});return}if(b.dataset.act==='ctlpopx'){sendCmd({cmd:'popx'});return}if(b.dataset.act==='ctlqr'){sendCmd({cmd:'qr'});return}if(b.dataset.act==='ctlskipbt'){if(confirm(ll('לדלג על הקרבות שנשארו? קרבות ששוחקו נשארים בליגה.','Skip the remaining battles? Battles already played stay in the league.')))sendCmd({cmd:'skipbt'});return}if(b.dataset.act==='ctlbt'){sendCmd({cmd:'btset',on:+b.dataset.on});return}if(b.dataset.act==='ctlopen'){sendCmd({cmd:'open',k:+b.dataset.k});return}if(b.dataset.act==='ctlclock'){sendCmd({cmd:'clock'});return}if(b.dataset.act==='ctlmew'){sendCmd({cmd:'mew'});return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
     if(b.dataset.addr){const r=S.remote?.[b.dataset.addr];if(r){draft().push({id:b.dataset.addr,name:r.name,role:r.relation||'family',weight:0,remote:true});S.setupErr=null;render()}return}
@@ -2660,11 +2661,19 @@ async function startScreen(){
 }
 // commands from the host's phone (the settings on the remote), run by the screen
 // skipping the battles (time is short, people are tired): straight to the slide after them; points of battles not played don't count
-function btSkip(){const i=SEQ.findIndex(x=>x.id==='d-battle');if(i<0)return;if(POS<=i){POS=i+1;HOF=0;SUB=0;BUILD=0;S.btg=null;S.bt=null;show(true);toast(ll('דילגנו על הקרבות','Battles skipped'))}}
+function btSkip(){const i=SEQ.findIndex(x=>x.id==='d-battle');if(i<0)return;if(POS<=i){typesPour();const G=S.btg;if(G&&Object.values(G.scores||{}).some(v=>v>0))leagueSet('bt',G.scores);POS=i+1;HOF=0;SUB=0;BUILD=0;S.btg=null;S.bt=null;show(true);toast(ll('דילגנו על הקרבות','Battles skipped'))}}
+// the types quiz's points reach the league once per evening, on reaching the battles or skipping them (new rooms; ERI1 has its quizwin slide)
+function typesPour(){if(ROOM.legacy||S.typesIn===S.state?.eve)return;S.typesIn=S.state?.eve;try{leagueSet('types',quizState().scores)}catch(e){}}
+// the battles after the types seminar are OPTIONAL (round 83): the host picks on his phone (state.btOn); nothing picked = they are passed over
+const btOn=()=>ROOM.legacy||S.state?.btOn===true;
+function btCardHTML(){const d=S.deck,b=d?.bt||0,p=d?.pos||0;if(!b||p>b||p<(d.bt0||b))return '';const on=S.state?.btOn===true;
+  return `<p class="eyebrow" style="margin:0 0 6px">${ll('הקרבות · בסוף סמינר הסוגים','THE BATTLES · after the types seminar')}</p><p style="margin:0 0 4px;font-size:17px">${on?ll('⚔️ נבחר: <b>משחקים</b> (כ-5 דקות)','⚔️ Chosen: <b>play</b> (about 5 minutes)'):ll('⏭ נבחר: <b>מדלגים</b> עליהם','⏭ Chosen: <b>skip</b> them')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('אופציונלי. בלי בחירה מדלגים. אפשר לשנות עד שמגיעים אליהם.','Optional. No choice = skipped. You can change it until you get there.')}</p><div class="row" style="gap:8px"><button class="btn grow${on?' ghost':''}" data-act="ctlbt" data-on="0">⏭ ${ll('מדלגים','Skip')}</button><button class="btn grow${on?'':' ghost'}" data-act="ctlbt" data-on="1">⚔️ ${ll('משחקים','Play')}</button></div>`}
+function btCardFill(){const el=$('#rcbt');if(!el)return;const h=btCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
 function ctlCmd(d){if(d.cmd==='jump'&&d.i>=0&&d.i<SEQ.length){POS=d.i;HOF=0;SUB=0;BUILD=0;show(true)}
   else if(d.cmd==='qr')joinQR();else if(d.cmd==='open')setState({open:+d.k||0});
   else if(d.cmd==='clock'){const now=Date.now();S.deck={...(S.deck||{}),t0:now,segAt:now,log:{}};deckPub()}
   else if(d.cmd==='skipbt')btSkip();
+  else if(d.cmd==='btset')setState({btOn:!!d.on});
   else if(d.cmd==='popx')popClose();
   else if(d.cmd==='nextslide')nextSlide();
   else if(d.cmd==='mew'){setState({mew:{status:'none'}});S.mewBusy=false;buildMew()}
@@ -2731,7 +2740,7 @@ const mmss=m=>{const neg=m<0,t=Math.round(Math.abs(m)*60);return (neg?'-':'')+Ma
 const hhmm=d=>d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',hour12:false});
 const HOF_HE=EN?{intro:'Opening',board:'The board',crowd:'Crowd vs. questionnaire',champ:'League champion',ball:'The Poké Ball',reveal:'The reveal',oak:'Prof. Oak',gaps:'Blind spots',legend:'The legendary',map:'Finale'}:{intro:'פתיחה',board:'הלוח',crowd:'הקהל מול השאלון',champ:'אלוף הליגה',ball:'הפוקבול',reveal:'החשיפה',oak:'פרופ׳ אוק',gaps:'נקודות עיוורון',legend:'הלג׳נדרי',map:'סיום'};
 function seqLabel(it){let label='';
-  if(it.id==='d-battle')label=ll('קרבות: מי מנצח?','Battles: who wins?');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
+  if(it.id==='d-battle')label=ll('קרבות: מי מנצח? (אופציונלי)','Battles: who wins? (optional)');else if(MEM[it.id])label=LL(MEM[it.id].ti);else if(PQ[it.id])label=LL(PQ[it.id].ti);else if(PQ_ROUND(it.id))label=LL(PQ[PQ_ROUND(it.id).key].ti)+' · '+LL(PQ[PQ_ROUND(it.id).key].items[PQ_ROUND(it.id).i].n);else if(it.kind==='league')label=ll('אלוף הליגה','League champion');else if(it.kind==='slide'){const d=document.createElement('div');d.innerHTML=S.slides[it.i].html;label=(d.querySelector('h1,h2')?.textContent||d.querySelector('p')?.textContent||it.id).replace(/\u202b/g,'').trim()}
   else if(it.kind==='live')label=ll('מצב הסבב','Round status');else if(it.kind==='quizwin')label=ll('מנצח משחק הניחושים','Guessing game winner');else if(it.kind==='awards')label=ll('טקס התגים','Badge ceremony');else if(it.kind==='lake')label=ll('אגם הזעם','Lake of Rage');else if(it.kind==='pika')label=ll('פיקאצ׳ו מסרב','Pikachu refuses');else if(it.kind==='cmt')label=CMG()?ll('המשקפיים של ההוגים','The thinkers’ glasses'):ll('פרשני הקרב','Battle commentators');else if(it.kind==='why')label=ll('למה כל כך הרבה גיאראדוסים?','Why so many Gyarados?');else if(it.kind==='buzz')label=ll('חידון באזפיד','The BuzzFeed quiz');else if(it.kind==='scene'){const P=SC[it.id]?.part;label=SC[it.id]?.round?ll(`לפני סבב ${SC[it.id].round}`,`Before round ${SC[it.id].round}`):SC[it.id]?.label?ll(...SC[it.id].label):SC[it.id]?.rules?ll('חוקי ״מי הסוג?״',"Rules: Who's that type?"):SC[it.id]?.mid?ll(`פתיחת קורס ${SC[it.id].course}`,`Course ${SC[it.id].course} opening`):P===1?ll('פתיחה: המסע','Opening: the journey'):ll(`פתיחת חלק ${P}`,`Part ${P} opening`)}else if(it.kind==='town'){const L=TW_LEGS[it.id]||[],to=L[L.length-1]?.town;label='🚶 '+ll('הליכה ל','Walk to ')+ll(...(TW_NAME[to]||['','']))}else label=ll('היכל התהילה · ','Hall of Fame · ')+(HOF_HE[HOF_STEPS[HOF]]||'');
   return label}
 // round 72: the host's phone shows what to say on the current slide (stage/note {t,pos}): the slide's own notes (<aside>),
@@ -2748,7 +2757,7 @@ function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeo
   const sa=D.seg===seg&&D.segAt?D.segAt:now;
   // how far through this part's slides we are
   const st=SEQ.findIndex(x=>planOf(seg)&&planId(x)===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>planId(x)===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
-  const doc={label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
+  const bti=SEQ.findIndex(x=>x.id==='d-battle'),doc={bt:ROOM.legacy?0:bti+1,bt0:SEQ.findIndex(x=>courseOf(x.id)===5)+1,label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
   S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer();
   const sk=SEQ.map(x=>x.id).join(',');if(S.seqPub!==sk){S.seqPub=sk;S.db.doc('stage/seq').set({l:SEQ.map(x=>{try{return seqLabel(x).slice(0,60)}catch(er){return x.id}})}).catch(()=>{})}},250)}
 // big countdown on the screen during question rounds and breaks
@@ -2901,7 +2910,8 @@ function friendsRunAround(){const cv=$('#cv');if(!cv||cv.querySelector('.frrun')
 // the join QR is big only where people join (the opening, the syllabus, the lake); elsewhere just the code, small, in a bottom corner
 function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style.display=(it?.kind==='cmt'||it?.kind==='hof'||it?.kind==='awards'||it?.id==='closing'||/^x-round-/.test(it?.id||''))?'none':'';rb.classList.toggle('mini',!(it?.id==='cover'||it?.id==='agenda'||it?.kind==='lake'))}}
   const it=cur();if(!it)return;store.set('psp-pos',POS);
-  if(!ROOM.legacy&&it.id==='d-battle'&&S.typesIn!==S.state?.eve){S.typesIn=S.state?.eve;try{leagueSet('types',quizState().scores)}catch(e){}}
+  if(it.id==='d-battle')typesPour();
+  if(it.id==='d-battle'&&!btOn()){const n=POS+(atEnd?-1:1);if(n>=0&&n<SEQ.length){POS=n;show(fresh,atEnd);return}}
   const cv=$('#cv');cv.classList.remove('ctron','twcover');document.body.classList.remove('twcov');
   if(trMeetOn(it))trMeet(it);else if(svOn(it))svEnter(it);else if(emOn(it))emEnter(it);else if(csOn(it))csEnter(it);else if(it.kind==='slide'){
     cv.innerHTML=slideHTML(S.slides[it.i].html);cv.firstElementChild?.classList.add('fadein');
@@ -3264,7 +3274,7 @@ function lkSpawn(red){const L=S.lake,a=Math.random()*6.28,g=$('#lkg'),W=lkCells(
   L.gy={x:best[0],y:best[1],dx:0,dy:1,red,t:performance.now()};L.safeTo=Date.now()+1700+3000;if(g){g.style.backgroundImage=`url(img/gy-${red?'red-':''}sheet.png)`;g.style.display=''}L.seen++;lkCount();try{const c=new Audio('cries/130.ogg?v='+BUILDV);c.volume=.7;c.play().catch(()=>{})}catch(e){}}
 const lkEase=()=>Math.min(2,S.lake?.ease||0);
 function lakeAppear(){const L=S.lake;lkSpawn(false);lkPhase('appear','Wild GYARADOS appeared!',0,1700,()=>{L.until=Date.now()+(lkSec()+lkEase()*(S.fastOn?2:5))*1000;lkPhase('chase','',0)})}
-function lkEnd(who){const L=S.lake,red=L.gy?.red,g=$('#lkg');if(!red)L.ease=who?0:(L.ease||0)+1;L.gy=null;if(g)g.style.display='none';if(who){L.got[who]=(L.got[who]||0)+1;sfx('sfx-caught-mon')}const nm=who?`<span class="lkhe">${esc(person(who)?.name||'')}</span>`:'';
+function lkEnd(who){const L=S.lake,red=L.gy?.red,g=$('#lkg');if(!red)L.ease=who?0:(L.ease||0)+1;L.gy=null;if(g)g.style.display='none';if(who){L.got[who]=(L.got[who]||0)+1;lkSaveGot(who);sfx('sfx-caught-mon')}const nm=who?`<span class="lkhe">${esc(person(who)?.name||'')}</span>`:'';
   if(red){if(who){L.redBy=who;leagueSet('red',{[who]:1})}lkPhase('rafter',who?`${nm} caught the red GYARADOS!`:'The red GYARADOS fled!',0,3000,lakeFinish);return}
   lkPhase('after',who?`${nm} caught it!`:'GYARADOS fled!',0,S.fastOn?1500:4000,lakeNext)}
 function lakeNext(){const L=S.lake;if(L.seen<3)lakeAppear();else lakeAsk()}
@@ -3273,6 +3283,9 @@ const lkVotes=()=>{const L=S.lake,c={y:0,n:0};lkPpl().forEach(p=>{const v=S.gIn?
 function lakeIn(){const L=S.lake;if(!L||L.phase!=='q')return;const c=lkVotes(),pl=lkPpl();lakeBox(`<div class="lkoakb"><img src="img/tr-oak.webp" alt=""><div><b>${ll('פרופסור אוק','Professor Oak')}</b><span class="lkoq">${ll('כל הגיאראדוסים כחולים?','Are all Gyarados blue?')}</span><span class="lkvo">${ll('כן','Yes')} · ${c.y} &nbsp;&nbsp; ${ll('לא','No')} · ${c.n} &nbsp;&nbsp; <em id="lkq"></em></span></div></div>`,1);
   if(pl.length&&c.y+c.n>=pl.length&&!L.allQ){L.allQ=true;const sid=L.sid;setTimeout(()=>{if(S.lake?.sid===sid&&S.lake.phase==='q'&&cur()?.kind==='lake')lakeRed()},1000)}}
 function lakeRed(){const L=S.lake;L.votes=lkVotes();music(null);$('#lkw')?.classList.add('dark');lkPhase('rwait','…',0,S.fastOn?900:2600,()=>{sfx('sfx-shooting-star');lkSpawn(true);music('mus-trainer',{vol:.26});$('#lkw')?.classList.remove('dark');lkPhase('rappear','A wild RED GYARADOS appeared!',0,2300,()=>{L.until=Date.now()+lkSec()*1000;lkPhase('rchase','',0)})})}
+// every Gyarados caught is kept in the league doc (not as points): if nobody caught the red one, the most catches win the Lake of Rage badge
+// gy = catches per person, gyT = when each reached their count (a tie goes to whoever got there first). Written straight, so no league pop-up
+function lkSaveGot(who){if(!S.db)return;const L=S.lake,gy={...(S.league?.gy||{})},gyT={...(S.league?.gyT||{})};gy[who]=Math.max(gy[who]||0,L.got[who]);gyT[who]=Date.now();S.league={...(S.league||{}),gy,gyT};S.db.doc('stage/league').set({gy,gyT},{merge:true}).catch(()=>{})}
 function lakeFinish(){lkPhase('done','',0);music(null);lakeDone()}
 function lakeDone(){const L=S.lake,v=L.votes||{y:0,n:0},el=$('#lkdone');lakeBox('');S.lakeRes={seen:Math.max(0,L.seen-1),y:v.y,n:v.n};if(el){el.style.display='flex';el.innerHTML=`<img src="anim/shiny-130.gif" alt=""><h3>${ll('גיאראדוס אדום אחד הספיק.','One red Gyarados was enough.')}</h3><p>${ll(`ראיתם ${S.lakeRes.seen} כחולים. ${v.y} מכם אמרו שכולם כחולים, ${v.n} אמרו שלא.`,`You saw ${S.lakeRes.seen} blue ones. ${v.y} of you said all of them are blue, ${v.n} said not.`)}</p>`}}
 function lakeGo(d){const L=S.lake;if(!L||d<0)return false;switch(L.phase){case'land':lakeOak();return true;case'oak':lakeLead();return true;case'go':lakeAtLake();return true;case'free':lakeBox('');lakeAuto();lakeAppear();return true;case'appear':case'chase':lkEnd(null);return true;case'after':clearTimeout(L.to);lakeNext();return true;case'q':lakeRed();return true;case'rwait':case'rappear':return true;case'rchase':lkEnd(null);return true;case'rafter':clearTimeout(L.to);lakeFinish();return true;default:return false}}
@@ -3622,6 +3635,7 @@ const TK={
   "ev-special":{who:"bill",lines:[["", "תנאי מיוחד: צירוף נסיבות ייחודי.", "Special condition: a unique combination of circumstances."], ["", "כאן ההתפתחות לא הולכת לפי מסלול צפוי.", "Here, growth doesn’t follow a predictable path."], ["", "היא דורשת צירוף מאוד מסוים של מקום, זמן ואנשים. וכשהוא מגיע, הכול משתנה.", "It takes a very specific mix of place, time and people. And when it comes together, everything changes."], ["q", "בעולם הפוקימון, אינקיי מתפתח רק כשהופכים את הקונסולה.", "In the Pokémon world, Inkay evolves only when you turn the console upside down."], ["ex", "כדי להיות מלאמאר, צריך לראות את העולם הפוך.", "To become Malamar, you have to see the world upside down."], ["", "37 ליינים במנוע מתפתחים בתנאי מיוחד.", "37 lines in the engine evolve under a special condition."]]},
   "ev-move":{who:"bill",lines:[["", "שליטה במהלך: מיומנות שעיצבה זהות.", "Move mastery: a skill that shaped who you are."], ["", "התפתחות שמגיעה מתרגול: חוזרים על אותו מהלך, שוב ושוב.", "Growth that comes from practice: repeating the same move, again and again."], ["", "עד שהוא כבר לא משהו שעושים, אלא חלק ממי שאתה.", "Until it’s no longer something you do, but part of who you are."], ["q", "בעולם הפוקימון, פריימייפ מתפתח לאנייהילייפ רק אחרי עשרים פעמים של Rage Fist.", "In the Pokémon world, Primeape becomes Annihilape only after using Rage Fist twenty times."], ["ex", "הזעם שתורגל, הפך לזהות.", "Practised rage became identity."], ["", "וזו הנדירה מכולן: רק 16 ליינים במנוע מתפתחים כך.", "And it’s the rarest of all: only 16 lines in the engine evolve this way."]]},
   "h-noevo":{who:"bill",lines:[["", "לא מתפתח: אוורסטון. מגיע כבר שלם.", "Doesn’t evolve: Everstone. Arrives already whole."], ["", "לליין של פוקימון אחד יש בגרות מובנית: מה שרואים מההתחלה הוא מה שיש.", "A single-stage line has built-in maturity: what you see from the start is what you get."], ["", "אדם כזה מגיע לכל מסגרת חדשה כבר שלם, ומשתנה פחות מהסביבה.", "A person like that arrives at every new framework already whole, and changes less with their surroundings."], ["ex", "כמו טאורוס, קנגסקאן, הרקרוס ולאפרס.", "Like Tauros, Kangaskhan, Heracross and Lapras."], ["", "121 ליינים במנוע הם כאלה, בלי לספור לג׳נדריים.", "121 lines in the engine are like this, not counting legendaries."], ["", "והמנוע לא מעניש ולא מתגמל על זה. זו פשוט דרך אחרת להיות.", "And the engine neither penalizes nor rewards it. It’s just another way to be."]]},
+  "g-bst":{who:"bill",lines:[["", "ועכשיו, כשמכירים את ששת הסטטים: הסכום מספר כמה, הצורה מספרת מי.", "Now that you know all six stats: the total tells you how much, the shape tells you who."], ["mew", "מיו: מאה בכל סטט, 600 בסך הכול. טוב בכל דבר, בלי נקודת תורפה, ובלי שום דבר שבולט.", "Mew: 100 in every stat, 600 in all. Good at everything, no weak spot, and nothing that stands out."], ["shk", "שאקל: רק 505. כמעט אפס בהתקפה ובמהירות, אבל 230 בשתי ההגנות: מומחה עולמי.", "Shuckle: only 505. Next to nothing in Attack and Speed, but 230 in both Defenses: a world-class expert."], ["hex", "ולכן מי שנותן 5 על הכול לא הופך למיו: המנוע משווה את הצורה, לא את הגודל.", "So someone who gives 5 to everything doesn’t become Mew: the engine compares the shape, not the size."]]},
 };
 // <TK_LINES
 const tkOn=it=>it?.kind==='slide'&&!ROOM.legacy&&!!TK[it.id];
@@ -3636,6 +3650,13 @@ function tkParts(sec,id){const col=sec.firstElementChild,kids=[...(col?.children
     return {said:[kids[2],kids[kids.length-1]?.tagName==='P'?kids[kids.length-1]:null],hl}}
   if(/^(ev-|h-noevo)/.test(id)){if(col)col.style.zoom=1.35;const q=kids.find(bg),last=kids[kids.length-1],qi=q&&/פריט מהשאלון|questionnaire item/.test(q.textContent);if(q&&!qi)hl.q=q;if(sec.children[1])hl.ex=sec.children[1];
     return {said:[kids[3],last!==q&&kids.indexOf(last)>3?last:null,qi?q:null],hl}}
+  if(id==='g-bst'){const ks=[...sec.children],row=ks.find(e=>e.tagName==='DIV'&&e.children.length===2&&!/top:\s*1022px/.test(e.getAttribute('style')||'')),box=ks.find(e=>e.querySelector?.('svg')&&/#161A2E/.test(e.getAttribute('style')||''));
+    // Bill says the subtitle and the bottom line; Mew's card, Shuckle's card and the two hexagons stay on the stage. Its one build is shown at once
+    sec.querySelectorAll('[data-build-in]').forEach(e=>{e.removeAttribute('data-build-in');e.dataset.b='show'});sec.style.justifyContent='center';sec.style.gap='34px';
+    if(row){row.style.zoom=1.1;hl.mew=row.children[0];hl.shk=row.children[1]}
+    // the bottom line is said by Bill; the box keeps the two hexagons with a short caption of what they show
+    if(box){const q=box.querySelector('p'),g=box.querySelector('svg');box.style.cssText+=';align-self:center;padding:18px 56px;gap:40px';if(g){g.setAttribute('width','190');g.setAttribute('height','190')}if(q){q.style.cssText+=';flex:none;font-size:40px;font-weight:700;line-height:1.3';q.innerHTML=ll('‫אותה צורה, גודל שונה<br>= אותה התאמה','Same shape, different size<br>= the same match')}hl.hex=box}
+    return {said:[ks[2]],hl}}
   return {said:[],hl}}
 function tkEnter(it,atEnd){const cv=$('#cv'),sec=cv.querySelector('section');if(!sec)return;const T=TK[it.id],W=TK_WHO[T.who];
   S.tk={id:it.id,b:atEnd?T.lines.length-1:0,typing:0};
@@ -3740,7 +3761,7 @@ const SC={
   'op-3':{part:3,town:'fuchsia',drop:['x-part-3','f-divider'],div:'f-divider',name:['פרופ׳ טורו','PROF. TURO'],zoom:[135,78,1.4],vis:s=>s?.querySelector('img[src*="img/t-"]')?.parentElement,
     lines:(n,town)=>[['gym',`ברוכים הבאים ל${town}! אני פרופסור טורו, המרצה שלכם בחלק השלישי.`,`Welcome to ${town}! I'm Professor Turo, your lecturer for part three.`],
       ['fly','ארבעה תגים כבר בכיס. ממשיכים במסע!','Four badges in the bag. On with the journey!'],
-      ['zoom','בחלק הזה: הכוח שכל אדם מביא לעולם, ומי משפיע על מי. ובסוף: הקרבות.','In this part: the power each person brings into the world, and who affects whom. And at the end: the battles.'],
+      ['zoom','בחלק הזה: הכוח שכל אדם מביא לעולם, ומי משפיע על מי.','In this part: the power each person brings into the world, and who affects whom.'],
       ['tile','סוג הוא הכוח שאדם מביא לעולם, וגם המפה של מי משפיע עליו ועל מי הוא משפיע.','A type is the power a person brings into the world, and also the map of who affects them and whom they affect.'],
       [0,'מתחילים בתשעת הסוגים ה״מיוחדים״: במשחקים הישנים, כל המתקפות שלהם היו Special.','We start with the nine "special" types: in the old games, all their attacks were Special.']]},
   'op-4':{part:4,town:'cinnabar',drop:['x-part-4','g-divider'],div:'g-divider',name:['ביל','BILL'],zoom:[44,68,1.15],vis:s=>s?.querySelector(':scope>svg'),
@@ -3757,7 +3778,7 @@ const SC={
     lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג השישי.`,`Welcome to ${town}! The sixth badge is waiting here.`],
       ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
       ['tile','תשעת הסוגים ה״פיזיים״: במשחקים הישנים, כל המתקפות שלהם היו Physical.','The nine "physical" types: in the old games, all their attacks were Physical.'],
-      [0,'ובסוף, הקרבות: אפשר לחשב מראש מי ינצח?','And at the end, the battles: can you work out in advance who will win?']]},
+      [0,'ואם יישאר לנו זמן בסוף: כמה קרבות, לראות אם אפשר לחשב מראש מי ינצח.','And if we have time left at the end: a few battles, to see if you can work out who will win.']]},
   'cd-8':{mid:1,part:4,course:8,town:'viridian',drop:['h-divider'],div:'h-divider',prev:'g-divider',music:'mus-evolution',vis:s=>{const im=s?.querySelector('img[src*="s129"]')?.parentElement;return im?[im,im.nextElementSibling]:null},
     lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג האחרון.`,`Welcome to ${town}! The last badge is waiting here.`],
       ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
@@ -4751,7 +4772,7 @@ function btgDone(){const G=S.btg;if(!G||G.phase!=='fight')return;G.phase='result
 function btgAfter(){const G=S.btg;if(G.n<4){btgNext();return}G.phase='table';leagueSet('bt',G.scores);clearInterval(S.btgT);btgPaint();gamePub()}
 function btgMore(){const G=S.btg;G.set++;G.n=0;btgNext()}
 function btgBoard(){const G=S.btg;return `<div class="mrow qsm">${qRowHTML('bt',gamePlayers(),p=>{const v=S.gIn?.[p.id]?.['b'+G.id];return{bang:G.phase==='guess'&&v?'!':G.phase==='result'&&v&&!G.right?.includes(p.id)?'…':'',balls:Array(G.scores[p.id]||0).fill(3)}})}</div>`}
-function btSkipBtn(){const cv=$('#cv');if(cv&&cur()?.id==='d-battle'&&!cv.querySelector('.btskip'))cv.insertAdjacentHTML('beforeend',`<button class="btskip" onclick="if(confirm(ll('לדלג על הקרבות? הנקודות שלהם לא ייספרו.','Skip the battles? Their points will not count.')))btSkip()">⏭ ${ll('דילוג','Skip')}</button>`)}
+function btSkipBtn(){const cv=$('#cv');if(cv&&cur()?.id==='d-battle'&&!cv.querySelector('.btskip'))cv.insertAdjacentHTML('beforeend',`<button class="btskip" onclick="if(confirm(ll('לדלג על הקרבות שנשארו? קרבות ששוחקו נשארים בליגה.','Skip the remaining battles? Battles already played stay in the league.')))btSkip()">⏭ ${ll('דילוג','Skip')}</button>`)}
 function btgPaint(){btSkipBtn();const G=S.btg;if(!G)return;const b=$('#btboard');if(b)b.innerHTML=`<p class="qbh">${ll(`קרב ${G.n}/4`,`BATTLE ${G.n}/4`)}</p>`+btgBoard();
   $('#bttable')?.remove();
   if(G.phase==='table'){const rows=gamePlayers().map(p=>({p,s:G.scores[p.id]||0})).sort((a,b)=>b.s-a.s),top=rows.filter(r=>r.s===rows[0]?.s&&r.s>0);
@@ -5182,8 +5203,12 @@ function awardsBuild(){
   const by=f=>Object.fromEntries(fr.map(r=>[r.pid,f(r)]).filter(x=>x[1]!=null&&x[0]!==sid));
   const pos=o=>Object.fromEntries(Object.entries(o||{}).filter(([id,v])=>v>0&&id!==sid));
   const L=S.league||{},ms=(S.state?.mew?.statements||[]).find(m=>m.lineId===R.main[0]?.line.id);
+  // the Lake of Rage badge: the red Gyarados catcher; if nobody caught it, the most Gyarados caught (a tie goes to whoever got there first)
+  const redOn=Object.keys(pos(L.red)).length>0,gyTop=Math.max(0,...Object.entries(pos(L.gy)).map(([,v])=>v));
+  const rage=redOn?['rage','תג אגם הזעם','The Lake of Rage Badge','מי שתפס את הגיאראדוס האדום','Caught the red Gyarados',pos(L.red)]
+   :['rage','תג אגם הזעם','The Lake of Rage Badge',`הכי הרבה גיאראדוסים: ${gyTop}`,`Most Gyarados caught: ${gyTop}`,Object.fromEntries(Object.entries(pos(L.gy)).map(([id,v])=>[id,v*1e13-(+L.gyT?.[id]||0)]))];
   const LIST=[
-   ['rage','תג אגם הזעם','The Lake of Rage Badge','מי שתפס את הגיאראדוס האדום','Caught the red Gyarados',pos(L.red)],
+   rage,
    ['intellectual','תג המומחיות','The Expert Badge',gs(`התשובות הכי קרובות למה ש${n} ענה על עצמו`,`התשובות הכי קרובות למה ש${n} ענתה על עצמה`),`Answers closest to how ${n} sees ${gs('himself','herself')}`,self?by(r=>scoreCorr(r.scores,self.scores)):{}],
    ['vigor','תג האליפות','The Champion Badge','הכי הרבה נקודות בליגה של הערב','Most points in the evening league',pos(Object.fromEntries(leagueTable().map(r=>[r.p.id,r.pts])))],
    ['crafty','תג העין החדה','The Sharp Eye Badge','התשובות הכי שונות משל כל השאר','Answers unlike anyone else\'s',fr.length>2?by(r=>{const c=fr.filter(o=>o!==r).map(o=>scoreCorr(r.scores,o.scores)).filter(x=>x!=null);return c.length?-avg(c):null}):{}],
