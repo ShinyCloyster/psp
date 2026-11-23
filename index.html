@@ -663,6 +663,8 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .jqr.out,.lgflash.out{opacity:0;transition:opacity .3s}.lgflash.out{opacity:0;transform:translateY(20px);transition:all .7s}.en .lgflash{right:auto;left:24px}@keyframes lgin{from{opacity:0;transform:translateY(30px)}}
 .lgbreak{position:absolute;left:70px;top:170px;width:620px;z-index:5}.lgbreak.low{top:600px}.lgbreak.low .lgbox{max-height:420px;overflow:hidden}
 .en .lgbreak{left:auto;right:70px}
+/* round 86: the screen's #cv lays out left to right; Hebrew text with numbers in the Pokémon Center needs its own direction */
+html:not(.en) .ctrhint,html:not(.en) .facts,html:not(.en) .lgbreak{direction:rtl}
 .lgchamp{background:radial-gradient(circle at 50% 35%,#3A2F6B 0%,#161A2E 70%);color:#F6F1E7}
 .lgeb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#F2C94C}.lgti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400}
 .lgpod{position:absolute;right:110px;left:830px;top:250px;bottom:0;display:flex;align-items:flex-end;justify-content:center;gap:22px;direction:ltr}
@@ -1384,7 +1386,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795423278';
+const BUILDV='1795430706';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2872,7 +2874,7 @@ function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ
   const rev=T.filter(passed),pl=inRoom().filter(p=>!isPresenter(p)),G=S.guesses||{};
   const score={},balls={};pl.forEach(p=>{score[p.id]=0;balls[p.id]=[0,0,0,0];rev.forEach(t=>{const g=G[p.id]?.[t];if(g&&g.g===t){score[p.id]+=4-g.n;balls[p.id][g.n]++}})});
   const q=it.kind==='slide'&&/^q-/.test(it.id)?it.id.slice(2):null;
-  return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>!rev.includes(t)||t===q).sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')):[],scores:score,balls,players:pl,rev}}
+  return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>(ROOM.legacy||courseOf('q-'+t)===courseOf('q-'+q))&&(!rev.includes(t)||t===q)).sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')):[],scores:score,balls,players:pl,rev}}
 function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;
   const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores,next:S.qAuto&&!Q.revealed?S.qAuto.next:null};const k=JSON.stringify(doc);
   if(k!==S.quizKey){S.quizKey=k;S.db.doc('stage/quiz').set(doc).catch(()=>{})}
@@ -3598,7 +3600,7 @@ const CS_Q=[{t:['כמה קופסאות?','How many boxes?'],s:['כמה טיפו�
 // gr = yes, really (green: Pokémon, and anyone else who truly does it, e.g. Marx on relations), m = sort of (yellow), x = no (grey).
 // n = a plain count (column 1). What to SAY about each column goes to the host's phone (CS_NOTE), not on the screen.
 const CS_CELL={th:[['1 · 2 · 4','n'],[['וובר: כל פעולה היא תערובת','Weber: every act is a mix'],'gr'],[['מרקס: מעמד מול מעמד','Marx: class against class'],'gr'],[['חברות שלמות, לא אדם','Whole societies, not a person'],'m']],
-  hp:[['4','n'],[['הכובע התלבט','The Hat hesitated'],'m'],[['גריפינדור מול סלית׳רין','Gryffindor vs. Slytherin'],'m'],[['לא: נקבע בגיל 11','No: sorted at 11'],'x']],
+  hp:[['4','n'],[['הכובע התלבט','The Hat hesitated'],'m'],[['הפלפאף מול רייבנקלו?','Hufflepuff vs. Ravenclaw?'],'m'],[['לא: נקבע בגיל 11','No: sorted at 11'],'x']],
   fr:[['6','n'],[['״אתה קצת צ׳נדלר״','"You’re a bit of a Chandler"'],'m'],[['יחס בין כל דמות לכל דמות','A relation between every pair'],'gr'],[['הדמויות גדלות, הטיפוס נשאר','They grow, the type stays'],'m']],
   zo:[['12','n'],[['מפת לידה: אחוזים לכל יסוד','Birth chart: a % for each element'],'gr'],[['טבלת התאמה 12×12','A 12×12 match chart'],'gr'],[['השמיים זזים, אתה לא','The sky moves, you don’t'],'x']]};
 // the host's phone: what to say now (0 = before the first click, 1-4 = the columns, 5 = the Pokémon row, 6 = the BuzzFeed stamp)
@@ -3649,7 +3651,7 @@ const TK={
   "ev-friend":{who:"bill",lines:[["", "חברות: צמיחה דרך אמון.", "Friendship: growth through trust."], ["", "הגרסה הבאה מגיעה כשיש לצידך אדם קרוב שמאמין בה.", "The next version arrives when someone close to you believes in it."], ["", "קשה לגדול לבד. אבל עם הקשר הנכון, הצמיחה מהירה ועמוקה.", "It’s hard to grow alone. But with the right bond, growth is fast and deep."], ["ex", "כמו זובט וגולבט: את קרובט, השלב האחרון, משיגים רק דרך קשר.", "Like Zubat and Golbat: Crobat, the final stage, is reached only through a bond."], ["", "רק 21 ליינים במנוע תלויים בחברות.", "Only 21 lines in the engine depend on friendship."]]},
   "ev-special":{who:"bill",lines:[["", "תנאי מיוחד: צירוף נסיבות ייחודי.", "Special condition: a unique combination of circumstances."], ["", "כאן ההתפתחות לא הולכת לפי מסלול צפוי.", "Here, growth doesn’t follow a predictable path."], ["", "היא דורשת צירוף מאוד מסוים של מקום, זמן ואנשים. וכשהוא מגיע, הכול משתנה.", "It takes a very specific mix of place, time and people. And when it comes together, everything changes."], ["q", "בעולם הפוקימון, אינקיי מתפתח רק כשהופכים את הקונסולה.", "In the Pokémon world, Inkay evolves only when you turn the console upside down."], ["ex", "כדי להיות מלאמאר, צריך לראות את העולם הפוך.", "To become Malamar, you have to see the world upside down."], ["", "37 ליינים במנוע מתפתחים בתנאי מיוחד.", "37 lines in the engine evolve under a special condition."]]},
   "ev-move":{who:"bill",lines:[["", "שליטה במהלך: מיומנות שעיצבה זהות.", "Move mastery: a skill that shaped who you are."], ["", "התפתחות שמגיעה מתרגול: חוזרים על אותו מהלך, שוב ושוב.", "Growth that comes from practice: repeating the same move, again and again."], ["", "עד שהוא כבר לא משהו שעושים, אלא חלק ממי שאתה.", "Until it’s no longer something you do, but part of who you are."], ["q", "בעולם הפוקימון, פריימייפ מתפתח לאנייהילייפ רק אחרי עשרים פעמים של Rage Fist.", "In the Pokémon world, Primeape becomes Annihilape only after using Rage Fist twenty times."], ["ex", "הזעם שתורגל, הפך לזהות.", "Practised rage became identity."], ["", "וזו הנדירה מכולן: רק 16 ליינים במנוע מתפתחים כך.", "And it’s the rarest of all: only 16 lines in the engine evolve this way."]]},
-  "h-noevo":{who:"bill",lines:[["", "לא מתפתח: אוורסטון. מגיע כבר שלם.", "Doesn’t evolve: Everstone. Arrives already whole."], ["", "לליין של פוקימון אחד יש בגרות מובנית: מה שרואים מההתחלה הוא מה שיש.", "A single-stage line has built-in maturity: what you see from the start is what you get."], ["", "אדם כזה מגיע לכל מסגרת חדשה כבר שלם, ומשתנה פחות מהסביבה.", "A person like that arrives at every new framework already whole, and changes less with their surroundings."], ["ex", "כמו טאורוס, קנגסקאן, הרקרוס ולאפרס.", "Like Tauros, Kangaskhan, Heracross and Lapras."], ["", "121 ליינים במנוע הם כאלה, בלי לספור לג׳נדריים.", "121 lines in the engine are like this, not counting legendaries."], ["", "והמנוע לא מעניש ולא מתגמל על זה. זו פשוט דרך אחרת להיות.", "And the engine neither penalizes nor rewards it. It’s just another way to be."]]},
+  "h-noevo":{who:"bill",lines:[["", "לא מתפתח: אוורסטון. מגיע כבר שלם.", "Doesn’t evolve: Everstone. Arrives already whole."], ["", "לליין של פוקימון אחד יש בגרות מובנית: מה שרואים מההתחלה הוא מה שיש.", "A single-stage line has built-in maturity: what you see from the start is what you get."], ["", "אדם כזה מגיע לכל מסגרת חדשה כבר שלם, ומשתנה פחות מהסביבה.", "A person like that arrives at every new framework already whole, and changes less with their surroundings."], ["ex", "כמו טאורוס, קנגסקאן, הרקרוס ולאפרס.", "Like Tauros, Kangaskhan, Heracross and Lapras."], ["", "121 ליינים במנוע הם כאלה, בלי לספור לג׳נדריים.", "121 lines in the engine are like this, not counting legendaries."], ["", "והמנוע לא מעניש ולא מתגמל על זה. זה לא פחות טוב, רק שונה.", "And the engine neither penalizes nor rewards it. It isn’t worse, just different."]]},
   "g-bst":{who:"bill",lines:[["", "ועכשיו, כשמכירים את ששת הסטטים: הסכום מספר כמה, הצורה מספרת מי.", "Now that you know all six stats: the total tells you how much, the shape tells you who."], ["mew", "מיו: מאה בכל סטט, 600 בסך הכול. טוב בכל דבר, בלי נקודת תורפה, ובלי שום דבר שבולט.", "Mew: 100 in every stat, 600 in all. Good at everything, no weak spot, and nothing that stands out."], ["shk", "שאקל: רק 505. כמעט אפס בהתקפה ובמהירות, אבל 230 בשתי ההגנות: מומחה עולמי.", "Shuckle: only 505. Next to nothing in Attack and Speed, but 230 in both Defenses: a world-class expert."], ["hex", "ולכן מי שנותן 5 על הכול לא הופך למיו: המנוע משווה את הצורה, לא את הגודל.", "So someone who gives 5 to everything doesn’t become Mew: the engine compares the shape, not the size."]]},
 };
 // <TK_LINES
@@ -3702,7 +3704,7 @@ function csEnter(it){S.cs={id:it.id,st:0,tok:0,fill:0,pk:false,end:false,bz:fals
     <div class="cstab"><div class="csrow cshd"><div class="cslab"></div>${CS_Q.map((Q,q)=>`<div class="csqh" data-q="${q}"><b>${ll(...Q.t)}</b><span>${ll(...Q.s)}</span></div>`).join('')}</div>
     ${CS_ROWS.map(r=>`<div class="csrow"><div class="cslab"><span class="csim ${r.img.length>1?'tri':''}">${r.img.map(s=>`<img src="${s}" alt="">`).join('')}</span><b>${ll(...r.t)}</b></div>${[0,1,2,3].map(q=>cell(q,r)).join('')}</div>`).join('')}
     <div class="csrow cspk"><div class="cslab"><span class="csim"><img src="img/px-full.webp" alt="" style="image-rendering:pixelated;object-fit:contain;background:#FFFDF8"></span><b>${ll('פוקימון','Pokémon')}</b></div>${CS_PK.map((P,q)=>`<div class="cscell cy" data-q="${q}" style="--dl:${q*.55}s"><b>${ll(...P)}</b></div>`).join('')}</div></div>
-    <p class="csend">${ll('כולם יודעים לספר. פוקימון יודע לחשב.','Everyone can tell it. Pokémon can calculate it.')}<small>${ll('וכשהתשובה היא מספר, אפשר לבדוק אותה ולתקן אותה: ככה נוסף פיירי.','And when the answer is a number, you can test it and fix it: that is how Fairy was added.')}</small></p><div class="csbz"><div><small>${ll('ולכן, מה שנעשה הערב','So what we do tonight')}</small><b>${ll('הוא לא עוד שאלון של BuzzFeed.','is not another BuzzFeed quiz.')}</b></div></div><div class="cspop" id="cspop"></div>`);
+    <p class="csend">${ll('כולם יודעים לספר. פוקימון יודע לחשב.','Everyone can tell it. Pokémon can calculate it.')}<small>${ll('וכשהתשובה היא מספר, אפשר לבדוק אותה ולדייק אותה.','And when the answer is a number, you can test it and refine it.')}</small></p><div class="csbz"><div><small>${ll('ולכן, מה שנעשה הערב','So what we do tonight')}</small><b>${ll('הוא לא עוד שאלון של BuzzFeed.','is not another BuzzFeed quiz.')}</b></div></div><div class="cspop" id="cspop"></div>`);
   csPaint()}
 function csNext(){const it=cur();if(!S.cs||S.cs.id!==it?.id)return false;const C=S.cs;
   if($('#cspop.on')){csPopClose(true);return true}           // a click during a pop-up: close it now and fill its column
@@ -3760,7 +3762,7 @@ const SC_HOP=470;
 const scTrs=n=>ll(['','מאמן אחד','שני מאמנים','שלושה מאמנים'][n]||'',['','one trainer','two trainers','three trainers'][n]||'');
 const SC={
   'op-1':{part:1,town:'pewter',drop:['x-part-1','o-divider','o-me','agenda'],div:'o-divider',name:['פרופ׳ שושו','PROF. SHUSHO'],zoom:[84,33,1.4],
-    lines:(n,town,nT)=>[['gym',`ברוכים הבאים לחדר הכושר של ${town}! אני אייל, המרצה שלכם בחלק הראשון.`,`Welcome to the ${town} Gym! I'm Eyal, your lecturer for part one.`],
+    lines:(n,town,nT)=>[['gym',`ברוכים הבאים לג׳ים של ${town}! אני אייל, המרצה שלכם בחלק הראשון.`,`Welcome to the ${town} Gym! I'm Eyal, your lecturer for part one.`],
       [0,'אני אוהב פוקימון מגיל 8, אוסף קלפים מאז, ולמדתי סוציולוגיה.','I have loved Pokémon since I was 8, collected the cards ever since, and studied sociology.'],
       [0,'ובניתי את הערב הזה כדי לראות אנשים דרך העיניים של מי שמכיר אותם.','And I built this evening to see people through the eyes of those who know them.'],
       ['map',`הערב הזה הוא מסע: מסע למציאת הפוקימון של ${n}.`,`Tonight is a journey: a journey to find ${n}'s Pokémon.`],
@@ -3793,7 +3795,7 @@ const SC={
     lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג השישי.`,`Welcome to ${town}! The sixth badge is waiting here.`],
       ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
       ['tile','תשעת הסוגים ה״פיזיים״: במשחקים הישנים, כל המתקפות שלהם היו Physical.','The nine "physical" types: in the old games, all their attacks were Physical.'],
-      [0,'ואם יישאר לנו זמן בסוף: כמה קרבות, לראות אם אפשר לחשב מראש מי ינצח.','And if we have time left at the end: a few battles, to see if you can work out who will win.']]},
+      [0,'ובסוף: כמה קרבות, לראות אם אפשר לחשב מראש מי ינצח.','And at the end: a few battles, to see if you can work out who will win.']]},
   'cd-8':{mid:1,part:4,course:8,town:'viridian',drop:['h-divider'],div:'h-divider',prev:'g-divider',music:'mus-evolution',vis:s=>{const im=s?.querySelector('img[src*="s129"]')?.parentElement;return im?[im,im.nextElementSibling]:null},
     lines:(n,town,nT,ti)=>[['gym',`ברוכים הבאים ל${town}! כאן מחכה התג האחרון.`,`Welcome to ${town}! The last badge is waiting here.`],
       ['sign',`הקורס הבא: ${ti}.`,`Next course: ${ti}.`],
@@ -4683,9 +4685,12 @@ function slideOn(id,sk){const c=courseOf(id);if(c&&sk.has('c'+c))return false;le
   m=id.match(/^x-(part|sum)-(\d)$/);if(m&&(PARTS[m[2]]||[]).every(c=>sk.has('c'+c)))return false;return true}
 // stats and ways to evolve: each round stays glued to its explanation slide, but the pairs come in a different order every evening
 const PQ_PAIRS={'pq-stats':['st',['hp','atk','def','spa','spd','spe']],'pq-evo':['ev',['level','item','trade','friend','special','move','none']]};
+// round 86: the evolution rounds keep one order (Eyal): the most convincing first, move and special late, Everstone last
+const EVO_ORD=['trade','item','level','friend','move','special','none'];
 function pqShuffle(){S.pqPos={};const seed=String(ROOM.code||'')+String(S.state?.eve||'');
   Object.entries(PQ_PAIRS).forEach(([key,[pre,ks]])=>{const pairs=ks.map(k=>{const a=SEQ.findIndex(x=>x.id===`pq-${pre}-${k}`),b=SEQ.findIndex(x=>x.id===(k==='none'?'h-noevo':`${pre}-${k}`));return a>=0&&b===a+1?{k,a}:null}).filter(Boolean);if(pairs.length<2)return;
     const start=Math.min(...pairs.map(p=>p.a)),r=rng(seed+key),ord=pairs.slice();for(let i=ord.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[ord[i],ord[j]]=[ord[j],ord[i]]}{const ni=ord.findIndex(p=>p.k==='none');if(ni>=0&&!ROOM.legacy)ord.push(...ord.splice(ni,1))}
+    if(key==='pq-evo'&&!ROOM.legacy)ord.sort((x,y)=>EVO_ORD.indexOf(x.k)-EVO_ORD.indexOf(y.k));
     const items=ord.flatMap(p=>[SEQ[p.a],SEQ[p.a+1]]);if(pairs.every(p=>p.a>=start&&p.a<start+pairs.length*2))SEQ.splice(start,items.length,...items);S.pqPos[key]=ord.map(p=>p.k)})}
 const pqPosOf=(key,k)=>{const o=S.pqPos?.[key];const i=o?o.indexOf(k):-1;return i>=0?i:PQ[key].items.findIndex(x=>x.k===k)};
 function leagueSpot(){const G=['s-memory','c-memory','d-battle','quizwin','pq-stats','pq-evo'];let last=null;for(let i=SEQ.length-1;i>=0;i--){if(!G.includes(SEQ[i].id))continue;if(last&&G.includes(SEQ[i+1]?.id))continue;if(!last&&/^pq-/.test(SEQ[i].id)){SEQ[i].final=true;last=SEQ[i];continue}if(last)continue;const it={kind:'league',id:'league',fin:true};last=it;SEQ.splice(i+1,0,it)}}
@@ -4919,7 +4924,7 @@ function pkCard(id){const c=CARDS.chars[id],w=c.w,p=CARDS.worlds[w],an=c.atk,fs=
 function pkFlip(id,o){o=o||{};const w=o.w||300,h=Math.round(w*1.1963),cls=o.fl?' fl':o.d!=null?' ft':'';
   return `<div class="pkf${cls}" ${o.attrs||''} style="width:${w}px;height:${h}px;font-size:${(w/34).toFixed(3)}px;${o.d!=null?`--d:${Math.round(o.d)}ms;`:''}${o.st||''}"><div class="pkin"><div class="pkfr">${pkCard(id)}</div><div class="pkbk"><img src="img/card-back.webp" alt=""></div></div>${o.tc?`<i class="pkglow" ${o.glow||''} style="--tc:${o.tc}"></i>`:''}${o.extra||''}</div>`}
 // q-<type>: swap the three characters (photo, name, the line of the row they were cast through) for the room's
-function castQ(h,t){const ids=castSeats()?.[t];if(!ids||ids.filter(Boolean).length<3||!CAST_FR[t])return h;let i=0;
+function castQ(h,t){const ids=castSeats()?.[t]?.slice().sort((x,y)=>(castRow(y,t)?.[3]||0)-(castRow(x,t)?.[3]||0));if(!ids||ids.filter(Boolean).length<3||!CAST_FR[t])return h;let i=0;
   return h.replace(/<div data-build-in="rise (\d)"([^>]*)>\s*<img src="img\/n-[a-z]+-[a-z]+\.webp"[^>]*>\s*<p([^>]*)>[^<]*<\/p>\s*<p([^>]*)>[^<]*<\/p>\s*<\/div>\s*<img data-build-in="fade 5" src="img\/c-[a-z]+-[a-z]+\.webp"[^>]*style="([^"]*)">/g,(m,k,a,p1,p2,st)=>{
     const id=ids[i++];if(!id||!CAST.chars[id])return m;const r=castRow(id,t)||[],why=LL([r[4]||'',r[5]||'']),rl=EN?'':'‫',small=why.length>80?'font-size:23px;':why.length>52?'font-size:26px;':'';
     if(pkOK(id))return `<div${a}>${pkFlip(id,{w:320,st:'margin-top:24px',fl:true,attrs:`data-build-in="flip ${k}"`,tc:TYPE_COL[t],glow:'data-build-in="fade 5"'})}<div data-build-in="rise ${k}" style="display:flex;flex-direction:column;align-items:center;gap:10px"><p${p1}>${rl}${esc(LL(CAST.chars[id].n))}</p><p${p2.replace('style="','style="'+small)}>${rl}${esc(why)}</p></div></div>`;
