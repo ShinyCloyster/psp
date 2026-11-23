@@ -634,6 +634,23 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pkstg{display:flex;align-items:center;gap:.4em;white-space:nowrap;overflow:hidden;font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-size:.72em;line-height:1}
 .pkstg b{font-weight:800;font-style:italic;padding:.12em .45em .1em;border-radius:.2em;color:#2f333a;background:linear-gradient(180deg,#fff,#c9cdd3);letter-spacing:.03em}
 .pkstg i{font-weight:700;opacity:.9;overflow:hidden;text-overflow:ellipsis}
+/* round 92: album cards on the walking maps */
+.twcard{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
+.twcard img{position:absolute;width:calc(var(--c) * 1.05);left:calc(var(--c) * -.525);bottom:calc(var(--c) * .3);image-rendering:pixelated;filter:drop-shadow(0 0 calc(var(--c) * .08) rgba(255,255,255,.9));animation:twcbob 1.1s ease-in-out infinite alternate}
+.twcsh{position:absolute;width:calc(var(--c) * .8);height:calc(var(--c) * .24);left:calc(var(--c) * -.4);top:calc(var(--c) * -.16);border-radius:50%;background:rgba(0,0,0,.38);animation:twcsh 1.1s ease-in-out infinite alternate}
+@keyframes twcbob{from{transform:translateY(0)}to{transform:translateY(calc(var(--c) * -.3))}}@keyframes twcsh{from{transform:scale(1)}to{transform:scale(.7);opacity:.6}}
+.twcard.pop img{animation:twcpop .6s ease-out,twcbob 1.1s .6s ease-in-out infinite alternate}@keyframes twcpop{40%{transform:translateY(calc(var(--c) * -.5)) scale(1.5);filter:drop-shadow(0 0 12px #fff) brightness(1.6)}}
+.twcgot{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;z-index:999;animation:twcgot 1.8s ease-out forwards;pointer-events:none}
+.twcgot img{width:30px;image-rendering:pixelated;filter:drop-shadow(0 0 6px #fff)}.twcgot b{font:700 16px var(--body);color:#fff;background:rgba(22,26,46,.85);border-radius:6px;padding:0 6px}
+@keyframes twcgot{0%{opacity:0;transform:translate(-50%,-60%)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-190%)}}
+.twcem{display:flex;align-items:center;gap:6px}.twcem img{height:26px;width:auto;image-rendering:pixelated}
+.albs.off.walk small{position:relative;font-size:11px;color:var(--mist);padding:2px 6px 0;line-height:1.2}
+/* round 92: on the pad screens (walks, the lake, the Pokémon Center) the whole phone is a Game Boy: the text in its screen, the pad at the bottom */
+body:has(.gbcol){background:#C8C4BC;background-image:none}
+.col.gbcol{min-height:calc(100dvh - 24px);gap:0}
+.gbscr{flex:1 1 auto;min-height:38vh;justify-content:center;background:var(--night);border:12px solid #4E5263;border-radius:12px 12px 42px 12px;padding:14px 14px 18px;box-shadow:0 2px 0 #3B3E4C,inset 0 0 0 2px #2B2F44;position:relative;display:flex;flex-direction:column;gap:10px}
+.gbscr::before{content:'';position:absolute;left:-8px;top:46%;width:7px;height:7px;border-radius:50%;background:#E0393E;box-shadow:0 0 6px #ff4b4b}
+.gbcol>.gb{margin-top:14px;flex:none;max-width:none;background:transparent;box-shadow:none;border-radius:0;padding-bottom:max(24px,env(safe-area-inset-bottom))}
 /* round 91: the card album */
 .pkc.holo::after{content:"";position:absolute;inset:0;border-radius:1.4em;pointer-events:none;z-index:4;mix-blend-mode:color-dodge;opacity:.28;
   background:linear-gradient(115deg,transparent 18%,#ff4fd8 30%,#4ff0ff 42%,#fff36b 54%,#7dff7a 66%,transparent 80%);background-size:280% 280%;animation:pkholo 3.6s linear infinite}
@@ -1565,7 +1582,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795450702';
+const BUILDV='1795451802';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2094,6 +2111,7 @@ function render(){
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
+  {const gbx=app.querySelector('.col>.gb');if(gbx){const col=gbx.parentElement,scr=document.createElement('div');scr.className='gbscr';[...col.children].filter(e=>e!==gbx).forEach(e=>scr.appendChild(e));col.insertBefore(scr,gbx);col.classList.add('gbcol')}} // round 92: the whole phone is a Game Boy
   try{if(S.myIntro==null){try{const r=RAWSTORE.get('psp-intro')||'';S.myIntro=/^\{/.test(r)?JSON.parse(r):r}catch(e){S.myIntro=''}}introBtn()}catch(e){}
   try{albTick()}catch(e){console.error(e)}
   if(!S.remoteMode&&S.game?.hand&&!S.game.g&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="handbtn" onclick="twHand()">✋ ${ll('יש לי משהו להגיד','I have something to say')}</button>`);
@@ -3593,7 +3611,7 @@ function twSpot(tw){const T=TOWN[tw.town];let src=T.spawn;if(tw.from==='door')sr
 const twPpl=()=>gamePlayers().filter(p=>lkAv(p));
 // the map, fitted into a box of the screen; characters are scaled to the town's tiles (a character is ~1.5 tiles tall, like the games)
 function twMount(host,bw,bh,ox,oy){$('#tw')?.remove();$('#twhud')?.remove();const tw=S.tw,T=TOWN[tw.town],k=Math.min(bw/T.w,bh/T.h),W=Math.round(T.w*k),H=Math.round(T.h*k);tw.c=T.t*k;
-  host.insertAdjacentHTML('beforeend',`<div class="tw" id="tw" style="left:${Math.round(ox+(bw-W)/2)}px;top:${Math.round(oy+(bh-H)/2)}px;width:${W}px;height:${H}px"><img class="twimg" src="${T.img}" alt="" style="width:${W}px;height:${H}px"><div id="twmk" class="twmk"></div><div id="twon" class="twon" style="--s:${(tw.c/32).toFixed(3)}"></div>${(T.over||[]).map(([x0,y0,x1,y1,top])=>{const kk=tw.c/T.t,tp=(top??y0*T.t)*kk;return `<div class="twover" style="left:${x0*tw.c}px;top:${tp}px;width:${(x1-x0+1)*tw.c}px;height:${(y1+1)*tw.c-tp}px;background-image:url(${T.img});background-size:${W}px ${H}px;background-position:${-x0*tw.c}px ${-tp}px;z-index:${y1*10+4}"></div>`}).join('')}${T.top?`<img class="twtop" src="${T.top}" alt="" style="width:${W}px;height:${H}px">`:''}<div class="twname">${ll(...TW_NAME[tw.town])}</div></div><div id="twhud" class="twhud"></div>`);
+  host.insertAdjacentHTML('beforeend',`<div class="tw" id="tw" style="left:${Math.round(ox+(bw-W)/2)}px;top:${Math.round(oy+(bh-H)/2)}px;width:${W}px;height:${H}px"><img class="twimg" src="${T.img}" alt="" style="width:${W}px;height:${H}px"><div id="twmk" class="twmk"></div><div id="twon" class="twon" style="--s:${(tw.c/32).toFixed(3)}">${twCardsHTML(tw)}</div>${(T.over||[]).map(([x0,y0,x1,y1,top])=>{const kk=tw.c/T.t,tp=(top??y0*T.t)*kk;return `<div class="twover" style="left:${x0*tw.c}px;top:${tp}px;width:${(x1-x0+1)*tw.c}px;height:${(y1+1)*tw.c-tp}px;background-image:url(${T.img});background-size:${W}px ${H}px;background-position:${-x0*tw.c}px ${-tp}px;z-index:${y1*10+4}"></div>`}).join('')}${T.top?`<img class="twtop" src="${T.top}" alt="" style="width:${W}px;height:${H}px">`:''}<div class="twname">${ll(...TW_NAME[tw.town])}</div></div><div id="twhud" class="twhud"></div>`);
   twMarks();twRun()}
 function twMarks(){const tw=S.tw,mk=$('#twmk');if(!mk)return;const T=TOWN[tw.town],c=tw.c;if(tw.ph!=='go'&&tw.ph!=='help'&&tw.ph!=='intro'){mk.innerHTML='';return}
   const cells=twCells(T,tw.to),xs=cells.map(p=>p[0]),ys=cells.map(p=>p[1]),x0=Math.min(...xs),x1=Math.max(...xs)+1,y0=Math.min(...ys),y1=Math.max(...ys)+1;
@@ -3605,9 +3623,9 @@ function twRun(){const tw=S.tw,run=S.twRun=(S.twRun||0)+1;let last=performance.n
     twPpl().forEach(p=>{let P=tw.pos[p.id];if(!P)P=tw.pos[p.id]=twSpot(tw);let el=$('#twp-'+p.id);if(P.done)return;
       if(!el){on.insertAdjacentHTML('beforeend',`<div class="lkp twp" id="twp-${p.id}"><div class="lkq"><b>${esc(p.name)}</b><span class="lki"><i class="lks" data-s=""></i></span></div></div>`);el=$('#twp-'+p.id)}
       const m=S.mv?.[p.id],d=m&&m.s===tw.sid?m.d:null;
-      if(!P.to&&d&&tw.ph!=='help'&&tw.ph!=='intro'&&!P.held){const dx=d==='l'?-1:d==='r'?1:0,dy=d==='u'?-1:d==='d'?1:0;if(dx||dy){P.d=d;const x0=Math.round(P.x),y0=Math.round(P.y),nx=x0+dx,ny=y0+dy;
+      if(!P.to&&d&&tw.ph!=='help'&&tw.ph!=='intro'&&!P.held&&!(P.ch>Date.now())){const dx=d==='l'?-1:d==='r'?1:0,dy=d==='u'?-1:d==='d'?1:0;if(dx||dy){P.d=d;const x0=Math.round(P.x),y0=Math.round(P.y),nx=x0+dx,ny=y0+dy;
         const st=twStep(T,x0,y0,d);if(st){P.to=st.to;P.from=[P.x,P.y];P.k=0;if(st.jump){P.jump=true;sfx('sfx-jump',.55)}}else twBump(p,P)}}
-      if(P.to){P.k+=(P.jump?(Math.abs(P.to[0]-P.from[0])>1.5?3.4:4.2):6)*dt;if(P.jump){const h=Math.sin(Math.PI*Math.min(1,P.k));el.style.setProperty('--hy',(-h*14).toFixed(1)+'px');el.style.setProperty('--hs',(1+h*.1).toFixed(3));el.style.setProperty('--ho',h>.02?'1':'0');if(P.k>=1){P.jump=false;el.style.setProperty('--hy','0px');el.style.setProperty('--hs','1');el.style.setProperty('--ho','0')}}if(P.k>=1){P.x=P.to[0];P.y=P.to[1];P.to=null;twArrive(p,P)}else{P.x=P.from[0]+(P.to[0]-P.from[0])*P.k;P.y=P.from[1]+(P.to[1]-P.from[1])*P.k}}
+      if(P.to){P.k+=(P.jump?(Math.abs(P.to[0]-P.from[0])>1.5?3.4:4.2):6)*dt;if(P.jump){const h=Math.sin(Math.PI*Math.min(1,P.k));el.style.setProperty('--hy',(-h*14).toFixed(1)+'px');el.style.setProperty('--hs',(1+h*.1).toFixed(3));el.style.setProperty('--ho',h>.02?'1':'0');if(P.k>=1){P.jump=false;el.style.setProperty('--hy','0px');el.style.setProperty('--hs','1');el.style.setProperty('--ho','0')}}if(P.k>=1){P.x=P.to[0];P.y=P.to[1];P.to=null;twCardTouch(p,P);twArrive(p,P)}else{P.x=P.from[0]+(P.to[0]-P.from[0])*P.k;P.y=P.from[1]+(P.to[1]-P.from[1])*P.k}}
       if(m&&m.s===tw.sid&&m.t!=null&&m.t!==P.lt){const fresh=P.lt!=null;P.lt=m.t;if(fresh&&tw.ph==='free')twThrow(tw,P)}
       if(m&&m.s===tw.sid&&m.b&&m.b!==P.lb){const fresh=P.lb!=null;P.lb=m.b;if(fresh||Date.now()-m.b<4000){el.classList.remove('hl');void el.offsetWidth;el.classList.add('hl');clearTimeout(P.hlT);P.hlT=setTimeout(()=>el.classList.remove('hl'),1600)}}
       el.style.transform=`translate(${Math.round((P.x+.5)*c)}px,${Math.round((P.y+TW_FEET-(P.lift||0))*c)}px)`;el.style.zIndex=P.lift?998:Math.round(P.y*10)+5;
@@ -3635,6 +3653,24 @@ function xAla(){const cv=$('#cv'),o=cv?.querySelector('img[alt="tr-oak"]'),sec=c
   sec.insertAdjacentHTML('beforeend',`<i class="xala" style="left:${Math.round((r.right-C.left)/z-40)}px;top:${Math.round((r.bottom-C.top)/z-170)}px"></i>`)}
 function twThrow(tw,P){const on=$('#twon');if(!on)return;const d=P.d||'d',dx=d==='l'?-1:d==='r'?1:0,dy=d==='u'?-1:d==='d'?1:0,c=tw.c,el=document.createElement('img');el.className='lkball twball';el.src='img/it-poke-ball.webp';
   el.style.transform=`translate(${(P.x+.5)*c}px,${(P.y+.3)*c}px)`;on.appendChild(el);sfx('sfx-ball-toss');requestAnimationFrame(()=>{el.style.transform=`translate(${(P.x+.5+dx*2.5)*c}px,${(P.y+.3+dy*2.5)*c}px)`});setTimeout(()=>{el.classList.add('poof');setTimeout(()=>el.remove(),400)},450)}
+// round 92: ALBUM CARDS ON THE WALKS. A face-down card (img/tw-card.png, cut by app/card_sprite_build.py) floats over a tile, bobbing, with a
+// shadow. It lies where you can reach it in time from the start, but going for it means a detour you can't finish before the door closes:
+// whoever goes for it most likely gets a card instead of a ball and needs Pidgeot/Alakazam. Everyone who reaches it gets it (it stays).
+const TW_CARD_V=4,TW_CARD_HOLD=1500; // tiles per second a real player manages; the item-get pause
+function twCardSpots(T,n,dur){if(!n)return [];const sp=T.spawn||[],door=twCells(T,'door');if(!sp.length||!door.length)return [];
+  const dS=twBfs(T,sp),dD=twBfs(T,door),R=T.map.length,C=T.map[0].length,s0=Math.min(...sp.map(([x,y])=>dD[y]?.[x]).filter(v=>v>=0)),B=TW_CARD_V*dur/1000;
+  const over=(x,y)=>(T.over||[]).some(([x0,y0,x1,y1])=>x>=x0&&x<=x1&&y>=y0-1&&y<=y1+1),cand=[];
+  for(let y=1;y<R-1;y++)for(let x=1;x<C-1;x++){if(T.map[y][x]!=='g'||T.map[y-1][x]!=='g')continue;const a=dS[y][x],b=dD[y][x];if(a<6||b<6||over(x,y))continue;cand.push({x,y,a,b})}
+  const pick=[];for(let k=0;k<n;k++){let best=null,bs=-1e9;cand.forEach(c=>{if(pick.some(p=>Math.abs(p.x-c.x)+Math.abs(p.y-c.y)<12))return;
+    const sc=(c.a<=.55*B?1000:-c.a)+Math.min(c.a+c.b-s0,.9*B)+(c.b>s0?25:0)+(c.b>c.a?10:0);if(sc>bs){bs=sc;best=c}});if(best)pick.push(best)}
+  return pick.map(c=>({x:c.x,y:c.y,a:c.a,b:c.b,s0,B:Math.round(B)}))}
+function twCardsFor(town,dur){if(!albOn())return null;const ids=albWalkPlan()[town]||[];if(!ids.length)return null;const T=TOWN[town],sp=twCardSpots(T,ids.length,dur);
+  const L=ids.map((id,i)=>sp[i]&&{id,...sp[i],got:{},dist:twBfs(T,[[sp[i].x,sp[i].y]])}).filter(Boolean);return L.length?L:null}
+function twCardsHTML(tw){return (tw.cards||[]).map((k,i)=>`<div class="twcard" id="twc-${i}" style="transform:translate(${((k.x+.5)*tw.c).toFixed(1)}px,${((k.y+.95)*tw.c).toFixed(1)}px);z-index:${k.y*10+4};--c:${tw.c.toFixed(1)}px"><i class="twcsh"></i><img src="img/tw-card.png" alt=""></div>`).join('')}
+function twCardTouch(p,P){const tw=S.tw;if(!tw.cards||tw.ph!=='go'||P.done)return;const x=Math.round(P.x),y=Math.round(P.y);
+  tw.cards.forEach((k,i)=>{if(k.x!==x||k.y!==y||k.got[p.id])return;k.got[p.id]=1;albGive({[p.id]:[k.id]});if(P.cg===i)P.cg=-1;P.ch=Date.now()+TW_CARD_HOLD;P.d='d';
+    const on=$('#twon'),c=tw.c;sfx('sfx-dex-page-added');if(on){on.insertAdjacentHTML('beforeend',`<div class="twcgot" style="left:${(P.x+.5)*c}px;top:${(P.y-.5)*c}px"><img src="img/tw-card.png" alt=""><b>${esc(p.name)}</b></div>`);const g=on.lastElementChild;setTimeout(()=>g.remove(),1800)}
+    const el=$('#twc-'+i);if(el){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}})}
 function twArrive(p,P){const tw=S.tw;if(tw.ph!=='go'||!tw.tgt)return;if(!tw.tgt.has(Math.round(P.x)+','+Math.round(P.y)))return;twGone(p.id,P,tw.to==='door'?'in':'out')}
 // someone made it: they leave the map; on a leg with balls the first three get an Ultra / Great / Poké Ball
 function twGone(id,P,how){const tw=S.tw;if(P.done)return;P.done=true;P.to=null;tw.order.push(id);const el=$('#twp-'+id),i=tw.order.length-1,leg=tw.leg;
@@ -3645,7 +3681,7 @@ function twTick(){const tw=S.tw,hud=$('#twhud');if(!hud)return;
   if(tw.ph==='free'){if(hud.dataset.k!=='free'){hud.dataset.k='free';hud.innerHTML=''}return}
   if(tw.ph==='go'){const left=Math.max(0,Math.ceil((tw.end-Date.now())/1000)),k='go'+left;
     if(hud.dataset.k!==k){hud.dataset.k=k;const dest=tw.to==='exit'?ll(`כולם אל החץ! בדרך ל${twNextName()}`,`Everyone to the arrow! On to ${twNextName()}`):tw.leg?.place?ll('כולם לנקודת המפגש! שם מחכה המאמן','Everyone to the meeting point! The trainer is waiting there'):(tw.leg?.end?ll('כולם אל הליגה! הדלת המסומנת','Everyone into the League! The marked door'):ll('כולם לג׳ים! הדלת המסומנת','Everyone into the gym! The marked door'));
-      hud.innerHTML=`<div class="twclock${left<=5?' low':''}"><b>${left}</b><span>${dest}</span>${tw.leg?.balls?`<em>${ll('הראשונים מקבלים','The first ones get')} <img src="img/${QBALL[1][0]}.webp" alt=""><img src="img/${QBALL[2][0]}.webp" alt=""><img src="img/${QBALL[3][0]}.webp" alt=""></em>`:''}</div>`}
+      hud.innerHTML=`<div class="twclock${left<=5?' low':''}"><b>${left}</b><span>${dest}</span>${tw.leg?.balls?`<em>${ll('הראשונים מקבלים','The first ones get')} <img src="img/${QBALL[1][0]}.webp" alt=""><img src="img/${QBALL[2][0]}.webp" alt=""><img src="img/${QBALL[3][0]}.webp" alt=""></em>`:''}${tw.cards?`<em class="twcem"><img src="img/tw-card.png" alt="">${ll('קלף לאלבום! מי שמגיע אליו לוקח','An album card! Whoever reaches it takes it')}</em>`:''}</div>`}
     const ppl=twPpl();if(ppl.length&&ppl.every(p=>tw.pos[p.id]?.done))twLegEnd();else if(Date.now()>=tw.end)twHelp();return}
   if(tw.ph==='help'&&hud.dataset.k!=='help'){hud.dataset.k='help';hud.innerHTML=''}}   // Alakazam / Pidgeot just help, with no caption
 // the League's doors close behind everyone: the door sound, a white flash, then on to the Hall of Fame
@@ -3676,7 +3712,7 @@ function twLegEnd(){const tw=S.tw;if(tw.ph==='done'||tw.ending)return;tw.ending=
 function twLeg(it,i){const L=twLegsOf(it.id)[i];let tw=S.tw;
   if(!tw||tw.town!==L.town||L.from){tw=S.tw=twNew(L.town);tw.from=L.from||'spawn'}else{tw.sid=(Date.now()%1e9)|0;Object.values(tw.pos).forEach(P=>{P.done=false;P.held=false;P.to=null})}
   const dur=(twT()+(it.id==='w-celadon'?(S.fastOn?5:10):it.id==='w-viridian'?(S.fastOn?3:5):0))*1000,who=lwWho(),call=!L.anim&&!L.place&&!L.end&&L.to==='door'&&!!TOWN.gymOf?.[L.town]&&!!who;
-  tw.leg=L;tw.legI=i;tw.ph=call?'intro':'go';tw.to=L.to;tw.end=Date.now()+dur;tw.order=[];tw.got={};tw.ending=false;const T=TOWN[L.town];tw.tgt=new Set(twCells(T,L.to).map(p=>p.join(',')));tw.dist=twBfs(T,twCells(T,L.to));
+  tw.leg=L;tw.legI=i;tw.ph=call?'intro':'go';tw.to=L.to;tw.end=Date.now()+dur;tw.order=[];tw.got={};tw.ending=false;const T=TOWN[L.town];tw.tgt=new Set(twCells(T,L.to).map(p=>p.join(',')));tw.dist=twBfs(T,twCells(T,L.to));tw.cards=!L.anim&&L.to==='door'?twCardsFor(L.town,dur/(S.fastOn?.5:1)):null;Object.values(tw.pos).forEach(P=>{P.cg=undefined});
   const cv=$('#cv'),inOut=TOWN[L.town]?.inside||TOWN[S.twPrev]?.inside;cv.innerHTML=`<div class="st twst"></div>`;twMount(cv.firstElementChild,1920,1080,0,0);
   if(S.twPrev&&S.twPrev!==L.town&&inOut){sfx('sfx-door',.6);cv.insertAdjacentHTML('beforeend','<i class="twblink"></i>');setTimeout(()=>$('.twblink')?.remove(),700)}S.twPrev=L.town;
   music(L.to==='door'?'mus-route101':'mus-ethan',{vol:.2});if(L.place)trNpc(trNum());else if(TR_PLACE[L.town])trNpc(trLast());
@@ -4358,7 +4394,9 @@ function twArrNext(){if(S.twArrBusy||!S.twQ?.length)return;const p=S.twQ.shift()
 // bots: wander in the free walk, walk downhill to the target in a leg
 function twBots(B){const tw=S.tw;if(!tw)return;const mv=S.mv||(S.mv={});
   B.forEach(id=>{const P=tw.pos[id];if(!P||P.done)return;
-    if(tw.ph==='go'&&tw.dist){const x=Math.round(P.x),y=Math.round(P.y),d0=tw.dist[y]?.[x];let bd=null;if(d0>0)for(const[dx,dy,k]of[[0,-1,'u'],[1,0,'r'],[-1,0,'l'],[0,1,'d']].sort(()=>Math.random()-.5)){const T=TOWN[tw.town],st=twStep(T,x,y,k),v=st?tw.dist[st.to[1]]?.[st.to[0]]:-1;if(v>=0&&v<d0){bd=k;break}}
+    if(tw.ph==='go'&&tw.dist){if(P.cg===undefined)P.cg=tw.cards&&Math.random()<.35?Math.floor(Math.random()*tw.cards.length):-1;
+      const K=P.cg>=0?tw.cards?.[P.cg]:null,F=K&&!K.got[id]?K.dist:tw.dist;if(K&&K.got[id])P.cg=-1;
+      const x=Math.round(P.x),y=Math.round(P.y),d0=F[y]?.[x];let bd=null;if(d0>0)for(const[dx,dy,k]of[[0,-1,'u'],[1,0,'r'],[-1,0,'l'],[0,1,'d']].sort(()=>Math.random()-.5)){const T=TOWN[tw.town],st=twStep(T,x,y,k),v=st?F[st.to[1]]?.[st.to[0]]:-1;if(v>=0&&v<d0){bd=k;break}}
       mv[id]={d:bd&&Math.random()<.8?bd:Math.random()<.5?'':brnd(['u','d','l','r']),s:tw.sid}}
     else if(tw.ph==='free'&&Math.random()<.3)mv[id]={d:Math.random()<.4?'':brnd(['u','d','l','r']),s:tw.sid,t:Math.random()<.06?Date.now():(mv[id]?.t||0)}})}
 // the gym room in a corner during the lectures: everyone seated, the lecturer in front; a raised hand shows "!"
@@ -5206,25 +5244,16 @@ function castSolve(worlds,o){o=o||{};const W=new Set(worlds),C=CAST.chars,sk=new
   rows.forEach(r=>{const a=id.get('c'+r[0]),b=id.get('d'+r[1]);if(G[a].some(e=>e[0]===b&&e[1]===0&&e[2]<0)&&!seats[r[1]].includes(r[0]))seats[r[1]].push(r[0])});
   Object.entries(seats).forEach(([d,L])=>L.sort((x,y)=>(castRow(y,d)?.[3]||0)-(castRow(x,d)?.[3]||0)));
   castSolve.cost=cost;return seats}
-// round 91 (the card album): every world in the evening gives EXACTLY 6 cards: 12 worlds x 6 = the 72 seats of types, stats and evolution;
-// Everstone (none) is the one seat outside the worlds, its character picked first (best score). Then the 12 worlds out of those allowed:
-// every set of 12 when there are few enough (15 worlds = 455 tries, ~2 s), else drop the world whose removal costs least, one at a time, then swap one in / one out while it helps (each try = a full casting with
-// at most 6 per world; with 12 worlds and 72 seats a full casting is exactly 6 per world). Fewer than 12 allowed: the old casting (no cap).
-const ALB_PER=6,ALB_N=12,ALB_EVB=300;
-function castSolveAlbum(worlds){if(worlds.length<ALB_N)return castSolve(worlds);   // fewer than 12 worlds allowed: the games come first (every seat filled), the album just isn't even
-  const C=CAST.chars,W=worlds.slice(),ev=CAST.rows.filter(r=>r[1]==='none'&&W.includes(C[r[0]]?.w)).sort((a,b)=>b[3]-a[3]||(a[2]==='P'?-1:1));
-  const none=ev[0]?.[0]||null,memo={},run=ws=>{const k=ws.slice().sort().join(',');if(!memo[k]){const seats=castSolve(ws,{cap:ALB_PER,skip:none?[none]:[],no:['none']});memo[k]={seats,cost:castSolve.cost}}return memo[k]};
-  const comb=(a,k)=>k===0?[[]]:a.length<k?[]:[...comb(a.slice(1),k-1).map(x=>[a[0],...x]),...comb(a.slice(1),k)],nC=(n,k)=>{let r=1;for(let i=0;i<k;i++)r=r*(n-i)/(i+1);return r};
-  let cur=W.slice();
-  if(W.length>ALB_N&&nC(W.length,ALB_N)<=3000){let best=null;comb(W,ALB_N).forEach(ws=>{const r=run(ws);if(!best||r.cost<best.c)best={ws,c:r.cost}});cur=best.ws}  // few enough: try every set of 12
-  while(cur.length>ALB_N){let best=null;cur.forEach(x=>{const ws=cur.filter(w=>w!==x),r=run(ws);if(!best||r.cost<best.c)best={ws,c:r.cost}});cur=best.ws}
-  if(cur.length===ALB_N)for(let better=true;better;){better=false;const base=run(cur).cost;
-    out:for(const o of cur)for(const i of W.filter(w=>!cur.includes(w))){const ws=[...cur.filter(w=>w!==o),i];if(run(ws).cost<base-1e-9){cur=ws;better=true;break out}}}
-  const seats=JSON.parse(JSON.stringify(run(cur).seats));seats.none=none?[none]:[];return seats}
+// round 92 (the card album): a world gives AT MOST 6 cards to the games (Eyal: "max 6 per world is the right rule for the casting");
+// worlds with fewer get the rest as cards picked up on the walks (albWalkIds). Everstone (none) is outside the worlds and the album:
+// its character is picked first (best score) and doesn't count for the world cap or the show rule.
+const ALB_PER=6,ALB_EVB=300;
+function castSolveAlbum(worlds){const C=CAST.chars,W=worlds.slice(),ev=CAST.rows.filter(r=>r[1]==='none'&&W.includes(C[r[0]]?.w)).sort((a,b)=>b[3]-a[3]||(a[2]==='P'?-1:1));
+  const none=ev[0]?.[0]||null,seats=castSolve(W,{cap:ALB_PER,skip:none?[none]:[],no:['none']});seats.none=none?[none]:[];return seats}
 // ===== round 91: THE CARD ALBUM (new rooms with a cast; ERI1 has none). Spec: handoff/PSP-album-spec.md =====
 // Every friend and the subject (not the host) collects, for a RIGHT guess only: types = all three of the type's cards (however many
 // were face up when you guessed; Eyal, round 92); stats = both cards of the pair; evolution = the
-// "after" card; Everstone = its own special card (guessing "Other"). The screen writes `stage/album` {<pid>: {<card id>: time}};
+// "after" card; Everstone gives nothing (round 92: out of the album); walk cards: whoever reaches a card lying on a walking map (twCard*). The screen writes `stage/album` {<pid>: {<card id>: time}};
 // after the Hall of Fame's last step it writes `_subj` and everyone gets the subject's card (their big sprite + their Pokémon).
 // All 6 of a world = a completion show in that world's theme + its HOLO card (cards.json worlds[w].holo), on the phone only.
 const ALB_ST=['hp','atk','def','spa','spd','spe'],ALB_EV=['level','item','trade','friend','special','move'];
@@ -5235,13 +5264,25 @@ function albEvoId(k){const id=castSeats()?.[k]?.[0];if(!id||!CAST.chars[id])retu
 function albModel(){if(!albOn())return null;const key=JSON.stringify(castSeats());if(S.albM?.key===key)return S.albM;
   const ids=[...new Set([...Object.keys(CAST_FR).flatMap(albTypeIds),...ALB_ST.flatMap(albStatIds),...ALB_EV.map(albEvoId).filter(Boolean)])],W={};
   ids.forEach(id=>{const w=CARDS.chars[id].w;(W[w]=W[w]||[]).push(id)});
-  return S.albM={key,worlds:CAST.worlds.map(x=>x[0]).filter(w=>W[w]).map(w=>({w,ids:W[w],holo:pkOK(CARDS.worlds[w]?.holo)?CARDS.worlds[w].holo:null})),ever:albEvoId('none'),n:ids.length}}
+  // round 92: Everstone is out of the album (Eyal); a world with fewer than 6 cards in the games is topped up by cards lying on the walks
+  const seats=castSeats()||{},used=new Set(),pref=i=>{const k=ALB_WALK_PREF.indexOf(i);return k<0?99:k},order=Object.keys(CAST.chars);
+  Object.values(seats).flat().forEach(i=>{if(!i)return;used.add(i);(CAST.chars[i]?.ev||[]).forEach(e=>used.add(e))});
+  const walk=w=>Object.keys(CARDS.chars).filter(i=>{const c=CARDS.chars[i];return c.w===w&&!c.holo&&!c.basic&&!used.has(i)&&!/-[ab]$/.test(i)&&pkOK(i)}).sort((a,b)=>pref(a)-pref(b)||order.indexOf(a)-order.indexOf(b)).slice(0,Math.max(0,ALB_PER-W[w].length));
+  const worlds=CAST.worlds.map(x=>x[0]).filter(w=>W[w]).map(w=>({w,ids:W[w],walk:walk(w),holo:pkOK(CARDS.worlds[w]?.holo)?CARDS.worlds[w].holo:null}));
+  return S.albM={key,worlds,ever:null,n:worlds.reduce((s,x)=>s+x.ids.length+x.walk.length,0)}}
+// the walk cards: who (Eyal's picks first), and which town each lies in (round robin over the arrival maps, Pallet excluded)
+const ALB_WALK_PREF=['rapunzel','harry','gandalf','arya','ross','tony','morty','che','thatcher','biden','messi','serena'];
+const albAll=x=>[...x.ids,...x.walk];
+function albWalkPlan(){const M=albModel();if(!M)return {};const k=M.key+'|'+SEQ.length;if(S.albWP?.k===k)return S.albWP.P;
+  const Q=M.worlds.map(x=>x.walk.slice()),ids=[];for(let more=true;more;){more=false;Q.forEach(L=>{if(L.length){ids.push(L.shift());more=true}})}
+  const towns=[];SEQ.forEach(x=>{if(x.kind!=='town')return;(twLegsOf(x.id)||[]).forEach(L=>{if(!L.anim&&L.to==='door'&&L.town!=='pallet'&&TOWN[L.town]&&!towns.includes(L.town))towns.push(L.town)})});
+  const P={};if(towns.length)ids.forEach((id,i)=>{const t=towns[i%towns.length];(P[t]=P[t]||[]).push(id)});S.albWP={k,P};return P}
 // ---- the screen gives ----
 function albGive(m){if(!albOn()||!S.db)return;const t=Date.now(),doc={};Object.entries(m).forEach(([p,L])=>{if(L&&L.length)doc[p]=Object.fromEntries(L.map(i=>[i,t]))});
   if(Object.keys(doc).length)S.db.doc('stage/album').set(doc,{merge:true}).catch(()=>{})}
 function albTypes(Q){if(!albOn()||!Q?.rev)return;S.albT=S.albT||{};const m={};
   Q.rev.forEach(t=>{if(S.albT[t])return;S.albT[t]=1;const ids=albTypeIds(t);(Q.players||[]).forEach(p=>{const g=S.guesses?.[p.id]?.[t];if(g&&g.g===t&&ids.length)(m[p.id]=m[p.id]||[]).push(...ids)})});albGive(m)}
-function albPq(it,gid){if(!albOn())return;const st=PQ[S.pq.key].set==='stats',cards=(st?(it.pair?it.pair.map(x=>x[0]):[it.cid]):[it.cid&&pqCardId(it)]).filter(i=>i&&pkOK(i)),m={};
+function albPq(it,gid){if(!albOn()||it.k==='none')return;const st=PQ[S.pq.key].set==='stats',cards=(st?(it.pair?it.pair.map(x=>x[0]):[it.cid]):[it.cid&&pqCardId(it)]).filter(i=>i&&pkOK(i)),m={};
   gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+gid];if(g&&(g.v===it.k||(it.k==='none'&&g.v==='other')))m[p.id]=cards});albGive(m)}
 function albSubjGive(){if(!albOn()||!S.db||S.albSubj)return;S.albSubj=1;S.db.doc('stage/album').set({_subj:Date.now()},{merge:true}).catch(()=>{S.albSubj=0})}
 // ---- the subject's card: the big sprite of the Hall of Fame beside their Pokémon ----
@@ -5255,15 +5296,15 @@ function pkSubjCard(){const r=S.state?.result||{},sp=subjP(),ty=r.types||[],c1=T
    <div class="pkrule"></div><div class="pkret"><span>PSP · ${esc((ROOM.code||'').toUpperCase())}</span></div></div></div>`}
 // ---- the phone ----
 function albMine(){const M=albModel();if(!M||!S.me)return null;const a=S.album?.[S.me]||{},have=new Set(Object.keys(a));
-  const done=M.worlds.filter(x=>x.ids.length&&x.ids.every(i=>have.has(i))).map(x=>x.w),subj=!!(S.state?.result&&(S.album?._subj||S.deck?.seg==='end'||roomClosed()));
-  const n=M.worlds.reduce((s,x)=>s+x.ids.filter(i=>have.has(i)).length,0)+(M.ever&&have.has(M.ever)?1:0)+(subj?1:0);
-  return {M,have,done,subj,n,tot:M.n+(M.ever?1:0)+1,holos:done.filter(w=>M.worlds.find(x=>x.w===w)?.holo).length}}
+  const done=M.worlds.filter(x=>albAll(x).length&&albAll(x).every(i=>have.has(i))).map(x=>x.w),subj=!!(S.state?.result&&(S.album?._subj||S.deck?.seg==='end'||roomClosed()));
+  const n=M.worlds.reduce((s,x)=>s+albAll(x).filter(i=>have.has(i)).length,0)+(subj?1:0);
+  return {M,have,done,subj,n,tot:M.n+1,holos:done.filter(w=>M.worlds.find(x=>x.w===w)?.holo).length}}
 function albWho(){const me=person(S.me);return !isScreen()&&!S.remoteMode&&!!me&&!isPresenter(me)&&!me.remote}
 function albFab(A){let b=document.getElementById('albfab');if(!A||S.intro?.live){b?.remove();return}
   if(!b){b=document.createElement('button');b.id='albfab';b.onclick=albOpen;b.setAttribute('aria-label',ll('אלבום הקלפים','Card album'));document.body.appendChild(b)}
   const h=`<img src="img/card-back.webp" alt=""><b>${A.n}</b>${A.holos?`<i>✦${A.holos}</i>`:''}`;if(b.innerHTML!==h)b.innerHTML=h}
 function albTick(){if(!albWho()){albFab(null);return}if(S.albEve!==S.state?.eve){S.albEve=S.state?.eve;S.albQ=[]}const A=albMine();albFab(A);if(!A||!S.stageLoaded)return;
-  const k='psp-alb-'+ROOM.code+'-'+(S.state?.eve||'')+'-'+S.me,raw=RAWSTORE.get(k),cards=[...A.have].filter(i=>i===A.M.ever||A.M.worlds.some(x=>x.ids.includes(i)));
+  const k='psp-alb-'+ROOM.code+'-'+(S.state?.eve||'')+'-'+S.me,raw=RAWSTORE.get(k),cards=[...A.have].filter(i=>A.M.worlds.some(x=>albAll(x).includes(i)));
   const cur=[...cards,...A.done.map(w=>'C:'+w),...(A.subj?['_subj']:[])];
   if(raw==null){RAWSTORE.set(k,JSON.stringify(cur));return}   // a new device: what is already there isn't "new"
   let seen;try{seen=new Set(JSON.parse(raw))}catch(e){seen=new Set()}
@@ -5303,22 +5344,22 @@ function albThemeHTML(th){const R=Math.random,pc=(a,b)=>(a+R()*(b-a)).toFixed(1)
   if(th==='mirror')return `<div class="alc-mir"><svg viewBox="0 0 100 140"><path d="M50 62 L38 30 L30 8 M50 62 L70 36 L84 20 M50 62 L22 70 L4 66 M50 62 L80 82 L96 96 M50 62 L56 98 L52 136 M50 62 L30 104 L18 128"/></svg></div>`;
   return ''}
 function albCelebrate(w,cb){const M=albModel(),x=M?.worlds.find(y=>y.w===w),th=ALB_TH[w]||'castle',wn=LL(CAST.worlds.find(y=>y[0]===w)?.slice(1)||['',''])||w;
-  const ov=document.createElement('div');ov.id='albcel';ov.className='alc-'+th;ov.innerHTML=albThemeHTML(th)+`<p class="alt">${esc(wn)}<br><small>${ll('העולם הושלם!','World complete!')} ${x?.ids.length||6}/${x?.ids.length||6}</small></p>`;document.body.appendChild(ov);
+  const ov=document.createElement('div');ov.id='albcel';ov.className='alc-'+th;ov.innerHTML=albThemeHTML(th)+`<p class="alt">${esc(wn)}<br><small>${ll('העולם הושלם!','World complete!')} ${x?albAll(x).length:6}/${x?albAll(x).length:6}</small></p>`;document.body.appendChild(ov);
   try{sfx('sfx-dex-page-added');navigator.vibrate?.([40,60,40,60,80])}catch(e){}
   setTimeout(()=>{const done=()=>{ov.classList.add('out');setTimeout(()=>{ov.remove();cb&&cb()},400)};
     if(x?.holo)albFly(x.holo,{big:true,dim:false,title:ll(`קלף הולוגרפי: ${esc(CARDS.chars[x.holo].en)}!`,`Holo card: ${esc(CARDS.chars[x.holo].en)}!`),hold:2800},done);else done()},2900)}
 // the album page: the special cards, then world by world (its cards + the holo slot)
 function albOpen(){const A=albMine();if(!A)return;document.getElementById('albov')?.remove();
   const cw=Math.floor((Math.min(innerWidth,560)-40-16-16)/3),slot=id=>`<button class="albs" data-albz="${id}">${pkFlip(id,{w:cw})}</button>`,
-    empty=t=>`<div class="albs off" style="width:${cw}px"><img src="img/card-back.webp" alt=""><b>${t||'?'}</b></div>`,M=A.M;
-  const sp=`<div class="albw sp"><div class="albh"><b>${ll('קלפים מיוחדים','Special cards')}</b><span>${(A.subj?1:0)+(M.ever&&A.have.has(M.ever)?1:0)}/${M.ever?2:1}</span></div><div class="albg">
-    ${A.subj?slot('_subj'):empty(ll('אחרי היכל התהילה','After the Hall of Fame'))}${M.ever?(A.have.has(M.ever)?slot(M.ever):empty(ll('אבן הנצח','Everstone'))):''}</div></div>`;
-  const ws=M.worlds.map(x=>{const n=x.ids.filter(i=>A.have.has(i)).length,c=A.done.includes(x.w),wn=LL(CAST.worlds.find(y=>y[0]===x.w)?.slice(1)||['','']);
-    return `<div class="albw${c?' done':''}" style="${pkVars(x.w)}"><div class="albh">${pkIcon(x.w)}<b>${esc(wn)}</b><span>${n}/${x.ids.length}${c?' ✓':''}</span></div><div class="albg">
-      ${x.ids.map(i=>A.have.has(i)?slot(i):empty()).join('')}${x.holo?(c?slot(x.holo):`<div class="albs off holo" style="width:${cw}px"><b>✦</b><small>${ll('כל הקלפים = קלף הולוגרפי','All cards = a holo card')}</small></div>`):''}</div></div>`}).join('');
+    empty=(t,sm)=>`<div class="albs off${sm?' walk':''}" style="width:${cw}px"><img src="img/card-back.webp" alt=""><b>${t||'?'}</b>${sm?`<small>${sm}</small>`:''}</div>`,M=A.M;
+  const sp=`<div class="albw sp"><div class="albh"><b>${ll('קלפים מיוחדים','Special cards')}</b><span>${A.subj?1:0}/1</span></div><div class="albg">
+    ${A.subj?slot('_subj'):empty(ll('אחרי היכל התהילה','After the Hall of Fame'))}</div></div>`;
+  const ws=M.worlds.map(x=>{const n=albAll(x).filter(i=>A.have.has(i)).length,c=A.done.includes(x.w),wn=LL(CAST.worlds.find(y=>y[0]===x.w)?.slice(1)||['','']);
+    return `<div class="albw${c?' done':''}" style="${pkVars(x.w)}"><div class="albh">${pkIcon(x.w)}<b>${esc(wn)}</b><span>${n}/${albAll(x).length}${c?' ✓':''}</span></div><div class="albg">
+      ${x.ids.map(i=>A.have.has(i)?slot(i):empty()).join('')}${x.walk.map(i=>A.have.has(i)?slot(i):empty('🚶',ll('מחכה באחת ההליכות','Waiting on one of the walks'))).join('')}${x.holo?(c?slot(x.holo):`<div class="albs off holo" style="width:${cw}px"><b>✦</b><small>${ll('כל הקלפים = קלף הולוגרפי','All cards = a holo card')}</small></div>`):''}</div></div>`}).join('');
   const ov=document.createElement('div');ov.id='albov';ov.dir=EN?'ltr':'rtl';
   ov.innerHTML=`<div class="albtop"><div><p class="eyebrow" style="margin:0">PSP · CARD ALBUM</p><h2 style="margin:2px 0 0">${ll('אלבום הקלפים שלי','My card album')}</h2></div><b class="albn">${A.n}/${A.tot}${A.holos?` <i>✦${A.holos}</i>`:''}</b><button class="x" data-albx="1" aria-label="${ll('סגירה','Close')}">✕</button></div>
-   <p class="muted" style="margin:0 0 14px;font-size:14px">${ll('ניחוש נכון במשחקי הסוגים, הסטטים וההתפתחות = קלפים לאלבום. כל הקלפים של עולם = קלף הולוגרפי.','A right guess in the types, stats and evolution games = cards for your album. All of a world\'s cards = a holo card.')}</p>${sp}${ws}`;
+   <p class="muted" style="margin:0 0 14px;font-size:14px">${ll('ניחוש נכון במשחקי הסוגים, הסטטים וההתפתחות = קלפים לאלבום. עוד קלפים מחכים על המפות בהליכות. כל הקלפים של עולם = קלף הולוגרפי.','A right guess in the types, stats and evolution games = cards for your album. More cards lie on the maps during the walks. All of a world\'s cards = a holo card.')}</p>${sp}${ws}`;
   ov.onclick=e=>{const z=e.target.closest('[data-albz]'),x=e.target.closest('[data-albx]');if(x){ov.remove();return}if(z)albZoom(z.dataset.albz)};document.body.appendChild(ov)}
 function albZoom(id){const ov=document.createElement('div');ov.className='albnew zoom';ov.innerHTML=`<div class="albfw">${pkFlip(id,{w:Math.min(innerWidth-40,360)})}</div>`;ov.onclick=()=>ov.remove();document.body.appendChild(ov)}
 // every round keeps all the options: with only 6 answers, crossing out the past ones would hand away the last rounds
