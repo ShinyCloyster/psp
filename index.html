@@ -738,6 +738,12 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .twmini.twpulse{animation:twpulse 1.2s ease-out}@keyframes twpulse{0%{scale:1}25%{scale:1.3}100%{scale:1}}
 #introfab{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:900;background:#F2C94C;color:#1A1E33;border:none;border-radius:999px;padding:14px 22px;font:700 18px Rubik,Arial,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.45);animation:ifab 2s ease-in-out infinite}#introfab.done{background:#2E3352;color:#F6F1E7;animation:none}@keyframes ifab{50%{transform:translateX(-50%) scale(1.06)}}
 #introbox{position:fixed;inset:0;z-index:1000;background:rgba(10,12,24,.8);display:grid;place-items:center;padding:16px}#introbox .ibx{background:#F6F1E7;color:#22263A;border-radius:18px;padding:20px;max-width:440px;width:100%}#introbox h2{margin:0 0 8px;font:400 26px 'Secular One',Arial}#introbox p{margin:0 0 10px;font-size:15px;line-height:1.45}
+#introbox label{display:block;margin:10px 0 4px;font-weight:700;font-size:15px}
+#introbox input{width:100%;box-sizing:border-box;font:inherit;font-size:18px;border:2px solid #C9CCE0;border-radius:12px;padding:10px}
+.intronudge{display:flex;flex-direction:column;gap:4px;width:100%;margin:6px 0 12px;padding:12px 16px;border:none;border-radius:14px;background:#F2C94C;color:#1A1E33;text-align:start;font:400 15px/1.4 Rubik,Arial,sans-serif;box-sizing:border-box;animation:inudge 2s ease-in-out infinite}
+@keyframes inudge{0%,100%{box-shadow:0 0 0 0 rgba(242,201,76,.55)}50%{box-shadow:0 0 0 8px rgba(242,201,76,0)}}
+.intronudge b{font-size:18px}
+body:has(.intronudge) #introfab{display:none}
 #introbox textarea{width:100%;box-sizing:border-box;font:inherit;font-size:18px;border:2px solid #C9CCE0;border-radius:12px;padding:10px}#introbox .ibb{display:flex;gap:8px;margin-top:10px}#introbox .ibb button{flex:1;padding:12px;border-radius:12px;border:none;background:#22263A;color:#fff;font:700 17px Rubik,Arial}#introbox .ibb .ghost{background:#E2DCCD;color:#22263A}.ofsec #ofr{position:static!important}.ofgym{position:absolute;left:64px;top:150px;border:6px solid #2A2E45;border-radius:14px;overflow:hidden;box-shadow:0 8px 0 rgba(0,0,0,.35)}
 .ofgym .twseat.lect{transition:transform 1.1s ease-in-out}.ofgym .twseat.lect.away{transform:translateX(-112px)}.ofgym .ofp .ofnm{display:none}.ofgym .ofp.onstage .ofnm{display:block}.ofgym .ofp.onstage .lks{filter:drop-shadow(0 0 8px #F2C94C)}.ofgym .ofnm{position:absolute;left:0;transform:translateX(-50%)!important;top:-150px;transform:translateX(-50%);white-space:nowrap;font-size:30px;color:#F2C94C;background:rgba(22,26,46,.85);padding:2px 12px;border-radius:10px}
 .ofcard2{position:absolute;right:128px;top:300px;width:920px;display:flex;flex-direction:column;gap:22px}.ofhead{display:flex;align-items:center;gap:28px}.ofhead .ofclock{margin-inline-start:auto}
@@ -798,7 +804,7 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .svgym .twmn{position:absolute;left:0;right:0;bottom:0;top:auto!important;height:auto!important;background:rgba(22,26,46,.78);color:#F2C94C;text-align:center;font-size:22px;padding:4px 0;z-index:500}
 .svp{position:absolute;right:70px;top:60px;bottom:60px;display:flex;flex-direction:column;align-items:stretch}.svrow{display:flex;align-items:flex-end;gap:34px;flex:1;min-height:0}.svrow .svbub{flex:1}.svp .sveb{margin:0;font:400 22px 'Press Start 2P',monospace;color:#E5484D;text-align:start}.svp .svti{margin:6px 0 18px;font:400 58px/1.1 'Secular One',Arial,sans-serif;color:#F6F1E7;text-align:start}
 .svbub{position:relative;background:#F6F1E7;border-radius:26px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 0 rgba(0,0,0,.35)}.svbub::after{content:'';position:absolute;right:-30px;bottom:60px;border:16px solid transparent;border-left:30px solid #F6F1E7;border-right:0}.en .svbub::after{right:auto;left:-30px;border-left:0;border-right:30px solid #F6F1E7}
-.svcards{display:flex;flex-direction:column;gap:14px}.svc{zoom:.82}.svc>div{flex:none!important}.svc.new{animation:svin .5s ease-out}@keyframes svin{from{opacity:0;transform:translateY(16px)}}.svwait{margin:10px;font-size:30px;color:#5A5F73;text-align:center}
+.svcards{display:flex;flex-direction:column;gap:14px}.svc{zoom:.82}.en .svc{zoom:.72}.svc>div{flex:none!important}.svc.new{animation:svin .5s ease-out}@keyframes svin{from{opacity:0;transform:translateY(16px)}}.svwait{margin:10px;font-size:30px;color:#5A5F73;text-align:center}
 .svsave{display:none;background:#FFFDF8;border:6px solid #161A2E;border-radius:14px;box-shadow:inset 0 0 0 5px #FFFDF8,inset 0 0 0 9px #9FA7C7;padding:22px 30px;direction:ltr}.svsave.on{display:block}.svsave p{margin:0;font:400 26px/1.7 'Press Start 2P',monospace;color:#161A2E;min-height:44px}.svsave.done p::after{content:' ▼';animation:svblink .8s steps(2) infinite}@keyframes svblink{50%{opacity:0}}
 .svlect{flex:none;height:300px;max-width:260px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 0 rgba(0,0,0,.35))}
 /* dialogue scenes: the lecturer beside a game text box at the bottom, the stage above it */
@@ -1378,7 +1384,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795377933';
+const BUILDV='1795422536';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1489,7 +1495,7 @@ async function boot(){
     render()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen())(S.intros||(S.intros={}))[d.id.slice(6)]=String(d.data().t||'').slice(0,240)});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;if(!ROOM.legacy)castLoad().then(()=>castApplyPQ());changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
@@ -1907,7 +1913,7 @@ function render(){
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
-  try{if(S.myIntro==null){try{S.myIntro=RAWSTORE.get('psp-intro')||''}catch(e){S.myIntro=''}}introBtn()}catch(e){}
+  try{if(S.myIntro==null){try{const r=RAWSTORE.get('psp-intro')||'';S.myIntro=/^\{/.test(r)?JSON.parse(r):r}catch(e){S.myIntro=''}}introBtn()}catch(e){}
   if(!S.remoteMode&&S.game?.hand&&!S.game.g&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="handbtn" onclick="twHand()">✋ ${ll('יש לי משהו להגיד','I have something to say')}</button>`);
   if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">${ll(`לא ${esc(person(S.me).name)}? החלפת שם`,`Not ${esc(person(S.me).name)}? Switch name`)}</button>`);
   if(randLeft())app.querySelector('.col').insertAdjacentHTML('afterbegin',`<button class="btn ghost small" data-act="randfill" style="margin-bottom:10px;border-style:dashed">${ll(`🎲 ניסוי: לענות בשבילי באקראי (${randLeft()})`,`🎲 Rehearsal: answer for me at random (${randLeft()})`)}</button>`);
@@ -1938,6 +1944,7 @@ function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}<
   <div class="card rcnote" ${S.note?'':'hidden'} style="padding:14px 16px;border-color:var(--gold)"><p class="muted" style="margin:0 0 6px;font-size:13px">${ll('📝 מה להגיד','📝 What to say')}</p><p class="rcnt" style="margin:0;font-size:17px;line-height:1.5">${esc(S.note||'')}</p></div>
   <div class="card rctime" style="padding:14px 16px"><div class="row" style="justify-content:space-between;align-items:baseline"><b class="rtn"></b><span class="rtl" style="font:400 26px var(--pixel)"></span></div><div class="rtrow">${ll(`<span>זמן</span>`,`<span>Time</span>`)}<div class="rtbar"><i></i></div></div><div class="rtrow">${ll(`<span>שקפים</span>`,`<span>Slides</span>`)}<div class="rtbar sl"><i></i></div></div><p class="rts muted" style="margin:8px 0 0;font-size:14px"></p></div>
   ${glHost()}
+  <div id="rcmem" class="card" style="padding:14px 16px;border:2px solid var(--gold)"${memCardHTML()?'':' hidden'}>${memCardHTML()}</div>
   <div id="rcbt" class="card" style="padding:14px 16px;border:2px solid var(--gold)"${btCardHTML()?'':' hidden'}>${btCardHTML()}</div>
   <button class="rcbig" data-act="ctlnext">${ll(`◀ הבא</button>`,`Next ▶</button>`)}<button class="rcback" data-act="ctlprev">${ll(`חזרה ▶</button>`,`◀ Back</button>`)}
   <div class="row" style="gap:8px"><button class="btn ghost grow" data-act="ctlnextslide">${ll('⏩ לשקף הבא','⏩ Next slide')}</button><button class="btn ghost grow" data-act="ctlpopx">${ll('✕ סגירת חלון קופץ','✕ Close the popup')}</button></div>
@@ -2583,7 +2590,7 @@ function bindPhone(){
     if(b.dataset.act==='tchart'){S.tchart=!S.tchart;render();return}
     if(b.dataset.act==='say'){sayOpen();return}
     if(b.dataset.act==='randfill'){randFill();return}
-    if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctljump'){const s=$('#rcjump');if(s&&s.value!=='')sendCmd({cmd:'jump',i:+s.value});return}if(b.dataset.act==='ctlnextslide'){sendCmd({cmd:'nextslide'});return}if(b.dataset.act==='ctlpopx'){sendCmd({cmd:'popx'});return}if(b.dataset.act==='ctlqr'){sendCmd({cmd:'qr'});return}if(b.dataset.act==='ctlskipbt'){if(confirm(ll('לדלג על הקרבות שנשארו? קרבות ששוחקו נשארים בליגה.','Skip the remaining battles? Battles already played stay in the league.')))sendCmd({cmd:'skipbt'});return}if(b.dataset.act==='ctlbt'){sendCmd({cmd:'btset',on:+b.dataset.on});return}if(b.dataset.act==='ctlopen'){sendCmd({cmd:'open',k:+b.dataset.k});return}if(b.dataset.act==='ctlclock'){sendCmd({cmd:'clock'});return}if(b.dataset.act==='ctlmew'){sendCmd({cmd:'mew'});return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
+    if(b.dataset.act==='ctlnext'){sendCtl(1);return}if(b.dataset.act==='ctljump'){const s=$('#rcjump');if(s&&s.value!=='')sendCmd({cmd:'jump',i:+s.value});return}if(b.dataset.act==='ctlnextslide'){sendCmd({cmd:'nextslide'});return}if(b.dataset.act==='ctlpopx'){sendCmd({cmd:'popx'});return}if(b.dataset.act==='ctlqr'){sendCmd({cmd:'qr'});return}if(b.dataset.act==='ctlskipbt'){if(confirm(ll('לדלג על הקרבות שנשארו? קרבות ששוחקו נשארים בליגה.','Skip the remaining battles? Battles already played stay in the league.')))sendCmd({cmd:'skipbt'});return}if(b.dataset.act==='ctlbt'){sendCmd({cmd:'btset',on:+b.dataset.on});return}if(b.dataset.act==='ctlmem'){sendCmd({cmd:'memset',on:+b.dataset.on});return}if(b.dataset.act==='ctlopen'){sendCmd({cmd:'open',k:+b.dataset.k});return}if(b.dataset.act==='ctlclock'){sendCmd({cmd:'clock'});return}if(b.dataset.act==='ctlmew'){sendCmd({cmd:'mew'});return}if(b.dataset.act==='ctlprev'){sendCtl(-1);return}
     if(b.dataset.w){const p=draft()[+b.dataset.w];p.weight=Math.max(0,Math.min(55,(+p.weight||0)+(+b.dataset.d)));S.setupErr=null;render();return}
     if(b.dataset.del){draft().splice(+b.dataset.del,1);S.setupErr=null;render();return}
     if(b.dataset.addr){const r=S.remote?.[b.dataset.addr];if(r){draft().push({id:b.dataset.addr,name:r.name,role:r.relation||'family',weight:0,remote:true});S.setupErr=null;render()}return}
@@ -2668,12 +2675,18 @@ function typesPour(){if(ROOM.legacy||S.typesIn===S.state?.eve)return;S.typesIn=S
 const btOn=()=>ROOM.legacy||S.state?.btOn===true;
 function btCardHTML(){const d=S.deck,b=d?.bt||0,p=d?.pos||0;if(!b||p>b||p<(d.bt0||b))return '';const on=S.state?.btOn===true;
   return `<p class="eyebrow" style="margin:0 0 6px">${ll('הקרבות · בסוף סמינר הסוגים','THE BATTLES · after the types seminar')}</p><p style="margin:0 0 4px;font-size:17px">${on?ll('⚔️ נבחר: <b>משחקים</b> (כ-5 דקות)','⚔️ Chosen: <b>play</b> (about 5 minutes)'):ll('⏭ נבחר: <b>מדלגים</b> עליהם','⏭ Chosen: <b>skip</b> them')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('אופציונלי. בלי בחירה מדלגים. אפשר לשנות עד שמגיעים אליהם.','Optional. No choice = skipped. You can change it until you get there.')}</p><div class="row" style="gap:8px"><button class="btn grow${on?' ghost':''}" data-act="ctlbt" data-on="0">⏭ ${ll('מדלגים','Skip')}</button><button class="btn grow${on?'':' ghost'}" data-act="ctlbt" data-on="1">⚔️ ${ll('משחקים','Play')}</button></div>`}
-function btCardFill(){const el=$('#rcbt');if(!el)return;const h=btCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
+// round 85: the glasses memory game (after the paradigm on the lake) is optional too: Alakazam asks, the host picks on his phone (state.memOn); nothing picked = PLAY (it is in the 2:55 plan; skip only when late)
+const memOn=()=>ROOM.legacy||S.state?.memOn!==false;
+function memCardHTML(){const d=S.deck,b=d?.mem||0,p=d?.pos||0;if(!b||p>b||p<(d.mem0||b))return '';const on=memOn();
+  return `<p class="eyebrow" style="margin:0 0 6px">${ll('משחק הזיכרון · המשקפיים של אוק, ג׳וי ואש','THE MEMORY GAME · Oak’s, Joy’s and Ash’s glasses')}</p><p style="margin:0 0 4px;font-size:17px">${on?ll('🧠 נבחר: <b>משחקים</b> (כ-4 דקות)','🧠 Chosen: <b>play</b> (about 4 minutes)'):ll('⏭ נבחר: <b>מדלגים</b> עליו','⏭ Chosen: <b>skip</b> it')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('אופציונלי. בלי בחירה משחקים. מדלגים רק אם מאחרים. אפשר לשנות עד שמגיעים אליו.','Optional. No choice = played. Skip it only when running late. You can change it until you get there.')}</p><div class="row" style="gap:8px"><button class="btn grow${on?' ghost':''}" data-act="ctlmem" data-on="0">⏭ ${ll('מדלגים','Skip')}</button><button class="btn grow${on?'':' ghost'}" data-act="ctlmem" data-on="1">🧠 ${ll('משחקים','Play')}</button></div>`}
+function memCardFill(){const el=$('#rcmem');if(!el)return;const h=memCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
+function btCardFill(){memCardFill();const el=$('#rcbt');if(!el)return;const h=btCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
 function ctlCmd(d){if(d.cmd==='jump'&&d.i>=0&&d.i<SEQ.length){POS=d.i;HOF=0;SUB=0;BUILD=0;show(true)}
   else if(d.cmd==='qr')joinQR();else if(d.cmd==='open')setState({open:+d.k||0});
   else if(d.cmd==='clock'){const now=Date.now();S.deck={...(S.deck||{}),t0:now,segAt:now,log:{}};deckPub()}
   else if(d.cmd==='skipbt')btSkip();
   else if(d.cmd==='btset')setState({btOn:!!d.on});
+  else if(d.cmd==='memset')setState({memOn:!!d.on});
   else if(d.cmd==='popx')popClose();
   else if(d.cmd==='nextslide')nextSlide();
   else if(d.cmd==='mew'){setState({mew:{status:'none'}});S.mewBusy=false;buildMew()}
@@ -2722,10 +2735,11 @@ const PLAN_OLD=[['open',ll('פתיחה','Opening'),7,'cover'],['c1',ll('חלק 1
  ['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['c3',ll('חלק 3','Part 3'),28,'x-part-3'],['r3',ll('סבב 3 ומיו','Round 3 and Mew'),10,'x-round-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],
  ['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['c4',ll('חלק 4','Part 4'),21,'x-part-4'],['tr4',ll('המאמן הרביעי','Trainer 4'),7,'x-trainer-4'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
 // round 51: in new rooms each trainer sits between the two courses of their part (the part's second course starts its own segment)
-const PLAN=ROOM.legacy?PLAN_OLD:[['open',ll('פתיחה','Opening'),7,'cover'],['c1',ll('חלק 1','Part 1'),22,'x-part-1'],['r1',ll('סבב 1','Round 1'),9,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
- ['c2',ll('חלק 2','Part 2'),20,'x-part-2'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['c2b',ll('חלק 2 · המשך','Part 2 · continued'),20,'c-divider'],['r2',ll('סבב 2','Round 2'),9,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),10,'x-break-2'],
- ['c3',ll('חלק 3','Part 3'),14,'x-part-3'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['c3b',ll('חלק 3 · המשך','Part 3 · continued'),14,'f-divider-2'],['r3',ll('סבב 3 ומיו','Round 3 and Mew'),10,'x-round-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],
- ['c4',ll('חלק 4','Part 4'),11,'x-part-4'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['c4b',ll('חלק 4 · המשך','Part 4 · continued'),10,'h-divider'],['hof',ll('היכל התהילה','Hall of Fame'),28,'x-finale'],['end',ll('סיום','End'),2,'closing']];
+// round 85: the plan totals 2:55 for a host and ~5 players (the memory game in, the battles out; 8-minute rounds), built bottom-up from the real sequence with a little slack
+const PLAN=ROOM.legacy?PLAN_OLD:[['open',ll('פתיחה','Opening'),6,'cover'],['c1',ll('חלק 1','Part 1'),10,'x-part-1'],['r1',ll('סבב 1','Round 1'),8,'x-round-1'],['b1',ll('הפסקה 1','Break 1'),5,'x-break-1'],
+ ['c2',ll('חלק 2','Part 2'),17,'x-part-2'],['tr1',ll('המאמן הראשון','Trainer 1'),7,'x-trainer-1'],['c2b',ll('חלק 2 · המשך','Part 2 · continued'),12,'c-divider'],['r2',ll('סבב 2','Round 2'),8,'x-round-2'],['b2',ll('הפסקה 2','Break 2'),11,'x-break-2'],
+ ['c3',ll('חלק 3','Part 3'),14,'x-part-3'],['tr2',ll('המאמן השני','Trainer 2'),7,'x-trainer-2'],['c3b',ll('חלק 3 · המשך','Part 3 · continued'),11,'f-divider-2'],['r3',ll('סבב 3 ומיו','Round 3 and Mew'),10,'x-round-3'],['b3',ll('הפסקה 3','Break 3'),5,'x-break-3'],
+ ['c4',ll('חלק 4','Part 4'),7,'x-part-4'],['tr3',ll('המאמן השלישי','Trainer 3'),7,'x-trainer-3'],['c4b',ll('חלק 4 · המשך','Part 4 · continued'),10,'h-divider'],['hof',ll('היכל התהילה','Hall of Fame'),19,'x-finale'],['end',ll('סיום','End'),1,'closing']];
 const PLAN_START={};{let t=0;PLAN.forEach(p=>{PLAN_START[p[0]]=t;t+=p[2]})}
 // a dialogue scene stands where its part's opening slide was
 const planId=it=>it?.kind==='scene'?SC[it.id].drop?.[0]:it?.id;
@@ -2757,7 +2771,7 @@ function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeo
   const sa=D.seg===seg&&D.segAt?D.segAt:now;
   // how far through this part's slides we are
   const st=SEQ.findIndex(x=>planOf(seg)&&planId(x)===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>planId(x)===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
-  const bti=SEQ.findIndex(x=>x.id==='d-battle'),doc={bt:ROOM.legacy?0:bti+1,bt0:SEQ.findIndex(x=>courseOf(x.id)===5)+1,label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
+  const bti=SEQ.findIndex(x=>x.id==='d-battle'),mmi=SEQ.findIndex(x=>x.id==='s-memory'),doc={bt:ROOM.legacy?0:bti+1,bt0:SEQ.findIndex(x=>courseOf(x.id)===5)+1,mem:ROOM.legacy?0:mmi+1,mem0:SEQ.findIndex(x=>courseOf(x.id)===3)+1,label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
   S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer();
   const sk=SEQ.map(x=>x.id).join(',');if(S.seqPub!==sk){S.seqPub=sk;S.db.doc('stage/seq').set({l:SEQ.map(x=>{try{return seqLabel(x).slice(0,60)}catch(er){return x.id}})}).catch(()=>{})}},250)}
 // big countdown on the screen during question rounds and breaks
@@ -2911,6 +2925,7 @@ function friendsRunAround(){const cv=$('#cv');if(!cv||cv.querySelector('.frrun')
 function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style.display=(it?.kind==='cmt'||it?.kind==='hof'||it?.kind==='awards'||it?.id==='closing'||/^x-round-/.test(it?.id||''))?'none':'';rb.classList.toggle('mini',!(it?.id==='cover'||it?.id==='agenda'||it?.kind==='lake'))}}
   const it=cur();if(!it)return;store.set('psp-pos',POS);
   if(it.id==='d-battle')typesPour();
+  if(it.id==='s-memory'&&!memOn()){const n=POS+(atEnd?-1:1);if(n>=0&&n<SEQ.length){POS=n;show(fresh,atEnd);return}}
   if(it.id==='d-battle'&&!btOn()){const n=POS+(atEnd?-1:1);if(n>=0&&n<SEQ.length){POS=n;show(fresh,atEnd);return}}
   const cv=$('#cv');cv.classList.remove('ctron','twcover');document.body.classList.remove('twcov');
   if(trMeetOn(it))trMeet(it);else if(svOn(it))svEnter(it);else if(emOn(it))emEnter(it);else if(csOn(it))csEnter(it);else if(it.kind==='slide'){
@@ -3971,7 +3986,7 @@ SC['s-lpar']={lake:'par',part:2,drop:['s-paradigm'],bar:'s-paradigm',tele:1,labe
     ['j','אולי הוא פצוע! צריך לקחת אותו ישר למרכז הפוקימונים!','Maybe he\'s hurt! We need to take him straight to the Pokémon Center!','joy'],
     ['a','זאת לא הסיבה. הוא פשוט רוצה חבר, לא מאמן!','That\'s not the reason. He just wants a friend, not a trainer!','ash'],
     ['def','אותו פיקאצ׳ו, שלוש תמונות. מה שמשתנה הוא המשקפיים: זו פרדיגמה.','The same Pikachu, three pictures. What changes is the glasses: that is a paradigm.','oak'],
-    ['tele','אלקזם, תחזיר אותנו לג׳ים!','Alakazam, take us back to the gym!','oak']]};
+    ['tele','אלקזם שואל אם תרצו לבחון את מה שלמדנו במבחן זיכרון. ובכל מקרה, הוא מחזיר אותנו לג׳ים!','Alakazam asks if you’d like to test what we learned in a memory test. Either way, he’s taking us back to the gym!','oak']]};
 LS_ST.par=['o','j','a','def','tele'];
 const LS_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],joy:[['האחות ג׳וי','Nurse Joy'],'img/tr-nurse.webp'],ash:[['אש','Ash'],'img/tr-ash.webp']};
 // the minis that walk in (cut by app/mini_build.py): [sheet, cell, frames, walking frames]
@@ -4197,20 +4212,27 @@ setInterval(()=>{try{if(isScreen())urgePaint()}catch(e){}},400);
 
 // ----- phone side: what I'll say in the friends' intros (open from the moment you join until your turn) -----
 function introOk(){const me=S.me&&person(S.me);return !!(me&&!isScreen()&&!S.remoteMode&&me.role!=='self'&&!isPresenter(me)&&S.game?.io&&!(S.game.iDone||[]).includes(S.me))}
+function introGet(){const v=S.myIntro;if(v&&typeof v==='object')return {f:String(v.f||''),s:String(v.s||'')};return {f:'',s:String(v||'')}}
+function introHas(){const v=introGet();return !!(v.f.trim()||v.s.trim())}
 function introBtn(){let b=document.getElementById('introfab');const on=introOk();if(!on){b?.remove();document.getElementById('introbox')?.remove();return}
-  const has=!!(S.myIntro||'').trim(),lab=has?ll('✍️ ההיכרות שלך ✓','✍️ Your intro ✓'):ll('✍️ מה תגיד כשיגיע תורך?','✍️ What will you say on your turn?');
+  const has=introHas(),lab=has?ll('✍️ ההיכרות שלך ✓','✍️ Your intro ✓'):ll(`✍️ לפני שמתחילים: משפט על ${subjectName()}`,`✍️ Before we start: a line about ${subjectName()}`);
   if(!b){b=document.createElement('button');b.id='introfab';b.onclick=introOpen;document.body.appendChild(b)}if(b.textContent!==lab)b.textContent=lab;b.classList.toggle('done',has)}
-function introOpen(){if(document.getElementById('introbox'))return;const n=esc(subjectName()),d=document.createElement('div');d.id='introbox';
-  d.innerHTML=`<div class="ibx"><h2>${ll('✍️ ההיכרות שלך','✍️ Your intro')}</h2><p>${ll(`בתחילת הערב כל אחד עולה לבמה לחצי דקה: מי אני, מאיפה אני מכיר את ${n}, ומשפט אחד על ${n}. מה שתכתוב כאן יופיע על המסך לידך.`,`At the start everyone takes the stage for half a minute: who I am, where I know ${n} from, and one sentence about ${n}. What you write here shows on the screen beside you.`)}</p>
-    <textarea id="introt" maxlength="220" rows="5"></textarea><div class="ibb"><button id="introsave">${ll('שמירה','Save')}</button><button id="introno" class="ghost">${ll('סגירה','Close')}</button></div></div>`;
-  document.body.appendChild(d);const t=d.querySelector('#introt');t.value=S.myIntro||'';t.focus();
+// round 85: written ahead on the phone (where you know the subject from + one sentence); on the evening the host just shows it, one click per friend
+function introNudge(){if(!introOk()||introHas())return '';const n=esc(subjectName());
+  return `<button class="intronudge" onclick="introOpen()"><b>${ll('✍️ לפני שמתחילים','✍️ Before we start')}</b><span>${ll(`מאיפה ההיכרות עם ${n}, ומשפט אחד על ${n}. זה יעלה על המסך כשיגיע תורך.`,`Where you know ${n} from, and one sentence about ${n}. It goes up on the screen on your turn.`)}</span></button>`}
+function introOpen(){if(document.getElementById('introbox'))return;const n=esc(subjectName()),d=document.createElement('div'),v=introGet();d.id='introbox';
+  d.innerHTML=`<div class="ibx"><h2>${ll('✍️ ההיכרות שלך','✍️ Your intro')}</h2><p>${ll(`בתחילת הערב כל אחד מוצג על המסך עם מה שכתב כאן. קצר, ומראש.`,`At the start of the evening everyone is shown on the screen with what they wrote here. Short, and ahead of time.`)}</p>
+    <label>${ll(`מאיפה ההיכרות עם ${n}?`,`Where do you know ${n} from?`)}</label><input id="introf" maxlength="80" placeholder="${ll('למשל: מהצבא, מהעבודה, מגן חובה','e.g. from the army, from work, since kindergarten')}">
+    <label>${ll(`משפט אחד על ${n}`,`One sentence about ${n}`)}</label><textarea id="introt" maxlength="160" rows="3"></textarea><div class="ibb"><button id="introsave">${ll('שמירה','Save')}</button><button id="introno" class="ghost">${ll('סגירה','Close')}</button></div></div>`;
+  document.body.appendChild(d);const f=d.querySelector('#introf'),t=d.querySelector('#introt');f.value=v.f;t.value=v.s;(v.f?t:f).focus();
   d.querySelector('#introno').onclick=()=>d.remove();
-  d.querySelector('#introsave').onclick=()=>{S.myIntro=t.value.trim().slice(0,220);try{RAWSTORE.set('psp-intro',S.myIntro)}catch(e){}S.db.doc('stage/intro-'+S.me).set({t:S.myIntro,at:Date.now()}).catch(()=>{});d.remove();introBtn();toast(ll('נשמר ✓','Saved ✓'))}}
+  d.querySelector('#introsave').onclick=()=>{S.myIntro={f:f.value.trim().slice(0,80),s:t.value.trim().slice(0,160)};try{RAWSTORE.set('psp-intro',JSON.stringify(S.myIntro))}catch(e){}
+    S.db.doc('stage/intro-'+S.me).set({f:S.myIntro.f,s:S.myIntro.s,t:[S.myIntro.f,S.myIntro.s].filter(Boolean).join(' · '),at:Date.now()}).catch(()=>{});d.remove();introBtn();render();toast(ll('נשמר ✓','Saved ✓'))}}
 // ----- phone side: the pad in town, and the raise-hand button during the lectures -----
 function townPhone(me,G){const nm=ll(...(TW_NAME[G.town]||TW_NAME.pallet));
   const txt=G.ph==='free'?ll('הדמות שלך על המסך! החצים מזיזים אותה, A זורק פוקה בול.','Your character is on the screen! The arrows move it, A throws a Poké Ball.')
     :G.ph==='go'?(G.to==='exit'?ll('מהר אל החץ בקצה המפה!','Quick, to the arrow at the edge of the map!'):G.place?ll('מהר לנקודת המפגש!','Quick, to the meeting point!'):G.end?ll('מהר אל הדלת של הליגה!','Quick, to the League’s door!'):ll('מהר אל הדלת של הג׳ים!','Quick, to the gym door!')):G.ph==='intro'?ll('תסתכלו על המסך: קוראים לכם!','Look at the screen: someone is calling you!'):ll('רגע…','One moment…');
-  return `<p class="eyebrow">${nm}</p><h1 style="margin:0 0 6px;font-size:26px">${txt}</h1>${gbPad()}`}
+  return `<p class="eyebrow">${nm}</p><h1 style="margin:0 0 6px;font-size:26px">${txt}</h1>${introNudge()}${gbPad()}`}
 function twHand(){if(!S.db||!S.me)return;if(Date.now()-(S.handAt||0)<6000){toast(ll('היד כבר מורמת','Your hand is already up'));return}S.handAt=Date.now();try{navigator.vibrate?.(20)}catch(e){}
   S.db.doc('stage/hand-'+S.me).set({at:Date.now()}).catch(()=>{});toast(ll('✋ הרמת יד','✋ Hand raised'))}
 // ---------- course 1: the friends' trainer cards. One click per person: their big sprite, name and how they know the subject, half a minute each; done cards line up below ----------
@@ -4244,15 +4266,13 @@ function lectAside(el,away){if(!el||el.classList.contains('away')===away)return;
   img.src=`img/lect-eyal-${side}0.png`;el._w=setInterval(()=>{i++;img.src=`img/lect-eyal-${side}${[1,0,2,0][i%4]}.png`},140);
   el._t=setTimeout(()=>{clearInterval(el._w);img.src=away?'img/lect-eyal-r0.png':'img/lect-eyal.png'},1100)}
 function ofrPaint(){const box=$('#ofr');if(!box||!S.ofr)return;const L=ofrList(),i=S.ofr.i,p=L[i],n=esc(subjectName());
-  const rel=q=>esc(q.relation||ROLES[q.role]||ll('חבר/ה','friend')),said=p&&(S.intros?.[p.id]||'').trim();
+  const rel=q=>esc(q.relation||ROLES[q.role]||ll('חבר/ה','friend')),it=p&&(S.intros?.[p.id]||{}),from=(it?.f||'').trim(),said=(it?.s||'').trim();
   box.closest('section')?.classList.add('ofsec');
-  ofrStage(p);$('#ofcw').innerHTML=(p?`<div class="ofcard2" key="${p.id}"><div class="ofhead"><div class="ofav2">${avFull(p,240)}</div><div class="oftx2"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b>${esc(p.name)}</b><span>${rel(p)}</span></div>
-      <div class="ofclock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="qcb"/><circle cx="50" cy="50" r="44" class="qcf ofrun" pathLength="100"/></svg><i>30</i></div></div>
-      <div class="ofsay${said?'':' empty'}">${said?esc(said):ll(`מי אני, מאיפה אני מכיר את ${n}, ומשפט אחד על ${n}`,`Who I am, where I know ${n} from, and one sentence about ${n}`)}</div>
+  ofrStage(p);$('#ofcw').innerHTML=(p?`<div class="ofcard2" key="${p.id}"><div class="ofhead"><div class="ofav2">${avFull(p,240)}</div><div class="oftx2"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b>${esc(p.name)}</b><span>${rel(p)}${from?` · ${esc(from)}`:''}</span></div></div>
+      <div class="ofsay${said?'':' empty'}">${said?esc(said):ll(`מאיפה ההיכרות עם ${n}, ומשפט אחד על ${n}`,`Where I know ${n} from, and one sentence about ${n}`)}</div>
 </div>`
-    :`<div class="ofcard2 wait"><div class="ofsay">${i<0?ll('לחיצה: הראשון עולה לבמה. כל אחד חצי דקה, ואז הבא בתור עולה לבד.','Click: the first one takes the stage. Half a minute each, then the next one steps up by themselves.'):ll('כולם הציגו את עצמם!','Everyone has introduced themselves!')}</div></div>`);
-  clearInterval(S.ofrT);if(p){let left=30;const me=i;S.ofrT=setInterval(()=>{left--;const t=box.querySelector('.ofclock i');if(!t){clearInterval(S.ofrT);return}if(left>=0)t.textContent=left;if(left===0){t.parentElement.classList.add('over');sfx('sfx-tink')}
-      if(left===-2){clearInterval(S.ofrT);if(S.ofr.i===me&&cur()?.id==='o-friends')ofrNext()}},1000);sfx('sfx-dex-page-added')}
+    :`<div class="ofcard2 wait"><div class="ofsay">${i<0?ll('לחיצה: הראשון עולה לבמה.','Click: the first one takes the stage.'):ll('כולם הציגו את עצמם!','Everyone has introduced themselves!')}</div></div>`);
+  clearInterval(S.ofrT);if(p)sfx('sfx-dex-page-added');
   gamePub()}
 function ofrNext(){const L=ofrList();if(!S.ofr||S.ofr.i>=L.length-1)return false;S.ofr.i++;ofrPaint();return true}
 
@@ -4966,7 +4986,8 @@ function pqCardId(it){const ev=CAST?.chars[it.cid]?.ev;return ev&&pkOK(ev[1])?ev
 function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!Q||cur()?.id!==Q.slide){clearInterval(S.pqT);return}
   if(!Q.revealed&&!Q.done){const n=pqBall(Q);if(n!==Q.stage){Q.stage=n;sfx('sfx-tink');gamePub()}
     const el=$('#pqclock');if(el){const l=Math.min(PQ_T,Math.max(0,(Q.end-Date.now())/1000));el.querySelector('b').textContent=Math.ceil(l);el.querySelector('.qcf').style.strokeDashoffset=100-l/PQ_T*100;el.querySelector('span').innerHTML=`<img src="img/${QBALL[n][0]}.webp" alt="" style="width:30px;height:30px;image-rendering:pixelated;vertical-align:middle"> ${QBALL[n][2]}`}
-    if(Date.now()>Q.end)pqReveal();else if(Q.key==='pq-stats'&&pqItem().pair){const ps=gamePlayers();if(ps.length&&ps.every(p=>S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i])&&!Q.allAt)Q.allAt=Date.now()+900;if(Q.allAt&&Date.now()>Q.allAt){Q.allAt=0;pqReveal()}}}},200)}
+    if(Date.now()>Q.end)pqReveal();else{const ps=gamePlayers();if(ps.length&&ps.every(p=>S.gIn?.[p.id]?.['p'+Q.key+'-'+Q.i])&&Q.end-Date.now()>Q_ALL*1000){Q.end=Date.now()+Q_ALL*1000;gamePub()}}}},200)}
+// round 85: once everyone has answered a stats/evolution round, the clock drops to 4 s (like the types quiz), so the last hint can still be read
 function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;pqReveal()}
 function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;Q.revAt=Date.now();S.pqRev=S.pqRev||{};if(S.pqRev[Q.slide]){Q.got=S.pqRev[Q.slide];pqPaint();gamePub();return}S.pqRev[Q.slide]=Q.got;
   if(!(it.k==='none'&&pqNoNone(PQ[Q.key].set)))gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){const n=Q.at?.[p.id]||g.n||3;Q.scores[p.id]=(Q.scores[p.id]||0)+(4-n);Q.got.push([p.id,n]);const H=(S.pqHist=S.pqHist||{})[Q.key]||(S.pqHist[Q.key]={});(H[p.id]=H[p.id]||[]).push(n)}});
