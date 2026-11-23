@@ -1384,7 +1384,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795422536';
+const BUILDV='1795423278';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2768,7 +2768,7 @@ function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeo
   const seg=segAt(POS),D=S.deck||{},now=Date.now();let t0=D.t0||null,log={...(D.log||{})};
   if(POS===0){t0=null;log={}}else if(!t0)t0=now;
   if(D.seg&&D.seg!==seg&&D.segAt&&POS>0&&D.t0)log[D.seg]=(log[D.seg]||0)+(now-D.segAt)/60000;
-  const sa=D.seg===seg&&D.segAt?D.segAt:now;
+  const sa=D.seg===seg&&D.segAt&&POS>0&&t0===D.t0?D.segAt:now; // round 85b: a new start (or the cover) restarts the segment clock, so time spent on the cover while setting up isn't counted
   // how far through this part's slides we are
   const st=SEQ.findIndex(x=>planOf(seg)&&planId(x)===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>planId(x)===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
   const bti=SEQ.findIndex(x=>x.id==='d-battle'),mmi=SEQ.findIndex(x=>x.id==='s-memory'),doc={bt:ROOM.legacy?0:bti+1,bt0:SEQ.findIndex(x=>courseOf(x.id)===5)+1,mem:ROOM.legacy?0:mmi+1,mem0:SEQ.findIndex(x=>courseOf(x.id)===3)+1,label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
@@ -5160,10 +5160,16 @@ function randFill(){if(!randLeft())return;const d=myDoc(),a=d.answers=d.answers|
   for(let k=0;k<o;k++)P.rounds[k].forEach(u=>u.ids.forEach(id=>{if(id in a)return;bias[dim[id]]??=1+r()*4;a[id]=Math.max(1,Math.min(5,Math.round(bias[dim[id]]+(r()-.5)*2)))}));
   const m=S.state?.mew;if(m?.status==='ready'&&m.statements?.length&&!d.mew&&answeredIn(P.rounds.flat(),a)>=countIds(P.rounds.flat()))d.mew=m.statements[Math.floor(r()*m.statements.length)].id;
   sfx('sfx-tink');saveMine();toast(ll('מולא באקראי','Filled at random'));render()}
+// round 85b: what a rehearsal bot writes for the friends' intros (o-friends)
+function botIntro(){const n=subjectName(),F=[['מהצבא','from the army'],['מהעבודה','from work'],['מהתיכון','from high school'],['מהאוניברסיטה','from university'],['מהשכונה','from the neighbourhood'],['מגן חובה','since kindergarten'],['מהמשפחה','family'],['מחוג שחייה','from swimming class']],
+  T=[[`אף פעם לא משתעממים ליד ${n}`,`Never a dull moment around ${n}`],[`עם ${n} כל שיחה קטנה הופכת לשלוש שעות`,`With ${n}, every small talk turns into three hours`],[`ל${n} יש דעה על הכול, ובדרך כלל היא נכונה`,`${n} has an opinion on everything, and it's usually right`],[`אין שותף לטיולים יותר טוב מ${n}`,`There's no better travel buddy than ${n}`],[`${n} ${gs('זוכר','זוכרת')} כל יום הולדת`,`${n} remembers every birthday`],[`מ${n} למדתי להגיד "לא"`,`${n} taught me how to say "no"`]];
+  const u=S.botIntroUsed||(S.botIntroUsed={f:[],s:[]}),pick=(L,k)=>{const free=L.filter(x=>!u[k].includes(x[0]));const x=brnd(free.length?free:L);u[k].push(x[0]);return ll(...x)};
+  return {f:pick(F,'f'),s:pick(T,'s')}}
 function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=cur(),B=botIds(),now=Date.now();if(!it||!B.length)return;S.botAt=S.botAt||{};
   const once=(k,ms,fn)=>{if(S.botAt[k]==null)S.botAt[k]=now+ms;else if(S.botAt[k]>0&&now>=S.botAt[k]){S.botAt[k]=-1;fn()}};
   if(S.answersLoaded||S.answers)for(let k=0;k<(S.state?.open||0);k++)B.forEach(id=>once('ans'+k+id,(S.fastOn?800+Math.random()*5000:3000+Math.random()*30000),()=>botRound(id,k)));
   const m=S.state?.mew;if(m?.status==='ready'&&m.statements?.length)B.forEach(id=>once('mew'+id,2000+Math.random()*8000,()=>{if(!S.answers?.[id]?.mew)S.db.doc('answers/'+id).set({mew:brnd(m.statements).id},{merge:true}).catch(()=>{})}));
+  {const oi=SEQ.findIndex(x=>x.id==='o-friends');if(oi>=0&&POS<=oi)B.forEach(id=>{if(roster().find(p=>p.id===id)?.role==='self')return;once('intro'+id,1000+Math.random()*19000,()=>{if(S.intros?.[id])return;const r=botIntro();S.db.doc('stage/intro-'+id).set({...r,t:r.f+' · '+r.s,at:Date.now()}).catch(()=>{})})})}
   const put=(id,o)=>{S.gIn=S.gIn||{};S.gIn[id]={...(S.gIn[id]||{}),...o};gameIn()};
   // memory: the bot whose turn it is flips two cards, and half the time it remembers a pair it saw
   const M=S.mem;if(M&&it.id===M.key){M.seen=M.seen||{};(M.flips||[]).forEach(i=>M.seen[i]=1)}
