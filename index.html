@@ -634,6 +634,116 @@ body:has(.rcmini) .col{padding-bottom:90px}
 .pkstg{display:flex;align-items:center;gap:.4em;white-space:nowrap;overflow:hidden;font-family:'Roboto Condensed','Arial Narrow',Arial,sans-serif;font-size:.72em;line-height:1}
 .pkstg b{font-weight:800;font-style:italic;padding:.12em .45em .1em;border-radius:.2em;color:#2f333a;background:linear-gradient(180deg,#fff,#c9cdd3);letter-spacing:.03em}
 .pkstg i{font-weight:700;opacity:.9;overflow:hidden;text-overflow:ellipsis}
+/* round 91: the card album */
+.pkc.holo::after{content:"";position:absolute;inset:0;border-radius:1.4em;pointer-events:none;z-index:4;mix-blend-mode:color-dodge;opacity:.28;
+  background:linear-gradient(115deg,transparent 18%,#ff4fd8 30%,#4ff0ff 42%,#fff36b 54%,#7dff7a 66%,transparent 80%);background-size:280% 280%;animation:pkholo 3.6s linear infinite}
+.pkc.holo::before{content:"";position:absolute;inset:0;border-radius:1.4em;pointer-events:none;z-index:4;opacity:.5;
+  background:radial-gradient(circle,#fff 0 .12em,transparent .14em) 0 0/2.3em 2.3em,radial-gradient(circle,#fff 0 .08em,transparent .1em) 1.1em 1.3em/2.9em 2.9em;animation:pksp 2.2s ease-in-out infinite alternate}
+.pkc.holo{background:linear-gradient(145deg,#e6f6ff,#b9c6ff 30%,#ffd1f4 55%,#c8fff0 80%,#e6f6ff)}
+@keyframes pkholo{from{background-position:0% 50%}to{background-position:280% 50%}}@keyframes pksp{from{opacity:.15}to{opacity:.6}}
+.pkpic.ph{display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,var(--f1),var(--f3))}
+.pkpic.ph .pkcat{width:9em;height:9em;opacity:.85}.pkpic.ph b{position:absolute;font:900 5em 'Roboto Condensed',Arial,sans-serif;color:#fff;text-shadow:0 .05em .2em rgba(0,0,0,.45)}
+.pkpic.sjpic{background:radial-gradient(circle at 60% 45%,#fff 0 18%,color-mix(in srgb,var(--c1) 55%,#fff) 45%,var(--c2));padding:0}
+.sjrays{position:absolute;inset:-30%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.35) 0 8deg,transparent 8deg 22deg);animation:sjr 18s linear infinite}
+@keyframes sjr{to{transform:rotate(360deg)}}
+.pkpic.sjpic .sjav{position:absolute;left:2%;bottom:0;height:92%;width:auto;max-width:60%;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 .3em .4em rgba(0,0,0,.35))}
+.pkpic.sjpic .sjmon{position:absolute;right:0;bottom:4%;width:50%;height:auto;image-rendering:pixelated;filter:drop-shadow(0 .3em .4em rgba(0,0,0,.35))}
+#albfab{direction:ltr;position:fixed;top:10px;inset-inline-end:10px;z-index:880;display:flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:14px;border:2px solid var(--gold);background:rgba(22,26,46,.94);color:var(--cream);font:700 18px var(--body);box-shadow:0 4px 14px rgba(0,0,0,.45)}
+#albfab img{height:30px;width:auto;display:block}#albfab i{font-style:normal;color:#9ff;font-size:15px}
+#albfab.bump{animation:albbump .5s cubic-bezier(.3,1.6,.5,1)}@keyframes albbump{40%{transform:scale(1.35)}}
+.albnew{position:fixed;inset:0;z-index:2200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:rgba(10,12,24,.82);animation:alcin .25s both}
+.albnew.clear{background:transparent}.albnew.out{background:transparent;transition:background .4s}
+.albnew .albt{margin:0;padding:0 20px;text-align:center;font:800 24px var(--body);color:var(--gold);text-shadow:0 2px 8px #000}
+.albnew.out .albt{opacity:0;transition:opacity .2s}
+.albfw{transition:transform .55s cubic-bezier(.5,0,.75,0),opacity .55s}
+.albnew.zoom{z-index:2300}
+@keyframes alcin{from{opacity:0}}
+#albov{position:fixed;inset:0;z-index:1900;overflow:auto;background:#161A2E;color:var(--cream);padding:14px 20px 40px;-webkit-overflow-scrolling:touch}
+.albtop{position:sticky;top:-14px;z-index:5;display:flex;align-items:center;gap:12px;background:#161A2E;padding:10px 0;margin-bottom:6px}
+.albtop>div{flex:1}.albn{font:700 20px var(--body);white-space:nowrap;direction:ltr}.albn i{font-style:normal;color:#9ff}
+.albtop .x{background:none;border:2px solid var(--mist);color:var(--cream);border-radius:50%;width:40px;height:40px;font-size:18px;flex:none}
+.albw{margin:0 0 16px;padding:10px 8px 12px;border-radius:16px;background:linear-gradient(170deg,color-mix(in srgb,var(--f3,#3a3f5c) 38%,#1e2238),#1e2238)}
+.albw.done{box-shadow:0 0 0 2px #9ff,0 0 18px rgba(150,255,255,.35)}
+.albw.sp{background:linear-gradient(170deg,#5a4614,#1e2238)}
+.albh{display:flex;align-items:center;gap:8px;margin:0 4px 8px;font-size:17px}.albh b{flex:1}.albh span{font:700 15px var(--body);opacity:.85;direction:ltr}
+.albh .pkcat{width:26px;height:26px;box-shadow:0 0 0 2px #fff}
+.albg{display:grid;grid-template-columns:repeat(3,auto);gap:8px;justify-content:center}
+.albs{padding:0;border:0;background:none;display:block;position:relative;cursor:pointer}
+.albs.off{aspect-ratio:1/1.1963;border-radius:8%;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(255,255,255,.05);cursor:default}
+.albs.off img{position:absolute;inset:0;width:100%;height:100%;opacity:.22;filter:grayscale(1)}
+.albs.off b{position:relative;font:700 15px var(--body);color:var(--mist);padding:0 6px;line-height:1.25}
+.albs.off.holo{border:2px dashed rgba(150,255,255,.55);background:rgba(150,255,255,.06)}.albs.off.holo b{font-size:30px;color:#9ff}
+.albs.off.holo small{position:relative;font-size:12px;color:#9ff;padding:4px 6px 0;line-height:1.2}
+/* world completion shows */
+#albcel{position:fixed;inset:0;z-index:2100;overflow:hidden;background:#0b0e1c;animation:alcin .3s both}
+#albcel.out{opacity:0;transition:opacity .4s}
+#albcel .alt{position:absolute;left:0;right:0;top:9%;margin:0;text-align:center;font:800 30px var(--body);color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.7);animation:alcti .7s .5s both;z-index:5}
+#albcel .alt small{font-size:19px;color:var(--gold)}
+@keyframes alcti{from{opacity:0;transform:translateY(-20px)}}
+.alp{position:absolute;left:var(--x);top:var(--y);font-size:var(--s,28px);font-style:normal;line-height:1;animation-duration:var(--t,2.6s);animation-delay:var(--dl,0s);animation-fill-mode:both;animation-timing-function:ease-out}
+@keyframes alpop{0%{transform:scale(0);opacity:0}40%{transform:scale(1.2);opacity:1}100%{transform:scale(.6);opacity:0}}
+@keyframes alboom{0%{transform:scale(.1);opacity:0}30%{opacity:1}100%{transform:scale(1.6);opacity:0}}
+@keyframes alrise{from{transform:translateY(0) rotate(0)}to{transform:translateY(-125vh) rotate(var(--h,0deg))}}
+@keyframes alfall{from{transform:translate(0,0)}to{transform:translate(var(--dx,20px),118vh)}}
+@keyframes alin{from{transform:translate(var(--fx),var(--fy)) rotate(var(--r));opacity:1}85%{opacity:1}to{transform:translate(-50%,-50%) scale(.3);opacity:0}}
+@keyframes alflash{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes alpop2{from{transform:scale(0);opacity:0}}
+#albcel.alc-castle{background:radial-gradient(circle at 50% 30%,#3c4ea8,#0b0e1c 70%)}
+.alc-cs{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);font-size:150px;font-style:normal;animation:alcin 1s both}
+#albcel.alc-balloons{background:linear-gradient(#7fcaf5,#e9f7ff)}
+.alc-house{position:absolute;left:50%;bottom:-2%;font-size:110px;font-style:normal;animation:alhouse 2.8s .4s ease-in both}
+@keyframes alhouse{from{transform:translate(-50%,0)}to{transform:translate(-50%,-70vh)}}
+#albcel.alc-letters{background:radial-gradient(circle at 50% 40%,#5a3b17,#120c05)}
+.alc-owl{position:absolute;top:30%;left:0;font-size:70px;font-style:normal;animation:alowl 2.6s .3s linear both}@keyframes alowl{from{transform:translateX(-30vw)}to{transform:translateX(120vw)}}
+#albcel.alc-ring{background:#000}
+.alc-rg{position:absolute;left:50%;top:44%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;border:16px solid #e9b93a;box-sizing:border-box;box-shadow:0 0 30px #ff8a00,inset 0 0 20px #8a5a00;animation:alring 2.8s both}
+@keyframes alring{0%{transform:scale(.2) rotate(-90deg);opacity:0}40%{transform:scale(1) rotate(0);opacity:1}100%{box-shadow:0 0 70px 10px #ff5a00,inset 0 0 30px #ffb000}}
+.alc-fire{position:absolute;left:0;right:0;top:64%;margin:0;text-align:center;direction:ltr;font:italic 700 19px Georgia,serif;letter-spacing:.12em;color:#ff9a2a;text-shadow:0 0 8px #ff3c00,0 0 18px #ff7a00;animation:alfire 2.8s .8s both}
+@keyframes alfire{0%{opacity:0}30%{opacity:1}50%{opacity:.7}70%{opacity:1}}
+#albcel.alc-winter{background:linear-gradient(#0c1a2b,#22384f)}
+.alc-frost{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(220,240,255,.85) 100%);animation:alcin 2.6s both}
+.alc-win{position:absolute;left:0;right:0;top:60%;margin:0;text-align:center;direction:ltr;font:700 24px Georgia,serif;letter-spacing:.25em;color:#dff1ff;animation:alcti 1s 1.2s both}
+#albcel.alc-hyper{background:#000}
+.alc-hyper .alp{width:46vmax;height:2px;background:linear-gradient(90deg,transparent,#cfe8ff);transform-origin:0 50%;animation-timing-function:ease-in;animation-iteration-count:3}
+@keyframes alhyp{from{transform:rotate(var(--r)) translateX(0) scaleX(.05);opacity:0}30%{opacity:1}to{transform:rotate(var(--r)) translateX(20vmax) scaleX(1);opacity:0}}
+.alc-crawl{position:absolute;left:0;right:0;bottom:6%;height:46%;perspective:260px;overflow:hidden}
+.alc-crawl p{margin:0;text-align:center;direction:ltr;color:#ffe81f;font:800 40px/1.1 Arial,sans-serif;letter-spacing:.06em;animation:alcrawl 2.9s .4s linear both}
+@keyframes alcrawl{from{transform:rotateX(28deg) translateY(240px)}to{transform:rotateX(28deg) translateY(-20px)}}
+#albcel.alc-friends{background:#2b2420}
+.alc-fr{position:absolute;left:0;right:0;top:44%;margin:0;text-align:center;direction:ltr;font:700 44px Georgia,serif;color:#fff;letter-spacing:.04em}
+.alc-fr b,.alc-fr u{display:inline-block;animation:alpop2 .4s var(--dl) both}.alc-fr u{width:11px;height:11px;border-radius:50%;background:var(--c);margin:0 4px 10px}
+#albcel.alc-leader{background:radial-gradient(#5c5348,#1c1a17)}
+.alc-ldr{position:absolute;left:50%;top:45%;width:220px;height:220px;margin:-110px;border-radius:50%;border:6px solid #f3ead8;overflow:hidden;box-sizing:border-box}
+.alc-ldr .sw{position:absolute;inset:-20%;background:conic-gradient(rgba(243,234,216,.35) 0 90deg,transparent 90deg);animation:alspin .7s linear 3}
+.alc-ldr b{position:absolute;inset:0;display:grid;place-items:center;font:700 130px Georgia,serif;color:#f3ead8;opacity:0;animation:alnum .7s var(--dl) both}
+@keyframes alnum{0%,100%{opacity:0}5%,95%{opacity:1}}
+.alc-clap{position:absolute;left:50%;top:45%;margin:-60px 0 0 -60px;font-size:120px;font-style:normal;animation:alpop2 .4s 2.1s both}
+#albcel.alc-crt{background:#000}
+.alc-crt{position:absolute;inset:0;background:#e8f4ff;animation:alcrt 1.4s both}
+@keyframes alcrt{0%{transform:scale(0,.004)}35%{transform:scale(1,.004)}70%{transform:scale(1,1);opacity:1}100%{opacity:.08}}
+.alc-noise{position:absolute;inset:0;opacity:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 2px,transparent 2px 4px);animation:alflash .2s 1.4s 6}
+.alc-tv{position:absolute;left:50%;top:48%;margin:-65px 0 0 -65px;font-size:130px;font-style:normal;animation:alpop2 .5s 1.5s both}
+#albcel.alc-pow{background:radial-gradient(circle,#e8b400 22%,transparent 24%) 0 0/16px 16px,#ffd400;animation:alshake .4s .4s 3}
+.alc-pw{position:absolute;left:50%;top:46%;width:300px;height:260px;margin:-130px 0 0 -150px;background:#e8291c;clip-path:polygon(50% 0,61% 30%,95% 12%,74% 42%,100% 58%,70% 64%,82% 98%,52% 74%,24% 100%,30% 66%,0 60%,26% 42%,6% 12%,38% 30%);display:grid;place-items:center;animation:alpowb .6s .2s cubic-bezier(.3,1.7,.5,1) both}
+.alc-pw b{direction:ltr;unicode-bidi:isolate;font:900 64px Impact,'Arial Black',sans-serif;color:#fff35a;-webkit-text-stroke:3px #1a1a1a;transform:rotate(-8deg)}
+@keyframes alpowb{from{transform:scale(0) rotate(-30deg)}}@keyframes alshake{25%{transform:translate(-6px,3px)}75%{transform:translate(6px,-3px)}}
+#albcel.alc-bubbles{background:linear-gradient(#3fc1ef,#0e6fa8)}.alb{display:block;width:var(--s);height:var(--s);border-radius:50%;border:2px solid rgba(255,255,255,.85);background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.9) 0 12%,rgba(255,255,255,.12) 30%,rgba(180,240,255,.18))}.alc-star{position:absolute;left:50%;top:60%;margin:-45px 0 0 -45px;font-size:90px;font-style:normal;animation:alpop2 .5s 1.6s both}
+#albcel.alc-paper{background:radial-gradient(#555,#1e1e1e)}
+.alc-news{position:absolute;left:50%;top:48%;width:250px;padding:14px 16px 18px;margin:-120px 0 0 -125px;box-sizing:border-box;background:#f3ecd9;color:#1b1b1b;text-align:center;box-shadow:0 10px 30px #000;animation:alnews 1.3s cubic-bezier(.2,.8,.3,1) both}
+.alc-news small{display:block;font:700 15px Georgia,serif;letter-spacing:.12em;border-bottom:3px double #1b1b1b;padding-bottom:6px}
+.alc-news b{display:block;font:900 30px Georgia,serif;margin:10px 0}.alc-news i{display:block;height:6px;margin:7px 0;background:#bdb5a1}
+@keyframes alnews{from{transform:rotate(1080deg) scale(0)}to{transform:rotate(-4deg) scale(1)}}
+#albcel.alc-record{background:radial-gradient(#3a1f5c,#0e0618)}
+.alc-disc{position:absolute;left:50%;top:46%;width:220px;height:220px;margin:-110px;border-radius:50%;background:repeating-radial-gradient(circle,#c9a227 0 2px,#e8c75a 2px 4px);box-shadow:0 0 40px rgba(255,210,80,.6);animation:alspin 1s linear infinite}
+.alc-disc i{position:absolute;left:50%;top:50%;width:70px;height:70px;margin:-35px;border-radius:50%;background:#b8141e;border:6px solid #f3ead8;box-sizing:border-box}
+@keyframes alspin{to{transform:rotate(360deg)}}
+#albcel.alc-medal{background:linear-gradient(#0b2a16,#1f6b35)}.alc-medal .alp{width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 18px 8px #fff}
+.alc-md{position:absolute;left:50%;top:46%;font-size:140px;font-style:normal;animation:aldrop 1s .6s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes aldrop{from{transform:translate(-50%,-90vh)}to{transform:translate(-50%,-50%)}}
+#albcel.alc-mirror{background:radial-gradient(#2a0a3c,#08000f)}
+.alc-mir{position:absolute;left:50%;top:46%;width:180px;height:252px;margin:-126px 0 0 -90px;border-radius:50%;border:14px solid #c9a227;box-sizing:border-box;background:radial-gradient(circle at 40% 30%,#6ae39a,#0c3a24 70%);box-shadow:0 0 50px #3bff8a;animation:alcin 1s both;overflow:hidden}
+.alc-mir svg{width:100%;height:100%}.alc-mir path{fill:none;stroke:#e9fff2;stroke-width:1.6;stroke-dasharray:240;stroke-dashoffset:240;animation:alcrack 1s 1.1s ease-out forwards}
+@keyframes alcrack{to{stroke-dashoffset:0}}
 .pq32 .pq3row{display:flex;align-items:center;gap:12px}.pq32 .pq3col{display:flex;flex-direction:column;align-items:center;gap:6px}.pq3lab{font-size:22px;font-weight:700;color:#9FA7C7}
 .pqaft{animation:pqevo 3s both;animation-timing-function:steps(1,end);animation-delay:var(--d,0ms)}.pqaft.done{animation:none}
 @keyframes pqevo{0%{opacity:0}1%{opacity:1;filter:brightness(0) invert(1)}13%{opacity:0}24%{opacity:1;filter:brightness(0) invert(1)}33%{opacity:0}41%{opacity:1;filter:brightness(0) invert(1)}48%{opacity:0}54%{opacity:1;filter:brightness(0) invert(1)}59%{opacity:0}64%{opacity:1;filter:brightness(0) invert(1)}68%{opacity:0}72%{opacity:1;filter:brightness(0) invert(1)}75%{opacity:0}78%{opacity:1;filter:brightness(0) invert(1)}80.5%{opacity:0}83%{opacity:1;filter:brightness(0) invert(1)}85%{opacity:0}87%{opacity:1;filter:brightness(0) invert(1) drop-shadow(0 0 30px #fff)}97%{opacity:1;filter:brightness(1.6) drop-shadow(0 0 40px #fff)}100%{opacity:1;filter:none}}
@@ -1454,7 +1564,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795445456';
+const BUILDV='1795446254';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1565,9 +1675,9 @@ async function boot(){
     render()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}}},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id==='album')S.album=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}if(!isScreen())albTick()}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
-  S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;if(!ROOM.legacy)castLoad().then(()=>castApplyPQ());changed()},()=>{});
+  S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;if(!ROOM.legacy)castLoad().then(()=>{castApplyPQ();if(!isScreen())albTick()});changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
     q.docs.forEach(d=>{if(!(d.id===S.me&&S.saving))S.answers[d.id]=clone(d.data())});
     q.docChanges().forEach(c=>{if(c.type==='removed')delete S.answers[c.doc.id]});
@@ -1984,6 +2094,7 @@ function render(){
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
   try{if(S.myIntro==null){try{const r=RAWSTORE.get('psp-intro')||'';S.myIntro=/^\{/.test(r)?JSON.parse(r):r}catch(e){S.myIntro=''}}introBtn()}catch(e){}
+  try{albTick()}catch(e){console.error(e)}
   if(!S.remoteMode&&S.game?.hand&&!S.game.g&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="handbtn" onclick="twHand()">✋ ${ll('יש לי משהו להגיד','I have something to say')}</button>`);
   if(!S.remoteMode&&S.intro?.live&&S.me&&person(S.me))app.querySelector('.col').insertAdjacentHTML('beforeend',`<button class="btn ghost small" data-act="switch" style="margin-top:10px">${ll(`לא ${esc(person(S.me).name)}? החלפת שם`,`Not ${esc(person(S.me).name)}? Switch name`)}</button>`);
   if(randLeft())app.querySelector('.col').insertAdjacentHTML('afterbegin',`<button class="btn ghost small" data-act="randfill" style="margin-bottom:10px;border-style:dashed">${ll(`🎲 ניסוי: לענות בשבילי באקראי (${randLeft()})`,`🎲 Rehearsal: answer for me at random (${randLeft()})`)}</button>`);
@@ -2943,7 +3054,7 @@ function quizState(){const it=cur(),T=quizTypes();if(!it)return null;const i=SEQ
   const score={},balls={};pl.forEach(p=>{score[p.id]=0;balls[p.id]=[0,0,0,0];rev.forEach(t=>{const g=G[p.id]?.[t];if(g&&g.g===t){score[p.id]+=4-g.n;balls[p.id][g.n]++}})});
   const q=it.kind==='slide'&&/^q-/.test(it.id)?it.id.slice(2):null;
   return {type:q,n:q?Math.min(3,BUILD):0,revealed:q?passed(q):false,open:q?T.filter(t=>(ROOM.legacy||courseOf('q-'+t)===courseOf('q-'+q))&&(!rev.includes(t)||t===q)).sort((x,y)=>TYPE_HE[x].localeCompare(TYPE_HE[y],'he')):[],scores:score,balls,players:pl,rev}}
-function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;
+function quizSync(){if(!S.db)return;const Q=quizState();if(!Q)return;if(isScreen())albTypes(Q);
   const doc={type:Q.type,n:Q.n,revealed:Q.revealed,open:Q.open,scores:Q.scores,next:S.qAuto&&!Q.revealed?S.qAuto.next:null};const k=JSON.stringify(doc);
   if(k!==S.quizKey){S.quizKey=k;S.db.doc('stage/quiz').set(doc).catch(()=>{})}
   if(Q.type){if(!$('#qboard'))$('#cv').insertAdjacentHTML('beforeend','<div id="qboard" class="qrow2"></div>');quizBoardUpdate()}}
@@ -5027,14 +5138,14 @@ function pkVars(w){const p=CARDS.worlds[w],f=p.f.map(c=>pkMix(c,[255,255,255],PK
   return `--f1:${f[0]};--f2:${f[1]};--f3:${f[2]};--ink:${dark?p.f[2]:p.ink};--hpc:${dark?pkMix(p.f[1],[0,0,0],.1):p.hp};--i1:${p.f[1]};--i2:${p.f[2]}`}
 function pkIcon(w,cls){return `<i class="pkcat ${cls||''}"><svg viewBox="0 0 24 24" aria-hidden="true">${CARDS.worlds[w].svg}</svg></i>`}
 function pkCard(id){const c=CARDS.chars[id],w=c.w,p=CARDS.worlds[w],an=c.atk,fs=an.length>16?1.3:an.length>13?1.5:1.75;
-  const nm=c.evo||c.basic?`<div class="pknm"><div class="pkname">${esc(c.en)}</div><div class="pkstg">${c.evo?`<b>STAGE 1</b><i>Evolves from ${esc(c.evo)}</i>`:'<b>BASIC</b>'}</div></div>`:`<div class="pkname"${c.en.length>15?` style="font-size:${c.en.length>17?1.65:1.8}em"`:''}>${esc(c.en)}</div>`;
-  return `<div class="pkc${c.evo||c.basic?' evo':''}" style="${pkVars(w)}" dir="ltr">${c.pre?`<div class="pkpre"><img src="img/ch/${c.pre}.webp" alt=""></div>`:''}<div class="pkface">
+  const nm=c.evo||c.basic||c.holo?`<div class="pknm"><div class="pkname">${esc(c.en)}</div><div class="pkstg">${c.evo?`<b>STAGE 1</b><i>Evolves from ${esc(c.evo)}</i>`:c.holo?`<b>✦ HOLO</b><i>${esc(p.en)}</i>`:'<b>BASIC</b>'}</div></div>`:`<div class="pkname"${c.en.length>15?` style="font-size:${c.en.length>17?1.65:1.8}em"`:''}>${esc(c.en)}</div>`;
+  return `<div class="pkc${c.evo||c.basic||c.holo?' evo':''}${c.holo?' holo':''}" style="${pkVars(w)}" dir="ltr">${c.pre?`<div class="pkpre"><img src="img/ch/${c.pre}.webp" alt=""></div>`:''}<div class="pkface">
    <div class="pktop">${nm}<div class="pkhp"><small>HP</small><b>${c.hp}</b></div>${pkIcon(w)}</div>
-   <div class="pkpic"><img src="img/card/${id}.webp" alt="${esc(c.en)}"></div><div class="pkstrip">${esc(p.en)} Character</div>
+   ${c.ph?`<div class="pkpic ph">${pkIcon(w)}<b>?</b></div>`:`<div class="pkpic"><img src="img/card/${id}.webp" alt="${esc(c.en)}"></div>`}<div class="pkstrip">${esc(p.en)} Character</div>
    <div class="pkatk"><div class="pkcost">${pkIcon(w,'pknrg').repeat(c.cost[0])}${'<i class="pknrg pkcl"></i>'.repeat(c.cost[1])}</div><div class="pkan" style="font-size:${fs}em">${esc(an)}</div><div class="pkdmg">${c.dmg}</div></div>
    <div class="pkrule"></div><div class="pkret"><span>RETREAT</span>${c.ret?'<i class="pknrg pkcl"></i>'.repeat(c.ret):'<span class="pknone">—</span>'}</div></div></div>`}
 function pkFlip(id,o){o=o||{};const w=o.w||300,h=Math.round(w*1.1963),cls=o.fl?' fl':o.d!=null?' ft':'';
-  return `<div class="pkf${cls}" ${o.attrs||''} style="width:${w}px;height:${h}px;font-size:${(w/34).toFixed(3)}px;${o.d!=null?`--d:${Math.round(o.d)}ms;`:''}${o.st||''}"><div class="pkin"><div class="pkfr">${pkCard(id)}</div><div class="pkbk"><img src="img/card-back.webp" alt=""></div></div>${o.tc?`<i class="pkglow" ${o.glow||''} style="--tc:${o.tc}"></i>`:''}${o.extra||''}</div>`}
+  return `<div class="pkf${cls}" ${o.attrs||''} style="width:${w}px;height:${h}px;font-size:${(w/34).toFixed(3)}px;${o.d!=null?`--d:${Math.round(o.d)}ms;`:''}${o.st||''}"><div class="pkin"><div class="pkfr">${id==='_subj'?pkSubjCard():pkCard(id)}</div><div class="pkbk"><img src="img/card-back.webp" alt=""></div></div>${o.tc?`<i class="pkglow" ${o.glow||''} style="--tc:${o.tc}"></i>`:''}${o.extra||''}</div>`}
 // q-<type>: swap the three characters (photo, name, the line of the row they were cast through) for the room's
 function castQ(h,t){const ids=castSeats()?.[t]?.slice().sort((x,y)=>(castRow(y,t)?.[3]||0)-(castRow(x,t)?.[3]||0));if(!ids||ids.filter(Boolean).length<3||!CAST_FR[t])return h;let i=0;
   return h.replace(/<div data-build-in="rise (\d)"([^>]*)>\s*<img src="img\/n-[a-z]+-[a-z]+\.webp"[^>]*>\s*<p([^>]*)>[^<]*<\/p>\s*<p([^>]*)>[^<]*<\/p>\s*<\/div>\s*<img data-build-in="fade 5" src="img\/c-[a-z]+-[a-z]+\.webp"[^>]*style="([^"]*)">/g,(m,k,a,p1,p2,st)=>{
@@ -5094,12 +5205,13 @@ function castSolve(worlds,o){o=o||{};const W=new Set(worlds),C=CAST.chars,sk=new
   rows.forEach(r=>{const a=id.get('c'+r[0]),b=id.get('d'+r[1]);if(G[a].some(e=>e[0]===b&&e[1]===0&&e[2]<0)&&!seats[r[1]].includes(r[0]))seats[r[1]].push(r[0])});
   Object.entries(seats).forEach(([d,L])=>L.sort((x,y)=>(castRow(y,d)?.[3]||0)-(castRow(x,d)?.[3]||0)));
   castSolve.cost=cost;return seats}
-// round 90 (the card album): every world in the evening gives EXACTLY 6 cards: 12 worlds x 6 = the 72 seats of types, stats and evolution;
+// round 91 (the card album): every world in the evening gives EXACTLY 6 cards: 12 worlds x 6 = the 72 seats of types, stats and evolution;
 // Everstone (none) is the one seat outside the worlds, its character picked first (best score). Then the 12 worlds out of those allowed:
 // every set of 12 when there are few enough (15 worlds = 455 tries, ~2 s), else drop the world whose removal costs least, one at a time, then swap one in / one out while it helps (each try = a full casting with
-// at most 6 per world; with 12 worlds and 72 seats a full casting is exactly 6 per world). Fewer than 12 allowed: as many as fit, ≤6 each.
+// at most 6 per world; with 12 worlds and 72 seats a full casting is exactly 6 per world). Fewer than 12 allowed: the old casting (no cap).
 const ALB_PER=6,ALB_N=12,ALB_EVB=300;
-function castSolveAlbum(worlds){const C=CAST.chars,W=worlds.slice(),ev=CAST.rows.filter(r=>r[1]==='none'&&W.includes(C[r[0]]?.w)).sort((a,b)=>b[3]-a[3]||(a[2]==='P'?-1:1));
+function castSolveAlbum(worlds){if(worlds.length<ALB_N)return castSolve(worlds);   // fewer than 12 worlds allowed: the games come first (every seat filled), the album just isn't even
+  const C=CAST.chars,W=worlds.slice(),ev=CAST.rows.filter(r=>r[1]==='none'&&W.includes(C[r[0]]?.w)).sort((a,b)=>b[3]-a[3]||(a[2]==='P'?-1:1));
   const none=ev[0]?.[0]||null,memo={},run=ws=>{const k=ws.slice().sort().join(',');if(!memo[k]){const seats=castSolve(ws,{cap:ALB_PER,skip:none?[none]:[],no:['none']});memo[k]={seats,cost:castSolve.cost}}return memo[k]};
   const comb=(a,k)=>k===0?[[]]:a.length<k?[]:[...comb(a.slice(1),k-1).map(x=>[a[0],...x]),...comb(a.slice(1),k)],nC=(n,k)=>{let r=1;for(let i=0;i<k;i++)r=r*(n-i)/(i+1);return r};
   let cur=W.slice();
@@ -5108,6 +5220,106 @@ function castSolveAlbum(worlds){const C=CAST.chars,W=worlds.slice(),ev=CAST.rows
   if(cur.length===ALB_N)for(let better=true;better;){better=false;const base=run(cur).cost;
     out:for(const o of cur)for(const i of W.filter(w=>!cur.includes(w))){const ws=[...cur.filter(w=>w!==o),i];if(run(ws).cost<base-1e-9){cur=ws;better=true;break out}}}
   const seats=JSON.parse(JSON.stringify(run(cur).seats));seats.none=none?[none]:[];return seats}
+// ===== round 91: THE CARD ALBUM (new rooms with a cast; ERI1 has none). Spec: handoff/PSP-album-spec.md =====
+// Every friend and the subject (not the host) collects, for a RIGHT guess only: types = the room's cards that were still face down when
+// you guessed (after card 1: cards 2-3; after card 3: none; a guess can't be changed); stats = both cards of the pair; evolution = the
+// "after" card; Everstone = its own special card (guessing "Other"). The screen writes `stage/album` {<pid>: {<card id>: time}};
+// after the Hall of Fame's last step it writes `_subj` and everyone gets the subject's card (their big sprite + their Pokémon).
+// All 6 of a world = a completion show in that world's theme + its HOLO card (cards.json worlds[w].holo), on the phone only.
+const ALB_ST=['hp','atk','def','spa','spd','spe'],ALB_EV=['level','item','trade','friend','special','move'];
+const albOn=()=>!ROOM.legacy&&!!(CAST&&CARDS&&castSeats());
+function albTypeIds(t){return (castSeats()?.[t]||[]).filter(id=>id&&CAST.chars[id]).sort((x,y)=>(castRow(y,t)?.[3]||0)-(castRow(x,t)?.[3]||0)).slice(0,3).filter(pkOK)}
+function albStatIds(k){const s=castSeats()||{};return [s[k+'+']?.[0],s[k+'-']?.[0]].filter(id=>id&&CAST.chars[id]&&pkOK(id))}
+function albEvoId(k){const id=castSeats()?.[k]?.[0];if(!id||!CAST.chars[id])return null;const ev=CAST.chars[id].ev,c=ev&&pkOK(ev[1])?ev[1]:id;return pkOK(c)?c:null}
+function albModel(){if(!albOn())return null;const key=JSON.stringify(castSeats());if(S.albM?.key===key)return S.albM;
+  const ids=[...new Set([...Object.keys(CAST_FR).flatMap(albTypeIds),...ALB_ST.flatMap(albStatIds),...ALB_EV.map(albEvoId).filter(Boolean)])],W={};
+  ids.forEach(id=>{const w=CARDS.chars[id].w;(W[w]=W[w]||[]).push(id)});
+  return S.albM={key,worlds:CAST.worlds.map(x=>x[0]).filter(w=>W[w]).map(w=>({w,ids:W[w],holo:pkOK(CARDS.worlds[w]?.holo)?CARDS.worlds[w].holo:null})),ever:albEvoId('none'),n:ids.length}}
+// ---- the screen gives ----
+function albGive(m){if(!albOn()||!S.db)return;const t=Date.now(),doc={};Object.entries(m).forEach(([p,L])=>{if(L&&L.length)doc[p]=Object.fromEntries(L.map(i=>[i,t]))});
+  if(Object.keys(doc).length)S.db.doc('stage/album').set(doc,{merge:true}).catch(()=>{})}
+function albTypes(Q){if(!albOn()||!Q?.rev)return;S.albT=S.albT||{};const m={};
+  Q.rev.forEach(t=>{if(S.albT[t])return;S.albT[t]=1;const ids=albTypeIds(t);(Q.players||[]).forEach(p=>{const g=S.guesses?.[p.id]?.[t];if(g&&g.g===t){const got=ids.slice(Math.max(0,+g.n||0));if(got.length)(m[p.id]=m[p.id]||[]).push(...got)}})});albGive(m)}
+function albPq(it,gid){if(!albOn())return;const st=PQ[S.pq.key].set==='stats',cards=(st?(it.pair?it.pair.map(x=>x[0]):[it.cid]):[it.cid&&pqCardId(it)]).filter(i=>i&&pkOK(i)),m={};
+  gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+gid];if(g&&(g.v===it.k||(it.k==='none'&&g.v==='other')))m[p.id]=cards});albGive(m)}
+function albSubjGive(){if(!albOn()||!S.db||S.albSubj)return;S.albSubj=1;S.db.doc('stage/album').set({_subj:Date.now()},{merge:true}).catch(()=>{S.albSubj=0})}
+// ---- the subject's card: the big sprite of the Hall of Fame beside their Pokémon ----
+function pkSubjCard(){const r=S.state?.result||{},sp=subjP(),ty=r.types||[],c1=TYPE_COL[ty[0]]||'#F2C94C',c2=TYPE_COL[ty[1]||ty[0]]||'#C99A12';
+  const big=roomAv(sp,'f')||(avKey(sp)?`img/av-f-${avKey(sp)}${avG(sp)}.webp`:defSprite(sp)),nm=subjectName(),fn=r.finalName||'';
+  return `<div class="pkc evo subj" style="--f1:${pkMix(c1,[255,255,255],.72)};--f2:${pkMix(c1,[255,255,255],.45)};--f3:${pkMix(c2,[255,255,255],.2)};--ink:#1d1a22;--hpc:${pkMix(c1,[0,0,0],.35)};--i1:${c1};--i2:${c2}" dir="ltr"><div class="pkface">
+   <div class="pktop"><div class="pknm"><div class="pkname"${nm.length>12?' style="font-size:1.3em"':''}>${esc(nm)}</div><div class="pkstg"><b>HALL OF FAME</b><i>${esc(fn)}</i></div></div><div class="pkhp"><small>MATCH</small><b style="font-size:1.7em">${r.pct??''}%</b></div></div>
+   <div class="pkpic sjpic" style="--c1:${c1};--c2:${c2}"><i class="sjrays"></i><img class="sjav" src="${big}" alt="${esc(nm)}">${r.spriteData?`<img class="sjmon" src="data:image/png;base64,${r.spriteData}" alt="${esc(fn)}">`:''}</div>
+   <div class="pkstrip">${esc(fn)} Trainer</div>
+   <div class="pkatk"><div class="pkcost">${ty.map(t=>`<i class="pknrg" style="background:radial-gradient(circle at 35% 30%,#fff8,${TYPE_COL[t]} 60%)"></i>`).join('')}</div><div class="pkan" style="font-size:1.45em">${esc(fn.toUpperCase())}</div><div class="pkdmg">★</div></div>
+   <div class="pkrule"></div><div class="pkret"><span>PSP · ${esc((ROOM.code||'').toUpperCase())}</span></div></div></div>`}
+// ---- the phone ----
+function albMine(){const M=albModel();if(!M||!S.me)return null;const a=S.album?.[S.me]||{},have=new Set(Object.keys(a));
+  const done=M.worlds.filter(x=>x.ids.length&&x.ids.every(i=>have.has(i))).map(x=>x.w),subj=!!(S.state?.result&&(S.album?._subj||S.deck?.seg==='end'||roomClosed()));
+  const n=M.worlds.reduce((s,x)=>s+x.ids.filter(i=>have.has(i)).length,0)+(M.ever&&have.has(M.ever)?1:0)+(subj?1:0);
+  return {M,have,done,subj,n,tot:M.n+(M.ever?1:0)+1,holos:done.filter(w=>M.worlds.find(x=>x.w===w)?.holo).length}}
+function albWho(){const me=person(S.me);return !isScreen()&&!S.remoteMode&&!!me&&!isPresenter(me)&&!me.remote}
+function albFab(A){let b=document.getElementById('albfab');if(!A||S.intro?.live){b?.remove();return}
+  if(!b){b=document.createElement('button');b.id='albfab';b.onclick=albOpen;b.setAttribute('aria-label',ll('אלבום הקלפים','Card album'));document.body.appendChild(b)}
+  const h=`<img src="img/card-back.webp" alt=""><b>${A.n}</b>${A.holos?`<i>✦${A.holos}</i>`:''}`;if(b.innerHTML!==h)b.innerHTML=h}
+function albTick(){if(!albWho()){albFab(null);return}const A=albMine();albFab(A);if(!A||!S.stageLoaded)return;
+  const k='psp-alb-'+ROOM.code+'-'+S.me,raw=RAWSTORE.get(k),cards=[...A.have].filter(i=>i===A.M.ever||A.M.worlds.some(x=>x.ids.includes(i)));
+  const cur=[...cards,...A.done.map(w=>'C:'+w),...(A.subj?['_subj']:[])];
+  if(raw==null){RAWSTORE.set(k,JSON.stringify(cur));return}   // a new device: what is already there isn't "new"
+  let seen;try{seen=new Set(JSON.parse(raw))}catch(e){seen=new Set()}
+  const nw=cur.filter(i=>!seen.has(i));if(!nw.length)return;nw.forEach(i=>seen.add(i));RAWSTORE.set(k,JSON.stringify([...seen]));
+  const rk=i=>i==='_subj'?2:i.startsWith('C:')?1:0;S.albQ=(S.albQ||[]).concat(nw.sort((a,b)=>rk(a)-rk(b)));albRun()}
+function albRun(){if(S.albBusy||!S.albQ?.length)return;const i=S.albQ.shift(),fin=()=>{S.albBusy=false;albRun()};S.albBusy=true;
+  const cardsLeft=S.albQ.filter(x=>!x.startsWith('C:')&&x!=='_subj').length;
+  if(i.startsWith('C:')){albCelebrate(i.slice(2),fin);return}
+  if(i==='_subj'){albFly('_subj',{big:true,title:ll(`הקלף של ${esc(subjectName())}!`,`${esc(subjectName())}'s card!`),hold:2800},fin);return}
+  albFly(i,{fast:cardsLeft>0,title:ll('קלף חדש לאלבום!','A new card for your album!')},fin)}
+// a card flips over in the middle of the screen, then flies into the album button (a tap sends it at once)
+function albFly(id,o,cb){o=o||{};const w=Math.min(innerWidth-80,o.big?300:250),ov=document.createElement('div');ov.className='albnew'+(o.dim===false?' clear':'');
+  ov.innerHTML=`${o.title?`<p class="albt">${o.title}</p>`:''}<div class="albfw">${pkFlip(id,{w,d:o.fast?120:350})}</div>`;document.body.appendChild(ov);
+  try{sfx('sfx-flip',.8);navigator.vibrate?.(25)}catch(e){}
+  let gone=false;const fly=()=>{if(gone)return;gone=true;const f=document.getElementById('albfab'),c=ov.querySelector('.albfw');
+    if(f&&c){const a=c.getBoundingClientRect(),b=f.getBoundingClientRect();c.style.transform=`translate(${b.left+b.width/2-(a.left+a.width/2)}px,${b.top+b.height/2-(a.top+a.height/2)}px) scale(${Math.max(.08,b.height/a.height)})`;c.style.opacity='.2'}
+    ov.classList.add('out');setTimeout(()=>{ov.remove();const f2=document.getElementById('albfab');if(f2){f2.classList.remove('bump');void f2.offsetWidth;f2.classList.add('bump')}try{sfx('sfx-tink',.6)}catch(e){}cb&&cb()},o.fast?420:620)};
+  ov.onclick=fly;setTimeout(fly,o.hold||(o.fast?1100:2000))}
+// world completion: the world's own little show (2.9 s), then its holo card
+const ALB_TH={classic:'castle',modern:'balloons',hp:'letters',lotr:'ring',got:'winter',sw:'hyper',friends:'friends',cinema:'leader',tv:'crt',hero:'pow',sitcom:'bubbles',hist:'paper',music:'record',sport:'medal',villain:'mirror'};
+function albParts(n,ch,f){let h='';for(let i=0;i<n;i++){const v=f(i,n);h+=`<i class="alp" style="animation-name:${v.a};${Object.entries(v).map(([k,x])=>'--'+k+':'+x).join(';')}">${Array.isArray(ch)?ch[i%ch.length]:ch}</i>`}return h}
+function albThemeHTML(th){const R=Math.random,pc=(a,b)=>(a+R()*(b-a)).toFixed(1)+'%',s=(a,b)=>(a+R()*(b-a)).toFixed(2)+'s';
+  if(th==='castle')return `<i class="alc-cs">🏰</i>`+albParts(26,'✨',(i,n)=>({x:(8+i/n*84).toFixed(1)+'%',y:(62-Math.sin(i/n*Math.PI)*42).toFixed(1)+'%',a:'alpop',dl:(i*.045).toFixed(2)+'s',t:'1.1s',s:'26px'}))+albParts(5,'🎆',()=>({x:pc(10,80),y:pc(6,40),a:'alboom',dl:s(.9,2),t:'1.2s',s:'64px'}));
+  if(th==='balloons')return `<i class="alc-house">🏠</i>`+albParts(22,'🎈',()=>({x:pc(2,92),y:'100%',a:'alrise',dl:s(0,1.2),t:s(2.4,3.4),s:(30+R()*26|0)+'px',h:(R()*40-20|0)+'deg'}));
+  if(th==='letters')return albParts(18,'✉️',()=>{const a=R()*Math.PI*2;return {x:'50%',y:'48%',fx:(Math.cos(a)*70).toFixed(0)+'vw',fy:(Math.sin(a)*70).toFixed(0)+'vh',r:(R()*720-360|0)+'deg',a:'alin',dl:s(0,1.4),t:s(1.1,1.6),s:'40px'}})+`<i class="alc-owl">🦉</i>`;
+  if(th==='ring')return `<div class="alc-rg"></div><p class="alc-fire">ONE ALBUM TO RULE THEM ALL</p>`+albParts(16,'🔥',()=>({x:pc(5,90),y:'100%',a:'alrise',dl:s(0,1.5),t:s(2.2,3),s:'22px'}));
+  if(th==='winter')return `<i class="alc-frost"></i><p class="alc-win">WINTER IS HERE</p>`+albParts(40,'❄️',()=>({x:pc(0,98),y:'-8%',a:'alfall',dl:s(0,1.8),t:s(1.8,3),s:(14+R()*22|0)+'px',dx:(R()*80-40|0)+'px'}));
+  if(th==='hyper')return albParts(48,'',i=>({x:'50%',y:'50%',r:(i/48*360+R()*6).toFixed(1)+'deg',a:'alhyp',dl:s(0,.6),t:s(.5,.9)}))+`<div class="alc-crawl"><p>ALBUM<br>COMPLETE</p></div>`;
+  if(th==='friends')return `<p class="alc-fr">${'FRIENDS'.split('').map((c,i)=>`<b style="--dl:${(i*.16).toFixed(2)}s">${c}</b>${i<6?`<u style="--dl:${(i*.16+.08).toFixed(2)}s;--c:${['#e8291c','#f7c600','#1aa3e8'][i%3]}"></u>`:''}`).join('')}</p>`+albParts(4,'👏',i=>({x:(14+i*20)+'%',y:'66%',a:'alpop',dl:(1.3+i*.32).toFixed(2)+'s',t:'.6s',s:'56px'}));
+  if(th==='leader')return `<div class="alc-ldr"><i class="sw"></i>${[3,2,1].map((n,i)=>`<b style="--dl:${(i*.7).toFixed(1)}s">${n}</b>`).join('')}</div><i class="alc-clap">🎬</i>`;
+  if(th==='crt')return `<i class="alc-crt"></i><i class="alc-noise"></i><i class="alc-tv">📺</i>`;
+  if(th==='pow')return `<div class="alc-pw"><b>POW!</b></div>`+albParts(8,['💥','⚡'],()=>({x:pc(5,85),y:pc(10,80),a:'alboom',dl:s(.5,1.8),t:'.8s',s:'48px'}));
+  if(th==='bubbles')return albParts(30,'<b class="alb"></b>',()=>({x:pc(0,94),y:'100%',a:'alrise',dl:s(0,1.4),t:s(2,3.2),s:(20+R()*34|0)+'px'}))+`<i class="alc-star">⭐</i>`;
+  if(th==='paper')return `<div class="alc-news"><small>THE PSP TIMES</small><b>${ll('האלבום הושלם!','ALBUM COMPLETE!')}</b><i></i><i></i><i></i></div>`;
+  if(th==='record')return `<div class="alc-disc"><i></i></div>`+albParts(14,['🎵','🎶'],()=>({x:pc(10,85),y:'88%',a:'alrise',dl:s(0,1.6),t:s(2,3),s:'30px'}));
+  if(th==='medal')return albParts(26,'',()=>({x:pc(0,98),y:pc(0,60),a:'alflash',dl:s(0,2.2),t:'.35s'}))+`<i class="alc-md">🥇</i>`;
+  if(th==='mirror')return `<div class="alc-mir"><svg viewBox="0 0 100 140"><path d="M50 62 L38 30 L30 8 M50 62 L70 36 L84 20 M50 62 L22 70 L4 66 M50 62 L80 82 L96 96 M50 62 L56 98 L52 136 M50 62 L30 104 L18 128"/></svg></div>`;
+  return ''}
+function albCelebrate(w,cb){const M=albModel(),x=M?.worlds.find(y=>y.w===w),th=ALB_TH[w]||'castle',wn=LL(CAST.worlds.find(y=>y[0]===w)?.slice(1)||['',''])||w;
+  const ov=document.createElement('div');ov.id='albcel';ov.className='alc-'+th;ov.innerHTML=albThemeHTML(th)+`<p class="alt">${esc(wn)}<br><small>${ll('העולם הושלם!','World complete!')} ${x?.ids.length||6}/${x?.ids.length||6}</small></p>`;document.body.appendChild(ov);
+  try{sfx('sfx-dex-page-added');navigator.vibrate?.([40,60,40,60,80])}catch(e){}
+  setTimeout(()=>{const done=()=>{ov.classList.add('out');setTimeout(()=>{ov.remove();cb&&cb()},400)};
+    if(x?.holo)albFly(x.holo,{big:true,dim:false,title:ll(`קלף הולוגרפי: ${esc(CARDS.chars[x.holo].en)}!`,`Holo card: ${esc(CARDS.chars[x.holo].en)}!`),hold:2800},done);else done()},2900)}
+// the album page: the special cards, then world by world (its cards + the holo slot)
+function albOpen(){const A=albMine();if(!A)return;document.getElementById('albov')?.remove();
+  const cw=Math.floor((Math.min(innerWidth,560)-40-16-16)/3),slot=id=>`<button class="albs" data-albz="${id}">${pkFlip(id,{w:cw})}</button>`,
+    empty=t=>`<div class="albs off" style="width:${cw}px"><img src="img/card-back.webp" alt=""><b>${t||'?'}</b></div>`,M=A.M;
+  const sp=`<div class="albw sp"><div class="albh"><b>${ll('קלפים מיוחדים','Special cards')}</b><span>${(A.subj?1:0)+(M.ever&&A.have.has(M.ever)?1:0)}/${M.ever?2:1}</span></div><div class="albg">
+    ${A.subj?slot('_subj'):empty(ll('אחרי היכל התהילה','After the Hall of Fame'))}${M.ever?(A.have.has(M.ever)?slot(M.ever):empty(ll('אבן הנצח','Everstone'))):''}</div></div>`;
+  const ws=M.worlds.map(x=>{const n=x.ids.filter(i=>A.have.has(i)).length,c=A.done.includes(x.w),wn=LL(CAST.worlds.find(y=>y[0]===x.w)?.slice(1)||['','']);
+    return `<div class="albw${c?' done':''}" style="${pkVars(x.w)}"><div class="albh">${pkIcon(x.w)}<b>${esc(wn)}</b><span>${n}/${x.ids.length}${c?' ✓':''}</span></div><div class="albg">
+      ${x.ids.map(i=>A.have.has(i)?slot(i):empty()).join('')}${x.holo?(c?slot(x.holo):`<div class="albs off holo" style="width:${cw}px"><b>✦</b><small>${ll('כל הקלפים = קלף הולוגרפי','All cards = a holo card')}</small></div>`):''}</div></div>`}).join('');
+  const ov=document.createElement('div');ov.id='albov';ov.dir=EN?'ltr':'rtl';
+  ov.innerHTML=`<div class="albtop"><div><p class="eyebrow" style="margin:0">PSP · CARD ALBUM</p><h2 style="margin:2px 0 0">${ll('אלבום הקלפים שלי','My card album')}</h2></div><b class="albn">${A.n}/${A.tot}${A.holos?` <i>✦${A.holos}</i>`:''}</b><button class="x" data-albx="1" aria-label="${ll('סגירה','Close')}">✕</button></div>
+   <p class="muted" style="margin:0 0 14px;font-size:14px">${ll('ניחוש נכון במשחקי הסוגים, הסטטים וההתפתחות = קלפים לאלבום. כל הקלפים של עולם = קלף הולוגרפי.','A right guess in the types, stats and evolution games = cards for your album. All of a world\'s cards = a holo card.')}</p>${sp}${ws}`;
+  ov.onclick=e=>{const z=e.target.closest('[data-albz]'),x=e.target.closest('[data-albx]');if(x){ov.remove();return}if(z)albZoom(z.dataset.albz)};document.body.appendChild(ov)}
+function albZoom(id){const ov=document.createElement('div');ov.className='albnew zoom';ov.innerHTML=`<div class="albfw">${pkFlip(id,{w:Math.min(innerWidth-40,360)})}</div>`;ov.onclick=()=>ov.remove();document.body.appendChild(ov)}
 // every round keeps all the options: with only 6 answers, crossing out the past ones would hand away the last rounds
 function pqOpen(){const Q=S.pq,P=PQ[Q.key];return PQ_OPT[P.set].map(o=>o[0])}
 // one 15-second window with all the text showing: the first third is an Ultra Ball, the next a Great Ball, the last a Poké Ball
@@ -5124,7 +5336,7 @@ function pqClock(){clearInterval(S.pqT);S.pqT=setInterval(()=>{const Q=S.pq;if(!
 function pqStep(){const Q=S.pq;if(Q.revealed||Q.done)return;pqReveal()}
 function pqReveal(){const Q=S.pq,it=pqItem(),id=Q.key+'-'+Q.i;Q.revealed=true;Q.revAt=Date.now();S.pqRev=S.pqRev||{};if(S.pqRev[Q.slide]){Q.got=S.pqRev[Q.slide];pqPaint();gamePub();return}S.pqRev[Q.slide]=Q.got;
   if(!(it.k==='none'&&pqNoNone(PQ[Q.key].set)))gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+id];if(g&&g.v===it.k){const n=Q.at?.[p.id]||g.n||3;Q.scores[p.id]=(Q.scores[p.id]||0)+(4-n);Q.got.push([p.id,n]);const H=(S.pqHist=S.pqHist||{})[Q.key]||(S.pqHist[Q.key]={});(H[p.id]=H[p.id]||[]).push(n)}});
-  sfx('sfx-dex-page-added');pqPaint();gamePub()}
+  albPq(it,id);sfx('sfx-dex-page-added');pqPaint();gamePub()}
 function pqNext(){const Q=S.pq;if(Q.i<Q.ord.length-1){Q.i++;pqRound();return}Q.done=true;clearInterval(S.pqT);leagueSet(Q.key,Q.scores);pqPaint();gamePub();music('mus-victory',{loop:false,vol:.35})}
 function pqGo(d){const Q=S.pq;if(!Q||d<0||Q.slide!==cur()?.id)return false;if(Q.intro){Q.intro=false;pqRound();return true}if(Q.done||Q.revealed)return false;pqStep();return true}
 function pqPaint(){const Q=S.pq,P=PQ[Q.key],it=pqItem(),cv=$('#cv');
@@ -5625,7 +5837,7 @@ function renderHof(){
     oakPrep('oak:'+l.id,()=>oakPages(R));
     h=`<div class="st oakscene"><div class="oakfloor"></div><img class="oakimg" src="img/tr-oak.webp" alt="${ll(`פרופסור אוק`,`Professor Oak`)}"><img class="oakmon" ${artAttr(l)} alt="">${oakVis(R)}${oakBox()}</div>`;
   }
-  cv.innerHTML=h;deckPub();
+  cv.innerHTML=h;deckPub();if(step==='map')albSubjGive();
   if(step==='intro')music('mus-enter-hall',{vol:.35});else if(step==='ball')music('mus-sacred',{vol:.25});else music('mus-hof2',{vol:.32,delay:step==='reveal'?4300:0});
   if(step==='types')layoutTypes(false);
   if(OAK_STEPS.includes(step)&&S.oakPages)oakGo();
