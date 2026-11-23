@@ -1582,7 +1582,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795451802';
+const BUILDV='1795452112';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3681,7 +3681,7 @@ function twTick(){const tw=S.tw,hud=$('#twhud');if(!hud)return;
   if(tw.ph==='free'){if(hud.dataset.k!=='free'){hud.dataset.k='free';hud.innerHTML=''}return}
   if(tw.ph==='go'){const left=Math.max(0,Math.ceil((tw.end-Date.now())/1000)),k='go'+left;
     if(hud.dataset.k!==k){hud.dataset.k=k;const dest=tw.to==='exit'?ll(`כולם אל החץ! בדרך ל${twNextName()}`,`Everyone to the arrow! On to ${twNextName()}`):tw.leg?.place?ll('כולם לנקודת המפגש! שם מחכה המאמן','Everyone to the meeting point! The trainer is waiting there'):(tw.leg?.end?ll('כולם אל הליגה! הדלת המסומנת','Everyone into the League! The marked door'):ll('כולם לג׳ים! הדלת המסומנת','Everyone into the gym! The marked door'));
-      hud.innerHTML=`<div class="twclock${left<=5?' low':''}"><b>${left}</b><span>${dest}</span>${tw.leg?.balls?`<em>${ll('הראשונים מקבלים','The first ones get')} <img src="img/${QBALL[1][0]}.webp" alt=""><img src="img/${QBALL[2][0]}.webp" alt=""><img src="img/${QBALL[3][0]}.webp" alt=""></em>`:''}${tw.cards?`<em class="twcem"><img src="img/tw-card.png" alt="">${ll('קלף לאלבום! מי שמגיע אליו לוקח','An album card! Whoever reaches it takes it')}</em>`:''}</div>`}
+      hud.innerHTML=`<div class="twclock${left<=5?' low':''}"><b>${left}</b><span>${dest}</span>${tw.leg?.balls?`<em>${ll('הראשונים מקבלים','The first ones get')} <img src="img/${QBALL[1][0]}.webp" alt=""><img src="img/${QBALL[2][0]}.webp" alt=""><img src="img/${QBALL[3][0]}.webp" alt=""></em>`:''}</div>`}
     const ppl=twPpl();if(ppl.length&&ppl.every(p=>tw.pos[p.id]?.done))twLegEnd();else if(Date.now()>=tw.end)twHelp();return}
   if(tw.ph==='help'&&hud.dataset.k!=='help'){hud.dataset.k='help';hud.innerHTML=''}}   // Alakazam / Pidgeot just help, with no caption
 // the League's doors close behind everyone: the door sound, a white flash, then on to the Hall of Fame
@@ -5356,7 +5356,7 @@ function albOpen(){const A=albMine();if(!A)return;document.getElementById('albov
     ${A.subj?slot('_subj'):empty(ll('אחרי היכל התהילה','After the Hall of Fame'))}</div></div>`;
   const ws=M.worlds.map(x=>{const n=albAll(x).filter(i=>A.have.has(i)).length,c=A.done.includes(x.w),wn=LL(CAST.worlds.find(y=>y[0]===x.w)?.slice(1)||['','']);
     return `<div class="albw${c?' done':''}" style="${pkVars(x.w)}"><div class="albh">${pkIcon(x.w)}<b>${esc(wn)}</b><span>${n}/${albAll(x).length}${c?' ✓':''}</span></div><div class="albg">
-      ${x.ids.map(i=>A.have.has(i)?slot(i):empty()).join('')}${x.walk.map(i=>A.have.has(i)?slot(i):empty('🚶',ll('מחכה באחת ההליכות','Waiting on one of the walks'))).join('')}${x.holo?(c?slot(x.holo):`<div class="albs off holo" style="width:${cw}px"><b>✦</b><small>${ll('כל הקלפים = קלף הולוגרפי','All cards = a holo card')}</small></div>`):''}</div></div>`}).join('');
+      ${x.ids.map(i=>A.have.has(i)?slot(i):empty()).join('')}${x.walk.map(i=>A.have.has(i)?slot(i):empty()).join('')}${x.holo?(c?slot(x.holo):`<div class="albs off holo" style="width:${cw}px"><b>✦</b><small>${ll('כל הקלפים = קלף הולוגרפי','All cards = a holo card')}</small></div>`):''}</div></div>`}).join('');
   const ov=document.createElement('div');ov.id='albov';ov.dir=EN?'ltr':'rtl';
   ov.innerHTML=`<div class="albtop"><div><p class="eyebrow" style="margin:0">PSP · CARD ALBUM</p><h2 style="margin:2px 0 0">${ll('אלבום הקלפים שלי','My card album')}</h2></div><b class="albn">${A.n}/${A.tot}${A.holos?` <i>✦${A.holos}</i>`:''}</b><button class="x" data-albx="1" aria-label="${ll('סגירה','Close')}">✕</button></div>
    <p class="muted" style="margin:0 0 14px;font-size:14px">${ll('ניחוש נכון במשחקי הסוגים, הסטטים וההתפתחות = קלפים לאלבום. עוד קלפים מחכים על המפות בהליכות. כל הקלפים של עולם = קלף הולוגרפי.','A right guess in the types, stats and evolution games = cards for your album. More cards lie on the maps during the walks. All of a world\'s cards = a holo card.')}</p>${sp}${ws}`;
