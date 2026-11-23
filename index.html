@@ -785,6 +785,7 @@ html:not(.en) .ctrhint,html:not(.en) .facts,html:not(.en) .lgbreak{direction:rtl
 .lgp.pod .lgpdim{background:rgba(10,12,26,.28)}
 .lgplay,.lgpfly{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
 .lgplay{z-index:3}.lgpfly{z-index:2500}
+.lgp:not(.grown) .lgplay{visibility:hidden} /* round 92: nobody stands on the full-size floor while the corner map is still growing */
 .lgpp{position:absolute;width:0;height:0}
 .lgpb{position:absolute;image-rendering:pixelated;opacity:0;filter:drop-shadow(0 1px 0 rgba(0,0,0,.45))}
 .lgpb.in{opacity:1}
@@ -1564,7 +1565,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795446254';
+const BUILDV='1795450702';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1675,7 +1676,7 @@ async function boot(){
     render()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};q.docs.forEach(d=>{if(d.id==='album')S.album=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}if(!isScreen())albTick()}},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};S.album=null;q.docs.forEach(d=>{if(d.id==='album')S.album=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}if(!isScreen())albTick()}},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;if(!ROOM.legacy)castLoad().then(()=>{castApplyPQ();if(!isScreen())albTick()});changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
@@ -5221,8 +5222,8 @@ function castSolveAlbum(worlds){if(worlds.length<ALB_N)return castSolve(worlds);
     out:for(const o of cur)for(const i of W.filter(w=>!cur.includes(w))){const ws=[...cur.filter(w=>w!==o),i];if(run(ws).cost<base-1e-9){cur=ws;better=true;break out}}}
   const seats=JSON.parse(JSON.stringify(run(cur).seats));seats.none=none?[none]:[];return seats}
 // ===== round 91: THE CARD ALBUM (new rooms with a cast; ERI1 has none). Spec: handoff/PSP-album-spec.md =====
-// Every friend and the subject (not the host) collects, for a RIGHT guess only: types = the room's cards that were still face down when
-// you guessed (after card 1: cards 2-3; after card 3: none; a guess can't be changed); stats = both cards of the pair; evolution = the
+// Every friend and the subject (not the host) collects, for a RIGHT guess only: types = all three of the type's cards (however many
+// were face up when you guessed; Eyal, round 92); stats = both cards of the pair; evolution = the
 // "after" card; Everstone = its own special card (guessing "Other"). The screen writes `stage/album` {<pid>: {<card id>: time}};
 // after the Hall of Fame's last step it writes `_subj` and everyone gets the subject's card (their big sprite + their Pokémon).
 // All 6 of a world = a completion show in that world's theme + its HOLO card (cards.json worlds[w].holo), on the phone only.
@@ -5239,7 +5240,7 @@ function albModel(){if(!albOn())return null;const key=JSON.stringify(castSeats()
 function albGive(m){if(!albOn()||!S.db)return;const t=Date.now(),doc={};Object.entries(m).forEach(([p,L])=>{if(L&&L.length)doc[p]=Object.fromEntries(L.map(i=>[i,t]))});
   if(Object.keys(doc).length)S.db.doc('stage/album').set(doc,{merge:true}).catch(()=>{})}
 function albTypes(Q){if(!albOn()||!Q?.rev)return;S.albT=S.albT||{};const m={};
-  Q.rev.forEach(t=>{if(S.albT[t])return;S.albT[t]=1;const ids=albTypeIds(t);(Q.players||[]).forEach(p=>{const g=S.guesses?.[p.id]?.[t];if(g&&g.g===t){const got=ids.slice(Math.max(0,+g.n||0));if(got.length)(m[p.id]=m[p.id]||[]).push(...got)}})});albGive(m)}
+  Q.rev.forEach(t=>{if(S.albT[t])return;S.albT[t]=1;const ids=albTypeIds(t);(Q.players||[]).forEach(p=>{const g=S.guesses?.[p.id]?.[t];if(g&&g.g===t&&ids.length)(m[p.id]=m[p.id]||[]).push(...ids)})});albGive(m)}
 function albPq(it,gid){if(!albOn())return;const st=PQ[S.pq.key].set==='stats',cards=(st?(it.pair?it.pair.map(x=>x[0]):[it.cid]):[it.cid&&pqCardId(it)]).filter(i=>i&&pkOK(i)),m={};
   gamePlayers().forEach(p=>{const g=S.gIn?.[p.id]?.['p'+gid];if(g&&(g.v===it.k||(it.k==='none'&&g.v==='other')))m[p.id]=cards});albGive(m)}
 function albSubjGive(){if(!albOn()||!S.db||S.albSubj)return;S.albSubj=1;S.db.doc('stage/album').set({_subj:Date.now()},{merge:true}).catch(()=>{S.albSubj=0})}
@@ -5261,8 +5262,8 @@ function albWho(){const me=person(S.me);return !isScreen()&&!S.remoteMode&&!!me&
 function albFab(A){let b=document.getElementById('albfab');if(!A||S.intro?.live){b?.remove();return}
   if(!b){b=document.createElement('button');b.id='albfab';b.onclick=albOpen;b.setAttribute('aria-label',ll('אלבום הקלפים','Card album'));document.body.appendChild(b)}
   const h=`<img src="img/card-back.webp" alt=""><b>${A.n}</b>${A.holos?`<i>✦${A.holos}</i>`:''}`;if(b.innerHTML!==h)b.innerHTML=h}
-function albTick(){if(!albWho()){albFab(null);return}const A=albMine();albFab(A);if(!A||!S.stageLoaded)return;
-  const k='psp-alb-'+ROOM.code+'-'+S.me,raw=RAWSTORE.get(k),cards=[...A.have].filter(i=>i===A.M.ever||A.M.worlds.some(x=>x.ids.includes(i)));
+function albTick(){if(!albWho()){albFab(null);return}if(S.albEve!==S.state?.eve){S.albEve=S.state?.eve;S.albQ=[]}const A=albMine();albFab(A);if(!A||!S.stageLoaded)return;
+  const k='psp-alb-'+ROOM.code+'-'+(S.state?.eve||'')+'-'+S.me,raw=RAWSTORE.get(k),cards=[...A.have].filter(i=>i===A.M.ever||A.M.worlds.some(x=>x.ids.includes(i)));
   const cur=[...cards,...A.done.map(w=>'C:'+w),...(A.subj?['_subj']:[])];
   if(raw==null){RAWSTORE.set(k,JSON.stringify(cur));return}   // a new device: what is already there isn't "new"
   let seen;try{seen=new Set(JSON.parse(raw))}catch(e){seen=new Set()}
@@ -6349,8 +6350,8 @@ async function resetAll(){
   await ensureCards().catch(()=>{});
   for(const id of Object.keys(S.answers))await S.db.doc('answers/'+id).delete().catch(()=>{});
   for(const id of Object.keys(S.guesses||{}))await S.db.doc('stage/q-'+id).delete().catch(()=>{});for(const p of roster())await S.db.doc('stage/say-'+p.id).delete().catch(()=>{});await S.db.doc('stage/quiz').set({type:null}).catch(()=>{});
-  for(const p of roster())await S.db.doc('stage/g-'+p.id).delete().catch(()=>{});for(const k of ['game','league'])await S.db.doc('stage/'+k).delete().catch(()=>{});S.lobbyShown=new Set();
-  S.lake=S.why=S.pika=S.cmt=S.mem=S.btg=S.pq=S.gIn=null;S.memTot={};S.pqHist={};S.pqSc={};S.pqRev={};S.qSeen={};S.lgDone=null;S.memLast=null;POS=0;HOF=0;SUB=0;
+  for(const p of roster())await S.db.doc('stage/g-'+p.id).delete().catch(()=>{});for(const k of ['game','league','album'])await S.db.doc('stage/'+k).delete().catch(()=>{});S.lobbyShown=new Set();
+  S.lake=S.why=S.pika=S.cmt=S.mem=S.btg=S.pq=S.gIn=null;S.memTot={};S.pqHist={};S.pqSc={};S.pqRev={};S.qSeen={};S.lgDone=null;S.memLast=null;S.albT=null;S.albSubj=0;S.album=null;POS=0;HOF=0;SUB=0;
   await setState({open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now()});
   S.answers={};S.ai='';S.tgrid=null;toast('הערב אופס: אותם משתתפים, מההתחלה');renderPanel();if(isScreen())show(true);
 }
