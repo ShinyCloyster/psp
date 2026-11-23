@@ -666,6 +666,74 @@ body:has(.rcmini) .col{padding-bottom:90px}
 /* round 86: the screen's #cv lays out left to right; Hebrew text with numbers in the Pokémon Center needs its own direction */
 html:not(.en) .ctrhint,html:not(.en) .facts,html:not(.en) .lgbreak{direction:rtl}
 .lgchamp{background:radial-gradient(circle at 50% 35%,#3A2F6B 0%,#161A2E 70%);color:#F6F1E7}
+/* round 89: the league finale in the frame story */
+.lgp{position:absolute;inset:0;background:#161A2E;overflow:hidden;color:#F6F1E7}
+.lgpgym{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transition:left 1s ease-in-out,top 1s ease-in-out,width 1s ease-in-out,height 1s ease-in-out,border-radius 1s}.lgp.small .lgpgym{box-shadow:0 0 0 4px #2A2E45}.lgpgin{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform 1s ease-in-out}
+.lgpdim{position:absolute;inset:0;background:rgba(10,12,26,0);transition:background .8s}
+.lgp.grown .lgpdim{background:rgba(10,12,26,.22)}.lgp.walk .lgpdim{background:rgba(10,12,26,.5)}.lgp.pod .lgpdim{background:rgba(10,12,26,.68)}
+.lgpeb{position:absolute;top:30px;inset-inline-start:30px;z-index:5;font:400 26px/1 var(--display);color:#F2C94C;background:rgba(22,26,46,.88);border:3px solid #F2C94C;border-radius:12px;padding:12px 20px 10px;opacity:0;transition:opacity .6s}
+.lgp.grown .lgpeb{opacity:1}
+.lgplay,.lgpfly,.lgppod{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+.lgplay{z-index:3;transition:opacity .7s}.lgpfly{z-index:4}.lgppod{z-index:6}
+.lgp.pod .lgplay{opacity:0}
+.lgpp{position:absolute;width:0;height:0}
+.lgpsh{position:absolute;left:calc(var(--pw) * -.62);top:-10px;width:calc(var(--pw) * 1.24);height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),rgba(0,0,0,0));opacity:0;transition:opacity .6s}
+.lgp.walk .lgpsh{opacity:1}
+.lgpb{position:absolute;image-rendering:pixelated;opacity:0;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.lgpb.in{opacity:1}
+.lgpfb{position:absolute;left:0;top:0;image-rendering:pixelated}
+.lgpn{position:absolute;left:0;transform:translateX(-50%);font:700 calc(19px + 6px * var(--sc))/1 'Rubik',Arial,sans-serif;font-style:normal;color:#161A2E;background:#F6F1E7;border:3px solid #2A2E45;border-radius:999px;padding:5px 13px 4px;min-width:1.4em;text-align:center;opacity:0;transition:opacity .4s,bottom .25s ease-out;box-shadow:0 3px 0 rgba(0,0,0,.35);white-space:nowrap}
+.lgp.throw .lgpn{opacity:1}
+.lgpp.fin .lgpn{background:#2A2E45;color:#F6F1E7;border-color:#9FA7C7}
+.lgpp.win .lgpn{background:#F2C94C;color:#161A2E;border-color:#161A2E;font-size:36px;opacity:0;animation:lgpnwin .5s .9s forwards}
+@keyframes lgpnwin{to{opacity:1}}
+.lgpw{position:absolute;width:0;height:0;opacity:0;z-index:2;transform-origin:0 0}
+.lgp.walk .lgpw{opacity:1}
+.lgpw .lks{position:absolute;left:-34px;top:-64px;scale:var(--sc);transform-origin:50% 94%}
+.lgpw b{position:absolute;left:0;top:10px;transform:translateX(-50%);white-space:nowrap;font-weight:700;color:#F6F1E7;background:rgba(22,26,46,.85);border-radius:8px;padding:2px 9px;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.lgpw b.lo{top:44px}
+.lgpw.win{z-index:4}
+.lgpw.win .lks{filter:drop-shadow(0 0 10px #F2C94C)}
+.lgpw.win b{background:#F2C94C;color:#161A2E}
+.lgpw.win::before{content:'👑';position:absolute;left:0;top:calc(-60px * var(--sc) - 40px);transform:translateX(-50%);font-size:46px;animation:lgpcrown .5s .7s both}
+@keyframes lgpcrown{from{opacity:0;translate:0 -30px;scale:.4}to{opacity:1;translate:0 0;scale:1}}
+.lgp .lgpbox{bottom:70px;height:140px;inset-inline-start:300px;inset-inline-end:60px;opacity:0;transform:translateY(40px);transition:opacity .5s,transform .5s}
+.lgp .lgpbox .sctx{font-size:40px}
+.lgp .lgplect{bottom:70px;height:280px;max-width:250px;opacity:0;transform:translateY(40px);transition:opacity .5s,transform .5s}
+.lgp.grown .lgpbox,.lgp.grown .lgplect{opacity:1;transform:none}
+/* the podium */
+.lgpstage{position:absolute;bottom:310px;direction:ltr;display:flex;justify-content:center;align-items:flex-end;gap:0}
+.lgps{width:300px;display:flex;flex-direction:column;align-items:center;position:relative}
+.lgpav{display:flex;justify-content:center;align-items:flex-end;gap:4px;min-height:40px;position:relative;opacity:0;transform:translateY(-120px);transition:opacity .35s,transform .55s cubic-bezier(.3,1.5,.5,1)}
+.lgpav .avf{filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+.lgps.on .lgpav{opacity:1;transform:none}
+.lgpcr{position:absolute;top:-58px;left:50%;translate:-50% 0;font-size:56px;opacity:0}
+.lgps.s1.on .lgpcr{animation:lgpcrown .5s .5s both}
+.lgpblk{width:100%;border:5px solid #2A2E45;border-bottom:none;border-radius:12px 12px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:12px;gap:2px;transform:scaleY(0);transform-origin:50% 100%;animation:lgpblk .6s cubic-bezier(.2,.9,.3,1.1) forwards}
+.lgps.s1 .lgpblk{background:linear-gradient(#FBE08A,#E0A92A);animation-delay:.25s}
+.lgps.s2 .lgpblk{background:linear-gradient(#EEF1F7,#A9B1C6);animation-delay:.1s}
+.lgps.s3 .lgpblk{background:linear-gradient(#F1C49A,#B97A45);animation-delay:.4s}
+@keyframes lgpblk{to{transform:none}}
+.lgpblk b{font:400 54px/1 var(--pixel);color:rgba(42,46,69,.75)}
+.lgpm{font-size:58px;line-height:1;opacity:0;transition:opacity .3s .2s}
+.lgps.on .lgpm{opacity:1}
+.lgpcap{position:absolute;top:100%;left:6px;right:6px;margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transition:opacity .4s .25s}
+.lgpnm{margin:0;font:700 30px/1.1 'Rubik',Arial,sans-serif;color:#F6F1E7;text-align:center;overflow-wrap:anywhere}.lgpnm.many{font-size:24px}
+.lgps small{font:400 18px/1 var(--pixel);color:#F2C94C}
+.lgps.on .lgpcap{opacity:1}
+.lgps.s1.on .lgpnm{color:#F2C94C}
+.lgp.gold .lgps.s1 .lgpav .avf{filter:drop-shadow(0 0 18px rgba(242,201,76,.85)) drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+.lgpc{position:absolute;width:0;height:0;z-index:2}
+.lgpc.back{opacity:.9}
+.lgpc .lks{position:absolute;left:-34px;top:-64px;scale:var(--cs,2);transform-origin:50% 94%;animation:lgphop .9s var(--dl) ease-in-out infinite}
+.lgp.gold .lgpc .lks{animation-duration:.5s}
+@keyframes lgphop{0%,100%{translate:0 0}40%{translate:0 -12px}}
+.lgpc b{position:absolute;left:0;top:8px;transform:translateX(-50%);white-space:nowrap;font-weight:700;font-size:20px;color:#F6F1E7;background:rgba(22,26,46,.8);border-radius:7px;padding:1px 7px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+.lgpc.clap::after{content:'👏';position:absolute;left:0;top:calc(-60px * var(--cs,2) - 70px);font-size:34px;animation:lgpclap .9s ease-out forwards}
+@keyframes lgpclap{0%{opacity:0;transform:translate(-50%,10px) scale(.5)}25%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-30px) scale(1)}}
+.lgpconf{position:absolute;inset:0;overflow:hidden}
+.lgpconf i{position:absolute;top:-30px;width:12px;height:18px;border-radius:2px;animation:lgpfall var(--d) var(--dl) linear forwards}
+@keyframes lgpfall{to{transform:translate(var(--x),1150px) rotate(var(--r))}}
 .lgeb{position:absolute;right:128px;top:80px;font:400 24px var(--pixel);color:#F2C94C}.lgti{position:absolute;right:128px;top:130px;font-family:var(--display);font-size:72px;font-weight:400}
 .lgpod{position:absolute;right:110px;left:830px;top:250px;bottom:0;display:flex;align-items:flex-end;justify-content:center;gap:22px;direction:ltr}
 .lgs{width:300px;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transform:translateY(50px);animation:lgup .8s cubic-bezier(.2,.8,.3,1.2) forwards}.lgs.r3{animation-delay:.4s}.lgs.r2{animation-delay:1.8s}.lgs.r1{animation-delay:3.3s}
@@ -1388,7 +1456,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795436970';
+const BUILDV='1795442604';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2973,6 +3041,7 @@ function show(fresh,atEnd){{const rb=$('#roombadge'),it=SEQ[POS];if(rb){rb.style
   screenOverlay();deckPub();gamePub();
 }
 function go(d){
+  if(lgpGo(d))return;
   {const ci=cur();if(scOn(ci)&&scGo(d))return;if(tkOn(ci)&&tkGo(d))return;if(ci?.kind==='town'&&S.tw&&S.tw.ph!=='done'&&d>0){if(S.tw.ph==='go')twHelp();return}if(d>0&&ci?.kind==='buzz'&&bzNext())return;if(d>0&&ci?.id==='o-friends'&&ofrNext())return;if(d>0&&svOn(ci)&&svNext())return;if(d>0&&emOn(ci)&&emNext())return;if(d>0&&csOn(ci)&&csNext())return}
   if(d>0&&S.bbFin&&$('#bbsign')){S.bbFin();return}
   if(d>0&&S.frGo&&cur()?.id==='k-scenario'){const f=S.frGo;S.frGo=null;f();return}
@@ -4199,7 +4268,7 @@ function twMiniHTML(){const G=twGymOf(),k=twMiniK(G),w=(G.view[2]-G.view[0]+1)*G
   return `<div class="twmini" id="twmini" style="width:${w}px;height:${h}px">${twGymInner(G,k,G.view)}<b class="twmn">${ll(...TW_NAME[twMiniTown()||S.tw?.town||'pewter'])} · GYM</b></div>`}
 // where the gym mini map goes: tight boxes of what is really drawn (text lines, pictures, boxes with a background or border),
 // four corners then the edges' middles at full size, then 85%; never on a game (its own legend and players are there)
-const TW_NOMINI='.cssec,.bzg,.ofgym,.mem,#qboard,.qrow2,.pqrow,.btgw,.btside,.cmarena,#lkcam,.ctrp,.bzw,.frw8,.lgrise';
+const TW_NOMINI='.lgp,.cssec,.bzg,.ofgym,.mem,#qboard,.qrow2,.pqrow,.btgw,.btside,.cmarena,#lkcam,.ctrp,.bzw,.frw8,.lgrise';
 function twMiniBoxes(sec,R,z){const out=[],add=r=>{if(r.width>2&&r.height>2)out.push({x:(r.left-R.left)/z,y:(r.top-R.top)/z,w:r.width/z,h:r.height/z})};
   const big=1920*1080*.35;
   sec.querySelectorAll('*').forEach(e=>{if(e.closest('#twmini,#bbsign,#bbveil'))return;const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden')return;
@@ -5101,6 +5170,7 @@ function leagueOnBreak(id){return;if(!/^x-break-\d$/.test(id)||!leagueAny())retu
   if(!$('#facts')&&nurse)nurse.parentElement.style.visibility='hidden';cv.insertAdjacentHTML('beforeend',`<div class="lgbreak ${$('#facts')?'low':''}">${leagueBox(true)}</div>`)}
 function leagueHTML(){const fin=cur()?.fin!==false||HOF_STEPS[HOF]==='champ'&&cur()?.kind==='hof',key=JSON.stringify(S.league||{});
   if(!fin)return `<div class="st lgchamp"><p class="lgeb" dir="ltr">POKÉMON LEAGUE · STANDINGS</p><h2 class="lgti">${ll('ליגת הערב: הערימות גדלות','The evening league: the piles are growing')}</h2><p class="lgsub">${ll('כמה כל אחד צבר? נספור רק בסוף הערב.','How much has everyone got? We count only at the end of the evening.')}</p><div class="qrow2 qbig lgrow">${leagueRow('lg')}</div></div>`;
+  if(lgpOn()){const h=lgpHTML(key);setTimeout(lgpStart,30);return h}
   const done=S.lgDone===key;if(!done)setTimeout(()=>lgRise(key),1200);return lgRiseHTML(done)}
 // the columns: one per player, the big sprite standing on top; they rise together, each stops at its points (lowest first); the last two climb slowly
 // the columns stand in a fixed mixed order (by name and evening), never by points, so the winner's place gives nothing away
@@ -5116,6 +5186,133 @@ function lgRise(key){const box=$('#lgcols');if(!box||S.lgRun)return;S.lgRun=true
       if(cur>=vals[i]){c.classList.add('stop');c.querySelector('em').textContent=vals[i];if(cols.filter(x=>!x.classList.contains('stop')).length)sfx('sfx-ball-poof')}});
     if(cols.every(c=>c.classList.contains('stop'))){S.lgRun=false;S.lgDone=key;const top=Math.max(...vals);if(top>0){cols.forEach((c,i)=>{if(vals[i]===top)c.classList.add('win')});{const D=[...new Set(vals)].sort((a,b)=>b-a);cols.forEach((c,i)=>{if(D[1]>0&&vals[i]===D[1])c.classList.add('m2');if(D[2]>0&&vals[i]===D[2])c.classList.add('m3')})}const T=leagueTable().filter(r=>r.pts===top);const h=$('#lgh');if(h)h.innerHTML='🏆 '+ll('אלוף הליגה: ','League champion: ')+T.map(r=>esc(r.p.name)).join(' · ');sfx('sfx-caught-mon');music('mus-victory',{loop:false,vol:.4})}return}
     requestAnimationFrame(step)};requestAnimationFrame(step)}
+// ---------- round 89: THE LEAGUE FINALE IN THE FRAME STORY (walking-world rooms; ERI1 keeps the columns) ----------
+// the gym mini map grows to the whole screen; everyone walks from their seat to their own pile and throws every ball they won
+// onto it, all at once, each pile rising at the same speed (a ball's size follows its worth, so a pile's height = its points);
+// the lowest stop first, the last two slow down; the champion hops onto the highest pile. Next click: the podium, the rest cheer.
+// Ties: everyone on the same points shares the same height, the same step and the same medal; the next score takes the next medal.
+const lgpOn=()=>twOn()&&(!!cur()?.final||cur()?.kind==='league');
+const LGP={base:715,hmax:320};
+function lgpBalls(id){return leagueBalls(id,{...(S.league||{}),red:{}})}
+function lgpRankOf(T){const D=[...new Set(T.filter(r=>r.pts>0).map(r=>r.pts))].sort((a,b)=>b-a);return r=>r.pts>0?D.indexOf(r.pts)+1:0}
+const lgpNames=(R,he)=>{const n=R.map(r=>esc(r.p.name));if(n.length<2)return n[0]||'';return he?n.slice(0,-1).join(', ')+' ו־'+n[n.length-1]:n.slice(0,-1).join(', ')+' and '+n[n.length-1]};
+// a pile: each ball drops where it rests lowest (a little pull to the middle makes a mound); returns centres measured up from the floor
+function lgpPack(list,pw,d,seed){const r=rng('lgp|'+seed),B=[...list].map(n=>({n,s:d*[0,1.73,1.41,1][n]}));
+  for(let i=B.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[B[i],B[j]]=[B[j],B[i]]}
+  const nb=Math.max(4,Math.ceil(pw/2)),H=new Array(nb).fill(0),out=[];
+  B.forEach(b=>{const w=Math.min(nb,Math.ceil(b.s/2));let best=null;
+    for(let c=Math.floor(w/2);c<=nb-Math.ceil(w/2);c++){let y=0;for(let k=c-Math.floor(w/2);k<c-Math.floor(w/2)+w;k++)y=Math.max(y,H[k]);const sc=y+Math.abs(c-nb/2)*.55+r()*3;if(!best||sc<best.sc)best={c,y,sc}}
+    const c0=best.c-Math.floor(w/2);for(let k=c0;k<c0+w;k++){const u=(k-best.c+.5)/(w/2);H[k]=Math.max(H[k],best.y+b.s*(.45+.4*Math.sqrt(Math.max(0,1-u*u))))}
+    out.push({n:b.n,v:4-b.n,s:b.s,x:best.c*2-pw/2,y:best.y+b.s/2})});
+  return {balls:out,h:Math.max(0,...H)}}
+function lgpLayout(){const G=twGymOf(),kb=Math.max(1920/G.w,1080/G.h),W=G.w*kb,H=G.h*kb,[,vy0,,vy1]=G.view,bx=Math.min(0,(1920-W)/2),by=Math.max(1080-H,Math.min(0,540-(vy0+vy1+1)/2*G.t*kb));
+  const T=lgMix(leagueTable()),n=Math.max(1,T.length),slot=Math.min(280,1560/n),x0=(EN?1100:820)-slot*n/2,sc=Math.max(.8,Math.min(kb/2*(G.cs||1),slot/100)),pw=Math.round(Math.min(150,slot*.5));
+  const mx=Math.max(1,...T.map(r=>r.pts));let d=Math.sqrt(LGP.hmax*pw*.6/(mx*Math.PI/4));d=Math.max(11,Math.min(30,d));
+  const P=T.map((r,i)=>{const k=lgpPack(lgpBalls(r.p.id),pw,d,r.p.id),c=x0+slot*(i+.5),f=EN?1:-1;return {r,id:r.p.id,x:c+f*slot*.2,wx:c-f*slot*.27,...k}});
+  const nat=P.filter(p=>p.r.pts>0&&p.h>0).map(p=>p.h/p.r.pts).sort((a,b)=>a-b),unit=Math.min(LGP.hmax/mx,nat.length?nat[Math.floor(nat.length/2)]:LGP.hmax/mx);
+  // exact heights: every pile is stretched a little so its top is exactly points × unit (the champion is always the highest)
+  P.forEach(p=>{p.top=p.r.pts*unit;const f=p.h>0?p.top/p.h:1;let cum=0;p.balls.forEach(b=>{b.y*=f;b.at=cum;cum+=b.v})});
+  const seats={};gamePlayers().filter(p=>lkAv(p)).slice(0,G.seats.length).forEach((p,i)=>{const[x,y]=G.seats[i];seats[p.id]=[bx+(x+.5)*G.t*kb,by+(y+.95)*G.t*kb]});
+  return {G,kb,W,H,bx,by,T,P,n,slot,sc,pw,d,unit,mx,seats,rank:lgpRankOf(T)}}
+function lgpWho(){return TK_WHO.bill}
+function lgpHTML(key){const L=lgpLayout(),{G,kb,W,H,bx,by,P,sc,pw}=L,st=S.lgp?.key===key?S.lgp:null,done=!!st&&st.ph!=='run';
+  S.lgpL=L;if(!st)S.lgp={key,ph:'run',rev:0};
+  const lab=n=>`font-size:${Math.round(Math.max(15,Math.min(26,L.slot/6.2)))}px`,stag=L.n>11;
+  const piles=P.map((p,i)=>`<div class="lgpp" data-i="${i}" style="left:${p.x}px;top:${LGP.base}px;--pw:${pw}px;--sc:${sc}"><i class="lgpsh"></i>${p.balls.map((b,j)=>`<img class="lgpb" data-j="${j}" src="img/${QBALL[b.n][0]}.webp" alt="" style="width:${b.s.toFixed(1)}px;left:${(b.x-b.s/2).toFixed(1)}px;top:${(-b.y-b.s/2).toFixed(1)}px">`).join('')}<em class="lgpn" style="bottom:${done?p.top+14:14}px">${done?p.r.pts:0}</em></div>`).join('');
+  const walkers=P.map((p,i)=>{const n=twAv(p.r.p);return `<div class="lgpw" data-i="${i}" style="left:${p.wx}px;top:${LGP.base+30}px;--sc:${sc}"><i class="lks" style="${owStyle(n)};background-position:${owPos(n,done?'d':EN?'r':'l',0)}"></i><b class="${stag&&i%2?'lo':''}" style="${lab()}">${esc(p.r.p.name)}</b></div>`}).join('');
+  const W0=lgpWho(),eb=`<p class="lgpeb">${ll(...TW_NAME[twMiniTown()||S.tw?.town||'viridian'])} · <span dir="ltr">POKÉMON LEAGUE · FINAL</span></p>`;
+  return `<div class="st lgp${done?' grown':''}" id="lgp" dir="${EN?'ltr':'rtl'}">
+    <div class="lgpgym" id="lgpgym"><div class="lgpgin" id="lgpgin" style="width:${W}px;height:${H}px;transform:translate(${bx}px,${by}px)">${twGymInner(G,kb,null)}</div><i class="lgpdim"></i></div>
+    ${eb}<div class="lgplay" id="lgplay">${piles}${walkers}</div><div class="lgpfly" id="lgpfly"></div><div class="lgppod" id="lgppod"></div>
+    <img class="sclect lgplect" id="sclect" src="${W0[1]}" alt=""><div class="scbox lgpbox"><b class="scname">${ll(...W0[0])}</b><p class="sctx" id="lgptx"></p></div></div>`}
+function lgpSay(t,anim){const el=$('#lgptx');if(!el)return;clearInterval(S.lgpT);if(!anim){el.innerHTML=t;return}let i=0;const plain=t.replace(/<[^>]+>/g,'');el.textContent='';sfx('sfx-a',.25);
+  S.lgpT=setInterval(()=>{if(!el.isConnected){clearInterval(S.lgpT);return}i+=2;el.textContent=plain.slice(0,i);if(i>=plain.length){clearInterval(S.lgpT);el.innerHTML=t}},30)}
+const lgpSet=(w,d,f)=>{const i=w?.querySelector('.lks'),n=+w?.dataset.n;if(i&&Number.isFinite(n))i.style.backgroundPosition=owPos(n,d,f||0)};
+// after the HTML is in: run the scene (or paint its finished state)
+function lgpStart(){const L=S.lgpL,box=$('#lgp'),st=S.lgp;if(!L||!box||!st)return;
+  box.querySelectorAll('.lgpw').forEach((w,i)=>w.dataset.n=twAv(L.P[i].r.p));
+  if(st.ph!=='run'){lgpDonePaint(true);if(st.ph==='pod')lgpPod(true);return}
+  if(S.lgRun&&S.lgRun!==true&&S.lgRun.isConnected)return;S.lgRun=box;const key=st.key,alive=()=>{const ok=$('#lgp')===box&&S.lgp===st;if(!ok&&S.lgRun===box)S.lgRun=false;return ok};
+  // 1. the mini map in the corner grows into the whole screen
+  const g=$('#lgpgym'),gi=$('#lgpgin'),{G,kb,bx,by}=L,km=twMiniK(G),f=km/kb,[x0,y0,x1,y1]=G.view,t=G.t,mw=(x1-x0+1)*t*km,mh=(y1-y0+1)*t*km,ml=EN?1920-30-mw:30,mt=1080-76-mh;
+  g.style.transition=gi.style.transition='none';Object.assign(g.style,{left:ml+'px',top:mt+'px',width:mw+'px',height:mh+'px',borderRadius:'12px'});gi.style.transform=`translate(${-x0*t*km}px,${-y0*t*km}px) scale(${f})`;box.classList.add('small');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{g.style.transition=gi.style.transition='';Object.assign(g.style,{left:'0px',top:'0px',width:'1920px',height:'1080px',borderRadius:'0px'});gi.style.transform=`translate(${bx}px,${by}px)`;box.classList.remove('small');sfx('sfx-dex-page-added')}));
+  music(null);
+  setTimeout(()=>{if(!alive())return;box.classList.add('grown');lgpSay(ll('סוף הליגה! כל אחד זורק לערימה שלו את כל הכדורים שצבר הערב.','The league is over! Everyone throws every ball they won tonight onto their own pile.'),true);music('mus-battlehall',{vol:.32})},1150);
+  // 2. everyone gets up from their seat and walks to their pile
+  setTimeout(()=>{if(!alive())return;box.classList.add('walk');box.querySelectorAll('.twseat[data-p]').forEach(e=>e.style.visibility='hidden');
+    box.querySelectorAll('.lgpw').forEach((w,i)=>{const p=L.P[i],s=L.seats[p.id],tx=p.wx,ty=LGP.base+30;if(!s){w.style.opacity=0;requestAnimationFrame(()=>{w.style.transition='opacity .5s';w.style.opacity=1});return}
+      const dx=tx-s[0],dy=ty-s[1],dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'r':'l'):(dy>0?'d':'u');w.style.transition='none';w.style.transform=`translate(${s[0]-tx}px,${s[1]-ty}px) scale(${(L.kb/2*(G.cs||1)/L.sc).toFixed(3)})`;
+      let k=0;const iv=setInterval(()=>{if(!w.isConnected){clearInterval(iv);return}lgpSet(w,dir,[1,0,2,0][k++%4])},130);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{w.style.transition='transform 1.5s linear';w.style.transform='none'}));setTimeout(()=>{clearInterval(iv);lgpSet(w,EN?'r':'l',0)},1520)})},2300);
+  // 3. the throwing: a virtual clock; ball k of a pile leaves at (its points before it)/rate, so every pile rises at the same speed
+  setTimeout(()=>{if(!alive())return;box.classList.add('throw');lgpThrow(L,key,alive)},4100)}
+function lgpThrow(L,key,alive){const fly=$('#lgpfly'),rate=Math.max(1,L.mx)/12.5,FL=520,piles=[...document.querySelectorAll('#lgp .lgpp')],ws=[...document.querySelectorAll('#lgp .lgpw')];
+  const P=L.P.map((p,i)=>({...p,k:0,landed:0,shown:0,el:piles[i],w:ws[i],end:p.r.pts/rate,done:p.r.pts===0}));let vt=0,last=performance.now(),slow=false,snd=0;const F=[];
+  P.forEach(p=>{if(p.done){p.el.classList.add('fin');p.w.classList.add('fin')}});
+  const step=now=>{if(!alive()){S.lgRun=false;return}const dt=Math.min(.05,(now-last)/1000);last=now;
+    const live=P.filter(p=>!p.done);if(!slow&&live.length<=2&&live.length&&P.length>2){slow=true;sfx('sfx-tink');const R=live,tie=R.length===2&&R[0].r.pts===R[1].r.pts;lgpSay(tie?ll('נשארו שניים… ושניהם עוד זורקים!','Two left… and both still throwing!'):ll('נשארו רק שניים…','Only two left…'),true);const a=BGM.a;if(a)fadeAudio(a,.18,600)}
+    vt+=dt*(slow?.45:1);
+    P.forEach(p=>{while(p.k<p.balls.length&&vt>=p.balls[p.k].at/rate){const b=p.balls[p.k],img=p.el.querySelector(`.lgpb[data-j="${p.k}"]`);p.k++;if(!img)continue;
+        const fx=p.wx,fy=LGP.base+30-40*L.sc,tx=p.x+b.x,ty=LGP.base-b.y,fb=document.createElement('img');fb.className='lgpfb';fb.src=img.src;fb.style.width=b.s+'px';fly.appendChild(fb);
+        F.push({fb,img,fx,fy,tx,ty,t0:now,pk:Math.min(fy,ty)-70-20*Math.random(),p,v:b.v});{const d=EN?'r':'l';lgpSet(p.w,d,p.k%2?1:2);setTimeout(()=>lgpSet(p.w,d,0),160)}}});
+    for(let i=F.length-1;i>=0;i--){const f=F[i],u=Math.min(1,(now-f.t0)/FL),x=f.fx+(f.tx-f.fx)*u,a=f.fy,b=f.pk,c=f.ty,y=(1-u)*(1-u)*a+2*(1-u)*u*(2*b-(a+c)/2)+u*u*c;
+      f.fb.style.transform=`translate(${x-f.fb.offsetWidth/2}px,${y-f.fb.offsetWidth/2}px) rotate(${u*540}deg)`;
+      if(u>=1){f.fb.remove();f.img.classList.add('in');F.splice(i,1);const p=f.p;p.landed++;p.shown+=f.v;const em=p.el.querySelector('.lgpn');em.textContent=p.shown;em.style.bottom=(Math.max(0,LGP.base-f.ty)+f.img.offsetWidth/2+14)+'px';
+        if(now-snd>110){snd=now;sfx('sfx-ball-toss',.22)}
+        if(p.landed===p.balls.length&&!p.done){p.done=true;em.textContent=p.r.pts;em.style.bottom=(p.top+14)+'px';p.el.classList.add('fin');p.w.classList.add('fin');lgpSet(p.w,'d',0);if(P.some(q=>!q.done))sfx('sfx-ball-poof',.6)}}}
+    if(P.every(p=>p.done)&&!F.length){S.lgRun=false;S.lgDone=key;S.lgp.ph='done';setTimeout(()=>{if(alive())lgpCrown(true)},650);return}
+    requestAnimationFrame(step)};requestAnimationFrame(step)}
+// the finished piles: everyone faces front, the champion(s) on top of their pile
+function lgpDonePaint(still){const L=S.lgpL,box=$('#lgp');if(!L||!box)return;box.classList.add('grown','walk','throw','done');box.querySelectorAll('.twseat[data-p]').forEach(e=>e.style.visibility='hidden');
+  box.querySelectorAll('.lgpb').forEach(b=>b.classList.add('in'));box.querySelectorAll('.lgpp,.lgpw').forEach(e=>e.classList.add('fin'));if(still)lgpCrown(false)}
+function lgpCrown(anim){const L=S.lgpL,box=$('#lgp');if(!L||!box)return;const top=Math.max(0,...L.P.map(p=>p.r.pts)),W=L.P.filter(p=>p.r.pts===top&&top>0),ws=[...box.querySelectorAll('.lgpw')];
+  if(!W.length){lgpSay(ll('אף אחד לא צבר נקודות הערב.','Nobody scored tonight.'),anim);return}
+  L.P.forEach((p,i)=>{const w=ws[i];if(!w)return;const win=W.includes(p);
+    if(!win){const c=W.reduce((a,q)=>Math.abs(q.x-p.x)<Math.abs(a.x-p.x)?q:a,W[0]);lgpSet(w,c.x>p.x?'r':'l',0);return}
+    const ty=-(p.top+30),tx=p.x-p.wx;w.classList.add('win');{const em=box.querySelectorAll('.lgpp')[i]?.querySelector('.lgpn');if(em)em.style.bottom=(p.top+64*L.sc+62)+'px'}if(!anim){w.getAnimations().forEach(a=>a.cancel());w.style.transition='none';w.style.transform=`translate(${tx}px,${ty}px)`;lgpSet(w,'d',0);return}
+    lgpSet(w,EN?'r':'l',1);w.animate([{transform:'translate(0,0)'},{transform:`translate(${tx*.6}px,${ty-80}px)`,offset:.6},{transform:`translate(${tx}px,${ty}px)`}],{duration:780,easing:'ease-out',fill:'forwards'});setTimeout(()=>lgpSet(w,'d',0),780)});
+  box.querySelectorAll('.lgpp').forEach((e,i)=>e.classList.toggle('win',W.includes(L.P[i])));box.classList.add('crowned');
+  const he=!EN,f=W.length===1&&genderOf(W[0].r.p)==='f',nm=lgpNames(W.map(p=>p.r),he);
+  const t=W.length>1?ll(`תיקו בפסגה! ${nm} חולקים את הערימה הכי גבוהה. ועכשיו: הפודיום.`,`A tie at the top! ${nm} share the highest pile. And now: the podium.`)
+    :ll(`${nm} על הערימה הכי גבוהה! ועכשיו: הפודיום.`,`${nm} is on top of the highest pile! And now: the podium.`);
+  if(anim){sfx('sfx-jump',.6);setTimeout(()=>{sfx('sfx-caught-mon');lgpSay(t,true)},700);music(null)}else lgpSay(t,false)}
+// the podium: the gym darkens, three steps rise; 3rd, 2nd, 1st come up one after another; the others stand at the sides and cheer
+function lgpPod(still){const L=S.lgpL,box=$('#lgp'),st=S.lgp;if(!L||!box)return;st.ph='pod';box.classList.add('pod');
+  const T=L.T,rk=L.rank,steps=[1,2,3].map(k=>({k,rows:T.filter(r=>rk(r)===k)})).filter(s=>s.rows.length),ids=new Set(steps.flatMap(s=>s.rows.map(r=>r.p.id)));
+  const crowd=L.T.filter(r=>!ids.has(r.p.id)),M=['','🥇','🥈','🥉'],HT={1:270,2:195,3:140};
+  const stepHTML=s=>{const n=s.rows.length,h=Math.round([0,300,260,240][s.k]/(n>3?2.1:n>2?1.7:n>1?1.3:1));return `<div class="lgps s${s.k}" data-k="${s.k}"><div class="lgpav">${s.k===1?'<span class="lgpcr">👑</span>':''}${s.rows.map(r=>avFull(r.p,h)).join('')}</div><div class="lgpblk" style="height:${HT[s.k]}px"><span class="lgpm">${M[s.k]}</span><b>${s.k}</b></div><div class="lgpcap" dir="${EN?'ltr':'rtl'}"><p class="lgpnm${n>1?' many':''}">${lgpNames(s.rows,!EN)}</p><small>${s.rows[0].pts} ${ll('נק׳','pts')}</small></div></div>`};
+  const order=[2,1,3].map(k=>steps.find(s=>s.k===k)).filter(Boolean);
+  // the crowd: half on each side of the podium, facing it, two rows when many
+  // the crowd stands on both sides of the podium (Bill keeps his corner), front row first, then rows behind
+  const pc=EN?1080:840,pl=pc-450,pr=pc+450,lo=EN?300:70,hi=EN?1850:1630,spots=[];
+  for(let row=0;row<4;row++){const y=722-row*72,L=[],R=[];for(let x=pl-70-row*30;x>=lo;x-=115)L.push(x);for(let x=pr+70+row*30;x<=hi;x+=115)R.push(x);for(let k=0;k<Math.max(L.length,R.length);k++){if(L[k]!=null)spots.push([L[k],y,row,1]);if(R[k]!=null)spots.push([R[k],y,row,0])}}
+  const side=crowd.map((r,i)=>{const[x,y,row,left]=spots[i%spots.length],n=twAv(r.p);
+    return `<div class="lgpc${row?' back':''}" style="left:${x}px;top:${y}px;z-index:${5-row};--dl:${(i*.13).toFixed(2)}s;--cs:${(2-row*.2).toFixed(2)}"><i class="lks" style="${owStyle(n)};background-position:${owPos(n,left?'r':'l',0)}"></i><b>${esc(r.p.name)}</b></div>`}).join('');
+  $('#lgppod').innerHTML=`<div class="lgpstage" style="left:${pc-450}px;width:900px">${order.map(stepHTML).join('')}</div>${side}<div class="lgpconf" id="lgpconf"></div>`;
+  if(still){st.rev=9;lgpRev(9,false);return}
+  music('mus-medal',{vol:.38});lgpSay(ll('טקס הפודיום!','The podium ceremony!'),true);st.rev=0;st.steps=steps.map(s=>s.k).sort((a,b)=>b-a);clearTimeout(S.lgpRT);
+  const next=()=>{if(S.lgp!==st||!$('#lgppod'))return;if(st.rev>=st.steps.length)return;lgpRev(st.rev+1,true);if(st.rev<st.steps.length)S.lgpRT=setTimeout(next,st.steps[st.rev]===1?3600:2600)};S.lgpRT=setTimeout(next,1700);
+  clearInterval(S.lgpCI);S.lgpCI=setInterval(()=>{const c=[...document.querySelectorAll('#lgppod .lgpc')];if(!c.length||!document.querySelector('#lgp.pod')){clearInterval(S.lgpCI);return}if(Math.random()<.6){const e=c[Math.floor(Math.random()*c.length)];e.classList.remove('clap');void e.offsetWidth;e.classList.add('clap')}},380)}
+// reveal steps up to n (steps are revealed lowest first: 3rd, 2nd, 1st)
+function lgpRev(n,anim){const st=S.lgp,L=S.lgpL;if(!st||!L)return;const ks=st.steps||[3,2,1];st.rev=Math.min(n,ks.length);
+  ks.slice(0,st.rev).forEach(k=>{const e=$(`#lgppod .lgps.s${k}`);if(e&&!e.classList.contains('on')){e.classList.add('on');if(anim){
+    const R=L.T.filter(r=>L.rank(r)===k),nm=lgpNames(R,!EN),f=R.length===1&&genderOf(R[0].p)==='f';
+    if(k===1){sfx('sfx-cheer',.8);sfx('sfx-caught-mon',.5);music('mus-champion',{loop:false,vol:.45,then:'mus-medal'});lgpConfetti();document.querySelector('#lgp')?.classList.add('gold');
+      lgpSay(R.length>1?ll(`🏆 אלופי הליגה של הערב: ${nm}!`,`🏆 Tonight's league champions: ${nm}!`):ll(`🏆 ${f?'אלופת':'אלוף'} הליגה של הערב: ${nm}!`,`🏆 Tonight's league champion: ${nm}!`),true)}
+    else{sfx('sfx-cheer',.4);sfx('sfx-tink',.6);lgpSay(k===2?ll(`במקום השני: ${nm}!`,`In second place: ${nm}!`):ll(`במקום השלישי: ${nm}!`,`In third place: ${nm}!`),true)}}}});
+  if(!anim&&st.rev>=ks.length){$('#lgp')?.classList.add('gold');const R=L.T.filter(r=>L.rank(r)===1),nm=lgpNames(R,!EN),f=R.length===1&&genderOf(R[0].p)==='f';lgpSay(R.length>1?ll(`🏆 אלופי הליגה של הערב: ${nm}!`,`🏆 Tonight's league champions: ${nm}!`):R.length?ll(`🏆 ${f?'אלופת':'אלוף'} הליגה של הערב: ${nm}!`,`🏆 Tonight's league champion: ${nm}!`):'',false)}
+  if(st.rev>=ks.length)st.ph='podDone'}
+function lgpConfetti(){const c=$('#lgpconf');if(!c)return;const C=['#F2C94C','#E5484D','#4C9AF2','#7BD389','#F6F1E7','#B58CF2'];
+  c.innerHTML=Array.from({length:90},(_,i)=>`<i style="left:${(Math.random()*100).toFixed(1)}%;background:${C[i%C.length]};--d:${(2.4+Math.random()*2.2).toFixed(2)}s;--dl:${(Math.random()*1.4).toFixed(2)}s;--x:${Math.round(Math.random()*160-80)}px;--r:${Math.round(Math.random()*720)}deg"></i>`).join('')}
+// clicks: during the walk and the throwing a click does nothing (no spoiling by accident); piles done → the podium;
+// during the podium a click brings the next place at once; after the champion the deck goes on. Back from the podium = the piles.
+function lgpGo(d){const st=S.lgp;if(!lgpOn()||!st||!$('#lgp'))return false;
+  if(d<0){if(st.ph==='pod'||st.ph==='podDone'){clearTimeout(S.lgpRT);st.ph='done';$('#cv').innerHTML=leagueHTML();music(null);return true}return false}
+  if(st.ph==='run')return true;
+  if(st.ph==='done'){lgpPod(false);return true}
+  if(st.ph==='pod'){clearTimeout(S.lgpRT);const n=st.rev+1;lgpRev(n,true);const ks=st.steps||[];if(st.rev<ks.length){const next=()=>{if(S.lgp!==st||st.rev>=ks.length)return;lgpRev(st.rev+1,true);if(st.rev<ks.length)S.lgpRT=setTimeout(next,2600)};S.lgpRT=setTimeout(next,ks[st.rev]===1?3600:2600)}return true}
+  return false}
 function leagueHTMLPod(){const fin=true;const T=leagueTable().filter(r=>r.pts>0),lv=[...new Set(T.map(r=>r.pts))].slice(0,3),steps=lv.map((p,i)=>({i,pts:p,rows:T.filter(r=>r.pts===p)}));
   const step=st=>{const k=st.i,n=st.rows.length,sz=[250,190,160][k]/(n>2?1.7:n>1?1.3:1);
     return `<div class="lgs r${k+1}"><div class="lgav">${k?'':'<span class="lgcrown">👑</span>'}${st.rows.map(r=>avFull(r.p,Math.round(sz))).join('')}</div><p>${st.rows.map(r=>esc(r.p.name)).join(' · ')}</p><b>${st.pts} ${ll('נק׳','pts')}</b><div class="lgst">${k+1}</div></div>`};
