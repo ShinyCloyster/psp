@@ -89,6 +89,12 @@ p{margin:0}
 .cstc{background:var(--night2);border:1px solid var(--gold);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:5px}
 .cstc button{display:flex;align-items:center;gap:8px;background:var(--night3);border:1px solid var(--line);border-radius:10px;padding:6px 8px;color:var(--cream);font:inherit;font-size:14px;text-align:start;cursor:pointer}
 .cstc button img{width:38px;height:38px;border-radius:50%;flex:none}.cstc button span{flex:1}.cstc button small{display:block;color:var(--mist);font-size:12px}.cstc button.here{border-color:var(--gold)}.cstc .cx{justify-content:center;color:#FF8A8D}
+.bkws{display:flex;flex-direction:column;gap:4px}
+.bkw{background:var(--night3);border-radius:10px;padding:6px 10px}.bkw summary{cursor:pointer;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bkw summary small{color:var(--mist);margin-inline-start:auto}
+.bkw em{font-style:normal;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px}.bkbad{background:#E5484D;color:#fff}.bkmid{background:#F2C94C;color:#161A2E}.bkok{background:#2F9E6B;color:#fff}
+.bkch{display:flex;flex-direction:column;gap:4px;margin-top:8px}.bkch>div{display:grid;grid-template-columns:34px 1fr;column-gap:8px;align-items:center;font-size:13px;opacity:.85}.bkch>div.in{opacity:1}
+.bkch img{grid-row:span 2;width:34px;height:34px;border-radius:50%}.bkch span{color:var(--mist);font-size:12px}
+.bkd{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px;font-size:12px}.bkd>div{display:flex;flex-direction:column;background:var(--night2,#1E2238);border-radius:8px;padding:4px 8px}.bkd>div.thin{box-shadow:inset 0 0 0 2px #E5484D}.bkd span{color:var(--mist)}
 .cstwl{display:flex;flex-direction:column;gap:4px;font-size:13px}.cstwl div{background:var(--night3);border-radius:10px;padding:6px 10px}.cstwl b{font-size:14px}
 .labh{font-size:18px;color:var(--mist);margin:6px 0 -4px}.lab-l{font-weight:700;font-size:15px;margin:4px 0 -6px}.labsm{font-size:13px}.labcode{font:400 16px var(--pixel);color:var(--gold);direction:ltr}
 .labo{min-height:0!important;padding:8px 14px!important;flex-direction:row!important}
@@ -1592,7 +1598,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795462803';
+const BUILDV='1795538177';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1793,14 +1799,24 @@ function castLabHTML(L){
   const rooms=L.filter(r=>r.code!==LEGACY_ROOM&&r.status!=='closed');
   const wName=k=>(CAST.worlds.find(w=>w[0]===k)||[k,k])[1],ch=id=>CAST.chars[id];
   const head=`<div class="card"><h2 style="margin:0 0 4px">🎭 ליהוק הדמויות</h2>
-   <p class="muted" style="margin:0 0 10px;font-size:14px">73 מושבים: 18 סוגים × 3, ו-6 סטטים × 2 קטבים, ו-7 דרכי התפתחות. בוחרים עולמות, והמערכת משבצת לפי הציון: כל דמות פעם אחת, ראשי לפני נוסף, ציון 5 ומטה רק אם אין ברירה.</p>
+   <p class="muted" style="margin:0 0 10px;font-size:14px">73 מושבים: 18 סוגים × 3, ו-6 סטטים × 2 קטבים, ו-7 דרכי התפתחות. בוחרים עולמות, והמערכת משבצת לפי הציון: כל דמות פעם אחת, ראשי לפני נוסף, ציון 5 ומטה רק אם אין ברירה, ועולם נותן עד 6 דמויות.</p>
    <label class="lab-l" for="cs-room">לאיזה ערב?</label>
    <select id="cs-room" onchange="castPickRoom(this.value)"><option value="">רק לנסות (לא נשמר)</option>${rooms.map(r=>`<option value="${esc(r.code)}" ${C.room===r.code?'selected':''}>${esc(r.subject||'')} · ${esc(r.code)}${r.rehearsal?' · 🧪':''}</option>`).join('')}</select>
    <p class="np-h" style="margin-top:12px">עולמות התוכן <small class="muted">(${C.worlds.length} מתוך ${CAST.worlds.length})</small></p>
    <div class="cstw">${CAST.worlds.map(([k,he])=>`<button class="${C.worlds.includes(k)?'on':''}" data-cw="${k}">${C.worlds.includes(k)?'✓ ':''}${esc(he)}</button>`).join('')}</div>
    <div class="row" style="gap:8px;margin-top:12px"><button class="btn grow" data-crun="1">🎲 שבץ אוטומטית</button><button class="btn ghost small" data-call="1">${C.worlds.length===CAST.worlds.length?'נקה הכול':'בחר הכול'}</button></div>
    ${C.room&&C.seats?`<p class="muted" style="font-size:12px;margin:8px 0 0">${C.saved?'✓ נשמר לערב '+esc(C.room)+'. השקפים של הסוגים, הסטטים וההתפתחות יציגו את הליהוק הזה.':'שומר…'}</p>`:''}</div>`;
-  if(!C.seats)return `<div class="cst">${head}</div>`;
+  // round 94: THE BANK. Every world with all of its characters (not only who got a seat): how many there are, which dimensions they can take
+  // and how strongly, so Eyal sees where a world is thin (fewer than 6 = it needs walk cards to fill the album) and which seats lack candidates.
+  const seatedNow=new Set(Object.values(C.seats||{}).flat().filter(Boolean)),rowsOf=id=>CAST.rows.filter(r=>r[0]===id).sort((a,b)=>b[3]-a[3]);
+  const byW={};Object.entries(CAST.chars).forEach(([id,c])=>{(byW[c.w]=byW[c.w]||[]).push(id)});
+  const wRow=([k,he])=>{const ids=(byW[k]||[]).sort((a,b)=>(rowsOf(b)[0]?.[3]||0)-(rowsOf(a)[0]?.[3]||0)),n=ids.length,tag=n<6?`<em class="bkbad">חסרות ${6-n} עד 6</em>`:n<8?`<em class="bkmid">${n}</em>`:`<em class="bkok">${n}</em>`;
+    return `<details class="bkw"><summary><b>${esc(he)}</b> ${tag}<small>${n} דמויות${C.seats?` · ${ids.filter(i=>seatedNow.has(i)).length} בליהוק`:''}</small></summary><div class="bkch">${ids.map(id=>`<div class="${seatedNow.has(id)?'in':''}"><img src="img/ch/${id}.webp" alt=""><b>${esc(ch(id).n[0])}${seatedNow.has(id)?' ✓':''}</b><span>${rowsOf(id).map(r=>`${esc(castDimHe(r[1]))} ${r[3]}${r[2]==='S'?'*':''}`).join(' · ')||'—'}</span></div>`).join('')}</div></details>`};
+  const dRow=([d,v])=>{const rs=CAST.rows.filter(r=>r[1]===d),st=rs.filter(r=>r[3]>=8).length,need=v[3]+1;return `<div class="${st<need?'thin':''}"><b>${esc(castDimHe(d))}</b><span>${st} חזקים (8+) מתוך ${rs.length} · ${v[3]} מושבים</span></div>`};
+  const bank=`<div class="card"><h3 style="margin:0 0 4px">📚 הבנק: כל העולמות וכל הדמויות</h3><p class="muted" style="margin:0 0 8px;font-size:13px">${Object.keys(CAST.chars).length} דמויות ב־${CAST.worlds.length} עולמות. בערב עולם נותן עד 6 דמויות למשחקים, ולאלבום צריך 6 בכל עולם. לחיצה על עולם פותחת את הדמויות שלו (* = מימד משני, ✓ = בליהוק הנוכחי).</p>
+    <div class="bkws">${CAST.worlds.map(wRow).join('')}</div>
+    <details class="bkw" style="margin-top:8px"><summary><b>עומק לפי מושב</b><small>כמה מועמדים חזקים יש לכל מימד (באדום: פחות ממספר המושבים + 1)</small></summary><div class="bkd">${Object.entries(CAST.dims).map(dRow).join('')}</div></details></div>`;
+  if(!C.seats)return `<div class="cst">${head}${bank}</div>`;
   const S2=C.seats,all=Object.entries(CAST.dims),need=all.reduce((a,[d,v])=>a+v[3],0),empties=[],low=[];let got=0;
   all.forEach(([d,v])=>{const L2=S2[d]||[];got+=L2.filter(Boolean).length;for(let i=0;i<v[3];i++)if(!L2[i])empties.push(castDimHe(d));L2.forEach(id=>{const r=id&&castRow(id,d);if(r&&r[3]<=5)low.push(`${ch(id).n[0]} (${castDimHe(d)}, ${r[3]})`)})});
   const rep=`<div class="cstrep ${empties.length?'bad':'ok'}"><b>${empties.length?`⚠️ ${got} מתוך ${need} מושבים מלאים`:`✅ כל ${need} המושבים מלאים, בלי כפילויות`}</b>
@@ -1818,7 +1834,7 @@ function castLabHTML(L){
   const evo=all.filter(([d,v])=>v[0]==='evo').map(([d])=>`<div class="cstrow"><div class="csth">${esc(castDimHe(d))} <small>${esc(CAST.dims[d][1])}</small></div><div class="csts">${seat(d,0)}</div>${cands(d)}</div>`).join('');
   const inW={};Object.entries(S2).forEach(([d,L2])=>(L2||[]).forEach(id=>{if(id)(inW[ch(id).w]=inW[ch(id).w]||[]).push(ch(id).n[0])}));
   const wl=`<div class="card"><h3 style="margin:0 0 8px">מי נכנס מכל עולם</h3><div class="cstwl">${C.worlds.map(k=>`<div><b>${esc(wName(k))}</b> (${(inW[k]||[]).length}): ${(inW[k]||[]).map(esc).join(', ')||'—'}</div>`).join('')}</div></div>`;
-  return `<div class="cst">${head}${rep}<div class="card"><h3 style="margin:0">סוגים · 54</h3>${types}</div><div class="card"><h3 style="margin:0">סטטים · 12</h3>${stats}</div><div class="card"><h3 style="margin:0">התפתחות · 7</h3>${evo}</div>${wl}</div>`}
+  return `<div class="cst">${head}${bank}${rep}<div class="card"><h3 style="margin:0">סוגים · 54</h3>${types}</div><div class="card"><h3 style="margin:0">סטטים · 12</h3>${stats}</div><div class="card"><h3 style="margin:0">התפתחות · 7</h3>${evo}</div>${wl}</div>`}
 async function castSave(){const C=S.cs;if(!C.room||!C.seats)return;C.saved=false;try{await S.db.raw.doc('setup/'+C.room+'~asset-cast').set({worlds:C.worlds,seats:C.seats,at:Date.now()});C.saved=true}catch(e){console.error(e);toast('לא נשמר')}if(S.labTab==='cast')roomsView()}
 async function castPickRoom(code){const C=S.cs;C.room=code;C.sel=null;C.saved=false;
   if(code){const d=await rawOnce('setup/'+code+'~asset-cast');if(d&&d.seats){C.worlds=d.worlds||CAST.worlds.map(w=>w[0]);C.seats=d.seats;C.saved=true}else{C.seats=castSolveAlbum(C.worlds);castSave()}}
