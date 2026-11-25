@@ -658,6 +658,8 @@ body:has(.gbcol){background:#C8C4BC;background-image:none}
 .col.gbcol{min-height:calc(100dvh - 24px);gap:0}
 .gbscr{flex:1 1 auto;min-height:38vh;justify-content:center;background:var(--night);border:12px solid #4E5263;border-radius:12px 12px 42px 12px;padding:14px 14px 18px;box-shadow:0 2px 0 #3B3E4C,inset 0 0 0 2px #2B2F44;position:relative;display:flex;flex-direction:column;gap:10px}
 .gbscr::before{content:'';position:absolute;left:-8px;top:46%;width:7px;height:7px;border-radius:50%;background:#E0393E;box-shadow:0 0 6px #ff4b4b}
+/* phones: a press that drags a little must never select text (it froze the other buttons until the selection was cleared) */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}.gb,.gb *{touch-action:none}
 .gbcol>.gb{margin-top:14px;flex:none;max-width:none;background:transparent;box-shadow:none;border-radius:0;padding-bottom:max(24px,env(safe-area-inset-bottom))}
 /* round 93: trading cards */
 .albtrb{margin:0 0 10px}
@@ -1598,7 +1600,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795538177';
+const BUILDV='1795613092';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1867,7 +1869,7 @@ function roomsView(){
    <p class="np-h">שלושת המאמנים</p><div class="np-tr">${[0,1,2].map(i=>`<input type="text" placeholder="מאמן ${i+1}${i?'':', למשל: צבא'}" value="${esc((S.nrt||[])[i]||'')}" oninput="(S.nrt=S.nrt||[])[${i}]=this.value">`).join('')}</div>
    <p class="np-h">הסילבוס של הערב</p>${planPick(S.nrs||[],'nrs')}
    <div class="np-reh"><button class="np-o ${S.nrr?'on':''}" data-nrr="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrr?'☑':'☐'} 🧪 ערב ניסוי עם בוטים</button>${S.nrr?`<button class="np-o ${S.nrf?'on':''}" data-nrf="1" style="min-height:0;flex-direction:row;padding:8px 12px">${S.nrf?'☑':'☐'} ⏩ מצב מהיר</button>`:''}</div>
-   <p class="muted" style="font-size:12px;margin:6px 0 10px">בערב ניסוי 6 בוטים עונים, משחקים ומדברים לבד. מעבירים שקפים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
+   <p class="muted" style="font-size:12px;margin:6px 0 10px">בערב ניסוי הבוטים (לפי המספר והשמות למעלה) עונים, משחקים ומדברים לבד. מעבירים שקפים כרגיל, ובפאנל המארח יש דוח זמנים.</p>
    <button class="btn np-go" data-act="newroom">${S.nrr?'🧪 פתיחת ערב ניסוי':'⚡ פתיחת הערב'}</button></div>`;
   const roomCard=r=>`<div class="card"><div class="row"><b class="grow">${esc(r.subject||'')}</b><span class="labcode">${esc(r.code)}</span></div><p class="muted" style="margin:4px 0 10px">${st(r)}${r.lang==='en'?' · English':''}${r.rehearsal?' · 🧪 ניסוי'+(r.fast?' ⏩':''):''}</p>
    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn small" href="#screen=${esc(r.code)}" style="text-decoration:none">פתיחה במסך</a><a class="btn ghost small" href="#admin=${esc(r.code)}" onclick="setTimeout(()=>location.reload(),30)" style="text-decoration:none">ניהול ותמונות</a><button class="btn ghost small" data-copy="${esc(roomLink(r.code))}">קישור למשתתפים</button><button class="btn ghost small" data-copy="${esc(roomLink(r.code,'remote'))}">קישור למשיבים מרחוק</button>${r.rehearsal?`<button class="btn red small" data-del="${esc(r.code)}">מחיקה</button>`:''}<button class="btn ghost small" data-plan="${esc(r.code)}">תכנית הערב${(r.skip||[]).length?` · ${8-(r.skip||[]).filter(x=>x[0]==='c').length}/8 קורסים, ${4-(r.skip||[]).filter(x=>x[0]==='t').length} מאמנים`:''}</button></div>${S.planOpen===r.code?planPick(r.skip||[],'rs:'+r.code):''}</div>`;
@@ -3013,8 +3015,8 @@ function factList(){const n=subjectName(),self=roster().find(p=>p.role==='self')
   agree.slice(0,2).forEach(x=>F.push({k:'FACT · FULL AGREEMENT',t:`${ll(`${x.c} משתתפים, ואותה תשובה בדיוק: כולם נתנו ${x.v}.`,`${x.c} participants, and the exact same answer: everyone gave ${x.v}.`)}`,q:q(x.it)}));
   dk.sort((a,b)=>b.c-a.c).slice(0,1).forEach(x=>F.push({k:'FACT · MYSTERY',t:`${ll(`${x.c} מכם ענו "לא יודע" על ההיגד הזה. ${n} מסתיר משהו?`,`${x.c} of you answered "don't know" to this statement. Is ${n} hiding something?`)}`,q:q(x.it)}));
   for(let i=F.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[F[i],F[j]]=[F[j],F[i]]}return F}
-// the Pokémon Center (img/center.webp, 1aeCoris's HGSS room, cropped): its real tiles are 32 px of the picture (Nurse Joy is one tile), shown at 1.5x; g floor, # counters, stairs, walls
-const CT={map:["##############", "##############", "##############", "##############", "gggggggggggggg", "gggggggggggggg", "gg##########gg", "gg##########gg", "gg##########gg", "gg##########gg", "############gg", "###g#######ggg", "###gggggggggg#", "###ggggggggg##", "gggggggggggg##", "ggggggggggggg#", "#ggggggggggggg"],t:48,W:672,H:822};CT.m=CT.map.map(r=>r.split(''));CT.R=CT.m.length;CT.C=CT.m[0].length;
+// the Pokémon Center (img/center.webp, 1aeCoris's HGSS room, cropped): its real tiles are 32 px of the picture (Nurse Joy is one tile), shown at 1.5x; g floor and both staircases (left: cols 0-1 rows 10-13, right: cols 12-13 rows 7-10), # counters, walls
+const CT={map:["##############", "##############", "##############", "##############", "gggggggggggggg", "gggggggggggggg", "gg##########gg", "gg##########gg", "gg##########gg", "gg##########gg", "gg##########gg", "gg#g#######ggg", "gg#gggggggggg#", "gg#ggggggggg##", "gggggggggggg##", "ggggggggggggg#", "#ggggggggggggg"],t:48,W:672,H:822};CT.m=CT.map.map(r=>r.split(''));CT.R=CT.m.length;CT.C=CT.m[0].length;
 const ctAt=(x,y)=>CT.m[y]?.[x]||'#',ctT=(x,y)=>[Math.floor(x/CT.t),Math.floor(y/CT.t)],ctC=(x,y)=>[(x+.5)*CT.t,(y+.5)*CT.t];
 function ctrEnter(id){if(!/^x-break-\d$/.test(id))return;const cv=$('#cv'),sec=cv.querySelector('section');if(!sec)return;const nurse=cv.querySelector('img[src*="tr-nurse"]');if(nurse)nurse.parentElement.style.display='none';
   cv.classList.add('ctron');const C=S.ctr&&S.ctr.id===id?S.ctr:(S.ctr={id,sid:(Date.now()%1e9)|0,pos:{},balls:[]});if(C.card===undefined)C.card=ctrCard(C);
@@ -4189,7 +4191,9 @@ function scApplyRules(b,anim){const C=S.sc,B=scBeats(C.id),run=++C.run;clearInte
   const wasOff=bd.classList.contains('off');bd.classList.toggle('off',k<1);bd.classList.remove('in');if(k>0&&wasOff&&anim){void bd.offsetWidth;bd.classList.add('in')}
   bd.querySelectorAll('.scri').forEach((e,i)=>{e.classList.toggle('on',i<k);e.classList.remove('in');if(stepIn&&i===k-1){void e.offsetWidth;e.classList.add('in')}});
   if(stepIn&&k>0&&k<99)sfx('sfx-tink',.4);
-  bd.classList.toggle('wild',st==='wild');if(st==='wild'&&stepIn){sfx('sfx-excl',.65);const id=C.id;setTimeout(()=>{if(C.run!==run||cur()?.id!==id||C.wild)return;C.wild=1;scWild(()=>{if(cur()?.id===id)go(1)})},1100)}
+  // only a round's scene (wild:1) shakes and plays the wild-questions transition; sm-psp's 'hurry to the ship' line just gets the '!' sound
+  const wl=st==='wild'&&!!SC[C.id].wild;if(st==='wild'&&stepIn&&!wl)sfx('sfx-excl',.65);
+  bd.classList.toggle('wild',wl);if(wl&&stepIn){sfx('sfx-excl',.65);const id=C.id;setTimeout(()=>{if(C.run!==run||cur()?.id!==id||C.wild)return;C.wild=1;scWild(()=>{if(cur()?.id===id)go(1)})},1100)}
   scType(B[b].t,anim)}
 // the wild-battle transition from a round's scene into the round: two flashes, then black bars close in
 function scWild(cb){document.getElementById('scsw')?.remove();const o=document.createElement('div');o.id='scsw';o.innerHTML='<i></i><i></i><i></i><i></i><i></i><i></i>';document.body.appendChild(o);
@@ -4522,8 +4526,8 @@ function introNudge(){if(!introOk()||introHas())return '';const n=esc(subjectNam
   return `<button class="intronudge" onclick="introOpen()"><b>${ll('✍️ לפני שמתחילים','✍️ Before we start')}</b><span>${ll(`מאיפה ההיכרות עם ${n}, ומשפט אחד על ${n}. זה יעלה על המסך כשיגיע תורך.`,`Where you know ${n} from, and one sentence about ${n}. It goes up on the screen on your turn.`)}</span></button>`}
 function introOpen(){if(document.getElementById('introbox'))return;const n=esc(subjectName()),d=document.createElement('div'),v=introGet();d.id='introbox';
   d.innerHTML=`<div class="ibx"><h2>${ll('✍️ ההיכרות שלך','✍️ Your intro')}</h2><p>${ll(`בתחילת הערב כל אחד מוצג על המסך עם מה שכתב כאן. קצר, ומראש.`,`At the start of the evening everyone is shown on the screen with what they wrote here. Short, and ahead of time.`)}</p>
-    <label>${ll(`מאיפה ההיכרות עם ${n}?`,`Where do you know ${n} from?`)}</label><input id="introf" maxlength="80" placeholder="${ll('למשל: מהצבא, מהעבודה, מגן חובה','e.g. from the army, from work, since kindergarten')}">
-    <label>${ll(`משפט אחד על ${n}`,`One sentence about ${n}`)}</label><textarea id="introt" maxlength="160" rows="3"></textarea><div class="ibb"><button id="introsave">${ll('שמירה','Save')}</button><button id="introno" class="ghost">${ll('סגירה','Close')}</button></div></div>`;
+    <label>${ll(`מאיפה ההיכרות עם ${n}?`,`Where do you know ${n} from?`)}</label><input id="introf" dir="auto" maxlength="80" placeholder="${ll('למשל: מהצבא, מהעבודה, מגן חובה','e.g. from the army, from work, since kindergarten')}">
+    <label>${ll(`משפט אחד על ${n}`,`One sentence about ${n}`)}</label><textarea id="introt" dir="auto" maxlength="160" rows="3"></textarea><div class="ibb"><button id="introsave">${ll('שמירה','Save')}</button><button id="introno" class="ghost">${ll('סגירה','Close')}</button></div></div>`;
   document.body.appendChild(d);const f=d.querySelector('#introf'),t=d.querySelector('#introt');f.value=v.f;t.value=v.s;(v.f?t:f).focus();
   d.querySelector('#introno').onclick=()=>d.remove();
   d.querySelector('#introsave').onclick=()=>{S.myIntro={f:f.value.trim().slice(0,80),s:t.value.trim().slice(0,160)};try{RAWSTORE.set('psp-intro',JSON.stringify(S.myIntro))}catch(e){}
@@ -4541,7 +4545,8 @@ function ofrEnter(){S.ofr=S.ofr&&S.ofr.eve===S.state?.eve?S.ofr:{i:-1,eve:S.stat
 // the friends' intros: everyone sits in the Pewter Gym; on their turn a friend gets up, walks to the stage, faces everyone, and walks back to their seat after
 const OFK=3.5;
 function ofrGym(){const G=TOWN.gym,k=OFK,c=G.t*k,W=G.w*k,H=G.h*k,at=(x,y)=>`left:${(x+.5)*c}px;top:${(y+.95)*c}px`;
-  const P=gamePlayers().filter(p=>!isPresenter(p)&&p.role!=='self').slice(0,G.seats.length);
+  // everyone sits, the subject too (only the friends come up to the stage, ofrList); same seats as the mini map
+  const P=gamePlayers().filter(p=>!isPresenter(p)).slice(0,G.seats.length);
   return `<div class="ofgym" style="width:${W}px;height:${H}px"><img class="twgimg" src="${G.img}" alt="" style="width:${W}px;height:${H}px;left:0;top:0">${lectHTML(G,k,at,G.lect[0],G.lect[1])}`+
     P.map((p,i)=>{const[x,y]=G.seats[i],n=twAv(p);return `<div class="twseat ofp" data-p="${p.id}" data-x="${x}" data-y="${y}" data-sx="${x}" data-sy="${y}" style="${at(x,y)};z-index:${Math.round(y*10)}"><i class="lks" style="${owStyle(n)};background-position:${owPos(n,'u',0)};transform:scale(${(k/2).toFixed(3)})"></i><b class="ofnm">${esc(p.name)}</b></div>`}).join('')+`</div>`}
 function ofrWalk(id,up){const el=document.querySelector(`.ofgym .ofp[data-p="${id}"]`);if(!el)return;const G=TOWN.gym,c=G.t*OFK,p=person(id),n=twAv(p||{id}),sp=el.querySelector('.lks');
@@ -4568,8 +4573,8 @@ function lectAside(el,away){if(!el||el.classList.contains('away')===away)return;
 function ofrPaint(){const box=$('#ofr');if(!box||!S.ofr)return;const L=ofrList(),i=S.ofr.i,p=L[i],n=esc(subjectName());
   const rel=q=>esc(q.relation||ROLES[q.role]||ll('חבר/ה','friend')),it=p&&(S.intros?.[p.id]||{}),from=(it?.f||'').trim(),said=(it?.s||'').trim();
   box.closest('section')?.classList.add('ofsec');
-  ofrStage(p);$('#ofcw').innerHTML=(p?`<div class="ofcard2" key="${p.id}"><div class="ofhead"><div class="ofav2">${avFull(p,240)}</div><div class="oftx2"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b>${esc(p.name)}</b><span>${rel(p)}${from?` · ${esc(from)}`:''}</span></div></div>
-      <div class="ofsay${said?'':' empty'}">${said?esc(said):ll(`מאיפה ההיכרות עם ${n}, ומשפט אחד על ${n}`,`Where I know ${n} from, and one sentence about ${n}`)}</div>
+  ofrStage(p);$('#ofcw').innerHTML=(p?`<div class="ofcard2" key="${p.id}"><div class="ofhead"><div class="ofav2">${avFull(p,240)}</div><div class="oftx2"><p class="ofno">TRAINER ${i+1}/${L.length}</p><b dir="auto">${esc(p.name)}</b><span dir="${EN?'ltr':'rtl'}">${rel(p)}${from?` · <bdi>${esc(from)}</bdi>`:''}</span></div></div>
+      <div class="ofsay${said?'':' empty'}" dir="${said?'auto':(EN?'ltr':'rtl')}">${said?esc(said):ll(`מאיפה ההיכרות עם ${n}, ומשפט אחד על ${n}`,`Where I know ${n} from, and one sentence about ${n}`)}</div>
 </div>`
     :`<div class="ofcard2 wait"><div class="ofsay">${i<0?ll('לחיצה: הראשון עולה לבמה.','Click: the first one takes the stage.'):ll('כולם הציגו את עצמם!','Everyone has introduced themselves!')}</div></div>`);
   clearInterval(S.ofrT);if(p)sfx('sfx-dex-page-added');
@@ -4633,6 +4638,8 @@ const padOk=()=>{const G=S.game;return !!G&&((G.g==='lake'&&G.ph==='play')||G.g=
 function padSend(d){S.db.doc('stage/mv-'+S.me).set({d,s:S.game.sid,t:S.padT||0,b:S.padB||0}).catch(()=>{})}
 // B: where am I? my name lights up on the screen for a moment
 function padB(e){e&&e.preventDefault();if(!padOk())return;S.padB=Date.now();try{navigator.vibrate?.(20)}catch(x){}const b=e?.currentTarget;if(b){b.classList.add('on');setTimeout(()=>b.classList.remove('on'),160)}padSend(S.padD||'')}
+document.addEventListener('selectstart',e=>{const t=e.target&&e.target.nodeType===3?e.target.parentElement:e.target;if(!(t&&t.closest&&t.closest('input,textarea,[contenteditable]')))e.preventDefault()});
+document.addEventListener('pointerdown',e=>{const t=e.target;if(t&&t.closest&&t.closest('button,.gb')){try{const s=getSelection();if(s&&!s.isCollapsed)s.removeAllRanges()}catch(x){}}},true);
 function padDir(d,e){e&&e.preventDefault();if(!padOk())return;document.querySelectorAll('.gbd').forEach(b=>b.classList.toggle('on',b.dataset.d===d));try{navigator.vibrate?.(12)}catch(x){}S.padD=d;padSend(d)}
 function padStop(e){e&&e.preventDefault();if(!S.game||!['lake','center','town'].includes(S.game.g))return;document.querySelectorAll('.gbd').forEach(b=>b.classList.remove('on'));S.padD='';padSend('')}
 function padA(e){e&&e.preventDefault();if(!padOk())return;S.padT=Date.now();try{navigator.vibrate?.(30)}catch(x){}const b=e?.currentTarget;if(b){b.classList.add('on');setTimeout(()=>b.classList.remove('on'),160)}padSend(S.padD||'')}
@@ -5215,7 +5222,7 @@ function pkVars(w){const p=CARDS.worlds[w],f=p.f.map(c=>pkMix(c,[255,255,255],PK
 function pkIcon(w,cls){return `<i class="pkcat ${cls||''}"><svg viewBox="0 0 24 24" aria-hidden="true">${CARDS.worlds[w].svg}</svg></i>`}
 function pkCard(id){const c=CARDS.chars[id],w=c.w,p=CARDS.worlds[w],an=c.atk,fs=an.length>16?1.3:an.length>13?1.5:1.75;
   const nm=c.evo||c.basic||c.holo?`<div class="pknm"><div class="pkname">${esc(c.en)}</div><div class="pkstg">${c.evo?`<b>STAGE 1</b><i>Evolves from ${esc(c.evo)}</i>`:c.holo?`<b>✦ HOLO</b><i>${esc(p.en)}</i>`:'<b>BASIC</b>'}</div></div>`:`<div class="pkname"${c.en.length>15?` style="font-size:${c.en.length>17?1.65:1.8}em"`:''}>${esc(c.en)}</div>`;
-  return `<div class="pkc${c.evo||c.basic||c.holo?' evo':''}${c.holo?' holo':''}" style="${pkVars(w)}" dir="ltr">${c.pre?`<div class="pkpre"><img src="img/ch/${c.pre}.webp" alt=""></div>`:''}<div class="pkface">
+  return `<div class="pkc${c.evo||c.basic||c.holo?' evo':''}${c.holo?' holo':''}" style="${pkVars(w)}" dir="ltr">${c.pre?`<div class="pkpre"><img src="img/card/${c.pre}.webp" alt=""></div>`:''}<div class="pkface">
    <div class="pktop">${nm}<div class="pkhp"><small>HP</small><b>${c.hp}</b></div>${pkIcon(w)}</div>
    ${c.ph?`<div class="pkpic ph">${pkIcon(w)}<b>?</b></div>`:`<div class="pkpic"><img src="img/card/${id}.webp" alt="${esc(c.en)}"></div>`}<div class="pkstrip">${esc(p.en)} Character</div>
    <div class="pkatk"><div class="pkcost">${pkIcon(w,'pknrg').repeat(c.cost[0])}${'<i class="pknrg pkcl"></i>'.repeat(c.cost[1])}</div><div class="pkan" style="font-size:${fs}em">${esc(an)}</div><div class="pkdmg">${c.dmg}</div></div>
@@ -5742,6 +5749,7 @@ function cgHof(){const tr=cgTruth(),n=esc(subjectName()),ps=cgPlayers().filter(p
 // ---------- dress rehearsal: a test room full of bots that answer, play and chat by themselves ----------
 const BOTS_HE=[['אש','self',40],['ברוק','friend',12],['מיסטי','friend',12],['גארי','friend',12],['ג׳סי','friend',12],['ג׳יימס','friend',12]];
 const BOTS_EN=[['Ash','self',40],['Brock','friend',12],['Misty','friend',12],['Gary','friend',12],['Jessie','friend',12],['James','friend',12]];
+const BOT_SPARE_HE=['ברוק','מיסטי','גארי','ג׳סי','ג׳יימס','מאי','דון','טרייסי','ריצ׳י','קלמנט','אייריס','סרינה','לילי','קיאווה'],BOT_SPARE_EN=['Brock','Misty','Gary','Jessie','James','May','Dawn','Tracey','Ritchie','Clemont','Iris','Serena','Lillie','Kiawe'];
 const BOT_SAY=[...SAY_POOL.g,...SAY_POOL.tr,...SAY_POOL.r,['איזה קטע','No way'],['זה כל כך נכון','So true'],['פיקאצ׳ו, אני בוחר בך!','Pikachu, I choose you!'],['רגע, מה?','Wait, what?'],['חחחח','Haha'],['אני רוצה להיות ליין של דרקון','I want to be a dragon line'],
  ['מי הביא את הבמבה?','Who brought the snacks?'],['זה הכי הוא','That is SO him'],['אני כבר יודע מה הוא יצא','I already know what he\'ll be'],['שמישהו יעצור את זה','Someone stop this'],['הסטט שלי זה Speed בטוח','My stat is Speed, for sure'],
  ['רגע, אפשר לחזור שקף?','Wait, can we go back a slide?'],['אני ב-HP גבוה הערב','I\'m running on high HP tonight'],['זה סופר אפקטיבי!','It\'s super effective!'],['אני מתפתח עכשיו, אל תפריעו','I\'m evolving right now, don\'t interrupt'],
@@ -5757,11 +5765,15 @@ async function invCopyPhotos(c){const v=S.nrInv&&(S.invites||[]).find(x=>x.id===
 function invFrom(){const v=S.nrInv&&(S.invites||[]).find(x=>x.id===S.nrInv);if(!v)return null;const av={},team=[];if(typeof v.av==='number')av[v.subject]=v.av;
   Object.values(v.team||{}).forEach(x=>{if(x&&x.ans==='yes'){team.push({n:x.n,g:x.g});if(typeof x.av==='number')av[x.n]=x.av}});return {id:v.id,av,team}}
 async function rehearseCreate(nm,lang,skip,fast,iv){const taken=new Set((S.roomList||[]).map(r=>r.code));let c;do{c='T'+Array.from({length:3},()=>ROOM_ABC[Math.floor(Math.random()*ROOM_ABC.length)]).join('')}while(taken.has(c));
-  const B=lang==='en'?BOTS_EN:BOTS_HE,TM=(iv&&iv.team)||[],ros=B.map(([n,role,w],i)=>({id:i?'bot'+i:'subj',name:i?((TM[i-1]&&TM[i-1].n)||n):(nm||n),role,weight:w,bot:true,relation:role==='self'?'':ll('חבר/ה','friend')}));
-  await S.db.raw.doc('state/'+c).set({subject:ros[0].name,gender:'m',open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang,skip,rehearsal:true,fast:!!fast,presenter:'',...(iv?{pre:{inv:iv.id,av:iv.av,n:ros.length-1,names:[]}}:{})});
+  // the friends: the names typed on the card first, then the invitation's team, then Pokémon names; as many as the card's count (or names)
+  const B=lang==='en'?BOTS_EN:BOTS_HE,TM=(iv&&iv.team)||[],typed=(S.nrnames||'').split(/[,،\r\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,14),
+    pool=[...typed,...TM.map(x=>x.n).filter(n=>n&&!typed.includes(n))],nf=Math.max(1,Math.min(14,Math.max(S.nrc||5,pool.length))),spare=(lang==='en'?BOT_SPARE_EN:BOT_SPARE_HE).filter(n=>!pool.includes(n)),
+    fw=Math.round(60/nf),ros=[{id:'subj',name:nm||B[0][0],role:'self',weight:40,bot:true,relation:''},...Array.from({length:nf},(_,i)=>({id:'bot'+(i+1),name:pool[i]||spare[i-pool.length]||((lang==='en'?'Bot ':'בוט ')+(i+1)),role:'friend',weight:fw,bot:true,relation:ll('חבר/ה','friend')}))];
+  const gd=S.nrg==='f'?'f':'m',host=(S.nrh||'').trim()?{name:S.nrh.trim(),g:S.nrhg==='f'?'f':'m'}:null;
+  await S.db.raw.doc('state/'+c).set({subject:ros[0].name,gender:gd,open:0,closed:[],result:null,revealed:false,mew:{status:'none'},eve:Date.now(),status:'open',lang,skip,rehearsal:true,fast:!!fast,presenter:'',host,pre:{n:nf,names:ros.slice(1).map(p=>p.name),...(iv?{inv:iv.id,av:iv.av}:{})}});
   if(iv){await S.db.raw.doc('invites/'+iv.id).update({room:c}).catch(()=>{});await invCopyPhotos(c);for(const [i,t] of (S.nrt||[]).entries()){const v=String(t||'').trim();if(v)await S.db.raw.doc('setup/'+c+'~asset-tr-'+(i+1)).set({label:v}).catch(()=>{})}}
-  await S.db.raw.doc('setup/'+c).set({roster:ros,gender:'m',name:ros[0].name,at:Date.now()});
-  for(const p of ros)await S.db.raw.doc('joined/'+c+'~'+p.id).set({at:new Date().toISOString(),gender:'m',dev:'bot'});
+  await S.db.raw.doc('setup/'+c).set({roster:ros,gender:gd,name:ros[0].name,at:Date.now()});
+  for(const p of ros)await S.db.raw.doc('joined/'+c+'~'+p.id).set({at:new Date().toISOString(),gender:p.id==='subj'?gd:'m',dev:'bot'});
   RAWSTORE.set('psp-lang:'+c,lang);location.hash='screen='+c;location.reload()}
 // speed: in a fast rehearsal every game clock runs at roughly a third
 function speedSync(){if(!S.state)return;const f=!!S.state.fast;if(S.fastOn===f)return;S.fastOn=f;if(f){QD.splice(0,3,4,4,3);MEM_T=7;BT_T=7;BT_RES=3;PQ_T=6}else{QD.splice(0,3,10,9,8);MEM_T=20;BT_T=20;BT_RES=7;PQ_T=15}}
