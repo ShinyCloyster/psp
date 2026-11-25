@@ -1632,7 +1632,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795624008';
+const BUILDV='1795625247';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -3002,7 +3002,7 @@ function btCardHTML(){const d=S.deck,b=d?.bt||0,p=d?.pos||0;if(!b||p>b||p<(d.bt0
 // round 85: the glasses memory game (after the paradigm on the lake) is optional too: Alakazam asks, the host picks on his phone (state.memOn); nothing picked = PLAY (it is in the 2:55 plan; skip only when late)
 const memOn=()=>ROOM.legacy||S.state?.memOn!==false;
 function memCardHTML(){const d=S.deck,b=d?.mem||0,p=d?.pos||0;if(!b||p>b||p<(d.mem0||b))return '';const on=memOn();
-  return `<p class="eyebrow" style="margin:0 0 6px">${ll('משחק הזיכרון · המשקפיים של אוק, ג׳וי ואש','THE MEMORY GAME · Oak’s, Joy’s and Ash’s glasses')}</p><p style="margin:0 0 4px;font-size:17px">${on?ll('🧠 נבחר: <b>משחקים</b> (כ-4 דקות)','🧠 Chosen: <b>play</b> (about 4 minutes)'):ll('⏭ נבחר: <b>מדלגים</b> עליו','⏭ Chosen: <b>skip</b> it')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('אופציונלי. בלי בחירה משחקים. מדלגים רק אם מאחרים. אפשר לשנות עד שמגיעים אליו.','Optional. No choice = played. Skip it only when running late. You can change it until you get there.')}</p><div class="row" style="gap:8px"><button class="btn grow${on?' ghost':''}" data-act="ctlmem" data-on="0">⏭ ${ll('מדלגים','Skip')}</button><button class="btn grow${on?'':' ghost'}" data-act="ctlmem" data-on="1">🧠 ${ll('משחקים','Play')}</button></div>`}
+  return `<p class="eyebrow" style="margin:0 0 6px">${ll('משחק הזיכרון · המשקפיים של ג׳ני, ג׳וי ואש','THE MEMORY GAME · Jenny’s, Joy’s and Ash’s glasses')}</p><p style="margin:0 0 4px;font-size:17px">${on?ll('🧠 נבחר: <b>משחקים</b> (כ-4 דקות)','🧠 Chosen: <b>play</b> (about 4 minutes)'):ll('⏭ נבחר: <b>מדלגים</b> עליו','⏭ Chosen: <b>skip</b> it')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('אופציונלי. בלי בחירה משחקים. מדלגים רק אם מאחרים. אפשר לשנות עד שמגיעים אליו.','Optional. No choice = played. Skip it only when running late. You can change it until you get there.')}</p><div class="row" style="gap:8px"><button class="btn grow${on?' ghost':''}" data-act="ctlmem" data-on="0">⏭ ${ll('מדלגים','Skip')}</button><button class="btn grow${on?'':' ghost'}" data-act="ctlmem" data-on="1">🧠 ${ll('משחקים','Play')}</button></div>`}
 function memCardFill(){const el=$('#rcmem');if(!el)return;const h=memCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
 function btCardFill(){memCardFill();const el=$('#rcbt');if(!el)return;const h=btCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
 function ctlCmd(d){if(d.cmd==='jump'&&d.i>=0&&d.i<SEQ.length){POS=d.i;HOF=0;SUB=0;BUILD=0;show(true)}
@@ -4399,21 +4399,22 @@ const LS={x0:30,y0:23,bw:946,bh:704};LS.z=Math.min(LS.bw/(33*LK.t),LS.bh/(24*LK.
 // round 75: the paradigm on the lake. s-lth ends with Pikachu walking in ("try to catch him!" → the wild transition → the Pikachu game, no poll);
 // s-lpar (replaces s-paradigm): back on the lake, Oak, then Nurse Joy and Ash walk in, each says how they see it; the definition; Alakazam takes everyone back to the gym
 SC['s-lpar']={lake:'par',part:2,drop:['s-paradigm'],bar:'s-paradigm',tele:1,label:['פרדיגמה: שלושה זוגות משקפיים','Paradigm: three pairs of glasses'],
-  lines:()=>[['o','מעניין למה הוא מסרב להיכנס… צריך לאלף אותו!','I wonder why he refuses to go in… He needs training!','oak'],
+  lines:()=>[['o','מעניין למה הוא מסרב להיכנס לפוקבול… מישהו יודע?','I wonder why he refuses to go into his Poké Ball… Does anyone know?','oak'],
+    ['jy','צריך לאלף אותו! פוקימון צריך ללמוד להישמע למאמן שלו.','He needs training! A Pokémon has to learn to obey his trainer.','jenny'],
     ['j','אולי הוא פצוע! צריך לקחת אותו ישר למרכז הפוקימונים!','Maybe he\'s hurt! We need to take him straight to the Pokémon Center!','joy'],
     ['a','זאת לא הסיבה. הוא פשוט רוצה חבר, לא מאמן!','That\'s not the reason. He just wants a friend, not a trainer!','ash'],
     ['def','אותו פיקאצ׳ו, שלוש תמונות. מה שמשתנה הוא המשקפיים: זו פרדיגמה.','The same Pikachu, three pictures. What changes is the glasses: that is a paradigm.','oak'],
     memOn()?['tele','אלקזם רוצה לבחון אותנו במבחן הזיכרון, ורק אז יחזיר אותנו לג׳ים!','Alakazam wants to test us with a memory test, and only then will he take us back to the gym!','oak']:['tele','אלקזם מחזיר אותנו לג׳ים!','Alakazam is taking us back to the gym!','oak']]};
-LS_ST.par=['o','j','a','def','tele'];
-const LS_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],joy:[['האחות ג׳וי','Nurse Joy'],'img/tr-nurse.webp'],ash:[['אש','Ash'],'img/tr-ash.webp']};
+LS_ST.par=['o','jy','j','a','def','tele'];
+const LS_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],jenny:[['השוטרת ג׳ני','Officer Jenny'],'img/tr-jenny.webp'],joy:[['האחות ג׳וי','Nurse Joy'],'img/tr-nurse.webp'],ash:[['אש','Ash'],'img/tr-ash.webp']};
 // the minis that walk in (cut by app/mini_build.py): [sheet, cell, frames, walking frames]
-const LS_NPC={pika:['img/ow-pika.png',32,4,[1,2,3,0]],joy:['img/ow-joy.png',34,3,[1,0,2,0]],ash:['img/ow-ash.png',34,3,[1,0,2,0]]};
+const LS_NPC={pika:['img/ow-pika.png',32,4,[1,2,3,0]],jenny:['img/ow-jenny.png',34,3,[1,0,2,0]],joy:['img/ow-joy.png',34,3,[1,0,2,0]],ash:['img/ow-ash.png',34,3,[1,0,2,0]]};
 const lsNpcPos=(k,d,f)=>{const[,c,n]=LS_NPC[k];return `${-f*c*2}px ${-'dlru'.indexOf(d)*c*2}px`};
 function lsNpcHTML(k){const[img,c,n]=LS_NPC[k];return `<div class="lsp lsnpc" id="lsn-${k}" style="display:none"><i class="lks" style="width:${c*2}px;height:${c*2}px;left:${-c}px;top:${-c*2}px;background-image:url(${img});background-size:${n*c*2}px ${4*c*2}px;background-position:0 0"></i></div>`}
-// free shore tiles for Pikachu, Joy and Ash: away from the group, Pikachu nearest the middle
+// free shore tiles for Pikachu, Jenny, Joy and Ash: away from the group, Pikachu nearest the middle
 function lsSpots(){const{took}=lsPos(),dist=(a,b)=>Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]),far=(t,L,n)=>L.every(q=>dist(q,t)>=n),all=[...took];
   const pika=LS.shore.find(t=>far(t,all,3))||LK.shore;all.push(pika);const near=LS.dry.filter(t=>dist(t,pika)<=6).sort((a,b)=>dist(a,pika)-dist(b,pika)),out=[];
-  for(const t of near){if(out.length>=2)break;if(far(t,all,2)){out.push(t);all.push(t)}}while(out.length<2)out.push(pika);return {pika,joy:out[0],ash:out[1]}}
+  for(const t of near){if(out.length>=3)break;if(far(t,all,2)){out.push(t);all.push(t)}}while(out.length<3)out.push(pika);return {pika,jenny:out[0],joy:out[1],ash:out[2]}}
 // a mini walks from one tile to another (straight, frame by frame), then stands facing `end`
 function lsWalk(k,from,to,ms,end){const el=$('#lsn-'+k);if(!el)return;const sp=el.querySelector('.lks'),fy=LK.t*.38,[fx,fyy]=lkC(...from),[tx,ty]=lkC(...to),wf=LS_NPC[k][3];
   const d=Math.abs(tx-fx)>Math.abs(ty-fyy)?(tx>fx?'r':'l'):(ty>fyy?'d':'u');clearInterval(el._w);el.style.display='';el.style.transition='none';el.style.left=fx+'px';el.style.top=(fyy+fy)+'px';el.style.zIndex=Math.round(Math.max(fyy,ty));void el.offsetWidth;
@@ -4437,15 +4438,15 @@ function lsWalkPath(k,path,end,ms){ms=ms||230;const el=$('#lsn-'+k);if(!el)retur
 function lsZoom(t,f,anim){const inn=$('#lsin');if(!inn)return;let tr=lsCam();if(t&&f>1){const z=LS.z*f,[cx,cy]=lkC(...t),tx=Math.min(0,Math.max(LS.bw-LK.W*z,LS.bw/2-cx*z)),ty=Math.min(0,Math.max(LS.bh-LK.H*z,LS.bh*.56-cy*z));tr=`translate(${tx}px,${ty}px) scale(${z})`}
   if(inn.style.transform===tr)return;if(!anim)inn.classList.add('nott');inn.style.transform=tr;if(!anim){void inn.offsetWidth;inn.classList.remove('nott')}}
 function lsSay(k,html,cls){const el=$('#lsn-'+k);if(!el)return;el.querySelector('.lsbub')?.remove();if(html)el.insertAdjacentHTML('beforeend',`<i class="lsbub ${cls||''}">${html}</i>`)}
-// the paradigm scene's stage: Pikachu sits on the shore; Joy and Ash walk in from the south when it's their turn
-function lsParApply(st,k,stepIn){const sp=lsSpots();lsZoom(k<=2?sp.pika:null,1.6,stepIn&&k===3);
+// the paradigm scene's stage: Pikachu sits on the shore; Oak asks why; Jenny, Joy and Ash walk in from the south when it's their turn
+function lsParApply(st,k,stepIn){const sp=lsSpots();lsZoom(k<=3?sp.pika:null,1.6,stepIn&&k===4);
   lsNpcAt('pika',sp.pika,'d',false);lsSay('pika',k<1?'💢':'',k<1?'mk':'');
-  ['joy','ash'].forEach((n,i)=>{const at=i+1;if(k<at){const e=$('#lsn-'+n);if(e)e.style.display='none';return}lsNpcAt(n,sp[n],'d',stepIn&&k===at,'b');lsSay(n,'')});
-  st.querySelectorAll('.lsg').forEach((e,i)=>{e.classList.toggle('on',k>=i);e.classList.remove('in');if(stepIn&&k===i){void e.offsetWidth;e.classList.add('in')}});
-  $('#lsh2').textContent=k>=3?ll('פרדיגמה: המשקפיים שדרכם מסתכלים','Paradigm: the glasses you look through'):ll('למה פיקאצ׳ו מסרב להיכנס לפוקבול?','Why does Pikachu refuse to go into his Poké Ball?');
-  $('#lsdid').classList.toggle('on',k>=3);$('#lseb').textContent=k>=3?'WHAT IS A PARADIGM':'PARADIGM · PIKACHU';
-  const al=$('#lsala');if(al)al.style.display=k>=4?'':'none';if(stepIn&&k===4){cmtCry(65,.5)}
-  if(stepIn&&k>=1&&k<=3)sfx('sfx-dex-page-added',.45)}
+  ['jenny','joy','ash'].forEach((n,i)=>{const at=i+1;if(k<at){const e=$('#lsn-'+n);if(e)e.style.display='none';return}lsNpcAt(n,sp[n],'d',stepIn&&k===at,'b');lsSay(n,'')});
+  st.querySelectorAll('.lsg').forEach((e,i)=>{e.classList.toggle('on',k>=i+1);e.classList.remove('in');if(stepIn&&k===i+1){void e.offsetWidth;e.classList.add('in')}});
+  $('#lsh2').textContent=k>=4?ll('פרדיגמה: המשקפיים שדרכם מסתכלים','Paradigm: the glasses you look through'):ll('למה פיקאצ׳ו מסרב להיכנס לפוקבול?','Why does Pikachu refuse to go into his Poké Ball?');
+  $('#lsdid').classList.toggle('on',k>=4);$('#lseb').textContent=k>=4?'WHAT IS A PARADIGM':'PARADIGM · PIKACHU';
+  const al=$('#lsala');if(al)al.style.display=k>=5?'':'none';if(stepIn&&k===5){cmtCry(65,.5)}
+  if(stepIn&&k>=1&&k<=4)sfx('sfx-dex-page-added',.45)}
 {const c=SC['s-lpar'];c.name=SC['s-lth'].name;SC_DROP['s-lpar']=c.drop}
 const lsIn=(x,y)=>{const[tx,ty]=lkT(x,y);return tx>LS.x0&&ty>LS.y0+1&&tx<LS.x0+LS.bw/LS.z/LK.t-1&&ty<LS.y0+LS.bh/LS.z/LK.t-1&&lkAt(tx,ty)==='g'};
 // where everyone stands: where the lake game left them if it's on the shore in view, else the next free shore tile
@@ -4457,7 +4458,7 @@ function lsGy(i,red,cls){const[x,y]=lkC(...(LS.wat[i%LS.wat.length]||LK.shore));
 function lsLakeHTML(){const{pp,oak}=lsPos(),fy=LK.t*.38;
   const ppl=lkPpl().filter(p=>pp[p.id]).map(p=>{const P=pp[p.id],n=S.gIn[p.id].av;return `<div class="lsp" data-p="${p.id}" style="left:${P.x}px;top:${P.y+fy}px;z-index:${Math.round(P.y)}"><b>${esc(p.name)}</b><i class="lks" style="${owStyle(n)};background-position:${owPos(n,P.d,0)}"></i></div>`}).join('');
   const gys=[0,1,2].map(i=>lsGy(i,0,'b'+i)).join('')+[3,4,5,6,7].map(i=>lsGy(i,0,'m'+i)).join('')+lsGy(4,1,'rd'),karp=[1,3,5].map(i=>{const[x,y]=lkC(...(LS.wat[(i+5)%LS.wat.length]||LK.shore));return `<img class="lskarp" src="anim/129.gif" alt="" style="left:${x}px;top:${y}px">`}).join('');
-  return `<div class="lsin" id="lsin" style="width:${LK.W}px;height:${LK.H}px"><img class="lsimg" src="img/lake2.webp" alt="" style="width:${LK.W}px;height:${LK.H}px">${karp}${gys}<div class="lsp lsoak" style="left:${oak[0]}px;top:${oak[1]+fy}px;z-index:${Math.round(oak[1])}"><b>${ll('פרופסור אוק','Prof. Oak')}</b><i class="lks" style="${oakStyle()};background-position:${oakPos('d',0)}"></i></div>${ppl}${['pika','joy','ash'].map(lsNpcHTML).join('')}<i class="twhelp ala lsala" id="lsala" style="display:none;left:${oak[0]-LK.t*1.6}px;top:${oak[1]+fy}px"></i><div class="lsradio"><i></i><i></i><i></i></div></div><div class="lsredtag" id="lsredtag"></div>`}
+  return `<div class="lsin" id="lsin" style="width:${LK.W}px;height:${LK.H}px"><img class="lsimg" src="img/lake2.webp" alt="" style="width:${LK.W}px;height:${LK.H}px">${karp}${gys}<div class="lsp lsoak" style="left:${oak[0]}px;top:${oak[1]+fy}px;z-index:${Math.round(oak[1])}"><b>${ll('פרופסור אוק','Prof. Oak')}</b><i class="lks" style="${oakStyle()};background-position:${oakPos('d',0)}"></i></div>${ppl}${['pika','jenny','joy','ash'].map(lsNpcHTML).join('')}<i class="twhelp ala lsala" id="lsala" style="display:none;left:${oak[0]-LK.t*1.6}px;top:${oak[1]+fy}px"></i><div class="lsradio"><i></i><i></i><i></i></div></div><div class="lsredtag" id="lsredtag"></div>`}
 const lsCam=()=>`translate(${-LS.x0*LK.t*LS.z}px,${-LS.y0*LK.t*LS.z}px) scale(${LS.z})`;
 function lsBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),P=scSec('x-part-'+cf.part),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',lect=P?.querySelector('img[alt^="tr-"],img[alt^="av-"]')?.getAttribute('src')||'img/tr-oak.webp',sci=cf.lake==='sci';
   const R=S.lakeRes,yes=R?ll(`‫${R.y} מכם הימרו עליה`,`${R.y} of you backed it`):'';
@@ -4804,7 +4805,7 @@ function whyPhone(me,G){const mine=(S.myG||{}).th||'',n=G.ph==='end'||G.ph==='ro
   return head+clk+`<textarea id="whyt" maxlength="70" rows="3" style="width:100%" oninput="S.whyDraft=this.value" placeholder="${ll('התיאוריה שלי…','My theory…')}">${esc(v)}</textarea><button class="btn" style="width:100%;margin-top:10px" onclick="whySend()">${ll('לשלוח','Send')}</button><p class="muted center" style="margin:10px 0 0">${ll('שולחים פעם אחת. הרמזים מופיעים כאן ועל המסך.','You send once. The clues appear here and on the screen.')}</p>`}
 
 // ---------- Pikachu refuses: everyone throws Poké Balls at him from their phones, he zaps every one; then "why does he refuse?" and the answers turn out to be the three pairs of glasses ----------
-const PIKA_OPT=[['edu','צריך לאלף אותו','He needs training'],['med','אולי הוא פצוע','Maybe he\'s hurt'],['soc','הוא רוצה חבר, לא בעלים','He wants a friend, not an owner']],PIKA_WHO={edu:['פרופ׳ אוק','Professor Oak'],med:['האחות ג׳וי','Nurse Joy'],soc:['אש','Ash']};
+const PIKA_OPT=[['edu','צריך לאלף אותו','He needs training'],['med','אולי הוא פצוע','Maybe he\'s hurt'],['soc','הוא רוצה חבר, לא בעלים','He wants a friend, not an owner']],PIKA_WHO={edu:ROOM.legacy?['פרופ׳ אוק','Professor Oak']:['השוטרת ג׳ני','Officer Jenny'],med:['האחות ג׳וי','Nurse Joy'],soc:['אש','Ash']};
 const pikaT=()=>S.fastOn?5:12,pikaQ=()=>S.fastOn?6:15;
 function pikaEnter(){let P=S.pika;if(!P){P=S.pika={ph:'throw',seen:{},n:0,end:Date.now()+pikaT()*1000};lkPpl().forEach(p=>P.seen[p.id]=S.gIn?.[p.id]?.pk||0)}pikaPaint();gamePub();pikaTick()}
 function pikaTick(){const P=S.pika;clearInterval(S.pikaT);S.pikaT=setInterval(()=>{if(S.pika!==P||cur()?.kind!=='pika'){clearInterval(S.pikaT);return}const l=Math.max(0,Math.ceil((P.end-Date.now())/1000)),c=$('#pkclk b');if(c)c.textContent=l;
@@ -5142,7 +5143,7 @@ let MEM_T=20;
 const MEM={
  's-memory':{eb:'MEMORY · PARADIGM GLASSES',ti:['משחק זיכרון: אילו משקפיים שואלים מה?','Memory: which glasses ask what?'],
   pairs:[
-   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'edu',a:['המשקפיים של פרופ׳ אוק','Professor Oak’s glasses'],q:['איך מאלפים אותו להישמע למאמן?','How do we train him to obey his trainer?'],r:['עוד אימונים, ופרס על כל הצלחה','More training, and a treat for every success']},
+   {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'edu',a:ROOM.legacy?['המשקפיים של פרופ׳ אוק','Professor Oak’s glasses']:['המשקפיים של השוטרת ג׳ני','Officer Jenny’s glasses'],q:['איך מאלפים אותו להישמע למאמן?','How do we train him to obey his trainer?'],r:['עוד אימונים, ופרס על כל הצלחה','More training, and a treat for every success']},
    {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'med',a:['המשקפיים של האחות ג׳וי','Nurse Joy’s glasses'],q:['אולי הוא פצוע? שיבדקו אותו במרכז הפוקימונים','Maybe he\'s hurt? Get him checked at the Pokémon Center'],r:['בדיקה אצל האחות ג׳וי במרכז הפוקימונים','A check-up with Nurse Joy at the Pokémon Center']},
    {s:['פיקאצ׳ו מסרב להיכנס לפוקבול','Pikachu refuses to enter its Poké Ball'],k:'soc',a:['המשקפיים של אש','Ash’s glasses'],q:['מה מקומו לצד אש: חבר, או עוד פוקימון בקופסה?','What is he to Ash: a friend, or one more Pokémon in a box?'],r:['לתת לו ללכת לצד אש, מחוץ לכדור','Let him walk beside Ash, outside the ball']}]},
  'c-memory':{eb:'MEMORY · THREE FATHERS',ti:['משחק זיכרון: איזה הוגה שואל מה?','Memory: which thinker asks what?'],
@@ -5158,7 +5159,7 @@ const LENS_COL={edu:'#6390F0',med:'#F95587',soc:'#7AC74C'};
 const PAIR_COL={...LENS_COL,durkheim:'#6390F0',marx:'#C22E28',weber:'#7A5BC9'},pairStyle=k=>{const c=PAIR_COL[k]||'#C9A227';return `--c:${c};border-color:${c};background:color-mix(in srgb,${c} 14%,#FFFDF8)`};
 const glassSvg=(c,w)=>`<svg viewBox="0 0 100 44" style="width:${w}px;height:auto"><circle cx="24" cy="22" r="17" fill="${c}" fill-opacity=".35" stroke="#161A2E" stroke-width="6"/><circle cx="76" cy="22" r="17" fill="${c}" fill-opacity=".35" stroke="#161A2E" stroke-width="6"/><path d="M41 20 Q50 12 59 20" fill="none" stroke="#161A2E" stroke-width="6"/></svg>`;
 function memCard(key,id){const p=MEM[key].pairs[+id.slice(0,-1)];return {p,kind:id.slice(-1),pair:+id.slice(0,-1)}}
-const LENS_SPR={edu:'tr-oak',med:'tr-nurse',soc:'tr-ash'};
+const LENS_SPR={edu:ROOM.legacy?'tr-oak':'tr-jenny',med:'tr-nurse',soc:'tr-ash'};
 function memIcon(k,w){return LENS_SPR[k]?`<img src="img/${LENS_SPR[k]}.webp" alt="" style="height:${Math.round(w*1.1)}px;width:auto;image-rendering:pixelated">`:`<img src="img/th-${k}.webp" alt="" style="height:${Math.round(w*1.15)}px;width:auto;image-rendering:pixelated">`}
 function memFace(key,id){const {p,kind}=memCard(key,id);
   if(kind==='a')return `<div class="mcf lens" style="${pairStyle(p.k)}"><span class="mcs">${esc(LL(p.s))}</span><div class="mico">${memIcon(p.k,LENS_COL[p.k]?120:100)}</div><b>${esc(LL(p.a))}</b></div>`;
