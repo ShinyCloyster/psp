@@ -1118,6 +1118,89 @@ body:has(.intronudge) #introfab{display:none}
 .lspop img{height:110px;width:auto;image-rendering:pixelated;flex:none}
 .lspop i{font:400 13px var(--pixel);color:#9A8F78;font-style:normal;display:block;text-align:start}
 .lspop p{margin:4px 0 0;font-size:22px;line-height:1.35;color:#4A4F63;text-align:start}
+/* round 100: Mt. Moon (s-moon) */
+.mnmap{background:#0B0E1C}
+.mnhouse>.lsimg{filter:brightness(.38) saturate(.7)}
+.mnhouse .lks{filter:brightness(.62) saturate(.8)}
+.mnhouse.tvon .lks{filter:brightness(.72) saturate(.85)}
+.mnmoon>.lsimg{filter:brightness(.6) saturate(.75) hue-rotate(10deg)}
+.mnmoon .lks{filter:brightness(.86) saturate(.9)}
+.mna .lks{position:absolute;background-repeat:no-repeat;image-rendering:pixelated}
+.mnglow{position:absolute;width:520px;height:420px;margin:-170px 0 0 -260px;border-radius:50%;background:radial-gradient(closest-side,rgba(150,185,255,.5),rgba(150,185,255,0));mix-blend-mode:screen;pointer-events:none;opacity:0;transition:opacity .6s;z-index:1}
+.tvon .mnglow{opacity:1;animation:mnflick 2.2s infinite}
+@keyframes mnflick{50%{opacity:.8}62%{opacity:1}70%{opacity:.88}}
+.mntvl{position:absolute;background:#AFC8FF;opacity:0;z-index:2;transition:opacity .4s}
+.tvon .mntvl{opacity:.85}
+.mntv{position:absolute;object-fit:cover;z-index:3;opacity:0;transition:opacity .3s}
+.mntv.on{opacity:1}
+.mntvd{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;color:#E5484D;font:400 13px/1.3 var(--pixel);opacity:0;transform:scale(.4);transition:opacity .4s,transform .5s cubic-bezier(.3,1.6,.5,1)}
+.mntvd.on{opacity:1;transform:none}
+.mnmoonl{position:absolute;width:300px;height:170px;margin:-85px 0 0 -150px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,250,215,.42),rgba(255,250,215,0));mix-blend-mode:screen;pointer-events:none;z-index:1;animation:mnflick 4s infinite}
+.mnala{z-index:999}
+.mnblink{position:absolute;inset:0;background:#000;opacity:0;z-index:60;pointer-events:none;transition:opacity .35s}
+.mnblink.on{opacity:1}
+.mnflash{position:absolute;inset:0;background:#fff;opacity:0;z-index:61;pointer-events:none}
+.mnflash.go{animation:mnfl .9s}
+@keyframes mnfl{0%{opacity:1}100%{opacity:0}}
+.mntag{position:absolute;left:0;top:-74px;transform:translate(-50%,-100%);font:400 15px var(--pixel);color:#fff;padding:7px 10px 5px;border-radius:8px;background:#A8A878;box-shadow:0 3px 0 rgba(0,0,0,.4);white-space:nowrap;font-style:normal;z-index:5;transition:transform .25s}
+.mntag.fy{background:#EE99AC;box-shadow:0 0 0 3px #fff,0 3px 0 rgba(0,0,0,.4)}
+.mntag.flip{transform:translate(-50%,-100%) scaleX(0)}
+.mnhop .lks{animation:mnhop .5s}
+@keyframes mnhop{40%{translate:0 -22px}}
+.mnhurt .lks{animation:mnhurt .12s steps(2) 5}
+@keyframes mnhurt{50%{opacity:.2}}
+.mnshot{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;z-index:2000;pointer-events:none}
+.mnshot.dr{background:radial-gradient(circle,#fff 0 18%,#9B87FF 38%,#4B2FD0 66%,rgba(75,47,208,0) 72%);box-shadow:0 0 26px 6px rgba(123,97,255,.7)}
+.mnshot.mb{background:radial-gradient(circle,#fff 0 22%,#FFC4E6 42%,#EE6FB4 66%,rgba(238,111,180,0) 72%);box-shadow:0 0 30px 8px rgba(255,182,225,.8)}
+.mnshot.ball{width:26px;height:26px;margin:-13px 0 0 -13px;background:url(img/it-poke-ball.webp) center/contain no-repeat;image-rendering:pixelated;animation:mnspin .3s linear infinite}
+@keyframes mnspin{to{rotate:360deg}}
+.mnshot.end{transition:opacity .3s,transform .3s!important;opacity:0;transform:scale(1.8)}
+.mnpoof{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:radial-gradient(circle,#fff 0 30%,rgba(255,255,255,0) 70%);z-index:2100;animation:mnpoof .6s forwards;pointer-events:none}
+@keyframes mnpoof{from{transform:scale(.2);opacity:1}to{transform:scale(1.5);opacity:0}}
+.mnspk{position:absolute;z-index:2100;color:#FFD1EA;font-size:30px;font-style:normal;text-shadow:0 0 8px #fff;transform:translate(-50%,-50%);animation:mnspk .9s ease-out forwards;pointer-events:none}
+@keyframes mnspk{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.4);opacity:0}}
+.lsbub.ok{background:#3DBE6A;color:#fff}.lsbub.ok::after{border-top-color:#3DBE6A}
+.mnsys .sclect,.mnsys .scname{visibility:hidden}
+.en .mnsys .sctx{font-family:var(--pixel);font-size:30px;line-height:1.5}
+.mnhouse .lsbub.sm{top:-66px;font-size:19px;padding:1px 7px;border-radius:9px}
+.mnhouse .lsbub.sm::after{bottom:-8px;border-width:6px;border-top-width:8px}
+.mna[data-k="oldman"] .lsbub{top:-52px}
+.mntvrow,.mnyrs,.mnclk,.mnq,.mnty,.mngl,.mnkuhn{display:none}
+.mntvrow.on{display:flex;gap:12px}
+.mntvrow figure{margin:0;flex:1;background:#161A2E;border-radius:12px;padding:8px;visibility:hidden}
+.mntvrow figure.on{visibility:visible}
+.mntvrow figure.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1) backwards}
+.mntvrow img{display:block;width:100%;height:132px;object-fit:cover;border-radius:6px}
+.mntvrow figcaption{color:#C9CCE0;font-size:17px;line-height:1.25;margin-top:6px;text-align:start}
+.mntvrow.sm img{height:88px}
+.mntvrow.sm figcaption{font-size:15px}
+.mnyrs.on{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mnyr{background:#F6F1E7;border:3px solid #E4DCCB;border-radius:16px;text-align:center;padding:10px 4px;transition:opacity .4s}
+.mnyr b{display:block;font:400 44px/1.1 var(--display);color:#161A2E}
+.mnyr span{display:block;min-height:26px;font-size:22px;font-weight:700;color:#6390F0}
+.mnyr.ok{background:#E3F6E8;border-color:#3DBE6A;animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.mnyr.no{opacity:.35}
+.mnclk.on{display:block;margin:0;font-size:22px;color:#6B7088;text-align:start}
+.mnq.on{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mnq div{border:3px dashed #D6CCB6;border-radius:16px;padding:16px 6px;text-align:center;font:400 30px/1.1 var(--display);color:#161A2E;transition:background .3s,opacity .3s}
+.mnst[data-k="8"] .mnq div:not(.ok),.mnst[data-k="9"] .mnq div:not(.ok){opacity:.35}
+.mnq div.ok{border:3px solid #3DBE6A;background:#E3F6E8}
+.mnty.on{display:flex;align-items:center;gap:16px;background:#F6F1E7;border-radius:16px;padding:8px 18px;visibility:hidden}
+.mnty.on.in{visibility:visible;animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.mnty img{height:96px;width:auto;image-rendering:pixelated}
+.mnty p{margin:0;font:400 28px/1.2 var(--display);color:#161A2E;text-align:start}
+.mnty s{color:#9A8F78}
+.mnty span{margin-inline-start:auto;white-space:nowrap}
+.mnty span i{font:400 15px var(--pixel);font-style:normal;color:#fff;padding:7px 9px 5px;border-radius:8px;background:#A8A878}
+.mnty span i.mnt1{background:#EE99AC}
+.mngl.on{display:flex}
+.mnst .lsg p{font-size:27px}
+.mnst .lsg img{height:54px}
+.mnkuhn img{height:92px}
+.mnkuhn p{font-size:20px}
+.mnkuhn.on{display:flex;animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.mnph{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.mnph button{font:400 40px var(--display);padding:22px 0;border-radius:18px}
 .lsrow{display:flex;align-items:center;gap:18px}
 .lsclk{flex:none;width:92px;height:92px;border-radius:50%;border:6px solid #E5484D;color:#E5484D;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
 .lsclk b{font:400 36px var(--pixel)}.lsclk span{font-size:16px;margin-top:4px}
@@ -1632,7 +1715,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795625247';
+const BUILDV='1795630068';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2905,6 +2988,7 @@ function bindPhone(){
       P.push(i);sfx('sfx-tink');try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({mk:G.key,tid:G.tid,picks:[...P]},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')));return}
     if(b.dataset.bv){const G=S.game;if(G?.g!=='bt'||G.phase!=='guess'||(S.myG||{})['b'+G.id])return;S.myG={...(S.myG||{}),['b'+G.id]:b.dataset.bv};sfx('sfx-ball-toss');try{navigator.vibrate?.(20)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['b'+G.id]:b.dataset.bv},{merge:true}).catch(()=>toast(ll('הניחוש לא נשלח, נסו שוב','The guess wasn\'t sent, try again')));return}
     if(b.dataset.urg){const[k,v]=b.dataset.urg.split(':');urgeAns(k,v);return}
+    if(b.dataset.mw){mnAns(b.dataset.mw);return}
     if(b.dataset.ured){S.urEdit=b.dataset.ured;render();return}
     if(b.dataset.scn!=null){if(S.game?.g!=='scn'||S.game.revealed)return;const v=+b.dataset.scn;S.myG={...(S.myG||{}),scn:v};sfx('sfx-tink');render();S.db.doc('stage/g-'+S.me).set({scn:v},{merge:true}).catch(()=>toast(ll('לא נשלח','Not sent')));return}
     if(b.dataset.cgt||b.dataset.cgs||b.dataset.cge){if(S.game?.g!=='cg')return;const g={t:[],...((S.myG||{}).cg||{})};g.t=[...(g.t||[])];
@@ -4266,7 +4350,7 @@ function scBeats(id){const cf=SC[id],nT=scRoute().filter(s=>s.t).length;
   const ti=cf.mid?(scSec(cf.div)?.querySelector('h1')?.textContent||'').replace(/\u202b/g,'').trim():'';
   return cf.lines(subjectName(),ll(...(TW_NAME[cf.town]||['',''])),nT,ti).map(([st,he,en])=>({st,t:ll(he,en)}))}
 function scStage(B,b){for(let i=b;i>=0;i--)if(B[i].st)return {st:B[i].st,at:i};return {st:'gym',at:0}}
-function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};if(SC[it.id].lake){lsBuild(it,!atEnd);lsApply(S.sc.b,!atEnd);if(!atEnd&&SC[it.id].lake!=='par')music(SC[it.id].lake==='sci'?'mus-surfing':null,{vol:.16});gamePub();return}scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
+function scEnter(it,atEnd){const n=scBeats(it.id).length;S.sc={id:it.id,b:atEnd?n-1:0,run:(S.sc?.run||0)+1};if(SC[it.id].moon){mnEnter(it,atEnd);return}if(SC[it.id].lake){lsBuild(it,!atEnd);lsApply(S.sc.b,!atEnd);if(!atEnd&&SC[it.id].lake!=='par')music(SC[it.id].lake==='sci'?'mus-surfing':null,{vol:.16});gamePub();return}scBuild(it,!atEnd);scApply(S.sc.b,!atEnd,true);if(!atEnd&&!SC[it.id].mid&&!SC[it.id].rules)music('mus-badge',{loop:false,vol:.4});else if(!atEnd&&SC[it.id].mid)music(null)}
 // the town of the last walk before here (a rules scene comes after a save point, where the mini map's own lookup stops)
 function scTownBack(){for(let i=POS;i>=0;i--)if(SEQ[i].kind==='town'){const L=TW_LEGS[SEQ[i].id]||[];return L[L.length-1]?.town||null}return null}
 function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack():null,G=tb?(TOWN[TOWN.gymOf?.[tb]]||TOWN.gym):twGymOf(),A=scParts(cf),R=scRoute(),M=SC_M;
@@ -4313,7 +4397,7 @@ function scApplyRules(b,anim){const C=S.sc,B=scBeats(C.id),run=++C.run;clearInte
 // the wild-battle transition from a round's scene into the round: two flashes, then black bars close in
 function scWild(cb){document.getElementById('scsw')?.remove();const o=document.createElement('div');o.id='scsw';o.innerHTML='<i></i><i></i><i></i><i></i><i></i><i></i>';document.body.appendChild(o);
   music('mus-wild',{vol:.25});BGM.holdTo=Date.now()+4250;setTimeout(cb,1250);setTimeout(()=>o.remove(),1900)}
-function scApply(b,anim,first){if(SC[S.sc.id].lake)return lsApply(b,anim);if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
+function scApply(b,anim,first){if(SC[S.sc.id].moon)return mnApply(b,anim);if(SC[S.sc.id].lake)return lsApply(b,anim);if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
   const {st,at}=scStage(B,b),stepIn=anim&&at===b,pk=/^p\d$/.test(st)?+st[1]:0,lv=pk?0:['gym','map','fly','zoom','tile'].indexOf(st);
   const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
@@ -4448,6 +4532,187 @@ function lsParApply(st,k,stepIn){const sp=lsSpots();lsZoom(k<=3?sp.pika:null,1.6
   const al=$('#lsala');if(al)al.style.display=k>=5?'':'none';if(stepIn&&k===5){cmtCry(65,.5)}
   if(stepIn&&k>=1&&k<=4)sfx('sfx-dex-page-added',.45)}
 {const c=SC['s-lpar'];c.name=SC['s-lth'].name;SC_DROP['s-lpar']=c.drop}
+// ---------- round 100: MT. MOON (s-moon replaces the Fairy slide in new rooms). Alakazam misses the gym: a dark house, an old man asleep
+// in front of the TV (Frozen, Catching Fire, Beyoncé), "when are we?" on the phones (2013), out to Mt. Moon Square where Clefairy dance;
+// the old man's Dragonite uses Dragon Rage, no effect (NORMAL → FAIRY), the game designer (why change) and Jacinthe (why this change),
+// Oak with Kuhn, Alakazam to the gym. World = the map at 2x (map px × MN_Z), the camera scales it into the stage box (like the lake scenes).
+const MN_Z=2,MN_BW=946,MN_BH=704,MN_MAP={house:['img/mn-house.webp',413,345],moon:['img/mn-moon.webp',1000,622]};
+// [sheet, cell w, cell h, columns, rows, shown at, walking frames]; people's rows are d/l/r/u
+const MN_SPR={oldman:['img/mn-oldman.png',22,28,3,4,2,[1,0,2,0]],designer:['img/mn-designer.png',32,48,4,4,2,[1,2,3,0]],jacinthe:['img/mn-jacinthe.png',64,64,4,4,1,[1,2,3,0]],clef:['img/mn-clef.png',28,30,8,4,2,null],drago:['img/mn-drago.png',36,40,3,2,2,null]};
+const MN_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],old:[['הזקן','Old man'],'img/tr-oldman.webp'],des:[['מעצב המשחק','The game designer'],'img/tr-designer.webp'],jac:[['ז׳סינת','Jacinthe'],'img/tr-jacinthe.webp']};
+const MN_YEARS=['1996','1999','2013','2023'],MN_T=12000;
+const MN_GIF=[['img/fem-elsa.gif','סרט של דיסני: האהבה שמצילה היא של אחיות, לא של נסיך','A Disney film: the love that saves is between sisters, not a prince'],
+  ['img/fem-katniss.gif','נערה מובילה מהפכה, והסרט הוא הרווחי ביותר של השנה בארה״ב','A girl leads a revolution, and it is the year\'s top-grossing film in the US'],
+  ['img/fem-bey.gif','ביונסה מכניסה לשיר נאום בשם We Should All Be Feminists','Beyoncé puts a speech called We Should All Be Feminists into a song']];
+SC['s-moon']={moon:1,part:2,drop:['s-fairy'],bar:'s-fairy',tele:1,label:['הר הירח: פרדיגמה שהשתנתה','Mt. Moon: a paradigm that changed'],
+  lines:()=>[['land','אלקזם… זה לא הג׳ים. איפה אנחנו?','Alakazam… this isn\'t the gym. Where are we?','oak'],
+    ['tv','ששש, הוא ישן. והטלוויזיה דולקת… בואו נראה מה משודר.','Shh, he\'s asleep. And the TV is on… let\'s see what\'s showing.','oak'],
+    ['when','רגע… בעצם, מתי אנחנו? תנחשו בטלפון!','Wait… actually, WHEN are we? Guess on your phone!','oak'],
+    ['date','נובמבר 2013! ומשהו קרה אז גם בעולם הפוקימון… שומעים? יש מוזיקה בחוץ.','November 2013! And something happened in the Pokémon world then too… Hear that? There\'s music outside.','oak'],
+    ['out','כיכר הר הירח! בלילות מסוימים הקלפיירים באים לכאן לרקוד סביב אבן הירח.','Mt. Moon Square! On some nights the Clefairy come here to dance around the Moon Stone.','oak'],
+    ['old','שוב אתם?! אמרתי לכם להפסיק לרקוד פה בלילות!','You again?! I told you to stop dancing here at night!','old'],
+    ['boast','הדרגונייט שלי לא הפסיד קרב כבר 15 שנה! לדרקונים אין מתחרים! דרגונייט, צא!','My Dragonite hasn\'t lost a battle in 15 years! Nothing stands up to a Dragon! Dragonite, go!','old'],
+    ['q','דרגונייט, זעם הדרקון!','Dragonite, Dragon Rage!','old'],
+    ['hit','זה לא משפיע על קלפיירי…','It doesn\'t affect Clefairy…','sys'],
+    ['shock','מה?! בימים שלי קלפיירי היה נורמל, ובכלל לא היה סוג כזה, פיירי!','What?! In my day Clefairy was Normal, and there was no such type as Fairy at all!','old'],
+    ['des','בדיוק בשביל זה עשיתי את זה. דרקון היה חזק מדי, והמשחק היה צריך איזון. זה הכול.','That\'s exactly why I did it. Dragon was too strong, and the game needed balance. That\'s all.','des'],
+    ['jac','באתי מקאלוס, המקום שבו הפיירי נולד. אולי זה איזון. אבל תראה מה היה בטלוויזיה של הזקן ב־2013.','I came from Kalos, where Fairy was born. Maybe it\'s balance. But look what was on the old man\'s TV in 2013.','jac'],
+    ['jac2','מכל הפתרונות שיכולת להמציא, יצא דווקא הסוג הכי ורוד ועדין, והוא היחיד שהדרקון ה״גברי״ לא יכול לגעת בו.','Of all the answers you could have invented, you came up with the pinkest, gentlest type, and it\'s the only one the "manly" Dragon can\'t touch.','jac'],
+    ['des2','…לא חשבתי על זה ככה.','…I didn\'t think of it that way.','des'],
+    ['jac3','לא צריך לחשוב על זה. העולם שאתה חי בו נכנס לבד למשחק שאתה מעצב.','You don\'t have to. The world you live in gets into the game you design by itself.','jac'],
+    ['two','אותו אירוע, שתי קריאות: המעצב מסביר למה היה צריך לשנות, והסוציולוגית מסבירה למה דווקא ככה.','Same event, two readings: the designer explains why something had to change, the sociologist why it changed this way.','oak'],
+    ['kuhn','ותומאס קון: המדע מתקדם בקפיצות. לא קלפיירי השתנה, הטבלה השתנתה.','And Thomas Kuhn: science moves in leaps. Clefairy didn\'t change. The chart did.','oak'],
+    ['sleep','ומי שישן בזמן המהפכה, עדיין רואה נורמל. אלקזם, לג׳ים! והפעם בכוונה.','And whoever sleeps through the revolution still sees Normal. Alakazam, to the gym! On purpose this time.','oak']]};
+{const c=SC['s-moon'];c.name=SC['s-lth'].name;SC_DROP['s-moon']=c.drop;TRIO['s-moon']=2}
+const MN_K=Object.fromEntries(SC['s-moon'].lines().map((l,i)=>[l[0],i]));
+// where people stand (map px): in the house facing the TV, outside on the sand facing the garden
+const MN_HSP=(()=>{const o=[];for(let x=96;x<=330;x+=29)o.push([x,118]);for(let x=110;x<=320;x+=30)o.push([x,284]);o.push([44,200],[350,200],[44,250],[350,250],[80,200]);return o})();
+const MN_MSP=(()=>{const o=[];for(let x=560;x<=648;x+=22)o.push([x,272]);for(let x=576;x<=642;x+=22)o.push([x,294]);for(let x=560;x<=626;x+=22)o.push([x,250]);o.push([578,316],[556,334],[600,318],[534,340]);return o})();
+const MN_P={oakH:[64,118],oldH:[179,186],tv:[142,30,188,62],door:[82,338],oakM:[508,262],doorM:[535,246],oldM:[535,300],drago:[496,314],clef:[447,330],des0:[674,226],des:[676,262],jac0:[356,350],jac:[414,348],ala:[498,294],rock:[420,238]};
+const mnPpl=()=>gamePlayers().filter(p=>!p.remote).map((p,i)=>{const v=S.gIn?.[p.id]?.av;return {p,n:v!=null&&v>=0&&v<LK_MINI?v:(i*7+3)%LK_MINI}});
+function mnSpr(k){if(k==='oak')return{st:oakStyle(),w:72,h:72};if(/^p:/.test(k))return{st:owStyle(+S.mnN[k]),w:68,h:68};
+  const kind=k.replace(/\d+$/,''),[img,cw,ch,c,r,z]=MN_SPR[kind];return{st:`width:${cw*z}px;height:${ch*z}px;background-image:url(${img});background-size:${c*cw*z}px ${r*ch*z}px`,w:cw*z,h:ch*z}}
+function mnPos(k,d,f){if(k==='oak')return oakPos(d,f);if(/^p:/.test(k))return owPos(+S.mnN[k],d,f);const kind=k.replace(/\d+$/,''),[,cw,ch,,,z]=MN_SPR[kind];
+  if(kind==='clef'||kind==='drago')return `${-(f||0)*cw*z}px ${-(d||0)*ch*z}px`;return `${-f*cw*z}px ${-'dlru'.indexOf(d)*ch*z}px`}
+function mnActorHTML(k,name){const s=mnSpr(k);return `<div class="lsp mna" data-k="${k}"${/^p:/.test(k)?` data-p="${k.slice(2)}"`:''} style="display:none">${name?`<b>${esc(name)}</b>`:''}<i class="lks" style="${s.st};left:${-s.w/2}px;top:${-s.h+6}px"></i></div>`}
+const mnEl=k=>document.querySelector(`#mnin .mna[data-k="${k}"]`);
+// put an actor on a map pixel (feet), facing d (people) or on sheet row d / column f (Clefairy, Dragonite); at=null hides it
+function mnPut(k,at,d,f){const el=mnEl(k);if(!el)return;clearTimeout(el._t);clearInterval(el._w);el.style.transition='none';if(!at){el.style.display='none';return}
+  el.style.display='';el.style.left=at[0]*MN_Z+'px';el.style.top=at[1]*MN_Z+'px';el.style.zIndex=Math.round(at[1]);el.querySelector('.lks').style.backgroundPosition=mnPos(k,d,f||0)}
+// walk along map points at v map px per second, frame by frame; then face `end`
+function mnWalk(k,pts,end,v,cb){const el=mnEl(k);if(!el)return;mnPut(k,pts[0],end||'d',0);v=v||70;const sp=el.querySelector('.lks'),kind=k.replace(/\d+$/,''),wf=MN_SPR[kind]?.[6]||[1,0,2,0],md=kind==='clef'||kind==='drago';let i=0,d='d',f=0;
+  el._w=setInterval(()=>{sp.style.backgroundPosition=md?mnPos(k,0,(f++)%8):mnPos(k,d,wf[f++%wf.length])},130);
+  const step=()=>{if(!el.isConnected)return;if(++i>=pts.length){clearInterval(el._w);sp.style.backgroundPosition=mnPos(k,end||d,0);cb&&cb();return}
+    const[a,b]=pts[i-1],[x,y]=pts[i],ms=Math.max(60,Math.hypot(x-a,y-b)/v*1000);d=Math.abs(x-a)>Math.abs(y-b)?(x>a?'r':'l'):(y>b?'d':'u');
+    el.style.transition=`left ${ms}ms linear,top ${ms}ms linear`;el.style.left=x*MN_Z+'px';el.style.top=y*MN_Z+'px';el.style.zIndex=Math.round(Math.max(y,b));el._t=setTimeout(step,ms)};el._t=setTimeout(step,40)}
+function mnSay(k,html,cls){const el=mnEl(k);if(!el)return;el.querySelector('.lsbub')?.remove();if(html)el.insertAdjacentHTML('beforeend',`<i class="lsbub ${cls||''}">${html}</i>`)}
+// the camera: fit a map rectangle into the stage box (a map smaller than the box is centred)
+function mnCam(r,anim){const inn=$('#mnin');if(!inn)return;const[w,h]=MN_MAP[S.mn.world].slice(1),c=Math.min(MN_BW/((r[2]-r[0])*MN_Z),MN_BH/((r[3]-r[1])*MN_Z)),W=w*MN_Z*c,H=h*MN_Z*c;
+  let tx=MN_BW/2-(r[0]+r[2])/2*MN_Z*c,ty=MN_BH/2-(r[1]+r[3])/2*MN_Z*c;tx=W<=MN_BW?(MN_BW-W)/2:Math.min(0,Math.max(MN_BW-W,tx));ty=H<=MN_BH?(MN_BH-H)/2:Math.min(0,Math.max(MN_BH-H,ty));
+  const tr=`translate(${tx}px,${ty}px) scale(${c})`;if(inn.style.transform===tr)return;if(!anim)inn.classList.add('nott');inn.style.transform=tr;if(!anim){void inn.offsetWidth;inn.classList.remove('nott')}}
+const MN_CAM={room:[0,0,413,345],tv:[116,12,214,80],moon:[356,176,700,372]};
+// the world: the map, its lights, everyone; the house and Mt. Moon Square share the actors (rebuilt on the way out)
+function mnWorldHTML(w){const[img,mw,mh]=MN_MAP[w],T=MN_P.tv,pl=mnPpl(),Z=MN_Z;S.mnN={};pl.forEach(({p,n})=>S.mnN['p:'+p.id]=n);
+  const ppl=pl.map(({p})=>mnActorHTML('p:'+p.id,p.name)).join(''),box=`left:${T[0]*Z}px;top:${T[1]*Z}px;width:${(T[2]-T[0])*Z}px;height:${(T[3]-T[1])*Z}px`;
+  const extra=w==='house'?`<i class="mnglow" style="left:${(T[0]+T[2])/2*Z}px;top:${(T[1]+T[3])/2*Z}px"></i><i class="mntvl" style="${box}"></i><img class="mntv" id="mntv" alt="" style="${box}"><b class="mntvd" id="mntvd" style="${box}">NOV<br>2013</b>`
+    :`<i class="mnmoonl" style="left:${MN_P.rock[0]*Z}px;top:${(MN_P.rock[1]-26)*Z}px"></i>${[0,1,2,3].map(i=>mnActorHTML('clef'+i)).join('')}${mnActorHTML('drago')}${mnActorHTML('designer')}${mnActorHTML('jacinthe')}<i class="twhelp ala mnala" id="mnala" style="display:none;left:${MN_P.ala[0]*Z}px;top:${MN_P.ala[1]*Z}px"></i>`;
+  return `<div class="lsin mn${w}" id="mnin" style="width:${mw*Z}px;height:${mh*Z}px"><img class="lsimg" src="${img}" alt="" style="width:${mw*Z}px;height:${mh*Z}px">${extra}${mnActorHTML('oak')}${mnActorHTML('oldman')}${ppl}</div>`}
+function mnEnter(it,atEnd){const C=S.sc,n=scBeats(it.id).length;C.b=atEnd?n-1:0;S.mn=S.mn||{ph:'ask',sid:'',world:''};mnBuild(it,!atEnd);mnApply(C.b,!atEnd);
+  if(!atEnd){$('#mnflash')?.classList.add('go');sfx('sfx-teleport',.5);music(null)}}
+function mnBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',ml=EN?1920-60-MN_BW:60;
+  const gl=(c,img,he,en,he2,en2,id)=>`<div class="lsg" id="${id}" style="--c:${c}"><img src="${img}" alt=""><div><b>${ll(he,en)}</b><p>${ll(he2,en2)}</p></div></div>`;
+  const pan=`${trioHTML(2)}<p class="sceb" dir="ltr" id="mneb"></p><h2 id="mnh2"></h2>
+    <div class="mntvrow" id="mntvrow">${MN_GIF.map(([g,he,en],i)=>`<figure data-i="${i}"><img src="${g}" alt=""><figcaption>${ll(he,en)}</figcaption></figure>`).join('')}</div>
+    <div class="mnyrs" id="mnyrs">${MN_YEARS.map(y=>`<div class="mnyr" data-y="${y}"><b>${y}</b><span></span></div>`).join('')}</div><p class="mnclk" id="mnclk"></p>
+    <div class="mnq" id="mnq">${[['יתעלף','Faints'],['ייפגע קצת','Gets hurt a little'],['כלום','Nothing']].map(([he,en],i)=>`<div data-i="${i}">${ll(he,en)}</div>`).join('')}</div>
+    <div class="mnty" id="mnty"><img src="img/s35.webp" alt=""><div><p>${ll('אותו קלפיירי.','The same Clefairy.')}</p><p><s>${ll('17 סוגים','17 types')}</s> ${ll('←','→')} <b>${ll('18 סוגים','18 types')}</b></p></div><span dir="ltr"><i class="mnt0">NORMAL</i> → <i class="mnt1">FAIRY</i></span></div>
+    <div class="lsgl mngl" id="mngl">${gl('#7038F8','img/tr-designer.webp','המשקפיים של מעצב המשחק','The game designer\'s glasses','למה היה צריך לשנות? דרקון חזק מדי.','Why change at all? Dragon was too strong.','mngd')}${gl('#EE99AC','img/tr-jacinthe.webp','המשקפיים של הסוציולוגית','The sociologist\'s glasses','למה דווקא ככה? העולם נכנס למשחק.','Why this way? The world gets in.','mngs')}</div>
+    <div class="lspop mnkuhn" id="mnkuhn"><img src="img/th-kuhn.webp" alt=""><div><i dir="ltr">SIDE NOTE</i><p>${ll('תומאס קון, 1962: המדע מתקדם בקפיצות, כשפרדיגמה אחת מחליפה את קודמתה.','Thomas Kuhn, 1962: science moves in leaps, when one paradigm replaces another.')}</p></div></div>`;
+  cv.innerHTML=`<div class="st scst lsst mnst" id="scst" dir="${EN?'ltr':'rtl'}">
+    <div class="lsmap mnmap" id="lsmap" style="left:${ml}px;top:44px;width:${MN_BW}px;height:${MN_BH}px"><div id="mnw"></div><div class="lsname" id="mnname"></div><i class="mnblink" id="mnblink"></i><i class="mnflash" id="mnflash"></i></div>
+    <div class="lspan" id="lspan">${pan}</div><div class="scbar0" id="scbar0">${bar}</div>
+    <img class="sclect${fresh?' rise':''}" id="sclect" src="img/tr-oak.webp" alt="">
+    <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini"></div></div></div>`;
+  S.mn.world=''}
+function mnSetWorld(w){if(S.mn.world===w&&$('#mnin'))return false;S.mn.world=w;clearInterval(S.mnDance);$('#mnw').innerHTML=mnWorldHTML(w);$('#mnname').textContent=w==='house'?ll('בית ליד הר הירח','A HOUSE BY MT. MOON'):ll('כיכר הר הירח','MT. MOON SQUARE');return true}
+// the year question on the phones: opens on 'when', closes after MN_T or when everyone answered, revealed on 'date'
+const mnYr=id=>S.mn?.sid?S.gIn?.[id]?.['mw'+S.mn.sid]:null;
+function mnPoll(){const M=S.mn,st=$('#scst');if(!M||!st||cur()?.id!=='s-moon')return;const pl=mnPpl();
+  if(M.ph==='run'&&(Date.now()>=M.end||(pl.length&&pl.every(({p})=>mnYr(p.id))))){M.ph='closed';gamePub()}
+  const cnt={};pl.forEach(({p})=>{const y=mnYr(p.id);if(y)cnt[y]=(cnt[y]||0)+1});const n=Object.values(cnt).reduce((a,b)=>a+b,0);
+  st.querySelectorAll('.mnyr').forEach(e=>{const y=e.dataset.y;e.querySelector('span').textContent=cnt[y]?'×'+cnt[y]:'';e.classList.toggle('ok',M.ph==='rev'&&y==='2013');e.classList.toggle('no',M.ph==='rev'&&y!=='2013')});
+  const ck=$('#mnclk'),s=Math.max(0,Math.ceil((M.end-Date.now())/1000));if(ck)ck.textContent=M.ph==='run'?ll(`${s} שניות · ענו ${n} מתוך ${pl.length}`,`${s} s · ${n} of ${pl.length} answered`):'';
+  if(M.world!=='house')return;
+  pl.forEach(({p})=>{const el=mnEl('p:'+p.id);if(!el)return;const y=(M.ph==='run'||M.ph==='closed'||M.ph==='rev')?mnYr(p.id):null,b=el.querySelector('.lsbub');
+    if(!y){b?.remove();return}const ok=M.ph==='rev'&&y==='2013',t=y;if(b&&b.textContent===t)return;mnSay('p:'+p.id,esc(t),ok?'sm ok':'sm')})}
+setInterval(()=>{try{if(isScreen()&&cur()?.id==='s-moon')mnPoll()}catch(e){}},300);
+function moonPhone(me,G){const v=S.myG?.['mw'+G.sid]??S.gIn?.[me.id]?.['mw'+G.sid];
+  if(G.ph==='rev')return `<p class="eyebrow">${ll('מתי אנחנו?','When are we?')}</p><h1 style="font-size:34px">${ll('נובמבר 2013','November 2013')}</h1><p style="font-size:22px">${v?(v==='2013'?ll('✓ צדקת!','✓ You got it!'):ll(`ניחשת ${v}`,`You guessed ${v}`)):ll('לא ניחשת הפעם','No guess this time')}</p><p class="muted">${ll('תסתכלו על המסך','Look at the screen')}</p>`;
+  if(v||G.ph!=='run')return `<p class="eyebrow">${v?'✓ '+ll('נשלח','Sent'):ll('הזמן נגמר','Time\'s up')}</p><h1 style="font-size:26px">${ll('תסתכלו על המסך','Look at the screen')}</h1>${v?`<p style="font-size:40px;margin:10px 0">${esc(v)}</p>`:''}`;
+  return `<h1 style="font-size:28px">${ll('מתי אנחנו?','When are we?')}</h1><p class="muted">${ll('לפי מה שראיתם בטלוויזיה','Going by what you saw on the TV')}</p><div class="mnph">${MN_YEARS.map(y=>`<button data-mw="${y}">${y}</button>`).join('')}</div>`}
+function mnAns(y){const G=S.game;if(G?.g!=='moonw'||G.ph!=='run')return;S.myG={...(S.myG||{}),['mw'+G.sid]:y};sfx('sfx-tink');try{navigator.vibrate?.(15)}catch(e){}render();S.db.doc('stage/g-'+S.me).set({['mw'+G.sid]:y},{merge:true}).catch(()=>toast(ll('לא נשלח, נסו שוב','Not sent, try again')))}
+// the Clefairy dance: around the front of the Moon Stone, each spinning through its eight directions and hopping
+function mnDance(on,without){clearInterval(S.mnDance);if(!on)return;const t0=performance.now();S.mnDance=setInterval(()=>{if(cur()?.id!=='s-moon'||S.mn.world!=='moon'){clearInterval(S.mnDance);return}const t=(performance.now()-t0)/1000;
+  for(let i=0;i<4;i++){const k='clef'+i;if(k===without)continue;const el=mnEl(k);if(!el)continue;const a=t*.7+i*Math.PI/2,x=MN_P.rock[0]+40*Math.cos(a),y=MN_P.rock[1]+11*Math.sin(a);
+    el.style.transition='none';el.style.display='';el.style.left=x*MN_Z+'px';el.style.top=(y*MN_Z-Math.abs(Math.sin(t*5+i))*10)+'px';el.style.zIndex=Math.round(y);el.querySelector('.lks').style.backgroundPosition=mnPos(k,0,Math.floor(t*7+i*2)%8)}},70)}
+function mnShot(cls,from,to,ms,cb){const inn=$('#mnin');if(!inn)return;const s=document.createElement('i');s.className='mnshot '+cls;s.style.left=from[0]*MN_Z+'px';s.style.top=from[1]*MN_Z+'px';inn.appendChild(s);void s.offsetWidth;
+  s.style.transition=`left ${ms}ms linear,top ${ms}ms linear`;s.style.left=to[0]*MN_Z+'px';s.style.top=to[1]*MN_Z+'px';setTimeout(()=>{s.classList.add('end');setTimeout(()=>s.remove(),350);cb&&cb()},ms)}
+function mnFrames(k,row,fr,ms,cb){const el=mnEl(k);if(!el)return;clearInterval(el._w);let i=0;const sp=el.querySelector('.lks'),g=()=>{if(!el.isConnected)return;if(i>=fr.length){cb&&cb();return}sp.style.backgroundPosition=mnPos(k,row,fr[i++]);setTimeout(g,ms)};g()}
+function mnFlash(at){const inn=$('#mnin');if(!inn)return;const f=document.createElement('i');f.className='mnpoof';f.style.left=at[0]*MN_Z+'px';f.style.top=(at[1]-12)*MN_Z+'px';inn.appendChild(f);setTimeout(()=>f.remove(),600)}
+function mnSpark(at){const inn=$('#mnin');if(!inn)return;for(let i=0;i<8;i++){const s=document.createElement('i');s.className='mnspk';s.textContent='✦';s.style.left=at[0]*MN_Z+'px';s.style.top=(at[1]-20)*MN_Z+'px';const a=i/8*Math.PI*2;s.style.setProperty('--dx',Math.cos(a)*70+'px');s.style.setProperty('--dy',Math.sin(a)*50+'px');inn.appendChild(s);setTimeout(()=>s.remove(),900)}}
+function mnApply(b,anim){const C=S.sc,cf=SC[C.id],B=scBeats(C.id),L=cf.lines();++C.run;clearInterval(S.scT);C.typing=C.fly=0;const st=$('#scst');if(!st)return;
+  const k=b,stepIn=!!anim,M=S.mn,run=C.run,live=()=>S.sc?.run===run&&cur()?.id==='s-moon';st.dataset.k=k;
+  // who speaks ('sys' = the game's own line: no name, no sprite)
+  {const who=L[b][3],w=MN_WHO[who],nm=st.querySelector('.scname'),lc=$('#sclect');st.classList.toggle('mnsys',who==='sys');if(w){if(nm)nm.textContent=ll(...w[0]);if(lc&&!lc.src.endsWith(w[1])){lc.src=w[1];lc.classList.remove('rise');void lc.offsetWidth;lc.classList.add('rise')}}}
+  // the world
+  const house=k<MN_K.out;
+  if(stepIn&&k===MN_K.out&&M.world==='house')mnWalkOut(run);else{const fresh=mnSetWorld(house?'house':'moon');mnStage(k,stepIn?k:-1,run,fresh&&!house&&stepIn)}
+  // the panel
+  $('#mneb').textContent=k>=MN_K.date?'PARADIGM SHIFT · 2013':'PARADIGM · ???';
+  $('#mnh2').textContent=k<=MN_K.land?ll('איפה אנחנו?','Where are we?'):k===MN_K.tv?ll('מה משודר בטלוויזיה?','What\'s on TV?'):k===MN_K.when?ll('מתי אנחנו?','When are we?'):k===MN_K.date?ll('נובמבר 2013','November 2013'):k<MN_K.q?ll('הר הירח, נובמבר 2013','Mt. Moon, November 2013')
+    :k===MN_K.q?ll('מה יקרה לקלפיירי?','What will happen to Clefairy?'):k<MN_K.des?ll('זה לא משפיע על קלפיירי','It doesn\'t affect Clefairy'):k<MN_K.two?ll('למה נולד הפיירי?','Why was Fairy born?'):ll('אותו אירוע, שתי קריאות','Same event, two readings');
+  const tvOn=k===MN_K.tv||(k>=MN_K.jac&&k<=MN_K.des2),tr=$('#mntvrow');tr.classList.toggle('on',tvOn);tr.classList.toggle('sm',k>=MN_K.jac);
+  tr.querySelectorAll('figure').forEach((f,i)=>{f.classList.remove('in');f.style.animationDelay='';f.classList.toggle('on',!(stepIn&&k===MN_K.tv));
+    if(stepIn&&k===MN_K.tv)setTimeout(()=>{if(live()&&S.sc.b===MN_K.tv)f.classList.add('on','in')},400+i*3200);if(stepIn&&k===MN_K.jac){f.style.animationDelay=i*.25+'s';void f.offsetWidth;f.classList.add('in')}});
+  $('#mnyrs').classList.toggle('on',k===MN_K.when||k===MN_K.date);$('#mnclk').classList.toggle('on',k===MN_K.when);
+  const q=$('#mnq');q.classList.toggle('on',k>=MN_K.q&&k<MN_K.des);q.querySelectorAll('div').forEach((e,i)=>e.classList.toggle('ok',k>=MN_K.hit&&i===2));
+  const ty=$('#mnty');ty.classList.toggle('on',k>=MN_K.hit&&k<MN_K.des);ty.classList.remove('in');if(stepIn&&k===MN_K.hit)setTimeout(()=>{if(live())ty.classList.add('in')},1300);else ty.classList.add('in');
+  $('#mngl').classList.toggle('on',k>=MN_K.des);[['mngd',MN_K.des],['mngs',MN_K.jac3]].forEach(([id,at])=>{const e=$('#'+id);e.classList.toggle('on',k>=at);e.classList.remove('in');if(stepIn&&k===at){void e.offsetWidth;e.classList.add('in')}});
+  $('#mnkuhn').classList.toggle('on',k>=MN_K.kuhn);if(stepIn&&(k===MN_K.des||k===MN_K.jac3||k===MN_K.kuhn||k===MN_K.two))sfx('sfx-dex-page-added',.45);
+  // the phones: the year question opens on 'when' and is revealed on 'date'
+  if(k===MN_K.when&&(M.ph==='ask'||(stepIn&&M.ph!=='rev'))){M.sid=String(Date.now()%1e7);M.ph='run';M.end=Date.now()+MN_T}
+  if(k>=MN_K.date&&M.ph!=='ask')M.ph=k===MN_K.date?'rev':'done';
+  gamePub();mnPoll();
+  // Dragon Rage waits a moment on the question, then plays by itself
+  if(stepIn&&k===MN_K.q){clearInterval(S.mnQT);let td=0;S.mnQT=setInterval(()=>{const C=S.sc;if(!live()||C.b!==MN_K.q){clearInterval(S.mnQT);return}if(C.typing){td=0;return}td=td||Date.now();if(Date.now()-td>=1500){clearInterval(S.mnQT);go(1)}},150)}
+  if(stepIn&&k===MN_K.out)music('mus-azalea',{vol:.22});
+  scType(B[b].t,anim)}
+// everyone in the house walks to the door, a blink, and the square outside
+function mnWalkOut(run){const live=()=>S.sc?.run===run&&cur()?.id==='s-moon',D=MN_P.door,ks=['oak',...mnPpl().map(({p})=>'p:'+p.id)];let last=0;
+  mnCam(MN_CAM.room,true);
+  ks.forEach((k,i)=>{const el=mnEl(k);if(!el)return;const x=parseFloat(el.style.left)/MN_Z,y=parseFloat(el.style.top)/MN_Z,pts=[[x,y],[x,300],[D[0],300],[D[0],D[1]]],len=Math.abs(300-y)+Math.abs(D[0]-x)+(D[1]-300);last=Math.max(last,len/110*1000+i*90);
+    mnSay(k,'');setTimeout(()=>{if(live())mnWalk(k,pts,'d',110,()=>{el.style.display='none'})},i*90)});
+  setTimeout(()=>{if(!live())return;sfx('sfx-door',.6);$('#mnblink').classList.add('on');setTimeout(()=>{if(!live())return;mnSetWorld('moon');mnStage(MN_K.out,MN_K.out,run,true);$('#mnblink').classList.remove('on')},380)},Math.min(last,3200)+200)}
+// the stage at beat k; `into` = the beat being stepped into (its animation plays), `arrive` = everyone walks out of the door
+function mnStage(k,into,run,arrive){const live=()=>S.sc?.run===run&&cur()?.id==='s-moon',pl=mnPpl(),P=MN_P;
+  if(S.mn.world==='house'){
+    mnPut('oak',P.oakH,'u');mnPut('oldman',P.oldH,'u');mnSay('oldman','💤','mk');pl.forEach(({p},i)=>mnPut('p:'+p.id,MN_HSP[i%MN_HSP.length],'u'));
+    const tv=$('#mntv');$('#mnin').classList.toggle('tvon',k>=MN_K.tv);$('#mntvd').classList.toggle('on',k>=MN_K.date);
+    mnCam(k===MN_K.tv?MN_CAM.tv:MN_CAM.room,into===k&&(k===MN_K.tv||k===MN_K.when));
+    if(k===MN_K.tv&&into===k){tv.classList.remove('on');MN_GIF.forEach(([g],i)=>setTimeout(()=>{if(!live()||S.sc.b!==MN_K.tv)return;tv.src=g;tv.classList.add('on');sfx('sfx-tink',.3)},300+i*3200))}
+    else{tv.src=MN_GIF[2][0];tv.classList.toggle('on',k===MN_K.tv)}
+    if(k===MN_K.date&&into===k)sfx('sfx-shooting-star',.5);return}
+  // Mt. Moon Square
+  mnCam(MN_CAM.moon,false);const D=P.doorM,O=P.oldM,G=P.drago,spots=pl.map((x,i)=>MN_MSP[i%MN_MSP.length]);
+  if(arrive)['oak',...pl.map(({p})=>'p:'+p.id)].forEach((kk,i)=>{const to=kk==='oak'?P.oakM:spots[i-1];mnPut(kk,null);setTimeout(()=>{if(live())mnWalk(kk,[D,[D[0],to[1]],to],'l',120)},i*110)});
+  else{mnPut('oak',P.oakM,'l');pl.forEach(({p},i)=>mnPut('p:'+p.id,spots[i],'l'))}
+  pl.forEach(({p})=>mnSay('p:'+p.id,''));
+  // the old man: inside until 'old', out front until 'kuhn', then back in
+  if(k<MN_K.old)mnPut('oldman',null);
+  else if(k<MN_K.kuhn){if(into===MN_K.old){mnWalk('oldman',[D,O],'l',60);setTimeout(()=>{if(!live())return;mnSay('oldman','!','bang');sfx('sfx-excl',.6);music(null)},900)}else mnPut('oldman',O,'l')}
+  else if(into===MN_K.kuhn){mnWalk('oldman',[O,[D[0],D[1]+2]],'u',50,()=>{mnPut('oldman',null);sfx('sfx-door',.5)})}else mnPut('oldman',null);
+  if(into!==MN_K.old)mnSay('oldman',k===MN_K.shock?'!':'',k===MN_K.shock?'bang':'');
+  // Clefairy: dancing; frozen while the old man shouts; one comes forward and stays; the rest dance again after the Moonblast
+  const fw=k>=MN_K.boast,ring=i=>[P.rock[0]+40*Math.cos(i*Math.PI/2+.4),P.rock[1]+11*Math.sin(i*Math.PI/2+.4)];
+  if(k<MN_K.out){mnDance(false);[0,1,2,3].forEach(i=>mnPut('clef'+i,null))}
+  else if(k===MN_K.out||k>=MN_K.des)mnDance(true,fw?'clef0':null);
+  else{mnDance(false);[1,2,3].forEach(i=>mnPut('clef'+i,ring(i),0,0))}
+  if(fw){if(into===MN_K.boast){mnPut('clef0',ring(0),0,0);setTimeout(()=>{if(live())mnWalk('clef0',[ring(0),P.clef],0,90,()=>mnPut('clef0',P.clef,0,4))},900)}else if(into!==MN_K.shock)mnPut('clef0',P.clef,0,4)}
+  else if(k>=MN_K.old)mnPut('clef0',ring(0),0,0);
+  {const el=mnEl('clef0');if(el&&!el.querySelector('.mntag'))el.insertAdjacentHTML('beforeend','<i class="mntag" style="display:none"></i>');const t=el?.querySelector('.mntag');
+   if(t){t.style.display=k>=MN_K.q&&k<MN_K.des?'':'none';const fy=k>=MN_K.hit&&into!==MN_K.hit;t.textContent=fy?'FAIRY':'NORMAL';t.classList.toggle('fy',fy)}}
+  // Dragonite: out of the ball on 'boast', Dragon Rage on 'hit', the Moonblast sends it back on 'shock'
+  if(k<MN_K.boast||k>MN_K.shock||(k===MN_K.shock&&into!==k))mnPut('drago',null);
+  else if(into===MN_K.boast){mnPut('drago',null);setTimeout(()=>{if(!live())return;sfx('sfx-ball-toss',.6);mnShot('ball',[O[0]-6,O[1]-14],[G[0],G[1]-10],450,()=>{if(!live())return;sfx('sfx-ball-poof',.6);mnFlash(G);mnPut('drago',G,0,0);cmtCry(149,.6)})},500)}
+  else mnPut('drago',G,0,0);
+  if(into===MN_K.hit){mnFrames('drago',1,[0,1,2,2,1,0],110,null);setTimeout(()=>{if(!live())return;mnShot('dr',[G[0]-10,G[1]-20],[P.clef[0],P.clef[1]-14],520,()=>{if(!live())return;sfx('sfx-denied',.55);const c=mnEl('clef0');c?.classList.remove('mnhop');void c?.offsetWidth;c?.classList.add('mnhop');
+    setTimeout(()=>{if(!live())return;const t=c?.querySelector('.mntag');if(!t)return;t.classList.add('flip');setTimeout(()=>{if(!live())return;t.textContent='FAIRY';t.classList.add('fy');t.classList.remove('flip');sfx('sfx-shooting-star',.55);mnSpark(P.clef)},260)},500)})},260)}
+  if(into===MN_K.shock){mnPut('clef0',P.clef,0,4);setTimeout(()=>{if(!live())return;mnFrames('clef0',2,[0,1,2,2,2],130,()=>mnPut('clef0',P.clef,0,4));setTimeout(()=>{if(!live())return;sfx('sfx-tink',.6);mnShot('mb',[P.clef[0]+8,P.clef[1]-16],[G[0],G[1]-18],480,()=>{if(!live())return;const d=mnEl('drago');d?.classList.add('mnhurt');sfx('sfx-faint-fall',.4);
+    setTimeout(()=>{if(!live())return;mnFlash(G);sfx('sfx-ball-poof',.5);mnPut('drago',null);d?.classList.remove('mnhurt');mnShot('ball',[G[0],G[1]-10],[O[0]-6,O[1]-14],380)},700)})},300)},2200)}
+  // the designer out of the cave, Jacinthe from the bottom left, Alakazam at the end
+  if(k<MN_K.des)mnPut('designer',null);else if(into===MN_K.des)mnWalk('designer',[P.des0,[P.des0[0],P.des[1]],P.des],'l',70);else mnPut('designer',P.des,'l');
+  if(k<MN_K.jac)mnPut('jacinthe',null);else if(into===MN_K.jac)mnWalk('jacinthe',[P.jac0,P.jac],'r',60);else mnPut('jacinthe',P.jac,'r');
+  const al=$('#mnala');if(al)al.style.display=k>=MN_K.sleep?'':'none';if(into===MN_K.sleep)cmtCry(65,.5)}
 const lsIn=(x,y)=>{const[tx,ty]=lkT(x,y);return tx>LS.x0&&ty>LS.y0+1&&tx<LS.x0+LS.bw/LS.z/LK.t-1&&ty<LS.y0+LS.bh/LS.z/LK.t-1&&lkAt(tx,ty)==='g'};
 // where everyone stands: where the lake game left them if it's on the shore in view, else the next free shore tile
 function lsPos(){const L=S.lake,out={},took=[];const pl=lkPpl().filter(p=>lkAv(p));const oak=L?.oakP&&lsIn(L.oakP.x,L.oakP.y)?[L.oakP.x,L.oakP.y]:lkC(...LK.shore);took.push(lkT(...oak));
@@ -5249,6 +5514,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
   else if(S.ctr&&it?.id===S.ctr.id)d={g:'center',sid:S.ctr.sid};
   else if(S.pika&&it?.kind==='pika')d={g:'pika',ph:S.pika.ph,end:S.pika.end||0};
   else if(it?.id==='cu-4')d={g:'urge',q:urgeQ()};
+  else if(it?.id==='s-moon'&&S.mn&&['run','closed','rev'].includes(S.mn.ph))d={g:'moonw',ph:S.mn.ph,sid:S.mn.sid,end:S.mn.end};
   else if(it?.kind==='hof'&&HOF_STEPS[HOF]==='ball'&&!S.opening)d={g:'ball',at:S.ballAt||0};
   else if(it?.id==='c-thinkers'&&S.cmt?.gm&&(S.cmt.ph==='pick'||Object.keys(S.cmt.gl).length)){const C=S.cmt,pl=lkPpl();d={g:'cmt',gm:1,th:1,ph:C.ph==='pick'?'pick':'held',r:0,end:0,gl:C.gl,np:pl.filter(p=>C.gl[p.id]).length,nn:pl.length,now:C.ph==='pick'?'':glThK(),scores:{}}}
   else if(S.cmt&&it?.kind==='cmt'){const C=S.cmt;d={g:'cmt',ph:C.ph,r:C.r,end:C.end||0,ord:C.ord[C.r],scores:C.scores};if(C.gm){const sp=C.sp[C.r],pl=lkPpl();d.gm=1;d.gl=C.gl;d.np=pl.filter(p=>C.gl[p.id]).length;d.nn=pl.length;d.sp=sp&&(C.ph==='ask'||C.ph==='guess'||C.ph==='reveal')?{id:sp.id,k:sp.k,n:pl.find(p=>p.id===sp.id)?.name||''}:null;if(C.ph==='reveal')d.res=C.right[C.r]||null}}
@@ -5261,7 +5527,7 @@ function gamePub(){if(!S.db)return;const it=cur();let d={g:null};
 function gameIn(){if(!isScreen())return;pqIn();if(cur()?.kind==='buzz')bzPaint();if(cur()?.id==='x-guess')cgScreen();if(S.mem&&cur()?.id===S.mem.key)memIn();if(cur()?.id==='d-battle'&&S.btg){btgPaint();btgAllIn()}if(cur()?.kind==='lake')lakeIn();if(whyCur())whyPaint();if(cur()?.kind==='pika')pikaIn();if(cur()?.kind==='hof'&&HOF_STEPS[HOF]==='ball'){const sj=roster().find(p=>p.role==='self');if(sj&&S.ballAt&&S.gIn?.[sj.id]?.ball===S.ballAt)openBall()}if(cur()?.kind==='cmt')cmtIn();if(cur()?.id==='c-thinkers'&&S.cmt?.gm)glIn()}
 
 // ----- phone side -----
-function gameView(me){const G=S.game;if(G.g==='urge')return urgePhone(me);if(G.g==='town')return townPhone(me,G);if(G.g==='buzz')return buzzPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
+function gameView(me){const G=S.game;if(G.g==='urge')return urgePhone(me);if(G.g==='moonw')return moonPhone(me,G);if(G.g==='town')return townPhone(me,G);if(G.g==='buzz')return buzzPhone(me,G);if(G.g==='center')return centerPhone(me,G);if(G.g==='pq')return pqPhone(me,G);if(G.g==='scn')return scnPhone(me,G);if(G.g==='cg')return cgPhone(me);if(G.g==='mem')return memPhone(me,G);if(G.g==='bt')return btPhone(me,G);if(G.g==='lake')return lakePhone(me,G);if(G.g==='why')return whyPhone(me,G);if(G.g==='pika')return pikaPhone(me,G);if(G.g==='cmt')return cmtPhone(me,G);if(G.g==='ball')return ballPhone(me,G);return ''}
 function memPhone(me,G){const set=MEM[G.key];if(!set)return '';const my=G.scores?.[me.id]||0,mine=G.cur===me.id,cp=person(G.cur);
   const picks=(S.mpick&&S.mpick.tid===G.tid)?S.mpick.picks:[];
   const head=`<p class="eyebrow">${set.eb}</p><div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0;font-size:26px">${ll('משחק זיכרון','Memory')}</h1><b class="qsc">${my} ${ll('שלישיות','sets')}</b></div>`;
@@ -5945,6 +6211,7 @@ function botTick(){if(!isScreen()||!isRehearsal()||!S.screenOn)return;const it=c
   // the lake: swim around, answer the question, offer a theory
   if(S.ctr&&it.id===S.ctr.id){const mv=S.mv||(S.mv={});B.forEach(id=>{const o=mv[id]||{};if(Math.random()<.25)mv[id]={d:Math.random()<.35?'':brnd(['u','d','l','r']),s:S.ctr.sid,t:Math.random()<.08?Date.now():(o.t||0)}})}
   if(S.tw&&(it.id==='cover'||it.kind==='town'))twBots(B);
+  if(it.id==='s-moon'&&S.mn?.ph==='run')B.forEach(id=>once('mnw'+S.mn.sid+id,700+Math.random()*7000,()=>put(id,{['mw'+S.mn.sid]:Math.random()<.5?'2013':brnd(['1996','1999','2023'])})));
   if(it.id==='cu-4')B.forEach(id=>{once('urz'+id,800+Math.random()*4000,()=>put(id,{zd:Math.random()<.12?'x':brnd(URG_ZD.map(x=>x[0]))}));if(urgeQ()==='hp')once('urh'+id,800+Math.random()*4000,()=>put(id,{hp:Math.random()<.2?'x':brnd(URG_HP.map(x=>x[0]))}))});
   if(S.bz&&it.kind==='buzz'&&S.bz.ph==='q'){const q=S.bz.q;B.forEach(id=>once('bz'+S.bz.at+id,700+Math.random()*5000,()=>put(id,{['bz'+q]:Math.floor(Math.random()*4)})));if(q===2&&B.includes(S.bz.plant))once('bzp'+S.bz.at,3500,()=>{(S.hands||(S.hands={}))[S.bz.plant]=Date.now();bzPaint()})}
   const LB=S.lake;if(LB&&it.kind==='lake'){if(LB.phase==='land'||LB.phase==='oak')B.forEach((id,i)=>once('lkav'+LB.sid+id,600+i*500,()=>put(id,{av:(i*7+3)%LK_MINI})));if(LB.phase==='go')B.forEach(id=>{const P=LB.pos[id];if(!P)return;const[x,y]=lkT(P.x,P.y),d0=LK.dw[y]?.[x];let bd=null;if(d0>0)for(const[dx,dy,k]of[[0,-1,'u'],[1,0,'r'],[-1,0,'l'],[0,1,'d']]){const v=LK.dw[y+dy]?.[x+dx];if(v>=0&&v<d0){bd=k;break}}(S.mv||(S.mv={}))[id]={d:bd&&Math.random()<.85?bd:'',s:LB.sid}});if(LB.phase==='q')B.forEach(id=>once('lkv'+LB.sid+id,800+Math.random()*5000,()=>put(id,{['lkv'+LB.sid]:Math.random()<.75?1:2})));else if(LB.phase!=='done'&&LB.phase!=='go')B.forEach(id=>{const P=LB.pos[id],g=LB.gy,mv=S.mv||(S.mv={}),o=mv[id]||{};if(P&&g&&(LB.phase==='chase'||LB.phase==='rchase')){const[a,b]=lkT(P.x,P.y),[c,d]=lkT(g.x,g.y),ex=c-a,ey=d-b;
