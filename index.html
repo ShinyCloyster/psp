@@ -1166,6 +1166,13 @@ body:has(.intronudge) #introfab{display:none}
 .tkin.dim .tkrow{opacity:.28}.tkin.dim .tkrow:is([data-tk=rec],[data-tk=ex]):not(.hl){opacity:.6}.tkin .tkrow.hl{opacity:1;background:#FFF1C2;box-shadow:0 0 0 12px #FFF1C2,0 0 0 18px #F2C94C}.tkin .tkrow.hl[style*="background"]{box-shadow:0 0 0 8px #F2C94C,0 0 28px 10px rgba(242,201,76,.7)}
 .tkst .sclect{z-index:61}
 .scmap{position:absolute;top:44px;width:946px;height:704px;overflow:hidden;border-radius:14px;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C;transition:left .9s ease-in-out,opacity .5s}
+.scpic{position:absolute;top:44px;inset-inline-end:120px;width:778px;height:700px;overflow:hidden;border-radius:14px;background:#161A2E;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C;transition:opacity .5s}
+.scpic img{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .45s}.scpic img.on{opacity:1}
+.scpic.off,.scpicp.off{opacity:0;pointer-events:none}.scpic.pop{animation:svgrow .7s cubic-bezier(.2,.8,.3,1)}
+.scpicp{position:absolute;top:150px;inset-inline-start:110px;width:800px;display:flex;flex-direction:column;gap:30px;transition:opacity .5s}
+.scpicp .sceb{font-family:'Press Start 2P',monospace;font-size:24px;color:#F2C94C;text-align:left;line-height:1.6}[dir=rtl] .scpicp .sceb{text-align:right}
+.scpicp h2{font-family:'Secular One',Arial,sans-serif;font-size:104px;font-weight:400;line-height:1.05;color:#F6F1E7;margin:0}
+.scpicp b{align-self:flex-start;font-size:48px;font-weight:700;color:#161A2E;background:#F2C94C;border-radius:20px;padding:14px 36px}
 .scmap.off{opacity:0;pointer-events:none}.scmap.pop{animation:svgrow .7s cubic-bezier(.2,.8,.3,1)}
 .scmapin{position:absolute;left:0;top:0;width:946px;height:704px;transform-origin:0 0;transition:transform 1.1s ease-in-out}
 .scmapin .tm{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
@@ -1625,7 +1632,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795618442';
+const BUILDV='1795622551';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2616,7 +2623,7 @@ function stagePhoto(){
 // ---------- round 97: THE PHONE MIRROR. The big screen sends a light snapshot of the world it shows (the gym, the intros' stage, the lake,
 // the trainer's town, the finale): every picture and sprite in it with its place, as fractions of the world's width. Phones redraw it as the
 // Game Boy's screen, filling it, zoomed on the people, and glide between snapshots. Only when something changed, at most every 0.4 s.
-const MIR_ROOTS=['.lgp','#lkcam','.lsmap','.ofgym','#scmap','#scgym','#twgbox','#tw','#twmini'],MIR_TXT='.qbang,.lsbub,.twbang,.lwbang';
+const MIR_ROOTS=['.lgp','#lkcam','.lsmap','.ofgym','#scpic','#scmap','#scgym','#twgbox','#tw','#twmini'],MIR_TXT='.qbang,.lsbub,.twbang,.lwbang';
 function mirRoot(){for(const q of MIR_ROOTS){const e=document.querySelector(q);if(!e)continue;const r=e.getBoundingClientRect(),cs=getComputedStyle(e);if(r.width>40&&r.height>40&&+cs.opacity>.05&&cs.visibility!=='hidden'&&!e.classList.contains('off')&&!e.classList.contains('gone'))return e}return null}
 const MIR_IMG={};function mirNat(u){let im=MIR_IMG[u];if(!im){im=MIR_IMG[u]=new Image();im.src=u}return im.naturalWidth?[im.naturalWidth,im.naturalHeight]:null}
 function mirRel(u){u=String(u||'');const b=location.href.replace(/[#?].*$/,'').replace(/[^/]*$/,'');return u.startsWith(b)?u.slice(b.length):u}
@@ -4146,13 +4153,23 @@ function roundTrack(k){const sk=skipSet(),end=SC_STOPS.findIndex(s=>s.b===2*k);l
       return gap+(s.b?`<img class="bd${done?'':' off'}" src="img/badge-${s.b}.webp" alt="">`:`<img class="tr${done?'':' off'}" src="${trImg(s.t)}" alt="">`)}).join('');
   return `<div class="rtrack" dir="${EN?'ltr':'rtl'}"><div class="rtballs">${balls}</div><div class="rtpath">${path}</div></div>`}
 const SC_HOP=470;
+const sgF=(m,f)=>S.setup?.gender==='f'?f:m;
+// op-1's story (Eyal's trainer: Pokémon): stages p1..p6 show img/ey-N.webp in a frame with the trainer panel beside it (`pics` in SC)
+const scPicH=()=>`<div class="scpic off" id="scpic">${[1,2,3,4,5,6].map(i=>`<img data-n="${i}" src="img/ey-${i}.webp" alt="">`).join('')}</div>
+  <div class="scpicp off" id="scpicp"><p class="sceb" dir="ltr">TRAINER · A WILD TRAINER APPEARED!</p><h2>${ll('המאמן של אייל','Eyal\'s trainer')}</h2><b>${ll('פוקימון','Pokémon')}</b></div>`;
 const scTrs=n=>ll(['','מאמן אחד','שני מאמנים','שלושה מאמנים'][n]||'',['','one trainer','two trainers','three trainers'][n]||'');
 const SC={
-  'op-1':{part:1,town:'pewter',drop:['x-part-1','o-divider','o-me','agenda'],div:'o-divider',name:['פרופ׳ שושו','PROF. SHUSHO'],zoom:[84,33,1.4],
+  'op-1':{part:1,town:'pewter',pics:1,drop:['x-part-1','o-divider','o-me','agenda'],div:'o-divider',name:['פרופ׳ שושו','PROF. SHUSHO'],zoom:[84,33,1.4],
     lines:(n,town,nT)=>[['gym',`ברוכים הבאים לג׳ים של ${town}! אני אייל, המרצה שלכם בחלק הראשון.`,`Welcome to the ${town} Gym! I'm Eyal, your lecturer for part one.`],
-      [0,'אני אוהב פוקימון מגיל 8, אוסף קלפים מאז, ולמדתי סוציולוגיה.','I have loved Pokémon since I was 8, collected the cards ever since, and studied sociology.'],
-      [0,'ובניתי את הערב הזה כדי לראות אנשים דרך העיניים של מי שמכיר אותם.','And I built this evening to see people through the eyes of those who know them.'],
-      ['map',`הערב הזה הוא מסע: מסע למציאת הפוקימון של ${n}.`,`Tonight is a journey: a journey to find ${n}'s Pokémon.`],
+      ['p1','לפני שנצא לדרך, משהו קטן עליי. כילד הרגשתי קצת כמו אש: בן יחיד, בבית קטן, ולפעמים די משועמם.','Before we set off, a little about me. As a kid I felt a bit like Ash: an only child, a small home, and sometimes pretty bored.'],
+      ['p2','ואז הגיע הגיימבוי, ולא השתעממתי יותר. ופוקימון גם חיבר אותי לאנשים: מחליפים, ומגלים סודות לפני שהיה אינטרנט.','Then the Game Boy came along, and I was never bored again. Pokémon also connected me with people: trading, and finding secrets before the internet.'],
+      ['p3','אף פעם לא אמרתי ״זה לא לגילי״. המשכתי לאסוף, וזו התבררה כההשקעה הכי טובה שעשיתי.','I never said "I\'m too old for this". I kept collecting, and it turned out to be the best investment I ever made.'],
+      [0,'ושימו לב: הכול מסודר לפי סוגים. ולאט לאט, ככה התחיל לעבוד גם הראש שלי.','And look: it\'s all sorted by type. Slowly, that\'s how my head started to work too.'],
+      ['p4','אנשים קיבלו אצלי סוגים, חוזקות והתפתחויות, ופתאום הכול עשה היגיון. משם הגעתי לסוציולוגיה, ולנתונים.','People got types, strengths and evolutions, and suddenly it all made sense. That led me to sociology, and to data.'],
+      ['p5','אז בניתי שיטה שנותנת לאדם פוקימון. ומה יצא לי?','So I built a method that gives a person a Pokémon. And what did I get?'],
+      ['p6','קלוייסטר! ולמה דווקא הוא? את זה תבינו עד סוף הערב.','Cloyster! Why him of all Pokémon? You\'ll understand by the end of the evening.'],
+      [0,nT?`זה היה המאמן שלי. הערב ${n} ${sgF('יספר','תספר')} לנו על ${scTrs(nT)} ${sgF('שלו','שלה')}.`:'זה היה המאמן שלי. ועכשיו, לסיבה שבגללה התכנסנו.',nT?`That was my trainer. Tonight ${n} will tell us about ${scTrs(nT)} of ${sgF('his','her')} own.`:'That was my trainer. And now, to why we are here.'],
+      ['map',`הערב הזה הוא מסע: נמצא את הפוקימון של ${n}, ובדרך נגיד ${sgF('עליו','עליה')} משהו.`,`Tonight is a journey: we'll find ${n}'s Pokémon, and say something about ${sgF('him','her')} along the way.`],
       ['fly',`שמונה תגים, ${nT?scTrs(nT)+' בדרך, ':''}ובסוף: היכל התהילה.`,`Eight badges, ${nT?scTrs(nT)+' on the way, ':''}and at the end: the Hall of Fame.`],
       ['zoom','התחנה הראשונה: היכרות, ואז השאלון. ובסוף החלק: סבב שאלות ראשון והפסקה.','First stop: introductions, then the questionnaire. At the end of the part: the first round of questions and a break.'],
       ['tile','אבל קודם, מתחילים מההתחלה: מי אנחנו.','But first, from the very beginning: who we are.']]},
@@ -4265,7 +4282,7 @@ function scBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),tb=cf.rules?scTownBack
     <div class="scgym" id="scgym" data-k="${k}" data-c="${G.t*k}" style="left:${gx}px;top:${gy}px;width:${W}px;height:${H}px">${twGymInner(G,k,null)}</div>
     <div class="twname scnm" id="scnm">${ll(...(TW_NAME[cf.town||tb||twMiniTown()]||TW_NAME.pewter))} · GYM</div>
     ${A.rules?A.board:A.mid?midH:`<div class="scmap off" id="scmap"><div class="scmapin" id="scmapin"><img class="tm" src="invite/img/townmap.png" alt="">${mk}<i class="scdn" id="scdn"></i></div></div>
-    <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" dir="ltr" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" dir="ltr" id="scvis">${A.vis}</div>`:''}</div>${A.sign?signH(A.sign.c,A.sign.eb,A.sign.ti):''}`}
+    <div class="sctiles off" id="sctiles"><p class="sceb">${esc(A.eb)}</p>${A.tiles.map((t,i)=>`<div class="sctile" dir="ltr" data-k="${i}">${t}</div>`).join('')}${A.vis?`<div class="scvis" dir="ltr" id="scvis">${A.vis}</div>`:''}</div>${A.sign?signH(A.sign.c,A.sign.eb,A.sign.ti):''}${cf.pics?scPicH():''}`}
     <div class="scbar0" id="scbar0">${A.bar0}</div><div class="scbar1" id="scbar1" style="display:none">${A.bar1}</div>
     <img class="sclect${fresh?' rise':''}" id="sclect" src="${A.lect}" alt="">
     <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini" style="width:${vw*km}px;height:${vh*km}px">${twGymInner(G,km,G.view)}</div></div></div>`;
@@ -4298,11 +4315,14 @@ function scWild(cb){document.getElementById('scsw')?.remove();const o=document.c
   music('mus-wild',{vol:.25});BGM.holdTo=Date.now()+4250;setTimeout(cb,1250);setTimeout(()=>o.remove(),1900)}
 function scApply(b,anim,first){if(SC[S.sc.id].lake)return lsApply(b,anim);if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
-  const {st,at}=scStage(B,b),stepIn=anim&&at===b,lv=['gym','map','fly','zoom','tile'].indexOf(st);
+  const {st,at}=scStage(B,b),stepIn=anim&&at===b,pk=/^p\d$/.test(st)?+st[1]:0,lv=pk?0:['gym','map','fly','zoom','tile'].indexOf(st);
   const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
+  const pc=$('#scpic'),pp=$('#scpicp');if(pc){pc.classList.toggle('off',!pk);pp.classList.toggle('off',!pk);
+    pc.querySelectorAll('img').forEach(im=>im.classList.toggle('on',+im.dataset.n===pk));
+    if(pk&&stepIn){pc.classList.remove('pop');void pc.offsetWidth;pc.classList.add('pop');sfx(pk===5?'sfx-excl':'sfx-dex-page-added',.5);if(pk===6)setTimeout(()=>{if(C.run===run)cmtCry(91,.6)},350)}}
   // where Dragonite flies: in part 1 the whole route; later from the last gym of the part before to this part's gym
   const ix=f=>R.findIndex(f),toI=op1?R.length-1:ix(s=>s.b===2*P-1),fromI=op1?0:ix(s=>s.b===2*P-2),homeI=ix(s=>s.b===2*P-1);
-  g.classList.toggle('gone',atMap);$('#scnm').classList.toggle('gone',atMap);mini.classList.toggle('off',!atMap);
+  g.classList.toggle('gone',atMap||pk>0);$('#scnm').classList.toggle('gone',atMap||pk>0);mini.classList.toggle('off',!atMap&&!pk);
   if(atMap&&map.classList.contains('off')){map.classList.remove('off');if(stepIn){map.classList.remove('pop');void map.offsetWidth;map.classList.add('pop')}}else if(!atMap)map.classList.add('off');
   map.style.left=(side?(EN?1920-60-946:60):(1920-946)/2)+'px';
   if(side){const[cx,cy,z]=cf.zoom,tx=Math.max(946-946*z,Math.min(0,473-cx*M*z)),ty=Math.max(704-704*z,Math.min(0,352-cy*M*z));inner.style.transform=`translate(${tx}px,${ty}px) scale(${z})`}else inner.style.transform='';
