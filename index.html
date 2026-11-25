@@ -913,6 +913,14 @@ html:not(.en) .ctrhint,html:not(.en) .facts,html:not(.en) .lgbreak{direction:rtl
 .gblg{position:absolute;left:8px;right:8px;top:8px;z-index:50;background:rgba(22,26,46,.96);border:3px solid #F2C94C;border-radius:12px;padding:10px 12px 12px;text-align:center;animation:lgin .5s ease}.gblg.still{animation:none}.gblg .lgh{margin:0 22px 2px}.gblgs{margin:0 0 8px;color:#F6F1E7;font:700 15px var(--body)}.gblg .popx{top:4px;right:6px;width:28px;height:28px;font-size:14px}
 .gblgb{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}.gblgb img{width:26px;height:26px;image-rendering:pixelated}
 .mmti{margin:0;text-align:center;color:#F2C94C;font:700 16px var(--body)}
+.gbscr.mirm{padding:0;flex:none;min-height:0;aspect-ratio:10/9;overflow:hidden;justify-content:flex-start}
+.mir{position:relative;width:100%;height:100%;overflow:hidden;background:#000;border-radius:0 0 30px 0}
+.mirw{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform .45s linear,width .45s linear,height .45s linear}
+.mira{position:absolute;image-rendering:pixelated;background-repeat:no-repeat;transition:left .42s linear,top .42s linear,width .42s linear,height .42s linear,opacity .3s}
+img.mira{max-width:none}
+.mirt{display:grid;place-items:center;background:#fff;color:#22263A;border:2px solid #22263A;border-radius:8px;font-weight:800;line-height:1.1;text-align:center;overflow:hidden;padding:0 2px;box-sizing:border-box}
+.mirnm{position:absolute;left:0;right:0;bottom:0;background:rgba(22,26,46,.78);color:#F2C94C;font:700 12px var(--body);text-align:center;padding:3px 0;z-index:5}.mirnm:empty{display:none}
+.mirnote{position:absolute;left:8px;right:8px;top:8px;margin:0;z-index:6;background:rgba(22,26,46,.9);color:#6EE7A0;border-radius:8px;padding:4px 8px;text-align:center;font:700 14px var(--body)}
 .mmnote{margin:10px 0 0;text-align:center;color:#6EE7A0;font-weight:700}.twclock{display:flex;align-items:center;gap:18px;background:rgba(22,26,46,.94);border:4px solid #F2C94C;border-radius:20px;padding:10px 26px;color:#F6F1E7;font-size:32px;white-space:nowrap}
 .twclock b{font:400 46px var(--pixel);color:#F2C94C;min-width:76px;text-align:center}.twclock.low b{color:#FF6B6B}.twclock.help{font-size:30px}.twclock em{font-style:normal;font-size:22px;display:flex;align-items:center;gap:4px;color:#C9CCE0}.twclock em img{width:32px;height:32px}
 .twgot{position:absolute;transform:translate(-50%,-100%);display:flex;align-items:center;gap:4px;animation:twup 1.8s forwards;z-index:999}.twgot img{width:44px;height:44px}.twgot b{font:400 22px var(--pixel);color:#F2C94C;text-shadow:0 2px 0 #161A2E}@keyframes twup{to{transform:translate(-50%,-240%);opacity:0}}
@@ -1617,7 +1625,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795615489';
+const BUILDV='1795618442';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -1729,7 +1737,7 @@ async function boot(){
     render()},()=>{});
   S.db.doc('stage/quiz').onSnapshot(sn=>{const was=S.quiz;S.quiz=sn.exists?sn.data():null;if(isScreen())return;const Q=S.quiz,m=Q?.type&&(S.myQ||{})[Q.type];
     if(Q?.revealed&&m&&!(was?.type===Q.type&&was.revealed)&&person(S.me)&&!isPresenter(person(S.me)))sfx(m.g===Q.type?'sfx-caught-mon':'sfx-ball-poof');render()},()=>{});
-  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};S.album=null;S.trades={};q.docs.forEach(d=>{if(d.id==='album')S.album=clone(d.data());if(d.id.startsWith('trade-'))S.trades[d.id.slice(6)]=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}if(!isScreen())albTick()}if(isScreen())albBotTrades()},()=>{});
+  S.db.collection('stage').onSnapshot(q=>{S.stageSeen=true;S.guesses={};S.album=null;S.trades={};q.docs.forEach(d=>{if(d.id==='album')S.album=clone(d.data());if(d.id==='view'&&!isScreen()){const x=d.data()||{};if(x.t!==S.mir?.t){S.mir={v:x.v||'',t:x.t||0};if(!S.mir.v!==!$('#mir'))setTimeout(render,0);else setTimeout(mirPaint,0)}}if(d.id.startsWith('trade-'))S.trades[d.id.slice(6)]=clone(d.data());if(d.id.startsWith('q-'))S.guesses[d.id.slice(2)]=clone(d.data());if(d.id.startsWith('say-')&&isScreen())sayIn(d.id.slice(4),d.data());if(d.id.startsWith('g-')){const G=S.gIn||(S.gIn={}),k=d.id.slice(2);G[k]=isScreen()&&botIds().includes(k)?{...clone(d.data()),...(G[k]||{})}:clone(d.data())}if(d.id.startsWith('mv-')&&isScreen())(S.mv||(S.mv={}))[d.id.slice(3)]=clone(d.data());if(d.id.startsWith('hand-')&&isScreen()){const at=+d.data().at||0;(S.hands||(S.hands={}))[d.id.slice(5)]=at;if(S.handHeard!=null&&at>S.handHeard&&Date.now()-at<8000)exclSfx();S.handHeard=Math.max(S.handHeard??Date.now(),at)}if(d.id.startsWith('intro-')&&isScreen()){const x=d.data()||{};(S.intros||(S.intros={}))[d.id.slice(6)]={f:String(x.f||'').slice(0,90),s:String(x.s??x.t??'').slice(0,240)}}});if(isScreen()&&cur()?.id==='o-friends'&&S.ofr){const k=JSON.stringify(S.intros||{});if(k!==S.introK){S.introK=k;const y=document.querySelector('.ofsay');if(y&&!S.ofrHold)ofrPaint()}}if(isScreen())twHands();S.sayInit=true;gameIn();if(!isScreen()){const mg=S.gIn?.[S.me];if(mg&&JSON.stringify(mg)!==JSON.stringify(S.myG||{})){S.myG={...mg};if(S.game?.g)render()}}const was=S.stageLoaded;S.stageLoaded=true;if(!was&&!isScreen())render();if(isScreen())quizBoardUpdate();else{const m=S.guesses[S.me];if(JSON.stringify(m||{})!==JSON.stringify(S.myQ||{})){S.myQ=m||{};render()}if(!isScreen())albTick()}if(isScreen())albBotTrades()},()=>{});
   S.db.collection('remote').onSnapshot(q=>{S.remote={};q.docs.forEach(d=>{S.remote[d.id]=clone(d.data())});if(S.remoteMode&&S.rid&&S.remote[S.rid]&&!S.rdoc)S.rdoc={...clone(S.remote[S.rid]),started:true};changed()},()=>{});
   S.db.collection('setup').onSnapshot(q=>{S.assets={};S.assetPeople={};q.docs.forEach(d=>{if(!d.id.startsWith('asset-'))return;const x=clone(d.data());S.assets[d.id.slice(6)]=x;if(x.person)(S.assetPeople[x.person]||(S.assetPeople[x.person]={}))[x.kind]=x.data});S.assetsLoaded=true;if(!ROOM.legacy)castLoad().then(()=>{castApplyPQ();if(!isScreen())albTick()});changed()},()=>{});
   S.db.collection('answers').onSnapshot(q=>{
@@ -2157,7 +2165,8 @@ function render(){
   const hc=(location.hash||'').match(/^#c=([a-z0-9]{6})$/i);
   if(hc){app.innerHTML=`<div class="col">${archCardView(hc[1].toLowerCase())}</div>`;bindPhone();return}
   app.innerHTML=`<div class="col">${S.remoteMode?remoteView():phoneView()}</div>`;
-  {const gbx=app.querySelector('.col>.gb');if(gbx){const col=gbx.parentElement,scr=document.createElement('div');scr.className='gbscr';[...col.children].filter(e=>e!==gbx).forEach(e=>scr.appendChild(e));col.insertBefore(scr,gbx);col.classList.add('gbcol')}} // round 92: the whole phone is a Game Boy
+  {const gbx=app.querySelector('.col>.gb');if(gbx){const col=gbx.parentElement,scr=document.createElement('div');scr.className='gbscr';[...col.children].filter(e=>e!==gbx).forEach(e=>scr.appendChild(e));col.insertBefore(scr,gbx);col.classList.add('gbcol');if(scr.querySelector('.mir'))scr.classList.add('mirm')}}
+  try{mirPaint()}catch(e){} // round 92: the whole phone is a Game Boy
   try{if(S.myIntro==null){try{const r=RAWSTORE.get('psp-intro')||'';S.myIntro=/^\{/.test(r)?JSON.parse(r):r}catch(e){S.myIntro=''}}introBtn()}catch(e){}
   try{albTick()}catch(e){console.error(e)}
   try{lgPhonePaint()}catch(e){}
@@ -2536,6 +2545,7 @@ function phoneView(){
   }
   if(S.state.revealed&&S.state.result)return resultCard();
   if(done>=150)return mewView(me);
+  if(!open&&mirOk())return mirView(me,'')+gbPad()+(me.role==='self'?photosBtn():'');
   if(!open&&mmOk())return mmView(me,'');
   if(!open)return `<p class="eyebrow">TRAINER · ${esc(me.name)}</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">${ll(`שלום ${esc(me.name)}`,`Hi ${esc(me.name)}`)}</h1></div>
     <div class="card center"><h3>${ll(`סבב השאלות הבא עוד לא נפתח`,`The next round of questions hasn't opened yet`)}</h3><p class="muted">${ll(`השאלות יופיעו כאן לבד כשהמצגת תגיע לסבב. התשובות פרטיות: על המסך רואים רק "${esc(subj)}" מול "הקבוצה", ורק המארח רואה תשובות אישיות.`,`The questions will appear here by themselves when the presentation reaches the round. Answers are private: the screen only shows "${esc(subj)}" vs. "the group", and only the host sees individual answers.`)}</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),1,{labelCol:'#F6F1E7'})}</div></div>
@@ -2545,6 +2555,7 @@ function phoneView(){
   if(S.view==='review'&&S.reviewUnit)return unitView(S.reviewUnit,me,dn,total,true);
   if(S.holdUnit)return unitView(S.holdUnit,me,dn,total,false);
   if(pending.length)return unitView(pending[0],me,dn,total,false);
+  if(mirOk())return mirView(me,ll(`✓ סבב ${open} הושלם`,`✓ Round ${open} done`))+gbPad();
   if(mmOk())return mmView(me,ll(`✓ סבב ${open} הושלם. אפשר לנוח עד הסבב הבא.`,`✓ Round ${open} done. Rest until the next one.`));
   return `<p class="eyebrow">ROUND ${open}/4 · CLEAR</p><div class="row" style="gap:12px">${avHead(me,52,avColor(me,0))}<h1 style="margin:0">${ll(`סבב ${open} הושלם`,`Round ${open} done`)}</h1></div>
   <div class="card center"><p>${ll(`ענית על כל השאלות של הסבב. אפשר לנוח עד הסבב הבא. ככה כולם מתקדמים:`,`You answered every question in this round. Rest until the next one. Here's how everyone is doing:`)}</p><div class="dialwrap" style="display:flex;justify-content:center;padding:34px 0 30px">${dialHTML(phoneDialSize(),open,{labelCol:'#F6F1E7'})}</div></div>${progressCard(P,ans)}${me.role==='self'?photosBtn():''}${switchLink(me)}`;
@@ -2602,6 +2613,55 @@ function stagePhoto(){
   if(!ov){ov=document.createElement('div');ov.id='photoov';ov.onclick=()=>go(1);document.body.append(ov)}
   ov.innerHTML=`<img src="${photoSrc(id,true)}" alt="">`;requestAnimationFrame(()=>ov.classList.add('show'));
 }
+// ---------- round 97: THE PHONE MIRROR. The big screen sends a light snapshot of the world it shows (the gym, the intros' stage, the lake,
+// the trainer's town, the finale): every picture and sprite in it with its place, as fractions of the world's width. Phones redraw it as the
+// Game Boy's screen, filling it, zoomed on the people, and glide between snapshots. Only when something changed, at most every 0.4 s.
+const MIR_ROOTS=['.lgp','#lkcam','.lsmap','.ofgym','#scmap','#scgym','#twgbox','#tw','#twmini'],MIR_TXT='.qbang,.lsbub,.twbang,.lwbang';
+function mirRoot(){for(const q of MIR_ROOTS){const e=document.querySelector(q);if(!e)continue;const r=e.getBoundingClientRect(),cs=getComputedStyle(e);if(r.width>40&&r.height>40&&+cs.opacity>.05&&cs.visibility!=='hidden'&&!e.classList.contains('off')&&!e.classList.contains('gone'))return e}return null}
+const MIR_IMG={};function mirNat(u){let im=MIR_IMG[u];if(!im){im=MIR_IMG[u]=new Image();im.src=u}return im.naturalWidth?[im.naturalWidth,im.naturalHeight]:null}
+function mirRel(u){u=String(u||'');const b=location.href.replace(/[#?].*$/,'').replace(/[^/]*$/,'');return u.startsWith(b)?u.slice(b.length):u}
+function mirSnap(){const root=mirRoot();if(!root)return '';const R=root.getBoundingClientRect(),W=R.width,f=v=>Math.round(v/W*10000)/10000,A=[],opC=new Map();
+  const opOf=el=>{if(el===root||!el)return 1;if(opC.has(el))return opC.get(el);const v=(+getComputedStyle(el).opacity)*opOf(el.parentElement);opC.set(el,v);return v};
+  const zOf=el=>{for(let e=el;e&&e!==root;e=e.parentElement){const z=getComputedStyle(e).zIndex;if(z!=='auto')return +z||0}return 0};
+  [...root.querySelectorAll('*')].forEach((el,i)=>{const r=el.getBoundingClientRect();if(r.width<1||r.height<1||r.right<R.left||r.left>R.right||r.bottom<R.top||r.top>R.bottom)return;
+    const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none')return;const op=opOf(el);if(op<.05)return;
+    const pid=el.closest('[data-p]')?.dataset.p,key=pid?pid+'/'+(String(el.className||el.tagName).split(' ')[0]):'n'+i,box=[f(r.left-R.left),f(r.top-R.top),f(r.width),f(r.height)],z=zOf(el),o=Math.round(op*100)/100;
+    if(el.matches(MIR_TXT)){const t=(el.textContent||'').trim().slice(0,60);if(t)A.push({k:key,t:'t',b:box,z,o,x:t});return}
+    if(el.tagName==='IMG'){const u=el.getAttribute('src')||'';if(!u||(u.startsWith('data:')&&u.length>400)||!el.naturalWidth)return;A.push({k:key,t:'i',b:box,z,o,u:mirRel(u)});return}
+    const bi=cs.backgroundImage;if(!bi||bi==='none'||!/^url\(/.test(bi))return;const u=bi.slice(4,-1).replace(/^["']|["']$/g,'');if(u.startsWith('data:')&&u.length>400)return;
+    const ow=el.offsetWidth||r.width,oh=el.offsetHeight||r.height,sx=r.width/ow,sy=r.height/oh,nat=mirNat(u);const[bw,bh]=(cs.backgroundSize||'auto').split(' ');
+    const px=v=>/px$/.test(v||'')?parseFloat(v):null;let BW=px(bw),BH=px(bh??'auto');
+    if(BW==null||BH==null){if(bw==='cover'||bw==='contain'){if(!nat)return;const k=(bw==='cover'?Math.max:Math.min)(ow/nat[0],oh/nat[1]);BW=nat[0]*k;BH=nat[1]*k}
+      else if(/%$/.test(bw)){BW=ow*parseFloat(bw)/100;BH=/%$/.test(bh||'')?oh*parseFloat(bh)/100:(nat?BW*nat[1]/nat[0]:oh)}
+      else{if(!nat)return;if(BW==null&&BH==null){BW=nat[0];BH=nat[1]}else if(BW==null)BW=BH*nat[0]/nat[1];else BH=BW*nat[1]/nat[0]}}
+    const[pxs,pys]=(cs.backgroundPosition||'0px 0px').split(' '),pp=(v,free)=>/%$/.test(v||'')?free*parseFloat(v)/100:(parseFloat(v)||0);
+    const fl=/^matrix\(-/.test(cs.transform)?1:0;
+    A.push({k:key,t:'b',b:box,z,o,u:mirRel(u),s:[f(BW*sx),f(BH*sy)],p:[f(pp(pxs,ow-BW)*sx),f(pp(pys,oh-BH)*sy)],fl})});
+  A.forEach((a,i)=>a.n=i);A.sort((a,b)=>a.z-b.z||a.n-b.n);A.forEach(a=>{delete a.n;if(!a.z)delete a.z;if(a.o===1)delete a.o;if(!a.fl)delete a.fl});
+  const nm=root.querySelector('.twmn,.twname')?.textContent||'';return JSON.stringify({h:f(R.height),nm:nm.slice(0,40),a:A})}
+function mirPub(){if(!isScreen()||!S.db||ROOM.legacy||!twOn()||!S.screenOn)return;const it=cur();if(!it||it.kind==='town'||/^x-break-/.test(it.id))return;
+  const now=Date.now();if(now-(S.mirAt||0)<400)return;let v='';try{v=mirSnap()}catch(e){console.error(e)}if(v===S.mirLast)return;S.mirLast=v;S.mirAt=now;S.db.doc('stage/view').set({v,t:now}).catch(()=>{})}
+setInterval(()=>{try{mirPub()}catch(e){}},200);
+function mirOk(){return !ROOM.legacy&&!!S.mir?.v}
+function mirView(me,note){return `<div class="mir" id="mir"><div class="mirw" id="mirw"></div><b class="mirnm" id="mirnm"></b>${note?`<p class="mirnote">${note}</p>`:''}</div>`}
+function mirPaint(){const box=$('#mir'),w=$('#mirw');if(!box||!w||!S.mir?.v)return;let D;try{D=JSON.parse(S.mir.v)}catch(e){return}if(!D||!D.a)return;
+  const cw=box.clientWidth,ch=box.clientHeight;if(!cw||!ch)return;const H=D.h||1;
+  // the camera: cover the screen, and zoom in on the people (the small sprites) up to 3x
+  const P=D.a.filter(a=>a.t==='b'&&a.b[2]<.35&&a.b[3]<.35*H+.1);let sc=Math.max(cw,ch/H),fx=.5,fy=H/2;
+  if(P.length){const x0=Math.min(...P.map(a=>a.b[0])),x1=Math.max(...P.map(a=>a.b[0]+a.b[2])),y0=Math.min(...P.map(a=>a.b[1])),y1=Math.max(...P.map(a=>a.b[1]+a.b[3]));
+    fx=(x0+x1)/2;fy=(y0+y1)/2;const zs=Math.min(cw/((x1-x0)*1.35+.05),ch/((y1-y0)*1.35+.05));sc=Math.max(sc,Math.min(zs,sc*3))}
+  const ox=Math.min(0,Math.max(cw-sc,cw/2-fx*sc)),oy=Math.min(0,Math.max(ch-H*sc,ch/2-fy*sc)),fresh=!w.children.length;
+  if(fresh)w.style.transition='none';w.style.width=sc+'px';w.style.height=H*sc+'px';w.style.transform=`translate(${Math.round(ox)}px,${Math.round(oy)}px)`;
+  const nm=$('#mirnm');if(nm)nm.textContent=D.nm||'';
+  const old=new Map([...w.children].map(e=>[e.dataset.k,e])),keep=[];
+  D.a.forEach(a=>{let e=old.get(a.k);if(!e||e.dataset.t!==a.t){e=document.createElement(a.t==='i'?'img':'div');e.dataset.k=a.k;e.dataset.t=a.t;e.className='mira'+(a.t==='t'?' mirt':'');e.style.transition='none'}
+    old.delete(a.k);const[x,y,bw,bh]=a.b.map(v=>v*sc);e.style.left=x+'px';e.style.top=y+'px';e.style.width=bw+'px';e.style.height=bh+'px';e.style.opacity=a.o??1;
+    if(a.t==='i'){if(e.getAttribute('src')!==a.u)e.setAttribute('src',a.u)}
+    else if(a.t==='b'){const u=`url("${a.u}")`;if(e.style.backgroundImage!==u)e.style.backgroundImage=u;e.style.backgroundSize=`${a.s[0]*sc}px ${a.s[1]*sc}px`;e.style.backgroundPosition=`${a.p[0]*sc}px ${a.p[1]*sc}px`;e.style.transform=a.fl?'scaleX(-1)':''}
+    else{e.textContent=a.x;e.style.fontSize=Math.max(9,bh*.55)+'px'}
+    keep.push(e)});
+  old.forEach(e=>e.remove());keep.forEach((e,i)=>{if(w.children[i]!==e)w.insertBefore(e,w.children[i]||null)});
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{w.style.transition='';keep.forEach(e=>{if(e.style.transition==='none')e.style.transition=''})}))}
 // round 96: the phone's default screen is the frame story: the gym inside the Game Boy, everyone seated, you marked
 function mmOk(){const m=S.deck?.mm;return !ROOM.legacy&&!!m&&!!TOWN[TOWN.gymOf?.[m.t]]}
 function mmView(me,note){const m=S.deck.mm,G=TOWN[TOWN.gymOf[m.t]],[x0,y0,x1,y1]=G.view,aw=Math.max(220,Math.min(innerWidth,520)-64),k=aw/((x1-x0+1)*G.t),c=G.t*k,h=Math.round((y1-y0+1)*c);
