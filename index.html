@@ -1211,6 +1211,9 @@ body:has(.intronudge) #introfab{display:none}
 @keyframes exaura{0%{opacity:.95;transform:scale(.25)}100%{opacity:0;transform:scale(1.5)}}
 .exspk{position:absolute;z-index:2100;font-size:14px;font-style:normal;text-shadow:0 0 4px #fff;transform:translate(-50%,-50%);animation:mnspk .9s ease-out forwards;pointer-events:none}
 .exst .lspan{gap:10px;overflow:hidden}
+.expull{display:none;margin:0;align-self:center;align-items:center;gap:12px;font:800 26px/1 'Rubik',Arial,sans-serif;color:#3A3550;background:#FFF6D6;border:3px solid #E8B93A;border-radius:14px;padding:6px 16px}.expull.on{display:flex}.expull.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
+.expull .expl{font-size:22px;padding:6px 11px 5px}
+.exrow{display:flex;justify-content:center;align-items:center;gap:18px}
 .exst .lspan h2{font-size:40px}
 .exsec{display:none;flex-direction:column;gap:10px}
 #lspan[data-sec="dec"] .exsec.dec,#lspan[data-sec="gol"] .exsec.gol,#lspan[data-sec="bli"] .exsec.bli,#lspan[data-sec="me"] .exsec.me{display:flex}
@@ -1233,10 +1236,10 @@ body:has(.intronudge) #introfab{display:none}
 .exmv.on{display:flex}.exmv.in{animation:scriin .5s cubic-bezier(.2,.8,.3,1)}
 .exmv small{font:400 14px var(--pixel);color:#5F8FD0}
 .exmon.flat{flex-direction:row;align-self:center;min-width:0;padding:4px 18px;gap:14px}
-.exmon.flat img{height:64px;width:72px}
+.exmon.flat img{height:54px;width:64px}
 .exmoves{display:none;grid-template-columns:repeat(4,1fr);gap:6px}
 .exmoves.on{display:grid}
-.exmp{display:flex;align-items:center;gap:6px;font:700 18px/1 'Rubik',Arial,sans-serif;font-style:normal;color:#fff;background:var(--c);border-radius:9px;padding:7px 8px;white-space:nowrap;overflow:hidden;transition:opacity .5s,box-shadow .5s}
+.exmp{display:flex;align-items:center;gap:6px;font:700 18px/1 'Rubik',Arial,sans-serif;font-style:normal;color:#fff;background:var(--c);border-radius:9px;padding:5px 8px;white-space:nowrap;overflow:hidden;transition:opacity .5s,box-shadow .5s}
 .exmp small{font:400 11px var(--pixel);opacity:.85}
 .exmp.in{animation:scriin .35s cubic-bezier(.2,.8,.3,1) backwards}
 .exmoves.lit .exmp:not(.psy){opacity:.3}
@@ -1785,7 +1788,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795642408';
+const BUILDV='1795643853';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -5029,56 +5032,63 @@ function twHand(){if(!S.db||!S.me)return;if(Date.now()-(S.handAt||0)<6000){toast
 // engine's user extra_types); the engine looks for a Pokémon whose card AND pull fit; the Hall of Fame shows it. Reuses the Mt. Moon actors
 // (mnActorHTML/mnPut/mnWalk/mnCam on #mnin, world 'vgym'); paths on the league finale's grid of the same gym (LGP_GRID, lgpBfs).
 // Sprites: python app/extra_build.py (ex-rowlet/dartrix/decid/golduck/blissey.png, s722/s723.webp).
-const EX_IMG='img/tw-gym4.webp',EX_CAM=[0,20,176,140];
+const EX_IMG='img/tw-gym4.webp',EX_CAM=[0,24,196,148];
 MN_MAP.vgym=[EX_IMG,320,372];
 Object.assign(MN_SPR,{rowlet:['img/ex-rowlet.png',17,17,4,4,2,[0,1,2,3]],dartrix:['img/ex-dartrix.png',21,23,4,4,2,[0,1,2,3]],decid:['img/ex-decid.png',40,56,4,4,2,[0,1,2,3]],
   golduck:['img/ex-golduck.png',29,33,3,5,2,[0,1,2,1]],blissey:['img/ex-blissey.png',28,32,3,5,2,[0,1,2,1]],bill:['img/lw-bill.png',25,33,3,4,2,[1,0,2,0]]});
 // one height: a person is ~25 px of this map; Rowlet small, Dartrix bigger, Decidueye/Golduck a little taller than a person
 Object.assign(MN_SC,{rowlet:1,dartrix:1,decid:.56,golduck:1,blissey:1,bill:.9});
-// tiles of the gym (20 x 23, 16 px): Bill on the leader's pad, the Pokémon come in from the right along row 3 and stand beside the audience
-const EX_P={bill:[2,2],in:[14,3],dec:[4,6],gol:[5,7],bli:[6,7]};
+// tiles of the gym (20 x 23, 16 px): Bill on the leader's pad, the Pokémon come in from the right along row 3 and each stands on a spot of its
+// own, three tiles apart (Eyal: they stood too close together)
+const EX_P={bill:[2,2],in:[14,3],dec:[4,6],gol:[7,6],bli:[10,7]};
 const EX_G=()=>TOWN[TOWN.gymOf?.viridian]||TOWN.gym4;
 const exFeet=t=>[t[0]*16+8,t[1]*16+14];
 const exPath=(a,b)=>lgpBfs(LGP_GRID[EX_IMG],a,b).map(exFeet);
 const EX_MOVES=[[1,'Aqua Jet','water'],[1,'Scratch','normal'],[1,'Tail Whip','normal'],[1,'Water Gun','water'],[1,'Confusion','psychic'],[9,'Fury Swipes','normal'],[12,'Water Pulse','water'],[15,'Disable','normal'],
   [18,'Zen Headbutt','psychic'],[21,'Screech','normal'],[24,'Aqua Tail','water'],[27,'Soak','water'],[30,'Psych Up','normal'],[36,'Amnesia','psychic'],[40,'Hydro Pump','water'],[45,'Wonder Room','psychic']];
-SC['h-extra']={ex:1,part:4,drop:['f-extra'],bar:'f-extra',name:['ביל','BILL'],label:['אפיון נוסף: מה שמעבר לכרטיס','Extra trait: beyond the card'],
-  lines:s=>[['open','שיעור אחרון לפני היכל התהילה. דיברנו הרבה על איך משתנים. אז מה נשאר?','One last lesson before the Hall of Fame. We talked a lot about how we change. So what stays?'],
-    ['dec','תכירו את דסיג׳ואיי: גראס וגוסט. אבל הוא לא תמיד היה כזה.','Meet Decidueye: Grass and Ghost. But it wasn\'t always like this.'],
-    ['past','פעם הוא היה רולט, ואחר כך דארטריקס: גראס ומעופף. הוא עף.','Once it was Rowlet, then Dartrix: Grass and Flying. It flew.'],
-    ['evo','ובשלב האחרון, המעופף ירד מהכרטיס.','And at the last stage, Flying came off the card.'],
+SC['h-extra']={ex:1,part:4,drop:['f-extra'],bar:'f-extra',name:['ביל','BILL'],label:['אפיון נוסף: המשיכה','Extra trait: the pull'],
+  lines:s=>[['open','שיעור אחרון לפני היכל התהילה. לכל פוקימון יש סוג רשמי, אחד או שניים. אבל לפעמים עוד סוג מושך אותו: זו המשיכה, האפיון הנוסף.','One last lesson before the Hall of Fame. Every Pokémon has an official type, one or two. But sometimes another type pulls it too: that\'s the pull, the extra trait.'],
+    ['dec','תכירו את דסיג׳ואיי. הסוגים הרשמיים שלו: גראס וגוסט. אבל הוא לא תמיד היה כזה.','Meet Decidueye. Its official types: Grass and Ghost. But it wasn\'t always like this.'],
+    ['past','פעם הוא היה רולט, ואחר כך דארטריקס: גראס ומעופף.','Once it was Rowlet, then Dartrix: Grass and Flying.'],
+    ['evo','ובשלב האחרון, מעופף כבר לא היה אחד הסוגים הרשמיים שלו.','And at the last stage, Flying was no longer one of its official types.'],
     ['brave','אבל ברמה 58 הוא לומד את Brave Bird, המתקפה המעופפת הכי חזקה שלו.','But at level 58 it learns Brave Bird, its strongest Flying move.'],
-    ['was','מי שהיית לא נעלם כשהשתנית. הוא נשאר בך, כמשיכה.','Who you were doesn\'t vanish when you change. It stays in you, as a pull.'],
-    ['gol','גולדאק: מים, ורק מים. אבל תראו אילו מתקפות הוא לומד בדרך.','Golduck: Water, only Water. But look at the moves it learns along the way.'],
+    ['was','מי שהיית לא נעלם כשהשתנית. מעופף נשאר בו: זו המשיכה של דסיג׳ואיי.','Who you were doesn\'t vanish when you change. Flying stayed in it: that\'s Decidueye\'s pull.'],
+    ['gol','גולדאק: הסוג הרשמי שלו מים, ורק מים. אבל תראו אילו מתקפות הוא לומד בדרך.','Golduck: its official type is Water, only Water. But look at the moves it learns along the way.'],
     ['moves','Confusion כבר ברמה 1, ואחר כך Zen Headbutt,‏ Amnesia ו־Wonder Room: ארבע מתקפות סייקיק.','Confusion at level 1, then Zen Headbutt, Amnesia and Wonder Room: four Psychic moves.'],
-    ['do','על הכרטיס הוא מים. אבל מה שהוא עושה מגלה מה מושך אותו.','On the card it\'s Water. But what it does shows what pulls it.'],
-    ['bli','ובליסי: נורמאל טהור. בואו נראה מה הפוקדקס מספר עליה.','And Blissey: pure Normal. Let\'s see what the Pokédex says about her.'],
+    ['do','רשמית הוא מים. אבל מה שהוא עושה מגלה שהוא נמשך לסייקיק: זו המשיכה של גולדאק.','Officially it\'s Water. But what it does shows it\'s drawn to Psychic: that\'s Golduck\'s pull.'],
+    ['bli','ובליסי: הסוג הרשמי שלה נורמאל. בואו נראה מה הפוקדקס מספר עליה.','And Blissey: her official type is Normal. Let\'s see what the Pokédex says about her.'],
     ['dex','היא מטפלת בכל חולה עד שהוא מבריא. זה כבר לא נשמע כל כך נורמאל.','She cares for anyone sick until they recover. That doesn\'t sound so Normal anymore.'],
+    ['fairy','טוב לב, ריפוי ורכות: זה פיירי. זו המשיכה של בליסי, גם אם זה לא הסוג הרשמי שלה.','Kindness, healing, gentleness: that\'s Fairy. That\'s Blissey\'s pull, even if it isn\'t her official type.'],
     ['you',`וזה בדיוק מה שאתם עשיתם הערב: כתבתם את הפוקדקס של ${s}.`,`And that's exactly what you did tonight: you wrote ${s}'s Pokédex.`],
-    ['subj',`גם ל${s} יש סוג ש${sgF('מושך אותו','מושך אותה')} ולא נכנס לכרטיס. ועליו כבר עניתם, בשאלות הסוגים.`,`${s} also has a type that pulls ${sgF('him','her')} but didn't make the card. You already answered that, in the type questions.`],
-    ['match','המנוע מחפש פוקימון שגם הכרטיס שלו מתאים, וגם המשיכה.','The engine looks for a Pokémon whose card fits, and whose pull fits too.'],
-    ['hof','בהיכל התהילה, למטה משמאל, תראו גם את זה: מה שמעבר לכרטיס.','In the Hall of Fame, at the bottom, you\'ll see it too: what\'s beyond the card.']]};
+    ['subj',`גם ל${s} יש סוג ש${sgF('מושך אותו','מושך אותה')}, מעבר לסוגים הרשמיים. ועליו כבר עניתם, בשאלות הסוגים.`,`${s} also has a type that pulls ${sgF('him','her')}, beyond the official types. You already answered that, in the type questions.`],
+    ['match','המנוע מחפש פוקימון שגם הסוגים הרשמיים שלו מתאימים, וגם המשיכה.','The engine looks for a Pokémon whose official types fit, and whose pull fits too.'],
+    ['hof',`בהיכל התהילה, למטה משמאל, תראו גם את המשיכה של ${s}.`,`In the Hall of Fame, at the bottom, you'll see ${s}'s pull too.`]]};
 SC_DROP['h-extra']=SC['h-extra'].drop;
 const EX_K=Object.fromEntries(SC['h-extra'].lines('').map((l,i)=>[l[0],i]));
-const EX_H=k=>{const K=EX_K,s=subjectName();return k<K.dec?ll('מה נשאר כשמשתנים?','What stays when we change?'):k===K.dec?ll('דסיג׳ואיי','Decidueye'):k===K.past?ll('פעם: רולט ודארטריקס','Once: Rowlet and Dartrix')
-  :k===K.evo?ll('המעופף ירד מהכרטיס','Flying left the card'):k===K.brave?ll('אבל לא מהמתקפות','But not its moves'):k===K.was?ll('מי שהיית לא נעלם','Who you were doesn\'t vanish')
-  :k===K.gol?ll('גולדאק: מים טהור','Golduck: pure Water'):k===K.moves?ll('16 מתקפות, 4 מהן סייקיק','16 moves, 4 of them Psychic'):k===K.do?ll('מה שאתה עושה מגלה מה מושך אותך','What you do shows what pulls you')
-  :k===K.bli?ll('בליסי: נורמאל טהור','Blissey: pure Normal'):k===K.dex?ll('מה מספר הפוקדקס?','What does the Pokédex say?'):k===K.you?ll('גם אתם כתבתם פוקדקס','You wrote a Pokédex too')
-  :k===K.subj?ll(`ומה עם ${s}?`,`And ${s}?`):k===K.match?ll('המנוע מחפש התאמה כפולה','The engine looks for a double match'):ll('מה שמעבר לכרטיס','Beyond the card')};
+const EX_H=k=>{const K=EX_K,s=subjectName();return k<K.dec?ll('סוג רשמי, וגם משיכה','An official type, and a pull'):k===K.dec?ll('דסיג׳ואיי: גראס וגוסט','Decidueye: Grass and Ghost'):k===K.past?ll('פעם: רולט ודארטריקס','Once: Rowlet and Dartrix')
+  :k===K.evo?ll('מעופף כבר לא רשמי','Flying is no longer official'):k===K.brave?ll('אבל לא מהמתקפות','But not from its moves'):k===K.was?ll('המשיכה של דסיג׳ואיי: מעופף','Decidueye\'s pull: Flying')
+  :k===K.gol?ll('גולדאק: רשמית מים','Golduck: officially Water'):k===K.moves?ll('16 מתקפות, 4 מהן סייקיק','16 moves, 4 of them Psychic'):k===K.do?ll('המשיכה של גולדאק: סייקיק','Golduck\'s pull: Psychic')
+  :k===K.bli?ll('בליסי: רשמית נורמאל','Blissey: officially Normal'):k===K.dex?ll('מה מספר הפוקדקס?','What does the Pokédex say?'):k===K.fairy?ll('המשיכה של בליסי: פיירי','Blissey\'s pull: Fairy'):k===K.you?ll('גם אתם כתבתם פוקדקס','You wrote a Pokédex too')
+  :k===K.subj?ll(`ומה עם ${s}?`,`And ${s}?`):k===K.match?ll('המנוע מחפש התאמה כפולה','The engine looks for a double match'):ll(`המשיכה של ${s}`,`${s}'s pull`)};
+// after the first click the scene plays by itself (Eyal): each beat waits for its line to be read and its animation to end, then the next one
+function exAuto(run,b){const K=EX_K,B=scBeats('h-extra');if(b>=B.length-1)return;const n=B[b].t.length;
+  const min={[K.dec]:4500,[K.past]:7500,[K.evo]:6500,[K.brave]:4000,[K.gol]:4500,[K.moves]:5000,[K.bli]:4500,[K.dex]:4500}[b]||0;
+  clearTimeout(S.exAuto);S.exAuto=setTimeout(()=>{if(S.sc?.run===run&&S.sc.b===b&&cur()?.id==='h-extra')scGo(1)},Math.max(min,n*15+n*55+1800))}
 function exEnter(it,atEnd){const C=S.sc,n=scBeats(it.id).length;C.b=atEnd?n-1:0;S.mn=S.mn||{ph:'ask',sid:'',world:''};exBuild(it,!atEnd);exApply(C.b,!atEnd)}
 function exBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',ml=EN?1920-60-MN_BW:60;
   const pill=(t,cls)=>`<i class="expl ${cls||''}" style="--c:${TYPE_COL[t]}">${EN?t.toUpperCase():TYPE_HE[t]}</i>`;
   const mon=(i,img,he,en,ts,cls,extra)=>`<div class="exmon ${cls||''}" data-i="${i}"><img src="img/${img}.webp" alt=""><b>${ll(he,en)}</b><span>${ts.map(t=>pill(t)).join('')}${extra||''}</span></div>`,ar=`<i class="exar">${ll('←','→')}</i>`;
   const lab=[['s724','מי שהיית','Who you were','הסוג שנעלם בשרשרת','The lost type'],['s55','מה שאתה עושה','What you do','המתקפות','The moves'],['s242','מה שמספרים עליך','What others tell','הפוקדקס','The Pokédex']];
-  const bars=[[100,'c',ll('כרטיס','Card')],[84,'c',ll('כרטיס','Card')],[66,'pl',ll('משיכה','Pull')],[44,''],[32,''],[22,'']];
+  const bars=[[100,'c',ll('רשמי','Official')],[84,'c',ll('רשמי','Official')],[66,'pl',ll('משיכה','Pull')],[44,''],[32,''],[22,'']];
+  const pull=(i,t)=>`<p class="expull" id="expu${i}">${ll('המשיכה:','The pull:')} ${pill(t)}</p>`;
   const pan=`<p class="sceb" dir="ltr">PSP·08 · EXTRA · 7%</p><h2 id="exh2"></h2>
     <div class="exsec dec"><div class="exchain" id="exch">${mon(0,'s722','רולט','Rowlet',['grass','flying'])}${ar}${mon(1,'s723','דארטריקס','Dartrix',['grass','flying'])}${ar}${mon(2,'s724','דסיג׳ואיי','Decidueye',['grass','ghost'],'',pill('flying','exfall'))}</div>
-      <p class="exmv" id="exmv"><small>LV. 58</small>Brave Bird${pill('flying')}</p></div>
+      <div class="exrow"><p class="exmv" id="exmv"><small>LV. 58</small>Brave Bird${pill('flying')}</p>${pull(0,'flying')}</div></div>
     <div class="exsec gol">${mon(3,'s55','גולדאק','Golduck',['water'],'flat')}<div class="exmoves" id="exmoves">${EX_MOVES.map(([lv,n,t])=>`<i class="exmp${t==='psychic'?' psy':''}" style="--c:${TYPE_COL[t]}"><small>${lv}</small>${n}</i>`).join('')}</div>
-      <p class="excnt" id="excnt">${ll('4 מתוך 16 מתקפות: סייקיק','4 of 16 moves: Psychic')}</p></div>
-    <div class="exsec bli">${mon(4,'s242','בליסי','Blissey',['normal'],'flat')}<div class="exdex" id="exdex"><b>POKéDEX</b><p>${ll('פוקימון טוב לב שמטפל בכל אדם או פוקימון חולה עד שהבריאות שלו משתפרת.','A kindhearted Pokémon that will care for any sick person or Pokémon until their health improves.')}</p></div></div>
+      <div class="exrow"><p class="excnt" id="excnt">${ll('4 מתוך 16 מתקפות: סייקיק','4 of 16 moves: Psychic')}</p>${pull(1,'psychic')}</div></div>
+    <div class="exsec bli">${mon(4,'s242','בליסי','Blissey',['normal'],'flat')}<div class="exdex" id="exdex"><b>POKéDEX</b><p>${ll('פוקימון טוב לב שמטפל בכל אדם או פוקימון חולה עד שהבריאות שלו משתפרת.','A kindhearted Pokémon that will care for any sick person or Pokémon until their health improves.')}</p></div>${pull(2,'fairy')}</div>
     <div class="exsec me"><p class="excap">${ll('הסוגים בתשובות שלכם (בלי לגלות כלום)','The types in your answers (giving nothing away)')}</p><div class="exme" id="exme">${bars.map(([h,c,t])=>`<i class="exbar ${c}" style="height:${h}%">${t?`<b>${t}</b>`:''}</i>`).join('')}</div>
-      <div class="exmt" id="exmt"><p>✓ ${ll('הכרטיס מתאים','The card fits')}</p><p>✓ ${ll('המשיכה מתאימה','The pull fits')}</p></div></div>
+      <div class="exmt" id="exmt"><p>✓ ${ll('הסוגים הרשמיים מתאימים','The official types fit')}</p><p>✓ ${ll('המשיכה מתאימה','The pull fits')}</p></div></div>
     <div class="exlab" id="exlab">${lab.map(([im,h,he,t,te],i)=>`<div class="exl" data-i="${i}"><img src="img/${im}.webp" alt=""><div><b>${ll(h,he)}</b><small>${ll(t,te)}</small></div></div>`).join('')}</div>`;
   cv.innerHTML=`<div class="st scst lsst mnst exst" id="scst" dir="${EN?'ltr':'rtl'}">
     <div class="lsmap mnmap" id="lsmap" style="left:${ml}px;top:44px;width:${MN_BW}px;height:${MN_BH}px;background:#161A2E"><div id="mnw"></div><div class="lsname">${ll('הג׳ים של ויררידיאן','VIRIDIAN GYM')}</div></div>
@@ -5101,14 +5111,14 @@ function exEvolve(a,b,run,cb){const live=()=>S.sc?.run===run&&cur()?.id==='h-ext
 function exStage(k,into,run){const K=EX_K,P=EX_P,G=EX_G(),live=()=>S.sc?.run===run&&cur()?.id==='h-extra',inn=$('#mnin');if(!inn)return;
   clearInterval(S.exT);clearTimeout(S.exTo);inn.querySelectorAll('.mna').forEach(e=>{e.classList.remove('exfly','exwhite','exbb');e.style.visibility=''});inn.querySelectorAll('.exspk,.mnpoof').forEach(e=>e.remove());
   mnCam(EX_CAM,false);mnPut('bill',exFeet(P.bill),'d');
-  const look=k>=K.dec&&k<=K.dex?'r':'u';mnPpl().slice(0,G.seats.length).forEach(({p},i)=>mnPut('p:'+p.id,exFeet(G.seats[i]),look));
+  const look=k>=K.dec&&k<=K.fairy?'r':'u';mnPpl().slice(0,G.seats.length).forEach(({p},i)=>mnPut('p:'+p.id,exFeet(G.seats[i]),look));
   const form=k<K.dec?null:k===K.past?'dartrix':'decid',at=exFeet(P.dec),ga=exFeet(P.gol);
   ['rowlet','dartrix','decid'].forEach(f=>{if(f!==form)mnPut(f,null)});inn.classList.toggle('exmem',k===K.past);
   if(form){mnPut(form,at,'d');if(form==='dartrix')mnEl('dartrix').classList.add('exfly')}
   mnPut('golduck',k>=K.gol?ga:null,'d');if(k===K.moves)exPose('golduck',4,0);
   mnPut('blissey',k>=K.bli?exFeet(P.bli):null,'d');
   const au=$('#exaura');au.style.left=ga[0]*MN_Z+'px';au.style.top=ga[1]*MN_Z+'px';au.classList.toggle('on',k===K.moves);
-  if(k===K.dex){let f=0;exPose('blissey',4,0);S.exT=setInterval(()=>{if(!live()){clearInterval(S.exT);return}exPose('blissey',4,f=1-f);if(f)exSpark(ga,'♥','#FF7EB6',4)},480)}
+  if(k===K.dex||k===K.fairy){let f=0;exPose('blissey',4,0);S.exT=setInterval(()=>{if(!live()){clearInterval(S.exT);return}exPose('blissey',4,f=1-f);if(f)exSpark(ga,'♥','#FF7EB6',4)},480)}
   if(into!==k)return;
   if(k===K.dec)mnWalk('decid',exPath(P.in,P.dec),'d',55);
   else if(k===K.past){mnPut('dartrix',null);mnPut('rowlet',at,'d');mnEl('rowlet').classList.add('exfly');mnFlash(at);sfx('sfx-ball-poof',.4);
@@ -5137,12 +5147,13 @@ function exApply(b,anim){const C=S.sc,B=scBeats(C.id);++C.run;clearInterval(S.sc
   if(k>=K.moves){if(into===K.moves)setTimeout(()=>{if(S.sc?.run===run)mv.classList.add('lit')},EX_MOVES.length*110+500);else mv.classList.add('lit')}
   $('#excnt').classList.toggle('on',k>=K.moves);
   pop($('#exdex'),k>=K.dex,K.dex);
+  [K.was,K.do,K.fairy].forEach((at,i)=>pop($('#expu'+i),k>=at,at));
   // the subject: bars without names (no spoilers), the double match
   pop($('#exmt'),k>=K.match,K.match);
   // the three sources, collected as they are named
   const lb=$('#exlab');lb.classList.toggle('on',k>=K.was);[K.was,K.do,K.dex].forEach((at,i)=>pop(lb.querySelector(`.exl[data-i="${i}"]`),k>=at,at));
-  if(anim&&[K.was,K.do,K.dex,K.match].includes(k))sfx('sfx-dex-page-added',.45);
-  scType(B[b].t,anim)}
+  if(anim&&[K.was,K.do,K.dex,K.fairy,K.match].includes(k))sfx('sfx-dex-page-added',.45);
+  scType(B[b].t,anim);clearTimeout(S.exAuto);if(anim)exAuto(run,b)}
 // ---------- course 1: the friends' trainer cards. One click per person: their big sprite, name and how they know the subject, half a minute each; done cards line up below ----------
 function ofrList(){return gamePlayers().filter(p=>p.role!=='self'&&!isPresenter(p))}
 function ofrEnter(){S.ofr=S.ofr&&S.ofr.eve===S.state?.eve?S.ofr:{i:-1,eve:S.state?.eve};S.ofr.on=null;ofrPaint()}
