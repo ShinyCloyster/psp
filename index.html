@@ -1790,7 +1790,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795684051';
+const BUILDV='1795704338';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -5381,7 +5381,7 @@ const CM_LINES=[[['יאללה וייפוריאון!','Go Vaporeon!'],['בלו, �
  [['מגיע לו התג!','He earned that badge!'],['כמה כסף!','So much money!'],['כבוד, בלו','Respect, Blue'],['גם אני רוצה תג','I want a badge too'],['זה מכור','It’s rigged'],['שופט!','Ref!']],
  [['אוווו ❤','Awww ❤'],['זה הכי מרגש','This is so moving'],['כל הכבוד לשניהם','Well done, both'],['בלו, אתה מלך','Blue, you’re a king'],['איפה הטישו?','Where are the tissues?'],['עוד קרב!','Another battle!']]];
 const CM_RED=48,CM_BLUE=47,cmtT=()=>S.fastOn?8:35;
-// round 90: the arena is Eyal's indoor stadium (Ekat's, widened by app/arena_build.py) shown at exactly 3x, so the people,
+// round 104: the arena is Eyal's indoor stadium (Ekat's, widened by app/arena_build.py) shown at exactly 3x, so the people,
 // the crowd and the pets are drawn at 3x too (scale 1.5 on their 2x sprites). Each stand has 19 seats a row, 3 rows (feet at
 // y 378 front, 336, 288 back), seat centres 24+48k on the left and 1032+48k on the right of the stairs. Players sit every other
 // seat: the front row from the stairs outwards (left, right, left...), then the back row in between; the rest is the crowd,
