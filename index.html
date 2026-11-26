@@ -1322,10 +1322,12 @@ body:has(.intronudge) #introfab{display:none}
 .tkin.dim .tkrow{opacity:.28}.tkin.dim .tkrow:is([data-tk=rec],[data-tk=ex]):not(.hl){opacity:.6}.tkin .tkrow.hl{opacity:1;background:#FFF1C2;box-shadow:0 0 0 12px #FFF1C2,0 0 0 18px #F2C94C}.tkin .tkrow.hl[style*="background"]{box-shadow:0 0 0 8px #F2C94C,0 0 28px 10px rgba(242,201,76,.7)}
 .tkst .sclect{z-index:61}
 .scmap{position:absolute;top:44px;width:946px;height:704px;overflow:hidden;border-radius:14px;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C;transition:left .9s ease-in-out,opacity .5s}
-.scpic{position:absolute;top:44px;inset-inline-end:120px;width:778px;height:700px;overflow:hidden;border-radius:14px;background:#161A2E;box-shadow:0 0 0 6px #161A2E,0 0 0 10px #F2C94C;transition:opacity .5s}
-.scpic img{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .45s}.scpic img.on{opacity:1}
-.scpic.off,.scpicp.off{opacity:0;pointer-events:none}.scpic.pop{animation:svgrow .7s cubic-bezier(.2,.8,.3,1)}
-.scpicp{position:absolute;top:150px;inset-inline-start:110px;width:800px;display:flex;flex-direction:column;gap:30px;transition:opacity .5s}
+.sctr{position:absolute;inset:0 0 120px 0;display:flex;align-items:center;justify-content:center;gap:90px;transition:opacity .5s}.sctr.off{opacity:0;pointer-events:none}
+.sctrc{width:560px;height:560px;flex:none;border-radius:50%;background:#F6F1E7;border:12px solid #F2C94C;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.sctrc img{height:470px;max-width:470px;object-fit:contain;object-position:bottom;image-rendering:pixelated;margin-bottom:30px}
+.scst.trmode .scbox,.scst.trmode .sclect{opacity:0;transform:translateY(40px);pointer-events:none;transition:opacity .4s,transform .4s}
+#photoov.pix img{image-rendering:pixelated;width:min(92vw,calc(88vh*10/9));height:auto}
+.scpicp{width:760px;display:flex;flex-direction:column;gap:30px;transition:opacity .5s}
 .scpicp .sceb{font-family:'Press Start 2P',monospace;font-size:24px;color:#F2C94C;text-align:left;line-height:1.6}[dir=rtl] .scpicp .sceb{text-align:right}
 .scpicp h2{font-family:'Secular One',Arial,sans-serif;font-size:104px;font-weight:400;line-height:1.05;color:#F6F1E7;margin:0}
 .scpicp b{align-self:flex-start;font-size:48px;font-weight:700;color:#161A2E;background:#F2C94C;border-radius:20px;padding:14px 36px}
@@ -1788,7 +1790,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795643853';
+const BUILDV='1795684051';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -2364,6 +2366,7 @@ function remoteCtlView(me){return `<p class="eyebrow">REMOTE · ${esc(me.name)}<
   <div class="card rctime" style="padding:14px 16px"><div class="row" style="justify-content:space-between;align-items:baseline"><b class="rtn"></b><span class="rtl" style="font:400 26px var(--pixel)"></span></div><div class="rtrow">${ll(`<span>זמן</span>`,`<span>Time</span>`)}<div class="rtbar"><i></i></div></div><div class="rtrow">${ll(`<span>שקפים</span>`,`<span>Slides</span>`)}<div class="rtbar sl"><i></i></div></div><p class="rts muted" style="margin:8px 0 0;font-size:14px"></p></div>
   ${glHost()}
   <div id="rcmem" class="card" style="padding:14px 16px;border:2px solid var(--gold)"${memCardHTML()?'':' hidden'}>${memCardHTML()}</div>
+  <div id="rcey" class="card" style="padding:14px 16px;border:2px solid var(--gold)"${eyCardHTML()?'':' hidden'}>${eyCardHTML()}</div>
   <div id="rcbt" class="card" style="padding:14px 16px;border:2px solid var(--gold)"${btCardHTML()?'':' hidden'}>${btCardHTML()}</div>
   <button class="rcbig" data-act="ctlnext">${ll(`◀ הבא</button>`,`Next ▶</button>`)}<button class="rcback" data-act="ctlprev">${ll(`חזרה ▶</button>`,`◀ Back</button>`)}
   <div class="row" style="gap:8px"><button class="btn ghost grow" data-act="ctlnextslide">${ll('⏩ לשקף הבא','⏩ Next slide')}</button><button class="btn ghost grow" data-act="ctlpopx">${ll('✕ סגירת חלון קופץ','✕ Close the popup')}</button></div>
@@ -2755,7 +2758,7 @@ function remoteView(){
 // ----- Eri's photos: he picks one on his phone, the big screen shows it full-screen -----
 const PHOTOS0=Array.from({length:11},(_,i)=>String(i+1).padStart(2,'0'));
 const photoIds=()=>ROOM.legacy||!ROOM.code?PHOTOS0:Object.keys(S.assets||{}).filter(k=>k.startsWith('ph-')).sort().map(k=>k.slice(3));
-const photoSrc=(id,big)=>ROOM.legacy||!ROOM.code?`img/eri/${big?'p':'t'}${id}.webp`:(S.assets?.['ph-'+id]?.data||'');
+const photoSrc=(id,big)=>String(id).startsWith('ey-')?`img/${id}.webp`:ROOM.legacy||!ROOM.code?`img/eri/${big?'p':'t'}${id}.webp`:(S.assets?.['ph-'+id]?.data||'');
 function photosBtn(){return `<button class="btn ghost" data-act="photos">${ll(`📷 התמונות שלי למסך`,`📷 My photos for the screen`)}</button>`}
 function eriTimer(){return `<div class="card eritime"><b class="etn"></b><span class="etl"></span><div class="rtbar"><i></i></div><p class="etm"></p></div>`}
 function eriClock(){const el=$('.eritime');if(!el)return;const I=schedInfo(S.deck,Date.now());if(!I)return;
@@ -2772,14 +2775,16 @@ function photosView(){
 }
 function stagePhoto(){
   const id=S.stage?.photo||null;let ov=$('#photoov');
-  if(!id||S.photoHidden===id+':'+(S.stage?.at||'')){ov?.classList.remove('show');return}
+  if(!id||S.photoHidden===id+':'+(S.stage?.at||'')||(String(id).startsWith('ey-')&&!eyStory())){ov?.classList.remove('show');return}
+  const ey=String(id).startsWith('ey-'),was=ov?.classList.contains('show')&&ov.dataset.id===id;
   if(!ov){ov=document.createElement('div');ov.id='photoov';ov.onclick=()=>go(1);document.body.append(ov)}
-  ov.innerHTML=`<img src="${photoSrc(id,true)}" alt="">`;requestAnimationFrame(()=>ov.classList.add('show'));
+  if(was)return;ov.dataset.id=id;ov.classList.toggle('pix',ey);ov.innerHTML=`<img src="${photoSrc(id,true)}" alt="">`;requestAnimationFrame(()=>ov.classList.add('show'));
+  if(ey){sfx(id==='ey-5'?'sfx-excl':'sfx-dex-page-added',.5);if(id==='ey-6')setTimeout(()=>cmtCry(91,.6),350)}
 }
 // ---------- round 97: THE PHONE MIRROR. The big screen sends a light snapshot of the world it shows (the gym, the intros' stage, the lake,
 // the trainer's town, the finale): every picture and sprite in it with its place, as fractions of the world's width. Phones redraw it as the
 // Game Boy's screen, filling it, zoomed on the people, and glide between snapshots. Only when something changed, at most every 0.4 s.
-const MIR_ROOTS=['.lgp','#lkcam','.lsmap','.ofgym','#scpic','#scmap','#scgym','#twgbox','#tw','#twmini'],MIR_TXT='.qbang,.lsbub,.twbang,.lwbang';
+const MIR_ROOTS=['.lgp','#lkcam','.lsmap','.ofgym','#scmap','#scgym','#twgbox','#tw','#twmini'],MIR_TXT='.qbang,.lsbub,.twbang,.lwbang';
 function mirRoot(){for(const q of MIR_ROOTS){const e=document.querySelector(q);if(!e)continue;const r=e.getBoundingClientRect(),cs=getComputedStyle(e);if(r.width>40&&r.height>40&&+cs.opacity>.05&&cs.visibility!=='hidden'&&!e.classList.contains('off')&&!e.classList.contains('gone'))return e}return null}
 const MIR_IMG={};function mirNat(u){let im=MIR_IMG[u];if(!im){im=MIR_IMG[u]=new Image();im.src=u}return im.naturalWidth?[im.naturalWidth,im.naturalHeight]:null}
 function mirRel(u){u=String(u||'');const b=location.href.replace(/[#?].*$/,'').replace(/[^/]*$/,'');return u.startsWith(b)?u.slice(b.length):u}
@@ -3161,7 +3166,7 @@ const memOn=()=>ROOM.legacy||S.state?.memOn!==false;
 function memCardHTML(){const d=S.deck,b=d?.mem||0,p=d?.pos||0;if(!b||p>b||p<(d.mem0||b))return '';const on=memOn();
   return `<p class="eyebrow" style="margin:0 0 6px">${ll('משחק הזיכרון · המשקפיים של ג׳ני, ג׳וי ואש','THE MEMORY GAME · Jenny’s, Joy’s and Ash’s glasses')}</p><p style="margin:0 0 4px;font-size:17px">${on?ll('🧠 נבחר: <b>משחקים</b> (כ-4 דקות)','🧠 Chosen: <b>play</b> (about 4 minutes)'):ll('⏭ נבחר: <b>מדלגים</b> עליו','⏭ Chosen: <b>skip</b> it')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('אופציונלי. בלי בחירה משחקים. מדלגים רק אם מאחרים. אפשר לשנות עד שמגיעים אליו.','Optional. No choice = played. Skip it only when running late. You can change it until you get there.')}</p><div class="row" style="gap:8px"><button class="btn grow${on?' ghost':''}" data-act="ctlmem" data-on="0">⏭ ${ll('מדלגים','Skip')}</button><button class="btn grow${on?'':' ghost'}" data-act="ctlmem" data-on="1">🧠 ${ll('משחקים','Play')}</button></div>`}
 function memCardFill(){const el=$('#rcmem');if(!el)return;const h=memCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
-function btCardFill(){memCardFill();const el=$('#rcbt');if(!el)return;const h=btCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
+function btCardFill(){memCardFill();eyCardFill();const el=$('#rcbt');if(!el)return;const h=btCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
 function ctlCmd(d){if(d.cmd==='jump'&&d.i>=0&&d.i<SEQ.length){POS=d.i;HOF=0;SUB=0;BUILD=0;show(true)}
   else if(d.cmd==='qr')joinQR();else if(d.cmd==='open')setState({open:+d.k||0});
   else if(d.cmd==='clock'){const now=Date.now();S.deck={...(S.deck||{}),t0:now,segAt:now,log:{}};deckPub()}
@@ -3240,7 +3245,7 @@ function seqLabel(it){let label='';
   return label}
 // round 72: the host's phone shows what to say on the current slide (stage/note {t,pos}): the slide's own notes (<aside>),
 // or a per-click line where a slide has one (the sorting table, CS_NOTE).
-function noteNow(){const it=cur();if(!it)return '';if(csOn(it)&&S.cs&&S.cs.id===it.id)return ll(...CS_NOTE[csNoteK(S.cs)]);
+function noteNow(){const it=cur();if(!it)return '';if(eyStory())return ll('המאמן שלי: אש, בן יחיד עם אמא · הגיימבוי: לא משועמם, החלפות וסודות · הקלפים: אף פעם לא "לא לגילי", ההשקעה · אנשים כסוגים, סטטים והתפתחויות · סוציולוגיה ודאטה, ומשם השיטה · קלוייסטר · הערב: '+subjectName()+' יספר על המאמנים שלו','My trainer: Ash, an only child with Mum · the Game Boy: never bored, trading and secrets · the cards: never "too old", the investment · people as types, stats and evolutions · sociology and data, then the method · Cloyster · tonight: '+subjectName()+' tells about their trainers');if(csOn(it)&&S.cs&&S.cs.id===it.id)return ll(...CS_NOTE[csNoteK(S.cs)]);
   if(it.kind==='slide'){const h=S.slides[it.i]?.html||'',m=h.match(/<aside[^>]*>([\s\S]*?)<\/aside>/);if(m){const d=document.createElement('div');d.innerHTML=m[1];return d.textContent.replace(/‫/g,'').trim()}}
   return ''}
 function notePub(){if(!isScreen()||!S.db||roomClosed())return;const t=noteNow().slice(0,900),k=POS+'|'+t;if(S.notePubK===k)return;S.notePubK=k;S.db.doc('stage/note').set({t,pos:POS+1}).catch(()=>{})}
@@ -3254,7 +3259,7 @@ function deckPub(){if(roomClosed())return;clearTimeout(S.deckT);S.deckT=setTimeo
   const sa=D.seg===seg&&D.segAt&&POS>0&&t0===D.t0?D.segAt:now; // round 85b: a new start (or the cover) restarts the segment clock, so time spent on the cover while setting up isn't counted
   // how far through this part's slides we are
   const st=SEQ.findIndex(x=>planOf(seg)&&planId(x)===planOf(seg)[3]),nx=PLAN.findIndex(x=>x[0]===seg)+1,en=nx<PLAN.length?SEQ.findIndex(x=>planId(x)===PLAN[nx][3]):SEQ.length,frac=st<0?0:Math.min(1,(POS-st+1)/Math.max(1,en-st));
-  const bti=SEQ.findIndex(x=>x.id==='d-battle'),mmi=SEQ.findIndex(x=>x.id==='s-memory'),doc={bt:ROOM.legacy?0:bti+1,bt0:SEQ.findIndex(x=>courseOf(x.id)===5)+1,mem:ROOM.legacy?0:mmi+1,mem0:SEQ.findIndex(x=>courseOf(x.id)===3)+1,mm:mmNow(),label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
+  const bti=SEQ.findIndex(x=>x.id==='d-battle'),mmi=SEQ.findIndex(x=>x.id==='s-memory'),doc={ey:ROOM.legacy?0:SEQ.findIndex(x=>x.id==='op-1')+1,bt:ROOM.legacy?0:bti+1,bt0:SEQ.findIndex(x=>courseOf(x.id)===5)+1,mem:ROOM.legacy?0:mmi+1,mem0:SEQ.findIndex(x=>courseOf(x.id)===3)+1,mm:mmNow(),label:label.slice(0,90),pos:POS+1,len:SEQ.length,at:new Date().toISOString(),seg,segAt:sa,t0,log,frac};S.deck={...D,...doc};notePub();
   S.db.doc('stage/deck').set(doc).catch(()=>{});segTimer();
   const sk=SEQ.map(x=>x.id).join(',');if(S.seqPub!==sk){S.seqPub=sk;S.db.doc('stage/seq').set({l:SEQ.map(x=>{try{return seqLabel(x).slice(0,60)}catch(er){return x.id}})}).catch(()=>{})}},250)}
 // big countdown on the screen during question rounds and breaks
@@ -4312,20 +4317,20 @@ function roundTrack(k){const sk=skipSet(),end=SC_STOPS.findIndex(s=>s.b===2*k);l
 const SC_HOP=470;
 const sgF=(m,f)=>S.setup?.gender==='f'?f:m;
 // op-1's story (Eyal's trainer: Pokémon): stages p1..p6 show img/ey-N.webp in a frame with the trainer panel beside it (`pics` in SC)
-const scPicH=()=>`<div class="scpic off" id="scpic">${[1,2,3,4,5,6].map(i=>`<img data-n="${i}" src="img/ey-${i}.webp" alt="">`).join('')}</div>
-  <div class="scpicp off" id="scpicp"><p class="sceb" dir="ltr">TRAINER · A WILD TRAINER APPEARED!</p><h2>${ll('המאמן של אייל','Eyal\'s trainer')}</h2><b>${ll('פוקימון','Pokémon')}</b></div>`;
+const scPicH=()=>`<div class="sctr off" id="sctr"><div class="scpicp"><p class="sceb" dir="ltr">TRAINER · A WILD TRAINER APPEARED!</p><h2>${ll('המאמן של אייל','Eyal\'s trainer')}</h2><b>${ll('פוקימון','Pokémon')}</b></div>
+  <div class="sctrc"><img src="img/av-f-eyal.webp" alt=""></div></div>`;
+// the host's phone during op-1: Eyal's six pictures; a tap shows one big on the screen (stage/main photo 'ey-N', like the subject's photos)
+const EY_N=6,eyStory=()=>cur()?.id==='op-1'&&S.sc?.id==='op-1'&&scStage(scBeats('op-1'),S.sc.b).st==='tr';
+function eyCardHTML(){const d=S.deck,e=d?.ey||0;if(!e||d.pos!==e)return '';const c=S.stage?.photo||'';
+  return `<p class="eyebrow" style="margin:0 0 6px">${ll('המאמן שלי · התמונות למסך','MY TRAINER · photos for the screen')}</p><p class="muted" style="margin:0 0 10px;font-size:13px">${ll('לחיצה מציגה בגדול על המסך, לחיצה נוספת מסתירה.','Tap to show it big on the screen, tap again to hide.')}</p>
+  <div class="phgrid">${Array.from({length:EY_N},(_,i)=>`<button class="ph${c==='ey-'+(i+1)?' on':''}" data-photo="ey-${i+1}"><img src="img/ey-${i+1}.webp" alt="" style="image-rendering:pixelated"></button>`).join('')}</div>
+  <button class="btn red small" data-photo="" ${c?'':'disabled'} style="margin-top:8px">${ll('הסתרה מהמסך','Hide from screen')}</button>`}
+function eyCardFill(){const el=$('#rcey');if(!el)return;const h=eyCardHTML();el.hidden=!h;if(el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}}
 const scTrs=n=>ll(['','מאמן אחד','שני מאמנים','שלושה מאמנים'][n]||'',['','one trainer','two trainers','three trainers'][n]||'');
 const SC={
   'op-1':{part:1,town:'pewter',pics:1,drop:['x-part-1','o-divider','o-me','agenda'],div:'o-divider',name:['פרופ׳ שושו','PROF. SHUSHO'],zoom:[84,33,1.4],
     lines:(n,town,nT)=>[['gym',`ברוכים הבאים לג׳ים של ${town}! אני אייל, המרצה שלכם בחלק הראשון.`,`Welcome to the ${town} Gym! I'm Eyal, your lecturer for part one.`],
-      ['p1','לפני שנצא לדרך, משהו קטן עליי. כילד הרגשתי קצת כמו אש: בן יחיד, בבית קטן, ולפעמים די משועמם.','Before we set off, a little about me. As a kid I felt a bit like Ash: an only child, a small home, and sometimes pretty bored.'],
-      ['p2','ואז הגיע הגיימבוי, ולא השתעממתי יותר. ופוקימון גם חיבר אותי לאנשים: מחליפים, ומגלים סודות לפני שהיה אינטרנט.','Then the Game Boy came along, and I was never bored again. Pokémon also connected me with people: trading, and finding secrets before the internet.'],
-      ['p3','אף פעם לא אמרתי ״זה לא לגילי״. המשכתי לאסוף, וזו התבררה כההשקעה הכי טובה שעשיתי.','I never said "I\'m too old for this". I kept collecting, and it turned out to be the best investment I ever made.'],
-      [0,'ושימו לב: הכול מסודר לפי סוגים. ולאט לאט, ככה התחיל לעבוד גם הראש שלי.','And look: it\'s all sorted by type. Slowly, that\'s how my head started to work too.'],
-      ['p4','אנשים קיבלו אצלי סוגים, חוזקות והתפתחויות, ופתאום הכול עשה היגיון. משם הגעתי לסוציולוגיה, ולנתונים.','People got types, strengths and evolutions, and suddenly it all made sense. That led me to sociology, and to data.'],
-      ['p5','אז בניתי שיטה שנותנת לאדם פוקימון. ומה יצא לי?','So I built a method that gives a person a Pokémon. And what did I get?'],
-      ['p6','קלוייסטר! ולמה דווקא הוא? את זה תבינו עד סוף הערב.','Cloyster! Why him of all Pokémon? You\'ll understand by the end of the evening.'],
-      [0,nT?`זה היה המאמן שלי. הערב ${n} ${sgF('יספר','תספר')} לנו על ${scTrs(nT)} ${sgF('שלו','שלה')}.`:'זה היה המאמן שלי. ועכשיו, לסיבה שבגללה התכנסנו.',nT?`That was my trainer. Tonight ${n} will tell us about ${scTrs(nT)} of ${sgF('his','her')} own.`:'That was my trainer. And now, to why we are here.'],
+      ['tr','',''],
       ['map',`הערב הזה הוא מסע: נמצא את הפוקימון של ${n}, ובדרך נגיד ${sgF('עליו','עליה')} משהו.`,`Tonight is a journey: we'll find ${n}'s Pokémon, and say something about ${sgF('him','her')} along the way.`],
       ['fly',`שמונה תגים, ${nT?scTrs(nT)+' בדרך, ':''}ובסוף: היכל התהילה.`,`Eight badges, ${nT?scTrs(nT)+' on the way, ':''}and at the end: the Hall of Fame.`],
       ['zoom','התחנה הראשונה: היכרות, ואז השאלון. ובסוף החלק: סבב שאלות ראשון והפסקה.','First stop: introductions, then the questionnaire. At the end of the part: the first round of questions and a break.'],
@@ -4472,11 +4477,9 @@ function scWild(cb){document.getElementById('scsw')?.remove();const o=document.c
   music('mus-wild',{vol:.25});BGM.holdTo=Date.now()+4250;setTimeout(cb,1250);setTimeout(()=>o.remove(),1900)}
 function scApply(b,anim,first){if(SC[S.sc.id].moon)return mnApply(b,anim);if(SC[S.sc.id].ex)return exApply(b,anim);if(SC[S.sc.id].lake)return lsApply(b,anim);if(SC[S.sc.id].rules)return scApplyRules(b,anim);if(SC[S.sc.id].mid)return scApplyMid(b,anim);const C=S.sc,cf=SC[C.id],B=scBeats(C.id),run=++C.run,M=SC_M,R=scRoute();clearTimeout(C.flyT);clearInterval(S.scT);C.typing=C.fly=0;
   const g=$('#scgym'),map=$('#scmap'),inner=$('#scmapin'),mini=$('#twmini'),tl=$('#sctiles'),dn=$('#scdn');if(!g)return;
-  const {st,at}=scStage(B,b),stepIn=anim&&at===b,pk=/^p\d$/.test(st)?+st[1]:0,lv=pk?0:['gym','map','fly','zoom','tile'].indexOf(st);
+  const {st,at}=scStage(B,b),stepIn=anim&&at===b,pk=st==='tr'?1:0,lv=pk?0:['gym','map','fly','zoom','tile'].indexOf(st);
   const atMap=lv>=1,side=lv>=3,P=cf.part,op1=P===1;
-  const pc=$('#scpic'),pp=$('#scpicp');if(pc){pc.classList.toggle('off',!pk);pp.classList.toggle('off',!pk);
-    pc.querySelectorAll('img').forEach(im=>im.classList.toggle('on',+im.dataset.n===pk));
-    if(pk&&stepIn){pc.classList.remove('pop');void pc.offsetWidth;pc.classList.add('pop');sfx(pk===5?'sfx-excl':'sfx-dex-page-added',.5);if(pk===6)setTimeout(()=>{if(C.run===run)cmtCry(91,.6)},350)}}
+  const pc=$('#sctr');if(pc){pc.classList.toggle('off',!pk);$('#scst').classList.toggle('trmode',!!pk);if(pk&&stepIn)sfx('sfx-dex-page-added',.5);notePub();stagePhoto()}
   // where Dragonite flies: in part 1 the whole route; later from the last gym of the part before to this part's gym
   const ix=f=>R.findIndex(f),toI=op1?R.length-1:ix(s=>s.b===2*P-1),fromI=op1?0:ix(s=>s.b===2*P-2),homeI=ix(s=>s.b===2*P-1);
   g.classList.toggle('gone',atMap||pk>0);$('#scnm').classList.toggle('gone',atMap||pk>0);mini.classList.toggle('off',!atMap&&!pk);
