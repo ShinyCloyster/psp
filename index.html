@@ -1312,13 +1312,42 @@ body:has(.intronudge) #introfab{display:none}
 .rkfx b{font:700 25px 'Rubik',Arial,sans-serif;color:#fff;white-space:nowrap}
 .rkfx small{font:400 14px 'Rubik',Arial,sans-serif;color:#F2C94C;white-space:nowrap}.rkfx small img{height:22px}
 .rkfx span:last-child b{background:#E5484D;border-radius:8px;padding:0 8px}
-.rkfx.go span{opacity:0;animation:rkfxin .3s forwards;animation-delay:calc(.45s + var(--i) * .26s)}
+.rkfx.go span{opacity:0;animation:rkfxin .4s forwards;animation-delay:calc(.45s + var(--i) * .6s)}
+.rkfx.go span:nth-last-child(-n+2) b{animation:rkfxhi .5s 4.6s 2 alternate}
+@keyframes rkfxhi{to{transform:scale(1.08);box-shadow:0 0 0 4px #F2C94C}}
 @keyframes rkfxin{from{opacity:0;transform:translateY(10px) scale(.8)}to{opacity:1;transform:none}}
 .rkqs.on{display:flex;flex-direction:column;gap:14px}
 .rkqs p{margin:0;display:flex;align-items:center;gap:16px;font:700 30px 'Rubik',Arial,sans-serif;color:#9AA0B8;background:#F6F1E7;border-radius:14px;padding:12px 18px;transition:color .4s}
 .rkqs p b{flex:none;width:46px;height:46px;border-radius:50%;background:#C9CCD8;color:#fff;display:grid;place-items:center;font-size:24px;transition:background .4s}
 .rkqs p.on{color:#161A2E;animation:rkpop .5s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i) * 1.3s)}
 .rkqs p.on b{background:#E5484D}
+/* round 108: the thinkers' cards; Mt. Moon: the moon, the newspaper, the gif in the box */
+.rki .rkth.on{flex-direction:column;gap:8px}
+.rkthc{display:none;align-items:center;gap:16px;background:#F6F1E7;border-radius:16px;padding:6px 16px;border:3px solid transparent;transition:border-color .3s,opacity .3s}
+.rkthc.on{display:flex}.rkthc.in{animation:rkpop .45s cubic-bezier(.3,1.5,.5,1)}
+.rkthc.on:not(.now){opacity:.75}.rkthc.now{border-color:#5FA83A}
+.rkthc>img{height:112px;width:92px;object-fit:contain;object-position:bottom;image-rendering:pixelated;flex:none}
+.rkthc>div{flex:1;display:flex;flex-direction:column;gap:2px}
+.rkthc b{font:800 27px 'Rubik',Arial,sans-serif;color:#161A2E;opacity:1}.rkthc small{font:700 20px 'Rubik',Arial,sans-serif;color:#5FA83A}
+.rkthc p{margin:2px 0 0;font:500 21px/1.25 'Rubik',Arial,sans-serif;color:#2A2E45}
+.rkth1,.rkth2{flex:none;width:58px;height:58px;border-radius:50%}
+.rkth1{background:#9AA0B8;box-shadow:inset 0 0 0 4px #6B7190}
+.rkth2{display:flex;overflow:hidden;box-shadow:0 0 0 4px #6B7190}.rkth2 i{flex:1;background:#161A2E}.rkth2 i+i{background:#fff}
+.rkfull{position:absolute;z-index:3;top:34px;inset-inline-end:46px;width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 38% 36%,#FFFBE6,#F5E6A8 60%,#E8CF7A);box-shadow:0 0 40px 14px rgba(255,246,200,.55);opacity:0;pointer-events:none}
+.rkfull.on{opacity:1}.rkfull.rise{animation:rkmoon 1.3s cubic-bezier(.2,.8,.3,1) both}
+@keyframes rkmoon{from{opacity:0;transform:translateY(160px) scale(.7)}to{opacity:1;transform:none}}
+.rkst .scgif{display:none;flex:none;height:160px;max-width:260px;object-fit:cover;border-radius:10px;border:4px solid #2A2E45}
+.rkst.rkgifon .scgif{display:block;animation:rkpop .45s cubic-bezier(.3,1.5,.5,1)}
+.rknp.on{display:flex;flex-direction:column;gap:6px;position:relative;background:#F4EFE2;border:3px solid #2A2E45;border-radius:6px;padding:14px 20px;transform:rotate(-1.2deg);box-shadow:0 6px 0 rgba(0,0,0,.25);font-family:Georgia,'Frank Ruhl Libre',serif;color:#2A2E45}
+.rknpm{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px double #2A2E45;padding-bottom:6px}
+.rknpm b{font:900 32px Georgia,serif;letter-spacing:.5px}.rknpm span{font:900 44px Georgia,serif;color:#B03A2E}
+.rknph{margin:4px 0 0;font:700 22px Georgia,serif;letter-spacing:2px;color:#6B7190}
+.rknpt{margin:0;font:400 25px/1.35 Georgia,serif}
+.rknpd{display:flex;align-items:center;gap:12px;background:#fff;border-radius:6px;padding:8px 12px}.rknpd img{height:34px}.rknpd b{font:800 28px 'Rubik',Arial,sans-serif;color:#7038F8}
+.rknps{position:absolute;inset-inline-end:16px;bottom:22px;font:900 34px 'Rubik',Arial,sans-serif;font-style:normal;color:#E5484D;border:5px solid #E5484D;border-radius:10px;padding:2px 14px;transform:rotate(-14deg) scale(2.2);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.rknp.old .rknps{opacity:.9;transform:rotate(-14deg) scale(1)}.rknp.old .rknpd{text-decoration:line-through;text-decoration-color:#E5484D;text-decoration-thickness:3px}
+.rkfy.on{display:flex;justify-content:center;align-items:center;gap:14px;font:400 26px var(--pixel);color:#4A4F63}
+.rkfy i{font-style:normal;color:#fff;padding:8px 14px 6px;border-radius:8px;background:#A8A878}.rkfy i.mnt1{background:#EE99AC}
 /* round 100: Mt. Moon (s-moon) */
 .mnmap{background:#0B0E1C}
 .mnhouse>.lsimg{filter:brightness(.38) saturate(.7)}
@@ -1991,7 +2020,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795805062';
+const BUILDV='1795821033';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -4822,10 +4851,10 @@ function lsParApply(st,k,stepIn){const sp=lsSpots();lsZoom(k<=3?sp.pika:null,1.6
 const MN_Z=2,MN_BW=946,MN_BH=704,MN_TS=22,MN_MAP={house:['img/mn-house.webp',413,345],moon:['img/mn-moon.webp',1000,622]};
 const MN_GRID={"moon":{"ox":0,"oy":0,"g":["#############################################","#############################################","#############################################","#############################################","#############################################","#############################################","#############################################","#############################################","################.####.#######################","#################.##.########################","#########.######....#########################","#########...####....##..........#############","###########.####...###..........#############","###########.####...###..........#############","###############.####......###################","###############...........###################","###############.......#######################","###########.#####################.###########","###########...###########........############","#############............####################","#############################################","#############################################","#############################################","#############################################","#############################################","#############################################","#############################################","#############################################"]},"house":{"ox":-6,"oy":-12,"g":["####################","####################","####################","####################","#..................#","#..................#","#..................#","##....########....##","##....########....##","#.....########.....#","#.....########.....#","##....########....##","##................##","#..................#","#..................#","#..................#","####################"]}};
 // [sheet, cell w, cell h, columns, rows, shown at, walking frames]; people's rows are d/l/r/u
-const MN_SPR={oldman:['img/mn-oldman.png',22,28,3,4,2,[1,0,2,0]],designer:['img/mn-designer.png',32,48,4,4,2,[1,2,3,0]],jacinthe:['img/mn-jacinthe.png',64,64,4,4,1,[1,2,3,0]],clef:['img/mn-clef.png',28,30,8,4,2,null],drago:['img/mn-drago.png',36,40,3,2,2,null]};
+const MN_SPR={oldman:['img/mn-oldman.png',22,28,3,4,2,[1,0,2,0]],designer:['img/mn-designer.png',32,48,4,4,2,[1,2,3,0]],jacinthe:['img/mn-jacinthe.png',64,64,4,4,1,[1,2,3,0]],clef:['img/mn-clef.png',28,30,8,4,2,null],elsa:['img/mn-elsa.png',48,56,4,4,1,[1,2,3,0]],kat:['img/mn-kat.png',48,56,4,4,1,[1,2,3,0]],bey:['img/mn-bey.png',48,56,4,4,1,[1,2,3,0]],drago:['img/mn-drago.png',36,40,3,2,2,null]};
 // one height for everyone: a person is ~25 px of HGSS art = 34 px of these maps (×1.375) → 69 world px. Measured: players 25 px at 2x,
 // Oak 20 at 3x, the old man 23 at 2x, the designer 40 at 2x, Jacinthe 62 at 1x; Clefairy (0.6 m) a little smaller, Dragonite (2.2 m) taller
-const MN_SC={p:1.375,oak:1.15,oldman:1.43,designer:.86,jacinthe:1.12,clef:1.05,drago:1.3};
+const MN_SC={p:1.375,oak:1.15,oldman:1.43,designer:.86,jacinthe:1.12,clef:1.05,drago:1.3,elsa:1.42,kat:1.48,bey:1.5};
 const MN_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],old:[['הזקן','Old man'],'img/tr-oldman.webp'],des:[['מעצב המשחק','The game designer'],'img/tr-designer.webp'],jac:[['ז׳סינת','Jacinthe'],'img/tr-jacinthe.webp']};
 const MN_YEARS=['2010','2013','2015','2018'],MN_T=12000;
 const MN_GIF=[['img/fem-elsa.gif','סרט של דיסני: האהבה שמצילה היא של אחיות, לא של נסיך','A Disney film: the love that saves is between sisters, not a prince'],
@@ -5040,7 +5069,8 @@ const RK_EVT={vaporeon:'water',flareon:'fire',jolteon:'electric',glaceon:'ice',e
 const RK_W={f:'gym',a:'gym',g:'safari',v:'gym',b:'gym',c:'corner',w:'gym',d:'gym',m:'moon',x:'gym',e:'gym'},RK_TINT={g:'tg',c:'tb',m:'tp'};
 const RK_COL=['#7AC74C','#6390F0','#F95587'],RK_PSP='#F2C94C',RK_GK=['g','b','p','psp'];
 const RK_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],jes:[['ג׳סי','Jessie'],'img/tr-jessie.webp'],jam:[['ג׳יימס','James'],'img/tr-james.webp'],meo:[['מיאות׳','Meowth'],'img/tr-meowth.webp'],
-  gio:[['ג׳ובאני','Giovanni'],'img/tr-giovanni.webp'],jac:[['ז׳סינת','Jacinthe'],'img/tr-jacinthe.webp'],rkt:[['צוות רוקט','Team Rocket'],'img/tr-rocket.webp'],hat:[['מצנפת המיון','The Sorting Hat'],'img/rk-hat.png']};
+  gio:[['ג׳ובאני','Giovanni'],'img/tr-giovanni.webp'],jac:[['ז׳סינת','Jacinthe'],'img/tr-jacinthe.webp'],rkt:[['צוות רוקט','Team Rocket'],'img/tr-rocket.webp'],hat:[['מצנפת המיון','The Sorting Hat'],'img/rk-hat.png'],
+  elsa:[['אלזה','Elsa'],'img/tr-elsa.webp','img/fem-elsa.gif'],kat:[['קטניס','Katniss'],'img/tr-katniss.webp','img/fem-katniss.gif'],bey:[['ביונסה','Beyoncé'],'img/tr-beyonce.webp','img/fem-bey.gif']};
 // [key, he, en, who, options]: the key's first letter is the section (RK_W); 'full' = the colour is back (Meowth's eyes), 'auto' = goes on by itself
 SC['rk-4']={rk:1,part:2,label:['למה דווקא פוקימון?','Why Pokémon?'],drop:['c-thinkers','c-cmt','c-pixels','s-fairy'],bar:'c-urge',name:['פרופ׳ אוק','Prof. Oak'],
   lines:n=>{const g=sgF,T=(he,en)=>[he,en];return [
@@ -5050,9 +5080,9 @@ SC['rk-4']={rk:1,part:2,label:['למה דווקא פוקימון?','Why Pokémon
     ['f3','האם היא מפורטת מספיק? האם היא מחושבת מספיק? האם היא מתעדכנת מספיק?','Is it detailed enough? Is it calculated enough? Does it update enough?','oak'],
     ['f4',`${n}, ${g('לך','לכי')} לשולחן ו${g('בחר','בחרי')} כדור.`,`${n}, go to the table and pick a ball.`,'oak','pick'],
     ['a0','אה! בחרת לראות את המציאות דרך המשקפיים של אבות הסוציולוגיה!','Ah! You chose to see reality through the glasses of the fathers of sociology!','oak'],
-    ['a1','דורקהיים ומרקס. פרדיגמה בת 150 שנה, שגילתה כמה החברה מעצבת אותנו.','Durkheim and Marx. A 150-year-old paradigm that found out how much society shapes us.','oak'],
-    ['a2','דורקהיים ראה חברה אחת. מרקס ראה שני מעמדות במאבק.','Durkheim saw one society. Marx saw two classes in struggle.','oak'],
-    ['a3',`${g('קח','קחי')} אותם, ונבדוק אם הם עומדים במבח—`,'Take them, and let\'s see if they pass the te—','oak','auto'],
+    ['a1','אמיל דורקהיים, צרפת, 1893: החברה היא כמו גוף אחד. כל אחד מאיתנו הוא איבר, וערכים משותפים מחזיקים את כולם יחד.','Émile Durkheim, France, 1893: society is like one body. Each of us is an organ, and shared values hold everyone together.','oak'],
+    ['a2','קרל מרקס, גרמניה, 1848: החברה מחולקת לשני מעמדות, בעלי הרכוש והעובדים, וההיסטוריה היא המאבק ביניהם.','Karl Marx, Germany, 1848: society is split into two classes, the owners and the workers, and history is the struggle between them.','oak'],
+    ['a3',`שניהם ייסדו את הסוציולוגיה. ${g('קח','קחי')} אותם, ונבדוק אם הם עומדים במבח—`,'Together they founded sociology. Take them, and let\'s see if they pass the te—','oak','auto'],
     ['a4','...מה זה?!','...what\'s that?!','oak','dark'],
     ['a5','היכונו לצרות!','Prepare for trouble!','jes'],
     ['a6','ועוד כפליים!','And make it double!','jam'],
@@ -5095,19 +5125,24 @@ SC['rk-4']={rk:1,part:2,label:['למה דווקא פוקימון?','Why Pokémon
     ['d3',`${g('קח','קחי')} אותם, ונב—`,'Take them, and let\'s—','oak','auto'],
     ['d4','כן, כן. היכונו לצרות, כפליים, וכל זה.','Yes, yes. Prepare for trouble, make it double, all that.','oak','dark'],
     ['d5','היי! זו השורה שלנו!','Hey! That\'s our line!','jam','grab'],
-    ['m0','הר הירח. כאן מסתתרת אבן הירח, וקלפיירי רוקדים סביבה.','Mt. Moon. The Moon Stone hides here, and Clefairy dance around it.','jes'],
-    ['m1','ההורוסקופ שלנו לחודש: הסוג החזק ביותר ינצח!','Our horoscope for the month: the strongest type will win!','jam'],
-    ['m2','ומי החזק ביותר? הדרקון! הבוס השאיל לנו דרגונייט.','And who\'s the strongest? The Dragon! The boss lent us a Dragonite.','jes'],
-    ['m3','דרגונייט, דרגון רייג׳!','Dragonite, Dragon Rage!','jes','rage'],
-    ['m4','זה לא משפיע על קלפיירי...','It doesn\'t affect Clefairy...','sys'],
-    ['m5','בלתי אפשרי! במפת הכוכבים קלפיירי הוא נורמלי!','Impossible! On the star map, Clefairy is Normal!','jes'],
-    ['m6','המפה שלכם ישנה. פוקימון עדכנה אותה מזמן. נחשו מתי?','Your map is old. Pokémon updated it long ago. Guess when?','meo','full'],
-    ['m7','2013. בשנה הזו נולד סוג חדש: פיה.','2013. That year a new type was born: Fairy.','meo','full'],
-    ['m8','באותה תקופה קם בעולם כוח חדש: נשי, ורוד ועדין.','Back then a new power rose in the world: feminine, pink and gentle.','jac','full'],
-    ['m9','והסוג היחיד שהדרקון ה״גברי״ לא יכול לגעת בו? הוורוד מכולם.','And the one type the "manly" Dragon can\'t touch? The pinkest of them all.','jac','full'],
-    ['m10','צוות רוקט עף שוב!','Team Rocket\'s blasting off again!','rkt','full'],
+    ['m0','ששש! הפעם התוכנית לא יכולה להיכשל. משקפי האסטרולוגיה גילו לנו בדיוק מתי יעלה הירח המלא, ומתי הקלפיירי יצאו לרקוד מולו.','Shh! This time the plan can\'t fail. The astrology glasses told us exactly when the full moon rises, and when the Clefairy come out to dance under it.','jes'],
+    ['m1','הנה הם, בדיוק בזמן! ג׳סי, את פשוט גאון!','There they are, right on time! Jessie, you\'re a genius!','jam'],
+    ['m2','אני יודעת. אבל קודם צריך להביס אותם. ג׳יימס, מה אומר ההורוסקופ?','I know. But first we have to beat them. James, what does the horoscope say?','jes'],
+    ['m3','מזל שגנבתי אותו מההשתלמות ששלחו אותנו אליה, ״הרשעים והנכונים של 2013״!','Lucky I stole it from that course they sent us to, "The Wicked and the Right of 2013"!','jam'],
+    ['m4','מרקורי בהתנגשות עם נפטון, והסוג החזק ביותר הוא... דרקון! שום דבר לא עומד בפניו!','Mercury clashes with Neptune, and the strongest type is... Dragon! Nothing can stand against it!','jam'],
+    ['m5','הבוס השאיל לנו דרגונייט. דרגונייט, דרגון רייג׳!','The boss lent us a Dragonite. Dragonite, Dragon Rage!','jes','rage'],
+    ['m6','זה לא משפיע על קלפיירי...','It doesn\'t affect Clefairy...','sys'],
+    ['m7','בלתי אפשרי! ככה כתוב בכוכבים!','Impossible! It\'s written in the stars!','jes'],
+    ['m8','...מי אתן?!','...who are you?!','jes'],
+    ['m9','בסרט שלי, האהבה שמצילה היא בין אחיות. לא צריך נסיך.','In my film, the love that saves is between sisters. No prince needed.','elsa'],
+    ['m10','ואני נערה שמובילה מהפכה. הסרט שלי הוא הרווחי ביותר של 2013 בארה״ב.','And I\'m a girl who leads a revolution. My film is the top-grossing film of 2013 in the US.','kat'],
+    ['m11','ואני הכנסתי לשיר שלי נאום: כולנו צריכים להיות פמיניסטים.','And I put a speech into my song: We should all be feminists.','bey'],
+    ['m12','העיתון שלכם לא מעודכן. זמן קצר אחריו העולם השתנה, ופוקימון השתנתה איתו: נולד סוג חדש, פיה.','Your paper is out of date. Soon after it the world changed, and Pokémon changed with it: a new type was born, Fairy.','bey','full'],
+    ['m13','נשי, ורוד ועדין. והדרקון ה״גברי״? לא יכול לגעת בו.','Feminine, pink and gentle. And the "manly" Dragon? It can\'t touch it.','bey','full'],
+    ['m14','בפעם הבאה תגנבו עיתון מעודכן!','Next time, steal an up-to-date paper!','meo','full'],
+    ['m15','צוות רוקט עף שוב!','Team Rocket\'s blasting off again!','rkt','full'],
     ['x0','האסטרולוגיה לא השתנתה אלפיים שנה, גם כשהשמיים עצמם זזו.','Astrology hasn\'t changed in 2,000 years, even when the sky itself moved.','oak'],
-    ['x1','פוקימון השתנתה תוך 17 שנה, כי העולם השתנה. האסטרולוגיה נכשלה במבחן העדכון.','Pokémon changed within 17 years, because the world changed. Astrology failed the updating test.','oak'],
+    ['x1','פוקימון התעדכנה ברגע שהעולם השתנה. משקפי האסטרולוגיה נכשלו במבחן העדכון.','Pokémon updated as soon as the world changed. Astrology\'s glasses failed the updating test.','oak'],
     ['e0','כל זוג ראה משהו אמיתי. אבל אף אחד מהם לא עבר את שלושת המבחנים.','Each pair saw something real. But none of them passed all three tests.','oak'],
     ['e1','אבל יש זוג אחד שעומד בשלושתם.','But there is one pair that passes all three.','oak'],
     ['e2','הנה הוא, כאן בכיס: הפוקה־סושיאל פרדיגמה.','Here it is, right here in my pocket: the Poké-Social Paradigm.','oak'],
@@ -5126,8 +5161,9 @@ const RK_SF={jes:[226,432],jam:[246,458],meo:[212,462],cam:[300,305,560,499],bal
   two:[[408,446],[430,442],[422,462],[490,442],[402,466],[512,446],[498,462],[520,466]],white:[3,5,6,7],aside:[528,488]};
 // the Game Corner: Team Rocket under the prize counter; the battle on a screen over the floor
 const RK_GC={jes:[34,178],jam:[62,178],meo:[48,202],cam:[0,0,288,240]};
-// Mt. Moon: Team Rocket where the old man stood; Dragonite and Clefairy as in s-moon
-const RK_MN={jes:[24,14],jam:[25,13],meo:[26,13]};
+// Mt. Moon: Team Rocket hide behind the tree; Dragonite and Clefairy as in s-moon; Elsa, Katniss and Beyoncé come out of the cave (fem0)
+// and stand in a row (fem), the one speaking a step forward
+const RK_MN={jes:[22,12],jam:[22,13],meo:[23,12],fem0:[30,10],fem:{elsa:[25,12],kat:[26,12],bey:[27,12]},fwd:{elsa:[25,13],kat:[26,13],bey:[26,13]}};
 const rkFeet=(w,t)=>w==='gym'||w==='moon'?mnFeet(w,t):t;
 function rkActorHTML(k,name){const s=mnSpr(k),f=(MN_GRID[S.mn.world]?.ts||22)/22;return `<div class="lsp mna" data-k="${k}"${/^p:/.test(k)?` data-p="${k.slice(2)}"`:''} style="display:none">${name?`<b>${esc(name)}</b>`:''}<i class="lks" style="${s.st};left:${-s.w/2}px;top:${-s.h+3}px;transform:scale(${(s.s*f).toFixed(3)});transform-origin:50% ${s.h-3}px"></i></div>`}
 const rkGi=(r,cls)=>`<img class="rkgi ${cls||''}" src="img/rk-gl-${RK_GK[r]}.png" alt="">`;
@@ -5148,7 +5184,7 @@ function rkWorldHTML(w){const[img,mw,mh]=MN_MAP[w],Z=MN_Z,pl=mnPpl();S.mnN={};pl
       `<svg class="rkrope" id="rkrope" viewBox="0 0 ${mw} ${mh}" style="width:${mw*Z}px;height:${mh*Z}px"><line x1="${B[0]}" y1="${B[1]}" x2="${A[0]}" y2="${A[1]-22}" pathLength="100"/></svg>`+
       `<svg class="rknet" id="rknet" viewBox="0 0 100 60" preserveAspectRatio="none" style="left:${(A[0]-18)*Z}px;top:${(A[1]-30)*Z}px;width:${36*Z}px;height:${30*Z}px">${[...Array(11)].map((_,i)=>`<line x1="${i*10}" y1="0" x2="${i*10}" y2="60"/>`).join('')}${[...Array(7)].map((_,i)=>`<line x1="0" y1="${i*10}" x2="100" y2="${i*10}"/>`).join('')}</svg>`+
       `<div class="rkbal" id="rkbal" style="left:${B[0]*Z}px;top:${B[1]*Z}px"><img src="img/rk-balloon.png" alt=""></div>`}
-  else if(w==='moon')extra=`<i class="mnmoonl" style="left:${MN_RING.c[0]*Z}px;top:${(MN_RING.c[1]-30)*Z}px"></i>${[0,1,2,3].map(i=>rkActorHTML('clef'+i)).join('')}${rkActorHTML('drago')}${rkActorHTML('jacinthe')}`;
+  else if(w==='moon')extra=`<i class="mnmoonl" style="left:${MN_RING.c[0]*Z}px;top:${(MN_RING.c[1]-30)*Z}px"></i>${[0,1,2,3].map(i=>rkActorHTML('clef'+i)).join('')}${rkActorHTML('drago')}${['elsa','kat','bey'].map(k=>rkActorHTML(k)).join('')}`;
   return `<div class="lsin mn${w} rk${w}" id="mnin" style="width:${mw*Z}px;height:${mh*Z}px"><img class="lsimg" src="${img}" alt="" style="width:${mw*Z}px;height:${mh*Z}px">${extra}${tr}</div>`}
 function rkSetWorld(w){if(S.mn.world===w&&$('#mnin'))return false;S.mn.world=w;clearInterval(S.mnDance);$('#mnw').innerHTML=rkWorldHTML(w);
   $('#mnname').textContent=ll(...({gym:['הג׳ים של סלאדון','CELADON GYM'],safari:['ספארי זון','SAFARI ZONE'],corner:['קזינו סלאדון','CELADON GAME CORNER'],moon:['הר הירח','MT. MOON']})[w]);return true}
@@ -5156,7 +5192,9 @@ function rkEnter(it,atEnd){const C=S.sc,n=scBeats(it.id).length;C.b=atEnd?n-1:0;
   rkBuild(it,!atEnd);rkApply(C.b,!atEnd);if(!atEnd)music(null)}
 function rkBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',ml=EN?1920-60-MN_BW:60;
   const board=`<div class="rkbd" id="rkbd"><div class="rkr rkh"><span></span>${RK_TEST.map(t=>`<b>${ll(...t)}</b>`).join('')}</div>${[0,1,2,3].map(r=>`<div class="rkr" data-r="${r}">${rkGi(r)}<span>${r<3?ll(...RK_PAR[r]):ll('הפוקה־סושיאל פרדיגמה','The Poké-Social Paradigm')}</span>${[0,1,2].map(t=>`<i data-t="${t}"></i>`).join('')}</div>`).join('')}</div>`;
-  const th=[['durkheim',1,['חברה','society']],['marx',2,['מעמדות','classes']]].map(([t,k,w])=>`<figure><img src="img/th-${t}.webp" alt=""><b>${k}</b><small>${ll(...w)}</small></figure>`).join('');
+  const th=[['durkheim',['אמיל דורקהיים','Émile Durkheim'],['צרפת · 1893','France · 1893'],['החברה היא גוף אחד, מחובר בערכים משותפים.','Society is one body, held together by shared values.'],'<i class="rkth1"></i>'],
+    ['marx',['קרל מרקס','Karl Marx'],['גרמניה · 1848','Germany · 1848'],['שני מעמדות במאבק: בעלי הרכוש והעובדים.','Two classes in struggle: owners and workers.'],'<i class="rkth2"><i></i><i></i></i>']]
+    .map(([t,n,w,d,ic],i)=>`<div class="rkthc" data-i="${i}"><img src="img/th-${t}.webp" alt=""><div><b>${ll(...n)}</b><small>${ll(...w)}</small><p>${ll(...d)}</p></div>${ic}</div>`).join('');
   const hp=[['gryffindor','אומץ','courage'],['slytherin','שאפתנות','ambition'],['ravenclaw','חוכמה','wisdom'],['hufflepuff','נאמנות','loyalty']].map(([h,he,en])=>`<figure><img src="img/hp-${h}.png" alt=""><small>${ll(he,en)}</small></figure>`).join('');
   const zd=URG_ZD.map(([k])=>`<img src="img/zd-${k}.png" alt="">`).join('');
   const box=(n,l)=>`<div class="rkbx n${n}">${l.map(t=>`<i>${t}</i>`).join('')}</div>`;
@@ -5169,8 +5207,9 @@ function rkBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.que
     <div class="rkin rkev" data-s="ev">${evs}</div>
     <div class="rkin rkhs" data-s="hs"><div><img src="img/s130.webp" alt=""><span>${ll('גריפינדור','Gryffindor')}</span><img src="img/hp-gryffindor.png" alt=""></div><div><img src="img/s25.webp" alt=""><span>${ll('הפלפאף','Hufflepuff')}</span><img src="img/hp-hufflepuff.png" alt=""></div></div>
     <div class="rkin rkbet" data-s="bet" id="rkbet"></div>
-    <div class="mntvrow rkin" data-s="tv" id="rktv">${MN_GIF.map(([g,he,en],i)=>`<figure class="on" data-i="${i}"><img src="${g}" alt=""><figcaption>${ll(he,en)}</figcaption></figure>`).join('')}</div>
-    <div class="mnyrs rkin" data-s="yr" id="rkyrs">${MN_YEARS.map(y=>`<div class="mnyr" data-y="${y}"><b>${y}</b><span></span></div>`).join('')}</div><p class="mnclk rkin" data-s="yr" id="rkclk"></p></div>`;
+    <div class="rkin rknp" data-s="np" id="rknp"><div class="rknpm"><b>${ll('הרשעים והנכונים','THE WICKED & THE RIGHT')}</b><span>2013</span></div><p class="rknph">${ll('ההורוסקופ','HOROSCOPE')} ☾</p>
+      <p class="rknpt">${ll('מרקורי בהתנגשות עם נפטון.','Mercury clashes with Neptune.')}</p><div class="rknpd"><img src="img/ic-dragon.webp" alt=""><b>${ll('הסוג החזק ביותר: דרקון!','Strongest type: DRAGON!')}</b></div><p class="rknpt">${ll('שום דבר לא עומד בפניו.','Nothing can stand against it.')}</p><i class="rknps">${ll('לא מעודכן','OUT OF DATE')}</i></div>
+    <div class="rkin rkfy" data-s="fy" dir="ltr"><i class="mnt0">NORMAL</i> → <i class="mnt1">FAIRY</i></div></div>`;
   const bt=`<div class="rkbt" id="rkbt" dir="ltr"><div class="rkbf" data-s="gy"><div class="rkhp"><b>GYARADOS</b><span>Lv50</span><div class="rkbar"><i id="rkhpg"></i></div><em class="rkhpn" id="rkhpn">170/170</em></div><img class="rkmon gy" src="anim/130.gif" alt=""><img class="rkhat" src="img/rk-hat.png" alt=""><span class="rkhs" id="rkhsg"></span></div>
     <div class="rkbf me" data-s="pk"><img class="rkmon pk" src="anim/25.gif" alt=""><img class="rkhat" src="img/rk-hat.png" alt=""><span class="rkhs" id="rkhsp"></span><div class="rkhp"><b>PIKACHU</b><span>Lv50</span><div class="rkbar"><i style="width:100%"></i></div></div></div><i class="rkbolt" id="rkbolt"></i></div>`;
   // the damage formula, the game's own: level, power 90, Pikachu's Sp. Atk 102 against Gyarados' Sp. Def 120, STAB, ×2 ×2, the random roll
@@ -5178,17 +5217,17 @@ function rkBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.que
   const slot=`<div class="rkslot" id="rkslot"><img class="rkcab" src="img/rk-slot.webp" alt="">${bt}<div class="rkfx" id="rkfx" dir="ltr">${fx.map(([t,s],i)=>`<span style="--i:${i}"><b>${t}</b><small>${s}</small></span>`).join('')}</div></div>`;
   const dial=`<div class="rkdial" id="rkdial"><p>${ll('מצב המשקפיים','GLASSES MODE')}</p><div>${[['durkheim',ll('דורקהיים','Durkheim'),ll('חברה אחת','one society')],['marx',ll('מרקס','Marx'),ll('שני מעמדות','two classes')]].map(([t,n,s],i)=>`<figure data-i="${i}"><img src="img/th-${t}.webp" alt=""><b>${n}</b><small>${s}</small></figure>`).join('')}</div><i class="rkarrow">▼</i></div>`;
   cv.innerHTML=`<div class="st scst lsst mnst rkst" id="scst" dir="${EN?'ltr':'rtl'}">
-    <div class="lsmap mnmap rkmap" id="lsmap" style="left:${ml}px;top:44px;width:${MN_BW}px;height:${MN_BH}px"><div id="mnw"></div><div class="rkcall" id="rkcall"><img src="img/tr-giovanni.webp" alt=""><b>📞 ${ll('הבוס','THE BOSS')}</b></div>${dial}${slot}<i class="rkdark" id="rkdark"></i><img class="rkR" id="rkR" src="img/rk-r.png" alt=""><i class="rktint" id="rktint"></i><i class="rklens" id="rklens"></i><div class="lsname" id="mnname"></div><i class="mnblink" id="mnblink"></i><i class="mnflash" id="mnflash"></i></div>
+    <div class="lsmap mnmap rkmap" id="lsmap" style="left:${ml}px;top:44px;width:${MN_BW}px;height:${MN_BH}px"><div id="mnw"></div><div class="rkcall" id="rkcall"><img src="img/tr-giovanni.webp" alt=""><b>📞 ${ll('הבוס','THE BOSS')}</b></div>${dial}${slot}<i class="rkfull" id="rkfull"></i><i class="rkdark" id="rkdark"></i><img class="rkR" id="rkR" src="img/rk-r.png" alt=""><i class="rktint" id="rktint"></i><i class="rklens" id="rklens"></i><div class="lsname" id="mnname"></div><i class="mnblink" id="mnblink"></i><i class="mnflash" id="mnflash"></i></div>
     <div class="lspan rkpan" id="lspan">${pan}</div><div class="scbar0" id="scbar0">${bar}</div>
     <img class="sclect${fresh?' rise':''}" id="sclect" src="img/tr-oak.webp" alt="">
-    <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini"></div></div></div>`;
+    <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><img class="scgif" id="scgif" alt=""><div class="scmini off" id="twmini"></div></div></div>`;
   S.mn.world=''}
 // the stage at beat b; anim = stepping into it
 function rkApply(b,anim){const C=S.sc,B=scBeats(C.id),L=RK_L();++C.run;clearInterval(S.scT);clearTimeout(S.rkAT);C.typing=C.fly=0;const st=$('#scst');if(!st)return;
   const key=L[b][0],sec=key[0],opt=L[b][4]||'',who=L[b][3],stepIn=!!anim,run=C.run,M=S.rk;st.dataset.k=key;
-  {const w=RK_WHO[who],nm=st.querySelector('.scname'),lc=$('#sclect');st.classList.toggle('mnsys',who==='sys');if(w){if(nm)nm.textContent=ll(...w[0]);if(lc&&!lc.src.endsWith(w[1])){lc.src=w[1];lc.classList.remove('rise');void lc.offsetWidth;lc.classList.add('rise')}}}
+  {const w=RK_WHO[who],nm=st.querySelector('.scname'),lc=$('#sclect'),gf=$('#scgif');st.classList.toggle('mnsys',who==='sys');if(gf){const g=w?.[2]||'';st.classList.toggle('rkgifon',!!g);if(g&&!gf.src.endsWith(g))gf.src=g}if(w){if(nm)nm.textContent=ll(...w[0]);if(lc&&!lc.src.endsWith(w[1])){lc.src=w[1];lc.classList.remove('rise');void lc.offsetWidth;lc.classList.add('rise')}}}
   // the world and its colour
-  const w=RK_W[sec],map=$('#lsmap'),tint=RK_TINT[sec]||'',full=opt==='full'||opt==='ko'||(sec==='m'&&b>RK_K.m6);
+  const w=RK_W[sec],map=$('#lsmap'),tint=RK_TINT[sec]||'',full=opt==='full'||opt==='ko';
   const swap=stepIn&&S.mn.world&&S.mn.world!==w;
   const paint=()=>{map.classList.remove('tg','tb','tp');if(tint)map.classList.add(tint);const wasFull=map.classList.contains('full');map.classList.toggle('full',!!tint&&full);
     if(stepIn&&tint&&full&&!wasFull){const f=$('#mnflash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');sfx('sfx-shooting-star',.45)}
@@ -5196,13 +5235,12 @@ function rkApply(b,anim){const C=S.sc,B=scBeats(C.id),L=RK_L();++C.run;clearInte
   if(swap){const bl=$('#mnblink');bl.classList.add('on');sfx(tint?'sfx-teleport':'sfx-door',.45);C.fly=1;setTimeout(()=>{if(S.sc?.run!==run)return;rkSetWorld(w);paint();bl.classList.remove('on');C.fly=0},420)}
   else{rkSetWorld(w);paint()}
   // music: Team Rocket's theme from their entrance to the end of each scene; each place its own
-  if(stepIn){if(key==='a4'||key==='b4'||key==='d4'){BGM.cur=null;music('mus-rocket',{vol:.6,fade:80,loop:false});if(key==='d4')setTimeout(()=>{if(BGM.cur==='mus-rocket'&&BGM.a){BGM.a.pause();BGM.cur=null;BGM.a=null}},1300)}
-    const mu={g0:['mus-natpark',.2],c0:['mus-fr-gamecorner',.2],m0:['mus-fr-mtmoon',.2],v0:[null],w0:[null],x0:[null],e3:['mus-badge',.4]}[key];if(mu)music(mu[0],mu[0]?{vol:mu[1],loop:key!=='e3'}:undefined)}
+  if(stepIn){if(key==='a4'||key==='b4'||key==='d4'){BGM.cur=null;music('mus-rocket',{vol:.6,fade:80,loop:false});if(key==='d4')setTimeout(()=>{if(BGM.cur==='mus-rocket'&&BGM.a){BGM.a.pause();BGM.cur=null;BGM.a=null}},2300)}
+    const mu={g0:['mus-natpark',.2],c0:['mus-fr-gamecorner',.2],m0:['mus-fr-mtmoon',.2],m8:['mus-halo',.32],v0:[null],w0:[null],x0:[null],e3:['mus-badge',.4]}[key];if(mu)music(mu[0],mu[0]?{vol:mu[1],loop:key!=='e3'}:undefined)}
   rkPanel(b,stepIn);
   // the phones: the pick, the bet, the year
   if(opt==='pick'){const r=rkRound(b+1);if(!M.pk||M.pk.r!==r){M.pk={r,sid:String(Date.now()%1e7),ph:'go',t:0};M.st=rkMeAt(b);M.walking=0}}else M.pk=null;
-  if(key==='m6'&&(stepIn||!M.yr))M.yr={sid:String(Date.now()%1e7),ph:'run',end:Date.now()+MN_T};if(M.yr){if(b===RK_K.m7)M.yr.ph='rev';else if(b>RK_K.m7)M.yr.ph='done';else if(b<RK_K.m6)M.yr=null}
-  M.bet=null;M.ph=M.pk?'pick':(M.yr&&(b===RK_K.m6||b===RK_K.m7))?'yr':'';
+  M.yr=null;M.bet=null;M.ph=M.pk?'pick':'';
   gamePub();rkPoll();
   scType(B[b].t,anim);
   // what plays by itself once the line is typed: the interruptions, the grab, Dragon Rage
@@ -5212,7 +5250,7 @@ function rkApply(b,anim){const C=S.sc,B=scBeats(C.id),L=RK_L();++C.run;clearInte
 function rkDark(b,stepIn,run){const K=RK_K,d=$('#rkdark'),R=$('#rkR'),on=b===K.a4||b===K.b4;if(!d)return;
   d.classList.toggle('on',on||(b===K.d4&&stepIn));R.classList.remove('pop');
   if(stepIn&&(on||b===K.d4)){void R.offsetWidth;R.classList.add('pop');R.classList.toggle('short',b===K.d4)}
-  if(stepIn&&b===K.d4)setTimeout(()=>{if(S.sc?.run===run)d.classList.remove('on')},1300)}
+  if(stepIn&&b===K.d4)setTimeout(()=>{if(S.sc?.run===run)d.classList.remove('on')},2300)}
 // the panel: the title, the board and what this beat shows
 function rkPanel(b,stepIn){const key=rkKey(b),sec=key[0],K=RK_K,r=rkRound(b);
   const eb={f:'CELADON GYM · 3 BALLS',a:'BALL 1 · PARADIGM',g:'THROUGH THE GREEN GLASSES',v:'TEST 1 · DETAILED',b:'BALL 2 · PARADIGM',c:'THROUGH THE BLUE GLASSES',w:'TEST 2 · CALCULATED',d:'BALL 3 · PARADIGM',m:'THROUGH THE PINK GLASSES',x:'TEST 3 · UPDATING',e:'POKÉ-SOCIAL PARADIGM'}[sec];
@@ -5224,21 +5262,21 @@ function rkPanel(b,stepIn){const key=rkKey(b),sec=key[0],K=RK_K,r=rkRound(b);
   bd.querySelectorAll('.rkr[data-r]').forEach(row=>{const i=+row.dataset.r,on=b>=open[i];row.classList.toggle('on',on);if(stepIn&&b===open[i]){row.classList.remove('in');void row.offsetWidth;row.classList.add('in')}
     row.querySelectorAll('i[data-t]').forEach(c=>{const t=+c.dataset.t,x=i<3&&t===i&&b>=fail[i],ok=i===3&&b>=K.e3;c.textContent=x?'✗':ok?'✓':'';c.className=x?'x':ok?'ok':'';if(stepIn&&((x&&b===fail[i])||(ok&&b===K.e3))){c.classList.add('in');sfx(x?'sfx-denied':'sfx-tink',.5)}})});
   // the info block
-  const S1=b<K.f2?'bl':b<=K.f4?'qs':b>=K.a1&&b<=K.a9?'th':b>=K.b1&&b<=K.b7?'hp':b>=K.d1&&b<=K.d5?'zd':b>=K.g1&&b<=K.g4?'res':b>=K.g5&&b<=K.g7?'ev':b>=K.c4&&b<=K.c7?'hs':b===K.m6||b===K.m7?'tv yr':b>=K.m8&&b<=K.m10?'tv':'';
+  const S1=b<K.f2?'bl':b<=K.f4?'qs':b>=K.a1&&b<=K.a9?'th':b>=K.b1&&b<=K.b7?'hp':b>=K.d1&&b<=K.d5?'zd':b>=K.g1&&b<=K.g4?'res':b>=K.g5&&b<=K.g7?'ev':b>=K.c4&&b<=K.c7?'hs':b>=K.m3&&b<=K.m11?'np':b>=K.m12&&b<=K.m14?'np fy':'';
   const on=new Set(S1.split(' ').filter(Boolean));$('#rki').classList.toggle('on',on.size>0);
   $('#rki').querySelectorAll('.rkin').forEach(e=>{const v=on.has(e.dataset.s);const was=e.classList.contains('on');e.classList.toggle('on',v);if(v&&!was&&stepIn){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});
-  $('#rki').querySelectorAll('.rkth figure').forEach((f,i)=>f.classList.toggle('n',b>=K.a2));
+  $('#rki').querySelectorAll('.rkthc').forEach((f,i)=>{const on=b>=(i?K.a2:K.a1),was=f.classList.contains('on');f.classList.toggle('on',on);f.classList.toggle('now',b===(i?K.a2:K.a1));if(on&&!was&&stepIn){f.classList.remove('in');void f.offsetWidth;f.classList.add('in')}});
   $('#rkzp').textContent=b>=K.d2?ll('השמיים זזו בערך ב־30°. המזלות לא זזו.','The sky moved about 30°. The signs didn\'t.'):ll('שיטה בת אלפיים שנה · 12 מזלות','A 2,000-year-old system · 12 signs');
   $('#rki').querySelectorAll('.rkrc').forEach(e=>{const n=+e.dataset.n;e.classList.toggle('on',n===1||b>=K.g2)});
   $('#rki').querySelectorAll('.rkqs p').forEach(q=>q.classList.toggle('on',b>=K.f3));
-  $('#rktv').classList.toggle('sm',b>=K.m8)}
+  $('#rknp').classList.toggle('old',b>=K.m12)}
 // where the subject stands: at the foot of the stem, then below the last ball opened, in the middle at the end
 function rkMeAt(b){const K=RK_K,n=(b>K.f4)+(b>K.v2)+(b>K.w2);if(b>=K.e0)return [6,12];return n?[RK_G.balls[rkBall(n-1)],12]:RK_G.me}
 // the actors at beat b; `into` = the beat being stepped into (its animation plays)
 function rkStage(b,into,run){const key=rkKey(b),sec=key[0],K=RK_K,w=S.mn.world,live=()=>S.sc?.run===run&&cur()?.id==='rk-4',M=S.rk,pl=mnPpl(),me=subjId();
   ['jessie','james','meowth'].forEach(k=>{const e=mnEl(k);e?.classList.remove('rkblast');mnSay(k,'')});
   $('#rkcall').classList.toggle('on',key==='g0'||key==='c6');if(into===b&&(key==='g0'||key==='c6'))sfx('sfx-excl',.5);
-  if(w!=='corner')$('#rkslot')?.classList.remove('on','zoom');if(w!=='safari')$('#rkdial')?.classList.remove('on');
+  if(w!=='corner')$('#rkslot')?.classList.remove('on','zoom');{const mo=$("#rkfull");mo?.classList.toggle('on',w==='moon'&&b>=K.m1);mo?.classList.toggle('rise',w==='moon'&&into===K.m1)}if(w!=='safari')$('#rkdial')?.classList.remove('on');
   if(w==='gym'){mnCam(RK_GCAM,false);const G=RK_G;mnAt('oak',G.oak,'d');
     // everyone in the hall; the subject at the foot of the stem until a pick, then at the table
     const others=pl.filter(({p})=>p.id!==me),spot=id=>id===me?rkMeAt(b):G.spots[others.findIndex(o=>o.p.id===id)%G.spots.length];
@@ -5254,7 +5292,7 @@ function rkStage(b,into,run){const key=rkKey(b),sec=key[0],K=RK_K,w=S.mn.world,l
     const tr={jessie:[[K.a5,K.a8],[K.b5,K.b6],[K.d4,K.d5]],james:[[K.a6,K.a8],[K.b5,K.b6],[K.d4,K.d5]],meowth:[[K.a7,K.a8],[K.b5,K.b6],[K.d4,K.d5]]},pos={jessie:G.jes,james:G.jam,meowth:G.meo};
     Object.entries(tr).forEach(([k,R],ki)=>{const inR=R.some(([a,z],ri)=>b>=a&&b<=z&&!(b===z&&into!==b&&M.grabbed?.[ri])),arr=R.some(([a])=>a===b&&into===b);if(!inR){mnPut(k,null);return}const face=k==='jessie'?'r':'l';
       if(!arr){mnAt(k,pos[k],face);return}
-      if(b===K.d4){mnPut(k,null);setTimeout(()=>{if(!live())return;mnAt(k,pos[k],face);mnFlash(mnFeet('gym',pos[k]));sfx('sfx-ball-poof',.5)},1300+ki*90);return}
+      if(b===K.d4){mnPut(k,null);setTimeout(()=>{if(!live())return;mnAt(k,pos[k],face);mnFlash(mnFeet('gym',pos[k]));sfx('sfx-ball-poof',.5)},2300+ki*90);return}
       mnPut(k,null);setTimeout(()=>{if(!live())return;mnGo(k,G.door,pos[k],face,150)},b===K.b5?ki*260:0)});
     // the end: the subject puts the real pair on, the gym fills with colour and everyone gets glasses
     $('#mnin').classList.toggle('pspc',b>=K.e4);pl.forEach(({p})=>{const e=mnEl('p:'+p.id);if(!e)return;let g=e.querySelector('.rkpg');if(b>=K.e4&&!g){e.insertAdjacentHTML('beforeend',`<i class="rkpg${p.id===me?' me':''}">${rkGi(3)}</i>`)}else if(b<K.e4)g?.remove()});
@@ -5262,10 +5300,10 @@ function rkStage(b,into,run){const key=rkKey(b),sec=key[0],K=RK_K,w=S.mn.world,l
     if(rkOpt(b)==='pick')rkPickPaint();return}
   if(w==='safari'){mnCam(RK_SF.cam,false);['jessie','james','meowth'].forEach(k=>mnPut(k,null));rkSafari(b,into,run)}
   // the other tinted scenes: Team Rocket on stage, facing the action
-  if(w==='moon'){mnCam(MN_CAM.moon,false);[['jessie',RK_MN.jes],['james',RK_MN.jam],['meowth',RK_MN.meo]].forEach(([k,t])=>mnAt(k,t,'l'));rkMoon(b,into,run);}
+  if(w==='moon'){mnCam(MN_CAM.moon,false);[['jessie',RK_MN.jes],['james',RK_MN.jam],['meowth',RK_MN.meo]].forEach(([k,t])=>mnAt(k,t,b>=K.m8?'r':'l'));rkMoon(b,into,run);}
   else if(w==='corner'){mnCam(RK_GC.cam,false);[['jessie',RK_GC.jes],['james',RK_GC.jam],['meowth',RK_GC.meo]].forEach(([k,p])=>mnPut(k,p,'r',0));rkCorner(b,into,run)}
   // blasting off: up and away, a twinkle
-  if([K.g7,K.c7,K.m10].includes(b)){if(into===b)rkBlast(run,key==='m10'?1500:key==='g7'?1500:300);else{['jessie','james','meowth'].forEach(k=>mnPut(k,null));$('#rkbal')?.classList.add('gone')}}}
+  if([K.g7,K.c7,K.m15].includes(b)){if(into===b)rkBlast(run,key==='m15'?1500:key==='g7'?1500:300);else{['jessie','james','meowth'].forEach(k=>mnPut(k,null));$('#rkbal')?.classList.add('gone')}}}
 function rkBlast(run,delay){setTimeout(()=>{if(S.sc?.run!==run)return;const bl=$('#rkbal');if(bl){bl.classList.remove('shake');bl.classList.add('rkblast')}['jessie','james','meowth'].forEach((k,i)=>{const e=mnEl(k);if(!e||e.style.display==='none')return;e.style.transition='none';e.classList.remove('rkblast');void e.offsetWidth;e.classList.add('rkblast');e.style.animationDelay=i*.06+'s'});sfx('sfx-faint-fall',.4);
   setTimeout(()=>{if(S.sc?.run!==run)return;const m=$('#lsmap');m.insertAdjacentHTML('beforeend','<i class="rkstar">✦</i>');sfx('sfx-tink',.7);setTimeout(()=>m.querySelector('.rkstar')?.remove(),1400)},1150)},delay)}
 // the green scene from the balloon: through Durkheim's mode the eight are one grey huddle; Jessie flips it to Marx's: black against white,
@@ -5301,22 +5339,32 @@ function rkCorner(b,into,run){const K=RK_K,live=()=>S.sc?.run===run,sl=$('#rkslo
   const hp=$('#rkhpg'),hn=$('#rkhpn'),done=b>K.c5||(b===K.c5&&into!==b);hp.style.transition='none';hp.style.width=done?'0%':'100%';hn.textContent=(done?0:170)+'/170';bt.classList.toggle('ko',done);bt.classList.remove('zap');
   fx.classList.remove('go');fx.classList.toggle('on',b===K.c5);fx.classList.toggle('all',b===K.c5&&into!==b);
   if(into===K.c5){void fx.offsetWidth;fx.classList.add('go');setTimeout(()=>{if(!live())return;bt.classList.add('zap');cmtCry(25,.5);sfx('sfx-denied',.35)},200);
-    [0,1,2,3,4,5,6].forEach(i=>setTimeout(()=>{if(live())sfx('sfx-tink',.25)},450+i*260));
+    [0,1,2,3,4,5,6].forEach(i=>setTimeout(()=>{if(live())sfx('sfx-tink',.25)},450+i*600));
     setTimeout(()=>{if(!live())return;hp.style.transition='width .9s linear';hp.style.width='0%';let v=170;const t=setInterval(()=>{v=Math.max(0,v-19);hn.textContent=v+'/170';if(!v||!live())clearInterval(t)},100);
-      setTimeout(()=>{if(!live())return;bt.classList.add('ko');sfx('sfx-faint-fall',.5);cmtCry(130,.4)},1000)},2400)}}
+      setTimeout(()=>{if(!live())return;bt.classList.add('ko');sfx('sfx-faint-fall',.5);cmtCry(130,.4)},1000)},5600)}}
 // the purple scene: Mt. Moon (the Clefairy dance, Dragonite, the FAIRY tag, Jacinthe, the Moonblast)
 function rkMoon(b,into,run){const K=RK_K,P=MN_P.moon,live=()=>S.sc?.run===run,G=mnFeet('moon',P.dra),Cf=mnFeet('moon',P.clf),O=mnFeet('moon',RK_MN.jes);
-  const fw=b>=K.m2;if(b<=K.m1||b>=K.m8)mnDance(true,fw?'clef0':null);else{mnDance(false);[1,2,3].forEach(i=>mnPut('clef'+i,mnRing(i),0,0))}
-  if(fw){if(into===K.m2){mnPut('clef0',mnRing(0),0,0);setTimeout(()=>{if(live())mnWalk('clef0',[mnRing(0),...mnPath('moon',[18,10],P.clf)],0,90,()=>mnPut('clef0',Cf,0,4))},900)}else if(into!==K.m10)mnPut('clef0',Cf,0,4)}
+  // the Clefairy: none before the moon rises (m0); they come out on m1 and dance; one goes to fight Dragonite (m5); the rest stop to watch,
+  // and dance again once Fairy is born (m12)
+  const fw=b>=K.m5,watch=b>=K.m5&&b<K.m12;
+  if(b<K.m1){mnDance(false);[0,1,2,3].forEach(i=>mnPut('clef'+i,null))}
+  else if(into===K.m1){mnDance(false);[0,1,2,3].forEach(i=>mnPut('clef'+i,null));[0,1,2,3].forEach(i=>setTimeout(()=>{if(!live())return;mnPut('clef'+i,mnRing(i),0,0);mnFlash(mnRing(i));sfx('sfx-tink',.35);if(i===3)mnDance(true)},1300+i*260))}
+  else if(watch){mnDance(false);[1,2,3].forEach(i=>mnPut('clef'+i,mnRing(i),0,0))}
+  else mnDance(true,fw?'clef0':null);
+  if(fw){if(into===K.m5){mnPut('clef0',mnRing(0),0,0);setTimeout(()=>{if(live())mnWalk('clef0',[mnRing(0),...mnPath('moon',[18,10],P.clf)],0,90,()=>mnPut('clef0',Cf,0,4))},900)}else if(into!==K.m15)mnPut('clef0',Cf,0,4)}
   {const el=mnEl('clef0');if(el&&!el.querySelector('.mntag'))el.insertAdjacentHTML('beforeend','<i class="mntag" style="display:none"></i>');const t=el?.querySelector('.mntag');
-   if(t){t.style.display=b>=K.m4&&b<=K.m9?'':'none';const fy=b>=K.m7&&into!==K.m7;t.textContent=fy?'FAIRY':'NORMAL';t.classList.toggle('fy',fy)}}
-  if(into===K.m7){const t=mnEl('clef0')?.querySelector('.mntag');if(t)setTimeout(()=>{if(!live())return;t.classList.add('flip');setTimeout(()=>{if(!live())return;t.textContent='FAIRY';t.classList.add('fy');t.classList.remove('flip');sfx('sfx-shooting-star',.55);mnSpark(Cf)},260)},400)}
-  if(into===K.m4){sfx('sfx-denied',.55);const c=mnEl('clef0');c?.classList.remove('mnhop');void c?.offsetWidth;c?.classList.add('mnhop')}
-  if(b<K.m2||b>K.m10||(b===K.m10&&into!==b))mnPut('drago',null);
-  else if(into===K.m2){mnPut('drago',null);setTimeout(()=>{if(!live())return;sfx('sfx-ball-toss',.6);mnShot('ball',[O[0]-6,O[1]-18],[G[0],G[1]-12],450,()=>{if(!live())return;sfx('sfx-ball-poof',.6);mnFlash(G);mnPut('drago',G,0,0);cmtCry(149,.6)})},500)}
+   if(t){t.style.display=b>=K.m6&&b<=K.m14?'':'none';const fy=b>=K.m12&&into!==K.m12;t.textContent=fy?'FAIRY':'NORMAL';t.classList.toggle('fy',fy)}}
+  if(into===K.m12){const t=mnEl('clef0')?.querySelector('.mntag');if(t)setTimeout(()=>{if(!live())return;t.classList.add('flip');setTimeout(()=>{if(!live())return;t.textContent='FAIRY';t.classList.add('fy');t.classList.remove('flip');sfx('sfx-shooting-star',.55);mnSpark(Cf)},260)},400)}
+  if(into===K.m6){sfx('sfx-denied',.55);const c=mnEl('clef0');c?.classList.remove('mnhop');void c?.offsetWidth;c?.classList.add('mnhop')}
+  if(b<K.m5||b>K.m15||(b===K.m15&&into!==b))mnPut('drago',null);
+  else if(into===K.m5){mnPut('drago',null);setTimeout(()=>{if(!live())return;sfx('sfx-ball-toss',.6);mnShot('ball',[O[0]-6,O[1]-18],[G[0],G[1]-12],450,()=>{if(!live())return;sfx('sfx-ball-poof',.6);mnFlash(G);mnPut('drago',G,0,0);cmtCry(149,.6)})},500)}
   else mnPut('drago',G,0,0);
-  if(b<K.m8)mnPut('jacinthe',null);else if(into===K.m8)mnGo('jacinthe',P.jac0,P.jac,'r',60);else mnAt('jacinthe',P.jac,'r');
-  if(into===K.m10){setTimeout(()=>{if(!live())return;mnFrames('clef0',2,[0,1,2,2,2],130,()=>mnPut('clef0',Cf,0,4));sfx('sfx-tink',.6);mnShot('mb',[Cf[0]+8,Cf[1]-18],[O[0],O[1]-22],520,()=>{if(!live())return;mnFlash(O);const d=mnEl('drago');d?.classList.add('mnhurt')})},200)}}
+  // Elsa, Katniss and Beyoncé: out of the cave on m8 (one after another), the one speaking a step forward
+  const F=RK_MN.fem,spk=x=>x>=K.m11?'bey':x===K.m10?'kat':x===K.m9?'elsa':'',at=(k,x)=>spk(x)===k?RK_MN.fwd[k]:F[k];
+  ['elsa','kat','bey'].forEach((k,i)=>{if(b<K.m8){mnPut(k,null);return}
+    if(into===K.m8){mnPut(k,null);setTimeout(()=>{if(live())mnGo(k,RK_MN.fem0,F[k],'l',80)},600+i*900);return}
+    const to=at(k,b),fr=at(k,b-1);if(into===b&&fr!==to)mnGo(k,fr,to,'l',70);else mnAt(k,to,'l')});
+  if(into===K.m15){setTimeout(()=>{if(!live())return;mnFrames('clef0',2,[0,1,2,2,2],130,()=>mnPut('clef0',Cf,0,4));sfx('sfx-tink',.6);mnShot('mb',[Cf[0]+8,Cf[1]-18],[O[0],O[1]-22],520,()=>{if(!live())return;mnFlash(O);const d=mnEl('drago');d?.classList.add('mnhurt')})},200)}}
 function rkRage(run,cb){const P=MN_P.moon,G=mnFeet('moon',P.dra),Cf=mnFeet('moon',P.clf);mnFrames('drago',1,[0,1,2,2,1,0],110,null);setTimeout(()=>{if(S.sc?.run!==run)return;mnShot('dr',[G[0]-10,G[1]-24],[Cf[0],Cf[1]-16],560,cb)},260)}
 // the grab: the floating glasses fly to James, and Team Rocket vanish in a puff
 function rkGrab(run){const M=S.rk,b=S.sc.b,r=rkRound(b),fl=$('#rkfloat'),J=mnFeet('gym',RK_G.jam);if(!fl)return;M.grabbed=M.grabbed||[];
