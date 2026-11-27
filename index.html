@@ -1203,7 +1203,7 @@ body:has(.intronudge) #introfab{display:none}
 .rkbd{display:none;flex-direction:column;gap:6px;font-size:22px}
 .rkbd.on{display:flex}
 .rkr{display:none;grid-template-columns:1fr 112px 112px 112px;align-items:center;gap:6px;min-height:46px;background:#F6F1E7;border-radius:12px;padding:2px 10px}
-.rkr.rkh{display:grid;background:none;min-height:0;font:700 19px 'Rubik',Arial,sans-serif;color:#4A4F63;text-align:center}
+.rkr.rkh{display:grid;background:none;min-height:0;font:700 17px 'Rubik',Arial,sans-serif;color:#4A4F63;text-align:center}
 .rkr.on{display:grid}
 .rkr.in{animation:rkpop .5s cubic-bezier(.3,1.6,.5,1)}
 .rkr>.rkgi{display:none}
@@ -1217,16 +1217,16 @@ body:has(.intronudge) #introfab{display:none}
 .rki.on{display:flex}
 .rkin:not(.on){display:none!important}
 .rkin.in{animation:rkpop .45s cubic-bezier(.3,1.5,.5,1)}
-.rkth.on,.rkhp.on{display:flex;gap:14px;justify-content:center}
+.rkth.on,.rkhw.on{display:flex;gap:14px;justify-content:center}
 .rkbl.on{display:flex;gap:60px;justify-content:center;padding:20px 0}
 .rkbl figure{margin:0;display:flex;flex-direction:column;align-items:center}
 .rkbl img{width:120px;image-rendering:pixelated;animation:rkbob 1.4s ease-in-out infinite}.rkbl figure:nth-child(2) img{animation-delay:-.45s}.rkbl figure:nth-child(3) img{animation-delay:-.9s}
 .rkbl b{font:400 34px var(--pixel);color:#9FA7C7}
-.rkth figure,.rkhp figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rkth figure,.rkhw figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px}
 .rkth img{height:100px;border-radius:12px}
 .rkth b{font:400 30px var(--pixel);color:#5FA83A;opacity:0}.rkth figure.n b{opacity:1}
-.rkth small,.rkhp small{font-size:20px;color:#4A4F63;font-weight:700}
-.rkhp img{height:96px;image-rendering:pixelated}
+.rkth small,.rkhw small{font-size:20px;color:#4A4F63;font-weight:700}
+.rkhw img{height:96px;image-rendering:pixelated}
 .rkzd.on{display:flex;flex-direction:column;align-items:center;gap:6px}
 .rkzg{display:grid;grid-template-columns:repeat(6,auto);gap:6px 14px}
 .rkzg img{height:58px;image-rendering:pixelated}
@@ -1255,6 +1255,70 @@ body:has(.intronudge) #introfab{display:none}
 .rkph{display:flex;gap:12px}
 .rkph button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:16px;border:3px solid #2A2E45;background:#FFFDF8;font:700 20px 'Rubik',Arial,sans-serif}
 .rkph img{height:90px}
+/* round 107: course 4, second pass: the dark entrance and the R, the balloon and the dial, the slot machine and the formula */
+.rkdark{position:absolute;inset:0;z-index:37;pointer-events:none;opacity:0;transition:opacity .5s;background:radial-gradient(circle at 50% 45%,rgba(40,0,10,.55),rgba(5,5,15,.9) 70%)}
+.rkdark.on{opacity:1}
+.rkR{position:absolute;left:50%;top:44%;width:250px;z-index:38;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(0);filter:drop-shadow(0 0 18px rgba(255,40,40,.9))}
+.rkdark.on+.rkR.pop{animation:rkRpop .8s cubic-bezier(.3,1.4,.5,1) forwards,rkRp 1.4s .8s ease-in-out infinite}
+@keyframes rkRpop{0%{opacity:0;transform:translate(-50%,-50%) scale(0) rotate(-25deg)}60%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(4deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+@keyframes rkRp{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.rkdial{position:absolute;right:18px;top:18px;z-index:41;display:none;background:rgba(22,26,46,.93);border:4px solid #7AC74C;border-radius:16px;padding:8px 14px 10px;color:#fff;text-align:center}
+.rkdial.on{display:block}
+.rkdial>p{margin:0 0 6px;font:400 13px var(--pixel);color:#B8F0A0;white-space:nowrap}
+.rkdial>div{display:flex;gap:12px;direction:ltr}
+.rkdial figure{margin:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;opacity:.38;transition:opacity .3s,transform .3s}
+.rkdial figure img{height:78px;width:66px;object-fit:cover;border-radius:10px;border:3px solid transparent}
+.rkdial figure b{font:700 17px 'Rubik',Arial,sans-serif}.rkdial figure small{font:400 14px 'Rubik',Arial,sans-serif;color:#cfd3e6}
+.rkdial[data-m="0"] figure[data-i="0"],.rkdial[data-m="1"] figure[data-i="1"]{opacity:1;transform:scale(1.06)}
+.rkdial[data-m="0"] figure[data-i="0"] img,.rkdial[data-m="1"] figure[data-i="1"] img{border-color:#F2C94C}
+.rkdial[data-m="0"] figure[data-i="0"]::before,.rkdial[data-m="1"] figure[data-i="1"]::before{content:'▼';position:absolute;top:-24px;color:#F2C94C;font-size:20px;animation:rkfl .8s infinite}
+.rkarrow{display:none}
+.rkdk .mna[data-k^="ev"] .lks,.rkmx .mna[data-k^="ev"] .lks{background-image:url(img/cm-eevee.png)!important}
+.rkmap.tg:not(.full) .rkdk .mna[data-k^="ev"] .lks{filter:brightness(0) invert(.38)}
+.rkmap.tg:not(.full) .rkmx .mna[data-k^="ev"] .lks{filter:brightness(0)}
+.rkmap.tg:not(.full) .rkmx .mna.rkw .lks{filter:brightness(0) invert(1) drop-shadow(0 0 1px #000)}
+.rkmx .mna.rkfight .lks{animation:rkfg .44s steps(2) infinite;animation-delay:inherit}
+@keyframes rkfg{50%{translate:0 -6px}}
+.rkbal{position:absolute;z-index:600;width:0;height:0}
+.rkbal img{position:absolute;left:-86px;top:-224px;width:172px;height:224px;image-rendering:pixelated;animation:rkbb 2.4s ease-in-out infinite}
+@keyframes rkbb{50%{translate:0 -8px}}
+.rkbal.in{animation:rkbalin 2s cubic-bezier(.3,.8,.4,1)}
+@keyframes rkbalin{from{transform:translate(-420px,-90px)}}
+.rkbal.shake img{animation:rkshk .09s steps(2) infinite;filter:drop-shadow(0 0 10px #FFE14D)}
+@keyframes rkshk{50%{translate:4px -2px}}
+.rkbal.rkblast{animation:rkblast 1.2s cubic-bezier(.5,0,.8,.6) forwards}
+.rkbal.gone{display:none}
+.rkrope{position:absolute;left:0;top:0;z-index:590;pointer-events:none}
+.rkrope line{stroke:#3B2A1A;stroke-width:1.3;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .6s ease-in}
+.rkrope.on line{stroke-dashoffset:0}
+.rknet{transform:translateY(-70px) scale(.25);transform-origin:50% 0;transition:transform .45s cubic-bezier(.3,1.4,.5,1),opacity .2s}
+.rkslot{position:absolute;inset:0;z-index:30;display:none;overflow:hidden;background:rgba(10,12,30,.6)}
+.rkslot.on{display:block}
+.rkcab{position:absolute;left:0;top:0;width:480px;height:878px;transform-origin:0 0;transform:translate(285px,10px) scale(.78);transition:transform 1.3s cubic-bezier(.5,0,.3,1)}
+.rkslot.zoom .rkcab{transform:translate(-431px,-1086px) scale(3.75)}
+.rkslot .rkbt{display:block;left:113px;top:46px;width:720px;height:488px;border:0;border-radius:4px;box-shadow:none;opacity:0;transition:opacity .4s}
+.rkslot.zoom .rkbt{opacity:1;transition-delay:1.1s}
+.rkhpn{flex-basis:100%;text-align:right;font:400 13px var(--pixel);margin-top:2px}
+.rkbf[data-s="gy"] .rkhs{top:184px}.rkbf.me .rkhs{top:192px;left:90px}
+.rkbt.hg .rkbf[data-s="gy"] .rkhs,.rkbt.hp2 .rkbf.me .rkhs{opacity:1}
+.rkhat{position:absolute;width:104px;image-rendering:pixelated;opacity:0;transform:translateY(-30px);transition:opacity .4s,transform .5s cubic-bezier(.3,1.6,.5,1);z-index:3}
+.rkbf[data-s="gy"] .rkhat{right:44px;top:-4px}.rkbf.me .rkhat{left:52px;top:18px;width:84px}
+.rkbt.hat1 .rkbf[data-s="gy"] .rkhat,.rkbt.hat2 .rkbf.me .rkhat{opacity:1;transform:none;animation:rkhatw 1.4s .5s ease-in-out infinite}
+@keyframes rkhatw{25%{rotate:-6deg}75%{rotate:6deg}}
+.rkfx{position:absolute;left:24px;right:24px;bottom:14px;z-index:5;display:none;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:6px 14px;background:rgba(22,26,46,.94);border:3px solid #F2C94C;border-radius:14px;padding:10px 14px}
+.rkfx.on{display:flex}
+.rkfx,.rkfx b{direction:ltr;unicode-bidi:isolate}
+.rkfx span{display:flex;flex-direction:column;align-items:center;gap:2px}
+.rkfx b{font:700 25px 'Rubik',Arial,sans-serif;color:#fff;white-space:nowrap}
+.rkfx small{font:400 14px 'Rubik',Arial,sans-serif;color:#F2C94C;white-space:nowrap}.rkfx small img{height:22px}
+.rkfx span:last-child b{background:#E5484D;border-radius:8px;padding:0 8px}
+.rkfx.go span{opacity:0;animation:rkfxin .3s forwards;animation-delay:calc(.45s + var(--i) * .26s)}
+@keyframes rkfxin{from{opacity:0;transform:translateY(10px) scale(.8)}to{opacity:1;transform:none}}
+.rkqs.on{display:flex;flex-direction:column;gap:14px}
+.rkqs p{margin:0;display:flex;align-items:center;gap:16px;font:700 30px 'Rubik',Arial,sans-serif;color:#9AA0B8;background:#F6F1E7;border-radius:14px;padding:12px 18px;transition:color .4s}
+.rkqs p b{flex:none;width:46px;height:46px;border-radius:50%;background:#C9CCD8;color:#fff;display:grid;place-items:center;font-size:24px;transition:background .4s}
+.rkqs p.on{color:#161A2E;animation:rkpop .5s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i) * 1.3s)}
+.rkqs p.on b{background:#E5484D}
 /* round 100: Mt. Moon (s-moon) */
 .mnmap{background:#0B0E1C}
 .mnhouse>.lsimg{filter:brightness(.38) saturate(.7)}
@@ -1927,7 +1991,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795760318';
+const BUILDV='1795805062';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -4967,7 +5031,7 @@ function mnStage(k,into,run,arrive){const live=()=>S.sc?.run===run&&cur()?.id===
 MN_MAP.gym=['img/tw-gym6.webp',208,320];MN_MAP.safari=['img/rk-safari.webp',816,584];MN_MAP.corner=['img/rk-corner.webp',288,240];
 // the gym's floor (16 px tiles): the sand cross under Oak, the table on row 10 (cols 5-7), the stem, the hall by the door (statues at 4 and 8)
 MN_GRID.gym={ox:0,oy:0,ts:16,g:['#############','#############','#############','#############','#############','#############','#############','#############','#############','#############',
-  '##.........##','##..#####..##','#####...#####','#####...#####','#####...#####','#...#...#...#','#...#...#...#','#...........#','#...........#','#############']};
+  '##.........##','##..#####..##','####.....####','#####...#####','#####...#####','#...#...#...#','#...#...#...#','#...........#','#...........#','#############']};
 MN_GRID.safari={ox:0,oy:0,ts:16,g:[]};MN_GRID.corner={ox:0,oy:0,ts:16,g:[]};
 MN_SPR.jessie=['img/ow-jessie.png',24,32,3,4,2,[1,0,2,0]];MN_SPR.james=['img/ow-james.png',24,32,3,4,2,[1,0,2,0]];MN_SPR.meowth=['img/ow-meowth.png',32,32,4,4,2,[1,2,3,0]];
 Object.assign(MN_SC,{jessie:1.3,james:1.3,meowth:.95,ev:2});
@@ -4976,57 +5040,60 @@ const RK_EVT={vaporeon:'water',flareon:'fire',jolteon:'electric',glaceon:'ice',e
 const RK_W={f:'gym',a:'gym',g:'safari',v:'gym',b:'gym',c:'corner',w:'gym',d:'gym',m:'moon',x:'gym',e:'gym'},RK_TINT={g:'tg',c:'tb',m:'tp'};
 const RK_COL=['#7AC74C','#6390F0','#F95587'],RK_PSP='#F2C94C',RK_GK=['g','b','p','psp'];
 const RK_WHO={oak:[['פרופ׳ אוק','Prof. Oak'],'img/tr-oak.webp'],jes:[['ג׳סי','Jessie'],'img/tr-jessie.webp'],jam:[['ג׳יימס','James'],'img/tr-james.webp'],meo:[['מיאות׳','Meowth'],'img/tr-meowth.webp'],
-  gio:[['ג׳ובאני','Giovanni'],'img/tr-giovanni.webp'],jac:[['ז׳סינת','Jacinthe'],'img/tr-jacinthe.webp'],rkt:[['צוות רוקט','Team Rocket'],'img/tr-rocket.webp']};
+  gio:[['ג׳ובאני','Giovanni'],'img/tr-giovanni.webp'],jac:[['ז׳סינת','Jacinthe'],'img/tr-jacinthe.webp'],rkt:[['צוות רוקט','Team Rocket'],'img/tr-rocket.webp'],hat:[['מצנפת המיון','The Sorting Hat'],'img/rk-hat.png']};
 // [key, he, en, who, options]: the key's first letter is the section (RK_W); 'full' = the colour is back (Meowth's eyes), 'auto' = goes on by itself
 SC['rk-4']={rk:1,part:2,label:['למה דווקא פוקימון?','Why Pokémon?'],drop:['c-thinkers','c-cmt','c-pixels','s-fairy'],bar:'c-urge',name:['פרופ׳ אוק','Prof. Oak'],
   lines:n=>{const g=sgF,T=(he,en)=>[he,en];return [
-    ['f0','בקורס הקודם למדנו מה זו פרדיגמה: המשקפיים שדרכם מפרשים את המציאות.','In the last course we learned what a paradigm is: the glasses you read reality through.','oak'],
-    ['f1',`${n}, עכשיו ${g('אתה עומד','את עומדת')} בפני בחירה. בכל כדור מחכה זוג משקפיים.`,`${n}, now you face a choice. In each ball, a pair of glasses is waiting.`,'oak'],
-    ['f2',`את הזוג ${g('שתבחר תרכיב','שתבחרי תרכיבי')}, ודרכו ${g('תפרש','תפרשי')} מעכשיו את העולם.`,'Whichever pair you choose, you\'ll put on, and from now on read the world through it.','oak'],
-    ['f3',`${g('בחר','בחרי')} בחוכמה! רק זוג שעומד בשלושה מבחנים יראה נכון: מפורט, מחושב, מתעדכן.`,'Choose wisely! Only a pair that passes three tests will see right: detailed, calculated, updating.','oak'],
-    ['f4',`רק כדור אחד כאן מכיל את הפוקה־סושיאל פרדיגמה. קדימה, ${g('לך','לכי')} לשולחן!`,'Only one ball here holds the Poké-Social Paradigm. Go on, to the table!','oak','pick'],
+    ['f0','בקורס הקודם למדנו מה זו פרדיגמה: משקפיים שדרכם מפרשים את המציאות.','In the last course we learned what a paradigm is: glasses you read reality through.','oak'],
+    ['f1',`${n}, בכל אחד משלושת הכדורים מחכה פרדיגמה, בצורת משקפיים. מי שמרכיב אותם רואה את העולם דרכה.`,`${n}, in each of the three balls a paradigm is waiting, in the shape of glasses. Whoever puts them on sees the world through it.`,'oak'],
+    ['f2','איך יודעים אם פרדיגמה טובה? בודקים שלושה דברים:','How do you know if a paradigm is good? You check three things:','oak'],
+    ['f3','האם היא מפורטת מספיק? האם היא מחושבת מספיק? האם היא מתעדכנת מספיק?','Is it detailed enough? Is it calculated enough? Does it update enough?','oak'],
+    ['f4',`${n}, ${g('לך','לכי')} לשולחן ו${g('בחר','בחרי')} כדור.`,`${n}, go to the table and pick a ball.`,'oak','pick'],
     ['a0','אה! בחרת לראות את המציאות דרך המשקפיים של אבות הסוציולוגיה!','Ah! You chose to see reality through the glasses of the fathers of sociology!','oak'],
-    ['a1','דורקהיים, מרקס וובר. פרדיגמה בת 150 שנה, שגילתה כמה החברה מעצבת אותנו.','Durkheim, Marx and Weber. A 150-year-old paradigm that found out how much society shapes us.','oak'],
-    ['a2','דורקהיים ראה חברה אחת, מרקס שני מעמדות, ובר ארבעה סוגי פעולה.','Durkheim saw one society, Marx two classes, Weber four types of action.','oak'],
+    ['a1','דורקהיים ומרקס. פרדיגמה בת 150 שנה, שגילתה כמה החברה מעצבת אותנו.','Durkheim and Marx. A 150-year-old paradigm that found out how much society shapes us.','oak'],
+    ['a2','דורקהיים ראה חברה אחת. מרקס ראה שני מעמדות במאבק.','Durkheim saw one society. Marx saw two classes in struggle.','oak'],
     ['a3',`${g('קח','קחי')} אותם, ונבדוק אם הם עומדים במבח—`,'Take them, and let\'s see if they pass the te—','oak','auto'],
-    ['a4','היכונו לצרות!','Prepare for trouble!','jes','auto'],
-    ['a5','ועוד כפליים!','And make it double!','jam','auto'],
-    ['a6','צוות רוקט! מיאות׳, זה נכון!','Team Rocket! Meowth, that\'s right!','meo'],
-    ['a7','המשקפיים האלה שלנו! הבוס רוצה משקפיים שקוראים בני אדם!','These glasses are ours! The boss wants glasses that read people!','jam','grab'],
-    ['a8','צוות רוקט! בואו נראה מה הם רואים עכשיו...','Team Rocket! Let\'s see what they\'re seeing now...','oak'],
-    ['g0','משפחת איווי מסתובבת בספארי. שמונה אחים. תביאו לי את כולם.','The Eevee family is roaming the Safari Zone. Eight siblings. Bring me all of them.','gio'],
-    ['g1','דרך המשקפיים של דורקהיים... הם בסך הכול חברה אחת!','Through Durkheim\'s glasses... they\'re all just one society!','jam'],
-    ['g2','של מרקס: שני מעמדות. של ובר: ארבעה סוגים. בקיצור, כולם אותו דבר.','Marx\'s: two classes. Weber\'s: four types. In short, they\'re all the same.','jes'],
-    ['g3','אז מלכודת אחת תספיק לכולם! הרשת החשמלית!','Then one trap will do for all of them! The electric net!','jam'],
-    ['g4','מה קורה פה?! הם מאותה משפחה!','What\'s going on?! They\'re from the same family!','jes'],
-    ['g5','הם לא אותו דבר! מים, אש, חשמל, קרח, דשא, על־חושי, אופל ופיה! שמונה אחים, שמונה סוגים!','They\'re not the same! Water, fire, electric, ice, grass, psychic, dark and fairy! Eight siblings, eight types!','meo','full'],
-    ['g6','וג׳ולטיאון? הוא אוכל חשמל לארוחת בוקר...','And Jolteon? He eats electricity for breakfast...','meo','full'],
+    ['a4','...מה זה?!','...what\'s that?!','oak','dark'],
+    ['a5','היכונו לצרות!','Prepare for trouble!','jes'],
+    ['a6','ועוד כפליים!','And make it double!','jam'],
+    ['a7','צוות רוקט! מיאות׳, זה נכון!','Team Rocket! Meowth, that\'s right!','meo'],
+    ['a8','המשקפיים האלה שלנו! איתם נבין כל פוקימון, נלכוד את מי שנרצה, והבוס יהיה מרוצה!','These glasses are ours! With them we\'ll understand every Pokémon, catch whoever we want, and the boss will be pleased!','jes','grab'],
+    ['a9','מעניין לאן הם הלכו...','I wonder where they went...','oak'],
+    ['g0','משפחת איווי מסתובבת בספארי. תביאו לי את החזק מביניהם.','The Eevee family is roaming the Safari Zone. Bring me the strongest of them.','gio'],
+    ['g1','דרך המשקפיים... אני לא רואה שום הבדל ביניהם. כולם אותו דבר!','Through the glasses... I can\'t see any difference between them. They\'re all the same!','jam'],
+    ['g2','תן לי לראות! טיפש, לא לחצת על הכפתור!','Let me see! Idiot, you didn\'t press the button!','jes'],
+    ['g3','שתי קבוצות... ואיך נדע מי מהם הכי חזק?','Two groups... and how do we know which one is the strongest?','jes'],
+    ['g4','אחד מהם הלך הצידה! זאת ההזדמנות שלנו, ג׳סי, שחררי את הרשת!','One of them wandered off! That\'s our chance, Jessie, drop the net!','jam'],
+    ['g5','רגע... זה לא סתם איווי, זה ג׳ולטאון! חשמלי! והרשת שלנו מחוברת לבלון...','Wait... that\'s not just any Eevee, that\'s Jolteon! Electric! And our net is tied to the balloon...','meo','full'],
+    ['g6','אם היינו רואים את ההבדלים ביניהם, לא היינו עושים טעות כזאת טיפשית!','If we could see the differences between them, we wouldn\'t have made such a stupid mistake!','meo','full'],
     ['g7','צוות רוקט עף שוב!','Team Rocket\'s blasting off again!','rkt','full'],
-    ['v0','ההוגים צדקו: לכולם יש אותו בית. אבל כדי להבין אחד מהם, ארבע קופסאות לא מספיקות.','The thinkers were right: they all share one home. But to understand one of them, four boxes aren\'t enough.','oak'],
-    ['v1','לפוקימון יש מעל 600. המשקפיים של ההוגים נכשלו במבחן הפירוט.','Pokémon has over 600. The thinkers\' glasses failed the detail test.','oak'],
+    ['v0','כדי להבין את המציאות, קופסה אחת או שתיים לא מספיקות. העולם נמצא בגוונים שבין השחור ללבן.','To understand reality, one box or two aren\'t enough. The world lives in the shades between black and white.','oak'],
+    ['v1','מי שלא מפורט מספיק, מפרש לא נכון. משקפי אבות הסוציולוגיה נכשלו במבחן הפירוט.','If you\'re not detailed enough, you read it wrong. The fathers of sociology\'s glasses failed the detail test.','oak'],
     ['v2',`${n}, נשארו שני כדורים. ${g('בחר','בחרי')} שוב.`,`${n}, two balls left. Choose again.`,'oak','pick'],
     ['b0','אה! בחרת לראות את המציאות דרך מצנפת המיון של הוגוורטס!','Ah! You chose to see reality through Hogwarts\' Sorting Hat!','oak'],
     ['b1','ארבעה בתים: אומץ, שאפתנות, חוכמה ונאמנות. המצנפת קוראת את הלב, ומחליטה.','Four houses: courage, ambition, wisdom and loyalty. The Hat reads your heart, and decides.','oak'],
     ['b2','וכבר ראינו שזה עובד: כמעט כולכם ידעתם מיד לאיזה בית אתם שייכים.','And we\'ve seen it works: almost all of you knew right away which house you belong to.','oak'],
     ['b3',`${g('קח','קחי')} אותם, ונבדוק א—`,'Take them, and let\'s se—','oak','auto'],
-    ['b4','היכונו לצרות!','Prepare for trouble!','jes','auto'],
-    ['b5','...טוב, אתם כבר מכירים.','...well, you know the rest.','jam','grab'],
-    ['b6','שוב הם!','Them again!','oak'],
-    ['c0','קזינו סלאדון! גיאראדוס, לב של אריה: גריפינדור! מול פיקאצ׳ו הקטן: הפלפאף.','The Celadon Game Corner! Gyarados, the heart of a lion: Gryffindor! Against little Pikachu: Hufflepuff.','jes'],
-    ['c1','ברור מי ינצח! שמים על גיאראדוס את כל החסכונות של צוות רוקט!','Obviously we know who wins! All of Team Rocket\'s savings on Gyarados!','jam'],
-    ['c2','רגע! גיאראדוס הוא מים ומעופף. חשמל עליו: פי 2, ועוד פי 2. פי 4! מכה אחת, והוא בחוץ.','Wait! Gyarados is Water and Flying. Electric on him: times 2, and times 2 again. Times 4! One hit, and he\'s out.','meo','full'],
-    ['c3','פיקאצ׳ו השתמש בת׳אנדרבולט! זה סופר־אפקטיבי!','Pikachu used Thunderbolt! It\'s super effective!','sys','ko'],
-    ['c4','נו... אבל גיאראדוס נלחם באומץ. אז במובן מסוים, הוא ניצח!','Well... but Gyarados fought bravely. So in a way, he won!','jes'],
-    ['c5','הפסדתם את כל הכסף?!','You lost ALL the money?!','gio'],
-    ['c6','צוות רוקט עף שוב!','Team Rocket\'s blasting off again!','rkt'],
-    ['w0','המצנפת יודעת לספר סיפור יפה, ותמיד יש לה הסבר. גם אחרי שהיא טועה.','The Hat tells a lovely story, and always has an explanation. Even after it\'s wrong.','oak'],
-    ['w1','פוקימון אמרה "פי 4" לפני הקרב. מספר אפשר לבדוק. המצנפת נכשלה במבחן החישוב.','Pokémon said "times 4" before the battle. A number can be checked. The Hat failed the calculation test.','oak'],
+    ['b4','...שוב?!','...again?!','oak','dark'],
+    ['b5','היכונו לצרות, ועוד כפליים!','Prepare for trouble, and make it double!','rkt'],
+    ['b6','משקפי המצנפת! בדיוק מה שחסר לתוכנית שלנו!','The Sorting Hat\'s glasses! Just what our plan was missing!','jam','grab'],
+    ['b7','מעניין לאן הם הלכו הפעם...','I wonder where they went this time...','oak'],
+    ['c0','קזינו סלאדון! עם משקפי המצנפת נדע מראש מי ינצח בכל קרב, ונהמר על הבטוח!','The Celadon Game Corner! With the Hat\'s glasses we\'ll know who wins every battle, and bet on a sure thing!','jes'],
+    ['c1','תוכנית גאונית, ג׳סי! אנחנו נהיה עשירים!','A genius plan, Jessie! We\'ll be rich!','jam'],
+    ['c2','גיאראדוס... אמיץ, אדיר, לב של אריה. גריפינדור!','Gyarados... brave, mighty, the heart of a lion. Gryffindor!','hat'],
+    ['c3','ופיקאצ׳ו... קטן, חרוץ, נאמן. הפלפאף.','And Pikachu... small, hard-working, loyal. Hufflepuff.','hat'],
+    ['c4','גריפינדור נגד הפלפאף? ברור מי ינצח! שמים על גיאראדוס את כל החסכונות!','Gryffindor against Hufflepuff? Obviously we know who wins! All our savings on Gyarados!','jes'],
+    ['c5','פיקאצ׳ו השתמש בת׳אנדרבולט! זה סופר־אפקטיבי!','Pikachu used Thunderbolt! It\'s super effective!','sys','full'],
+    ['c6','הפסדתם את כל הכסף?!','You lost ALL the money?!','gio','full'],
+    ['c7','צוות רוקט עף שוב!','Team Rocket\'s blasting off again!','rkt','full'],
+    ['w0','המצנפת יודעת לספר סיפור. פוקימון יודע לחשב.','The Hat knows how to tell a story. Pokémon knows how to calculate.','oak'],
+    ['w1','ומה שמחושב, אפשר לבדוק מראש. משקפי מצנפת המיון נכשלו במבחן החישוב.','And what\'s calculated can be checked in advance. The Sorting Hat\'s glasses failed the calculation test.','oak'],
     ['w2','נשאר כדור אחד.','One ball left.','oak','pick'],
     ['d0','אה! בחרת לראות את המציאות דרך מפת הכוכבים של האסטרולוגיה!','Ah! You chose to see reality through astrology\'s star map!','oak'],
     ['d1','12 מזלות, לפי מקום השמש ביום שנולדת. שיטה בת אלפיים שנה, מבבל ועד יוון.','12 signs, by where the sun stood on the day you were born. A 2,000-year-old system, from Babylon to Greece.','oak'],
     ['d2','ומאז השמיים זזו בערך במזל שלם, אבל המזלות נשארו אותו דבר.','And since then the sky has shifted by about a whole sign, but the signs stayed the same.','oak'],
     ['d3',`${g('קח','קחי')} אותם, ונב—`,'Take them, and let\'s—','oak','auto'],
-    ['d4','כן, כן. היכונו לצרות, כפליים, וכל זה.','Yes, yes. Prepare for trouble, make it double, all that.','oak'],
+    ['d4','כן, כן. היכונו לצרות, כפליים, וכל זה.','Yes, yes. Prepare for trouble, make it double, all that.','oak','dark'],
     ['d5','היי! זו השורה שלנו!','Hey! That\'s our line!','jam','grab'],
     ['m0','הר הירח. כאן מסתתרת אבן הירח, וקלפיירי רוקדים סביבה.','Mt. Moon. The Moon Stone hides here, and Clefairy dance around it.','jes'],
     ['m1','ההורוסקופ שלנו לחודש: הסוג החזק ביותר ינצח!','Our horoscope for the month: the strongest type will win!','jam'],
@@ -5041,19 +5108,22 @@ SC['rk-4']={rk:1,part:2,label:['למה דווקא פוקימון?','Why Pokémon
     ['m10','צוות רוקט עף שוב!','Team Rocket\'s blasting off again!','rkt','full'],
     ['x0','האסטרולוגיה לא השתנתה אלפיים שנה, גם כשהשמיים עצמם זזו.','Astrology hasn\'t changed in 2,000 years, even when the sky itself moved.','oak'],
     ['x1','פוקימון השתנתה תוך 17 שנה, כי העולם השתנה. האסטרולוגיה נכשלה במבחן העדכון.','Pokémon changed within 17 years, because the world changed. Astrology failed the updating test.','oak'],
-    ['e0','שלושה כדורים, שלושה כישלונות. וצוות רוקט בורח עם משקפיים שלא שווים כלום.','Three balls, three failures. And Team Rocket runs off with glasses worth nothing.','oak'],
-    ['e1','אמרתי שאחד מהם הוא שלנו? שיקרתי. ידעתי שהם מקשיבים.','Did I say one of them was ours? I lied. I knew they were listening.','oak'],
-    ['e2','את הזוג האמיתי שמרתי כל הזמן כאן, בכיס.','I kept the real pair right here the whole time, in my pocket.','oak'],
-    ['e3','הפוקה־סושיאל פרדיגמה: מפורטת, מחושבת, מתעדכנת.','The Poké-Social Paradigm: detailed, calculated, updating.','oak'],
+    ['e0','כל זוג ראה משהו אמיתי. אבל אף אחד מהם לא עבר את שלושת המבחנים.','Each pair saw something real. But none of them passed all three tests.','oak'],
+    ['e1','אבל יש זוג אחד שעומד בשלושתם.','But there is one pair that passes all three.','oak'],
+    ['e2','הנה הוא, כאן בכיס: הפוקה־סושיאל פרדיגמה.','Here it is, right here in my pocket: the Poké-Social Paradigm.','oak'],
+    ['e3','מפורטת, מחושבת, מתעדכנת.','Detailed, calculated, updating.','oak'],
     ['e4','מעכשיו, כולנו מסתכלים דרכם.','From now on, we all look through them.','oak']]}};
 const RK_L=()=>SC['rk-4'].lines(subjectName()),RK_K=Object.fromEntries(SC['rk-4'].lines('').map((l,i)=>[l[0],i]));
 const rkKey=b=>RK_L()[b]?.[0]||'f0',rkOpt=b=>RK_L()[b]?.[4]||'';
 // the gym: Oak behind the table, the balls on it, everyone in the hall facing up, the subject at the foot of the stem
-const RK_BX=[76,104,132],RK_TY=11*16+8;
-const RK_G={oak:[6,10],balls:[5,6,7],row:11,me:[6,15],jes:[3,11],jam:[9,11],meo:[10,11],spots:[[5,16],[7,16],[3,17],[9,17],[2,16],[10,16],[6,17],[4,17],[8,17],[1,17],[11,17],[3,16],[9,16],[2,17],[10,17]]};
+const RK_BX=[72,104,136],RK_TY=11*16+8;
+const RK_G={oak:[6,10],balls:[4,6,8],door:[6,18],row:11,me:[6,15],jes:[2,11],jam:[10,10],meo:[10,11],spots:[[5,16],[7,16],[3,17],[9,17],[2,16],[10,16],[6,17],[4,17],[8,17],[1,17],[11,17],[3,16],[9,16],[2,17],[10,17]]};
 const RK_GCAM=[0,132,208,318];
 // the Safari Zone (map px): Team Rocket on the left of the sand, the Eeveelutions in two rows on the grass beside it
-const RK_SF={jes:[226,432],jam:[246,458],meo:[212,462],ev:[[304,424],[346,418],[388,424],[430,418],[322,462],[364,456],[406,462],[448,456]],cam:[180,340,500,500],net:[282,388,472,476]};
+// one (Durkheim): a huddle; two (Marx): black against white; Jolteon (ev2) wanders off to the right
+const RK_SF={jes:[226,432],jam:[246,458],meo:[212,462],cam:[300,305,560,499],bal:[372,424],
+  one:[[446,448],[458,444],[470,448],[482,444],[452,458],[464,454],[476,458],[488,454]],
+  two:[[408,446],[430,442],[422,462],[490,442],[402,466],[512,446],[498,462],[520,466]],white:[3,5,6,7],aside:[528,488]};
 // the Game Corner: Team Rocket under the prize counter; the battle on a screen over the floor
 const RK_GC={jes:[34,178],jam:[62,178],meo:[48,202],cam:[0,0,288,240]};
 // Mt. Moon: Team Rocket where the old man stood; Dragonite and Clefairy as in s-moon
@@ -5064,7 +5134,7 @@ const rkGi=(r,cls)=>`<img class="rkgi ${cls||''}" src="img/rk-gl-${RK_GK[r]}.png
 const rkGl=(c,cls)=>`<svg class="rkgl ${cls||''}" viewBox="0 0 120 46" aria-hidden="true"><path d="M8 16 Q2 15 2 10" stroke="${c}" stroke-width="5" fill="none"/><path d="M112 16 Q118 15 118 10" stroke="${c}" stroke-width="5" fill="none"/><circle cx="34" cy="24" r="18" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-width="6"/><circle cx="86" cy="24" r="18" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-width="6"/><path d="M52 20 Q60 13 68 20" stroke="${c}" stroke-width="6" fill="none"/></svg>`;
 const rkGlPSP=cls=>`<svg class="rkgl psp ${cls||''}" viewBox="0 0 120 46" aria-hidden="true"><defs><linearGradient id="rkrb" x1="0" x2="1"><stop offset="0" stop-color="#E5484D"/><stop offset=".25" stop-color="#F2C94C"/><stop offset=".5" stop-color="#3DBE6A"/><stop offset=".75" stop-color="#4A7BE0"/><stop offset="1" stop-color="#9B5DE5"/></linearGradient></defs><path d="M8 16 Q2 15 2 10" stroke="url(#rkrb)" stroke-width="5" fill="none"/><path d="M112 16 Q118 15 118 10" stroke="url(#rkrb)" stroke-width="5" fill="none"/><circle cx="34" cy="24" r="18" fill="#fff" fill-opacity=".45" stroke="url(#rkrb)" stroke-width="6"/><circle cx="86" cy="24" r="18" fill="#fff" fill-opacity=".45" stroke="url(#rkrb)" stroke-width="6"/><path d="M52 20 Q60 13 68 20" stroke="url(#rkrb)" stroke-width="6" fill="none"/></svg>`;
 const RK_PAR=[['אבות הסוציולוגיה','The fathers of sociology'],['מצנפת המיון','The Sorting Hat'],['אסטרולוגיה','Astrology']];
-const RK_TEST=[['מפורט','Detailed'],['מחושב','Calculated'],['מתעדכן','Updating']];
+const RK_TEST=[['מפורטת?','Detailed?'],['מחושבת?','Calculated?'],['מתעדכנת?','Updating?']];
 // which round a beat belongs to (the pick before it counts for the round it opens)
 const rkRound=k=>{const s=rkKey(k)[0];return {f:0,a:0,g:0,v:1,b:1,c:1,w:2,d:2,m:2,x:2,e:3}[s]};
 // a round's ball: what the subject picked, else the first one still on the table
@@ -5074,7 +5144,10 @@ function rkWorldHTML(w){const[img,mw,mh]=MN_MAP[w],Z=MN_Z,pl=mnPpl();S.mnN={};pl
   if(w==='gym'){const T=mnFeet('gym',[6,11]);extra=`<div class="rktable" style="left:${58*Z}px;top:${(11*16-6)*Z}px;width:${92*Z}px;height:${22*Z}px"></div>`+
       RK_BX.map((x,i)=>`<div class="rkball" data-i="${i}" style="left:${x*Z}px;top:${RK_TY*Z}px"><img src="img/it-poke-ball.webp" alt=""><i class="rkglw"></i></div>`).join('')+
       `<div class="rkfloat" id="rkfloat" style="left:${T[0]*Z}px;top:${(T[1]-30)*Z}px"></div>`+rkActorHTML('oak')+pl.map(({p})=>rkActorHTML('p:'+p.id,p.name)).join('')}
-  else if(w==='safari')extra=RK_EV.map((e,i)=>rkActorHTML('ev'+i)).join('')+`<svg class="rknet" id="rknet" viewBox="0 0 100 60" preserveAspectRatio="none" style="left:${RK_SF.net[0]*Z}px;top:${RK_SF.net[1]*Z}px;width:${(RK_SF.net[2]-RK_SF.net[0])*Z}px;height:${(RK_SF.net[3]-RK_SF.net[1])*Z}px">${[...Array(11)].map((_,i)=>`<line x1="${i*10}" y1="0" x2="${i*10}" y2="60"/>`).join('')}${[...Array(7)].map((_,i)=>`<line x1="0" y1="${i*10}" x2="100" y2="${i*10}"/>`).join('')}</svg>`;
+  else if(w==='safari'){const B=RK_SF.bal,A=RK_SF.aside;extra=RK_EV.map((e,i)=>rkActorHTML('ev'+i)).join('')+
+      `<svg class="rkrope" id="rkrope" viewBox="0 0 ${mw} ${mh}" style="width:${mw*Z}px;height:${mh*Z}px"><line x1="${B[0]}" y1="${B[1]}" x2="${A[0]}" y2="${A[1]-22}" pathLength="100"/></svg>`+
+      `<svg class="rknet" id="rknet" viewBox="0 0 100 60" preserveAspectRatio="none" style="left:${(A[0]-18)*Z}px;top:${(A[1]-30)*Z}px;width:${36*Z}px;height:${30*Z}px">${[...Array(11)].map((_,i)=>`<line x1="${i*10}" y1="0" x2="${i*10}" y2="60"/>`).join('')}${[...Array(7)].map((_,i)=>`<line x1="0" y1="${i*10}" x2="100" y2="${i*10}"/>`).join('')}</svg>`+
+      `<div class="rkbal" id="rkbal" style="left:${B[0]*Z}px;top:${B[1]*Z}px"><img src="img/rk-balloon.png" alt=""></div>`}
   else if(w==='moon')extra=`<i class="mnmoonl" style="left:${MN_RING.c[0]*Z}px;top:${(MN_RING.c[1]-30)*Z}px"></i>${[0,1,2,3].map(i=>rkActorHTML('clef'+i)).join('')}${rkActorHTML('drago')}${rkActorHTML('jacinthe')}`;
   return `<div class="lsin mn${w} rk${w}" id="mnin" style="width:${mw*Z}px;height:${mh*Z}px"><img class="lsimg" src="${img}" alt="" style="width:${mw*Z}px;height:${mh*Z}px">${extra}${tr}</div>`}
 function rkSetWorld(w){if(S.mn.world===w&&$('#mnin'))return false;S.mn.world=w;clearInterval(S.mnDance);$('#mnw').innerHTML=rkWorldHTML(w);
@@ -5083,25 +5156,29 @@ function rkEnter(it,atEnd){const C=S.sc,n=scBeats(it.id).length;C.b=atEnd?n-1:0;
   rkBuild(it,!atEnd);rkApply(C.b,!atEnd);if(!atEnd)music(null)}
 function rkBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',ml=EN?1920-60-MN_BW:60;
   const board=`<div class="rkbd" id="rkbd"><div class="rkr rkh"><span></span>${RK_TEST.map(t=>`<b>${ll(...t)}</b>`).join('')}</div>${[0,1,2,3].map(r=>`<div class="rkr" data-r="${r}">${rkGi(r)}<span>${r<3?ll(...RK_PAR[r]):ll('הפוקה־סושיאל פרדיגמה','The Poké-Social Paradigm')}</span>${[0,1,2].map(t=>`<i data-t="${t}"></i>`).join('')}</div>`).join('')}</div>`;
-  const th=[['durkheim',1,['חברה','society']],['marx',2,['מעמדות','classes']],['weber',4,['סוגי פעולה','types of action']]].map(([t,k,w])=>`<figure><img src="img/th-${t}.webp" alt=""><b>${k}</b><small>${ll(...w)}</small></figure>`).join('');
+  const th=[['durkheim',1,['חברה','society']],['marx',2,['מעמדות','classes']]].map(([t,k,w])=>`<figure><img src="img/th-${t}.webp" alt=""><b>${k}</b><small>${ll(...w)}</small></figure>`).join('');
   const hp=[['gryffindor','אומץ','courage'],['slytherin','שאפתנות','ambition'],['ravenclaw','חוכמה','wisdom'],['hufflepuff','נאמנות','loyalty']].map(([h,he,en])=>`<figure><img src="img/hp-${h}.png" alt=""><small>${ll(he,en)}</small></figure>`).join('');
   const zd=URG_ZD.map(([k])=>`<img src="img/zd-${k}.png" alt="">`).join('');
   const box=(n,l)=>`<div class="rkbx n${n}">${l.map(t=>`<i>${t}</i>`).join('')}</div>`;
   const evs=RK_EV.map(e=>`<figure><img src="img/s${RK_EVN[e]}.webp" alt=""><img class="rkty" src="img/ic-${RK_EVT[e]}.webp" alt=""></figure>`).join('');
-  const pan=`<p class="sceb" dir="ltr" id="rkeb"></p><h2 id="rkh2"></h2>${board}<div class="rki" id="rki"><div class="rkin rkbl" data-s="bl">${[0,1,2].map(()=>'<figure><img src="img/it-poke-ball.webp" alt=""><b>?</b></figure>').join('')}</div>
-    <div class="rkin rkth" data-s="th">${th}</div><div class="rkin rkhp" data-s="hp">${hp}</div>
+  const qs=[['האם היא מפורטת מספיק?','Is it detailed enough?'],['האם היא מחושבת מספיק?','Is it calculated enough?'],['האם היא מתעדכנת מספיק?','Does it update enough?']].map((q,i)=>`<p style="--i:${i}"><b>${i+1}</b>${ll(...q)}</p>`).join('');
+  const pan=`<p class="sceb" dir="ltr" id="rkeb"></p><h2 id="rkh2"></h2>${board}<div class="rki" id="rki"><div class="rkin rkqs" data-s="qs">${qs}</div><div class="rkin rkbl" data-s="bl">${[0,1,2].map(()=>'<figure><img src="img/it-poke-ball.webp" alt=""><b>?</b></figure>').join('')}</div>
+    <div class="rkin rkth" data-s="th">${th}</div><div class="rkin rkhw" data-s="hp">${hp}</div>
     <div class="rkin rkzd" data-s="zd"><div class="rkzg">${zd}</div><p id="rkzp"></p></div>
-    <div class="rkin rkres" data-s="res"><div class="rkrc" data-n="1"><b>${ll('דורקהיים','Durkheim')}</b>${box(1,[ll('חברה','society')])}</div><div class="rkrc" data-n="2"><b>${ll('מרקס','Marx')}</b>${box(2,[ll('הון','capital'),ll('עבודה','labour')])}</div><div class="rkrc" data-n="4"><b>${ll('ובר','Weber')}</b>${box(4,[ll('תכליתי','goal'),ll('ערכי','value'),ll('רגשי','emotion'),ll('מסורתי','tradition')])}</div></div>
+    <div class="rkin rkres" data-s="res"><div class="rkrc" data-n="1"><b>${ll('דורקהיים','Durkheim')}</b>${box(1,[ll('חברה','society')])}</div><div class="rkrc" data-n="2"><b>${ll('מרקס','Marx')}</b>${box(2,[ll('הון','capital'),ll('עבודה','labour')])}</div></div>
     <div class="rkin rkev" data-s="ev">${evs}</div>
     <div class="rkin rkhs" data-s="hs"><div><img src="img/s130.webp" alt=""><span>${ll('גריפינדור','Gryffindor')}</span><img src="img/hp-gryffindor.png" alt=""></div><div><img src="img/s25.webp" alt=""><span>${ll('הפלפאף','Hufflepuff')}</span><img src="img/hp-hufflepuff.png" alt=""></div></div>
-    <div class="rkin rkx4" data-s="x4" dir="ltr"><img src="img/ic-electric.webp" alt=""><b>→</b><img src="img/ic-water.webp" alt=""><em>×2</em><img src="img/ic-flying.webp" alt=""><em>×2</em><b>=</b><strong>×4</strong></div>
     <div class="rkin rkbet" data-s="bet" id="rkbet"></div>
     <div class="mntvrow rkin" data-s="tv" id="rktv">${MN_GIF.map(([g,he,en],i)=>`<figure class="on" data-i="${i}"><img src="${g}" alt=""><figcaption>${ll(he,en)}</figcaption></figure>`).join('')}</div>
     <div class="mnyrs rkin" data-s="yr" id="rkyrs">${MN_YEARS.map(y=>`<div class="mnyr" data-y="${y}"><b>${y}</b><span></span></div>`).join('')}</div><p class="mnclk rkin" data-s="yr" id="rkclk"></p></div>`;
-  const bt=`<div class="rkbt" id="rkbt" dir="ltr"><div class="rkbf" data-s="gy"><div class="rkhp"><b>GYARADOS</b><span>Lv50</span><div class="rkbar"><i id="rkhpg"></i><em class="rkpred" id="rkpred"></em></div><strong class="rkx4b">×4</strong></div><img class="rkmon gy" src="anim/130.gif" alt=""><span class="rkhs" id="rkhsg"></span></div>
-    <div class="rkbf me" data-s="pk"><img class="rkmon pk" src="anim/25.gif" alt=""><span class="rkhs" id="rkhsp"></span><div class="rkhp"><b>PIKACHU</b><span>Lv50</span><div class="rkbar"><i style="width:100%"></i></div></div></div><i class="rkbolt" id="rkbolt"></i></div>`;
+  const bt=`<div class="rkbt" id="rkbt" dir="ltr"><div class="rkbf" data-s="gy"><div class="rkhp"><b>GYARADOS</b><span>Lv50</span><div class="rkbar"><i id="rkhpg"></i></div><em class="rkhpn" id="rkhpn">170/170</em></div><img class="rkmon gy" src="anim/130.gif" alt=""><img class="rkhat" src="img/rk-hat.png" alt=""><span class="rkhs" id="rkhsg"></span></div>
+    <div class="rkbf me" data-s="pk"><img class="rkmon pk" src="anim/25.gif" alt=""><img class="rkhat" src="img/rk-hat.png" alt=""><span class="rkhs" id="rkhsp"></span><div class="rkhp"><b>PIKACHU</b><span>Lv50</span><div class="rkbar"><i style="width:100%"></i></div></div></div><i class="rkbolt" id="rkbolt"></i></div>`;
+  // the damage formula, the game's own: level, power 90, Pikachu's Sp. Atk 102 against Gyarados' Sp. Def 120, STAB, ×2 ×2, the random roll
+  const fx=[['((2×50÷5+2) × 90 × 102÷120) ÷ 50 + 2',ll('רמה · כוח · התקפה÷הגנה','level · power · atk÷def')],['× 1.5',ll('STAB · סוג זהה','STAB')],['× 2','<img src="img/ic-water.webp" alt="">'],['× 2','<img src="img/ic-flying.webp" alt="">'],['× 0.85–1',ll('מזל','random')],['= 178–210',ll('נזק','damage')],['≥ 170 HP',ll('נוקאאוט','KO')]];
+  const slot=`<div class="rkslot" id="rkslot"><img class="rkcab" src="img/rk-slot.webp" alt="">${bt}<div class="rkfx" id="rkfx" dir="ltr">${fx.map(([t,s],i)=>`<span style="--i:${i}"><b>${t}</b><small>${s}</small></span>`).join('')}</div></div>`;
+  const dial=`<div class="rkdial" id="rkdial"><p>${ll('מצב המשקפיים','GLASSES MODE')}</p><div>${[['durkheim',ll('דורקהיים','Durkheim'),ll('חברה אחת','one society')],['marx',ll('מרקס','Marx'),ll('שני מעמדות','two classes')]].map(([t,n,s],i)=>`<figure data-i="${i}"><img src="img/th-${t}.webp" alt=""><b>${n}</b><small>${s}</small></figure>`).join('')}</div><i class="rkarrow">▼</i></div>`;
   cv.innerHTML=`<div class="st scst lsst mnst rkst" id="scst" dir="${EN?'ltr':'rtl'}">
-    <div class="lsmap mnmap rkmap" id="lsmap" style="left:${ml}px;top:44px;width:${MN_BW}px;height:${MN_BH}px"><div id="mnw"></div>${bt}<div class="rkcall" id="rkcall"><img src="img/tr-giovanni.webp" alt=""><b>📞 ${ll('הבוס','THE BOSS')}</b></div><i class="rktint" id="rktint"></i><i class="rklens" id="rklens"></i><div class="lsname" id="mnname"></div><i class="mnblink" id="mnblink"></i><i class="mnflash" id="mnflash"></i></div>
+    <div class="lsmap mnmap rkmap" id="lsmap" style="left:${ml}px;top:44px;width:${MN_BW}px;height:${MN_BH}px"><div id="mnw"></div><div class="rkcall" id="rkcall"><img src="img/tr-giovanni.webp" alt=""><b>📞 ${ll('הבוס','THE BOSS')}</b></div>${dial}${slot}<i class="rkdark" id="rkdark"></i><img class="rkR" id="rkR" src="img/rk-r.png" alt=""><i class="rktint" id="rktint"></i><i class="rklens" id="rklens"></i><div class="lsname" id="mnname"></div><i class="mnblink" id="mnblink"></i><i class="mnflash" id="mnflash"></i></div>
     <div class="lspan rkpan" id="lspan">${pan}</div><div class="scbar0" id="scbar0">${bar}</div>
     <img class="sclect${fresh?' rise':''}" id="sclect" src="img/tr-oak.webp" alt="">
     <div class="scbox${fresh?' rise':''}"><b class="scname">${ll(...cf.name)}</b><p class="sctx" id="sctx"></p><div class="scmini off" id="twmini"></div></div></div>`;
@@ -5115,11 +5192,11 @@ function rkApply(b,anim){const C=S.sc,B=scBeats(C.id),L=RK_L();++C.run;clearInte
   const swap=stepIn&&S.mn.world&&S.mn.world!==w;
   const paint=()=>{map.classList.remove('tg','tb','tp');if(tint)map.classList.add(tint);const wasFull=map.classList.contains('full');map.classList.toggle('full',!!tint&&full);
     if(stepIn&&tint&&full&&!wasFull){const f=$('#mnflash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');sfx('sfx-shooting-star',.45)}
-    map.classList.toggle('rkend',key==='e4');rkStage(b,stepIn?b:-1,run)};
+    map.classList.toggle('rkend',key==='e4');rkDark(b,stepIn,run);rkStage(b,stepIn?b:-1,run)};
   if(swap){const bl=$('#mnblink');bl.classList.add('on');sfx(tint?'sfx-teleport':'sfx-door',.45);C.fly=1;setTimeout(()=>{if(S.sc?.run!==run)return;rkSetWorld(w);paint();bl.classList.remove('on');C.fly=0},420)}
   else{rkSetWorld(w);paint()}
   // music: Team Rocket's theme from their entrance to the end of each scene; each place its own
-  if(stepIn){if(key==='a4'||key==='b4'||key==='d4'){BGM.cur=null;music('mus-rocket',{vol:.6,fade:80,loop:false});if(key==='d4')setTimeout(()=>{if(BGM.cur==='mus-rocket'&&BGM.a){BGM.a.pause();BGM.cur=null;BGM.a=null}},1100)}
+  if(stepIn){if(key==='a4'||key==='b4'||key==='d4'){BGM.cur=null;music('mus-rocket',{vol:.6,fade:80,loop:false});if(key==='d4')setTimeout(()=>{if(BGM.cur==='mus-rocket'&&BGM.a){BGM.a.pause();BGM.cur=null;BGM.a=null}},1300)}
     const mu={g0:['mus-natpark',.2],c0:['mus-fr-gamecorner',.2],m0:['mus-fr-mtmoon',.2],v0:[null],w0:[null],x0:[null],e3:['mus-badge',.4]}[key];if(mu)music(mu[0],mu[0]?{vol:mu[1],loop:key!=='e3'}:undefined)}
   rkPanel(b,stepIn);
   // the phones: the pick, the bet, the year
@@ -5129,82 +5206,104 @@ function rkApply(b,anim){const C=S.sc,B=scBeats(C.id),L=RK_L();++C.run;clearInte
   gamePub();rkPoll();
   scType(B[b].t,anim);
   // what plays by itself once the line is typed: the interruptions, the grab, Dragon Rage
-  if(stepIn&&['auto','grab','rage','ko'].includes(opt)){let td=0;S.rkAT=setInterval(()=>{if(S.sc?.run!==run||cur()?.id!=='rk-4'){clearInterval(S.rkAT);return}if(S.sc.typing){td=0;return}td=td||Date.now();
-    if(Date.now()-td<(opt==='auto'?250:opt==='ko'?2600:450))return;clearInterval(S.rkAT);
-    if(opt==='auto'||opt==='ko')go(1);else if(opt==='grab')rkGrab(run);else if(opt==='rage')rkRage(run,()=>{if(S.sc?.run===run)go(1)})},90)}}
+  if(stepIn&&['auto','grab','rage'].includes(opt)){let td=0;S.rkAT=setInterval(()=>{if(S.sc?.run!==run||cur()?.id!=='rk-4'){clearInterval(S.rkAT);return}if(S.sc.typing){td=0;return}td=td||Date.now();
+    if(Date.now()-td<(opt==='auto'?250:450))return;clearInterval(S.rkAT);
+    if(opt==='auto')go(1);else if(opt==='grab')rkGrab(run);else if(opt==='rage')rkRage(run,()=>{if(S.sc?.run===run)go(1)})},90)}}
+function rkDark(b,stepIn,run){const K=RK_K,d=$('#rkdark'),R=$('#rkR'),on=b===K.a4||b===K.b4;if(!d)return;
+  d.classList.toggle('on',on||(b===K.d4&&stepIn));R.classList.remove('pop');
+  if(stepIn&&(on||b===K.d4)){void R.offsetWidth;R.classList.add('pop');R.classList.toggle('short',b===K.d4)}
+  if(stepIn&&b===K.d4)setTimeout(()=>{if(S.sc?.run===run)d.classList.remove('on')},1300)}
 // the panel: the title, the board and what this beat shows
 function rkPanel(b,stepIn){const key=rkKey(b),sec=key[0],K=RK_K,r=rkRound(b);
   const eb={f:'CELADON GYM · 3 BALLS',a:'BALL 1 · PARADIGM',g:'THROUGH THE GREEN GLASSES',v:'TEST 1 · DETAILED',b:'BALL 2 · PARADIGM',c:'THROUGH THE BLUE GLASSES',w:'TEST 2 · CALCULATED',d:'BALL 3 · PARADIGM',m:'THROUGH THE PINK GLASSES',x:'TEST 3 · UPDATING',e:'POKÉ-SOCIAL PARADIGM'}[sec];
-  const h2={f:['שלושה כדורים, שלושה מבחנים','Three balls, three tests'],a:['אבות הסוציולוגיה','The fathers of sociology'],g:['משפחת איווי','The Eevee family'],v:['מבחן 1: מפורט','Test 1: detailed'],b:['מצנפת המיון','The Sorting Hat'],
+  const h2={f:['איזו פרדיגמה הכי טובה?','Which paradigm is best?'],a:['אבות הסוציולוגיה','The fathers of sociology'],g:['משפחת איווי','The Eevee family'],v:['מבחן 1: מפורט','Test 1: detailed'],b:['מצנפת המיון','The Sorting Hat'],
     c:['קרב הערב','Tonight\'s battle'],w:['מבחן 2: מחושב','Test 2: calculated'],d:['אסטרולוגיה','Astrology'],m:['הר הירח','Mt. Moon'],x:['מבחן 3: מתעדכן','Test 3: updating'],e:['הזוג הרביעי','The fourth pair']}[sec];
   $('#rkeb').textContent=eb;$('#rkh2').textContent=ll(...h2);
   // the board: from the three tests on; each paradigm's row once its ball is open; ✗ where it failed, ✓✓✓ for the last row
-  const bd=$('#rkbd');bd.classList.toggle('on',b>=K.f3&&!RK_TINT[sec]);const open=[K.a0,K.b0,K.d0,K.e2],fail=[K.v1,K.w1,K.x1];
+  const bd=$('#rkbd');bd.classList.toggle('on',b>=K.a0&&!RK_TINT[sec]);const open=[K.a0,K.b0,K.d0,K.e2],fail=[K.v1,K.w1,K.x1];
   bd.querySelectorAll('.rkr[data-r]').forEach(row=>{const i=+row.dataset.r,on=b>=open[i];row.classList.toggle('on',on);if(stepIn&&b===open[i]){row.classList.remove('in');void row.offsetWidth;row.classList.add('in')}
     row.querySelectorAll('i[data-t]').forEach(c=>{const t=+c.dataset.t,x=i<3&&t===i&&b>=fail[i],ok=i===3&&b>=K.e3;c.textContent=x?'✗':ok?'✓':'';c.className=x?'x':ok?'ok':'';if(stepIn&&((x&&b===fail[i])||(ok&&b===K.e3))){c.classList.add('in');sfx(x?'sfx-denied':'sfx-tink',.5)}})});
   // the info block
-  const S1=b<K.f3?'bl':b>=K.a1&&b<=K.a8?'th':b>=K.b1&&b<=K.b6?'hp':b>=K.d1&&b<=K.d5?'zd':b>=K.g1&&b<=K.g4?'res':b>=K.g5&&b<=K.g7?'ev':b>=K.c0&&b<=K.c1?'hs':b>=K.c2&&b<=K.c6?'x4':b===K.m6||b===K.m7?'tv yr':b>=K.m8&&b<=K.m10?'tv':'';
+  const S1=b<K.f2?'bl':b<=K.f4?'qs':b>=K.a1&&b<=K.a9?'th':b>=K.b1&&b<=K.b7?'hp':b>=K.d1&&b<=K.d5?'zd':b>=K.g1&&b<=K.g4?'res':b>=K.g5&&b<=K.g7?'ev':b>=K.c4&&b<=K.c7?'hs':b===K.m6||b===K.m7?'tv yr':b>=K.m8&&b<=K.m10?'tv':'';
   const on=new Set(S1.split(' ').filter(Boolean));$('#rki').classList.toggle('on',on.size>0);
   $('#rki').querySelectorAll('.rkin').forEach(e=>{const v=on.has(e.dataset.s);const was=e.classList.contains('on');e.classList.toggle('on',v);if(v&&!was&&stepIn){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});
   $('#rki').querySelectorAll('.rkth figure').forEach((f,i)=>f.classList.toggle('n',b>=K.a2));
   $('#rkzp').textContent=b>=K.d2?ll('השמיים זזו בערך ב־30°. המזלות לא זזו.','The sky moved about 30°. The signs didn\'t.'):ll('שיטה בת אלפיים שנה · 12 מזלות','A 2,000-year-old system · 12 signs');
   $('#rki').querySelectorAll('.rkrc').forEach(e=>{const n=+e.dataset.n;e.classList.toggle('on',n===1||b>=K.g2)});
+  $('#rki').querySelectorAll('.rkqs p').forEach(q=>q.classList.toggle('on',b>=K.f3));
   $('#rktv').classList.toggle('sm',b>=K.m8)}
 // where the subject stands: at the foot of the stem, then below the last ball opened, in the middle at the end
 function rkMeAt(b){const K=RK_K,n=(b>K.f4)+(b>K.v2)+(b>K.w2);if(b>=K.e0)return [6,12];return n?[RK_G.balls[rkBall(n-1)],12]:RK_G.me}
 // the actors at beat b; `into` = the beat being stepped into (its animation plays)
 function rkStage(b,into,run){const key=rkKey(b),sec=key[0],K=RK_K,w=S.mn.world,live=()=>S.sc?.run===run&&cur()?.id==='rk-4',M=S.rk,pl=mnPpl(),me=subjId();
   ['jessie','james','meowth'].forEach(k=>{const e=mnEl(k);e?.classList.remove('rkblast');mnSay(k,'')});
-  $('#rkcall').classList.toggle('on',key==='g0'||key==='c5');if(into===b&&(key==='g0'||key==='c5'))sfx('sfx-excl',.5);
-  $('#rkbt').classList.toggle('on',w==='corner');
+  $('#rkcall').classList.toggle('on',key==='g0'||key==='c6');if(into===b&&(key==='g0'||key==='c6'))sfx('sfx-excl',.5);
+  if(w!=='corner')$('#rkslot')?.classList.remove('on','zoom');if(w!=='safari')$('#rkdial')?.classList.remove('on');
   if(w==='gym'){mnCam(RK_GCAM,false);const G=RK_G;mnAt('oak',G.oak,'d');
     // everyone in the hall; the subject at the foot of the stem until a pick, then at the table
     const others=pl.filter(({p})=>p.id!==me),spot=id=>id===me?rkMeAt(b):G.spots[others.findIndex(o=>o.p.id===id)%G.spots.length];
-    if(into===0&&b===0)pl.forEach(({p},i)=>{const s=TOWN.gym6.seats[i%TOWN.gym6.seats.length];mnAt('p:'+p.id,s,'d');setTimeout(()=>{if(live())mnGo('p:'+p.id,s,spot(p.id),'u',90)},300+i*120)});
-    else pl.forEach(({p})=>{if(p.id===me&&rkOpt(b)==='pick'&&M.walking)return;mnAt('p:'+p.id,p.id===me&&rkOpt(b)==='pick'&&M.st?M.st:spot(p.id),b>=K.e4?'d':'u')});
+    pl.forEach(({p})=>{if(p.id===me&&rkOpt(b)==='pick'&&M.walking)return;mnAt('p:'+p.id,p.id===me&&rkOpt(b)==='pick'&&M.st?M.st:spot(p.id),b>=K.e4?'d':'u')});
     // the balls: on the table until stolen; the open one glows, its glasses float above it
-    const stolen=[K.a7,K.b5,K.d5].map((g,i)=>b>g||(b===g&&into!==b&&M.grabbed?.[i])),openR=b>=K.a0&&b<=K.a7?0:b>=K.b0&&b<=K.b5?1:b>=K.d0&&b<=K.d5?2:-1;
+    const stolen=[K.a8,K.b6,K.d5].map((g,i)=>b>g||(b===g&&into!==b&&M.grabbed?.[i])),openR=b>=K.a0&&b<=K.a8?0:b>=K.b0&&b<=K.b6?1:b>=K.d0&&b<=K.d5?2:-1;
     const gone=new Set();stolen.forEach((s,i)=>{if(s)gone.add(rkBall(i))});
     $('#mnin').querySelectorAll('.rkball').forEach(e=>{const i=+e.dataset.i;e.classList.toggle('gone',gone.has(i)&&!(openR>=0&&rkBall(openR)===i));e.classList.toggle('open',openR>=0&&rkBall(openR)===i);e.classList.toggle('dim',b>=K.e0)});
     const fl=$('#rkfloat');if(openR>=0&&!(stolen[openR])){const bi=rkBall(openR),F=[RK_BX[bi],RK_TY];fl.innerHTML=rkGi(openR);fl.style.left=F[0]*MN_Z+'px';fl.style.top=F[1]*MN_Z+'px';fl.className='rkfloat on'+(into===b&&key[1]==='0'?' pop':'');if(into===b&&key[1]==='0'){sfx('sfx-ball-poof',.6);mnFlash(F)}}
     else if(b>=K.e2){const F=[RK_BX[1],RK_TY];fl.innerHTML=rkGi(3);fl.style.left=F[0]*MN_Z+'px';fl.style.top=F[1]*MN_Z+'px';fl.className='rkfloat on psp'+(into===b&&key==='e2'?' pop':'')+(b>=K.e4?' worn':'');if(into===b&&key==='e2'){sfx('sfx-ball-poof',.6);mnFlash(F)}}
     else fl.className='rkfloat';
-    // Team Rocket in the gym: in one by one (a4-a6, b4-b5), all at once on d4; the grab sends them off
-    const tr={jessie:[[K.a4,K.a7],[K.b4,K.b5],[K.d4,K.d5]],james:[[K.a5,K.a7],[K.b5,K.b5],[K.d4,K.d5]],meowth:[[K.a6,K.a7],[K.b4,K.b5],[K.d4,K.d5]]},pos={jessie:G.jes,james:G.jam,meowth:G.meo};
-    Object.entries(tr).forEach(([k,R])=>{const inR=R.some(([a,z],ri)=>b>=a&&b<=z&&!(b===z&&into!==b&&M.grabbed?.[ri])),arr=R.some(([a])=>a===b&&into===b);if(!inR){mnPut(k,null);return}mnAt(k,pos[k],k==='jessie'?'r':'l');if(arr){mnFlash(mnFeet('gym',pos[k]));sfx('sfx-ball-poof',.5)}});
+    // Team Rocket in the gym: they walk in from the door one by one (a5-a7), together (b5); on d4 they just pop up once Oak cuts the music; the grab sends them off
+    const tr={jessie:[[K.a5,K.a8],[K.b5,K.b6],[K.d4,K.d5]],james:[[K.a6,K.a8],[K.b5,K.b6],[K.d4,K.d5]],meowth:[[K.a7,K.a8],[K.b5,K.b6],[K.d4,K.d5]]},pos={jessie:G.jes,james:G.jam,meowth:G.meo};
+    Object.entries(tr).forEach(([k,R],ki)=>{const inR=R.some(([a,z],ri)=>b>=a&&b<=z&&!(b===z&&into!==b&&M.grabbed?.[ri])),arr=R.some(([a])=>a===b&&into===b);if(!inR){mnPut(k,null);return}const face=k==='jessie'?'r':'l';
+      if(!arr){mnAt(k,pos[k],face);return}
+      if(b===K.d4){mnPut(k,null);setTimeout(()=>{if(!live())return;mnAt(k,pos[k],face);mnFlash(mnFeet('gym',pos[k]));sfx('sfx-ball-poof',.5)},1300+ki*90);return}
+      mnPut(k,null);setTimeout(()=>{if(!live())return;mnGo(k,G.door,pos[k],face,150)},b===K.b5?ki*260:0)});
     // the end: the subject puts the real pair on, the gym fills with colour and everyone gets glasses
     $('#mnin').classList.toggle('pspc',b>=K.e4);pl.forEach(({p})=>{const e=mnEl('p:'+p.id);if(!e)return;let g=e.querySelector('.rkpg');if(b>=K.e4&&!g){e.insertAdjacentHTML('beforeend',`<i class="rkpg${p.id===me?' me':''}">${rkGi(3)}</i>`)}else if(b<K.e4)g?.remove()});
     if(into===K.e4){sfx('sfx-shooting-star',.6);mnSpark(mnFeet('gym',[6,12]))}
     if(rkOpt(b)==='pick')rkPickPaint();return}
-  // the tinted scenes: Team Rocket on stage, facing the action
-  const T=w==='safari'?RK_SF:w==='corner'?RK_GC:null;
-  if(w==='moon'){const P=MN_P.moon;mnCam(MN_CAM.moon,false);[['jessie',RK_MN.jes],['james',RK_MN.jam],['meowth',RK_MN.meo]].forEach(([k,t])=>mnAt(k,t,'l'));rkMoon(b,into,run);}
-  else{mnCam(T.cam,false);[['jessie',T.jes],['james',T.jam],['meowth',T.meo]].forEach(([k,p])=>mnPut(k,p,'r',0))}
-  if(w==='safari')rkSafari(b,into,run);if(w==='corner')rkCorner(b,into,run);
+  if(w==='safari'){mnCam(RK_SF.cam,false);['jessie','james','meowth'].forEach(k=>mnPut(k,null));rkSafari(b,into,run)}
+  // the other tinted scenes: Team Rocket on stage, facing the action
+  if(w==='moon'){mnCam(MN_CAM.moon,false);[['jessie',RK_MN.jes],['james',RK_MN.jam],['meowth',RK_MN.meo]].forEach(([k,t])=>mnAt(k,t,'l'));rkMoon(b,into,run);}
+  else if(w==='corner'){mnCam(RK_GC.cam,false);[['jessie',RK_GC.jes],['james',RK_GC.jam],['meowth',RK_GC.meo]].forEach(([k,p])=>mnPut(k,p,'r',0));rkCorner(b,into,run)}
   // blasting off: up and away, a twinkle
-  if([K.g7,K.c6,K.m10].includes(b)){if(into===b)rkBlast(run,key==='m10'?1500:key==='g7'?900:300);else ['jessie','james','meowth'].forEach(k=>mnPut(k,null))}}
-function rkBlast(run,delay){setTimeout(()=>{if(S.sc?.run!==run)return;['jessie','james','meowth'].forEach((k,i)=>{const e=mnEl(k);if(!e)return;e.style.transition='none';e.classList.remove('rkblast');void e.offsetWidth;e.classList.add('rkblast');e.style.animationDelay=i*.06+'s'});sfx('sfx-faint-fall',.4);
+  if([K.g7,K.c7,K.m10].includes(b)){if(into===b)rkBlast(run,key==='m10'?1500:key==='g7'?1500:300);else{['jessie','james','meowth'].forEach(k=>mnPut(k,null));$('#rkbal')?.classList.add('gone')}}}
+function rkBlast(run,delay){setTimeout(()=>{if(S.sc?.run!==run)return;const bl=$('#rkbal');if(bl){bl.classList.remove('shake');bl.classList.add('rkblast')}['jessie','james','meowth'].forEach((k,i)=>{const e=mnEl(k);if(!e||e.style.display==='none')return;e.style.transition='none';e.classList.remove('rkblast');void e.offsetWidth;e.classList.add('rkblast');e.style.animationDelay=i*.06+'s'});sfx('sfx-faint-fall',.4);
   setTimeout(()=>{if(S.sc?.run!==run)return;const m=$('#lsmap');m.insertAdjacentHTML('beforeend','<i class="rkstar">✦</i>');sfx('sfx-tink',.7);setTimeout(()=>m.querySelector('.rkstar')?.remove(),1400)},1150)},delay)}
-// the green scene: eight silhouettes, one net, five different answers
-function rkSafari(b,into,run){const K=RK_K,live=()=>S.sc?.run===run;
-  RK_SF.ev.forEach((p,i)=>{mnPut('ev'+i,p,'l',0);const e=mnEl('ev'+i);e.classList.remove('rkhit','rkzap','rkice','rkdodge');mnSay('ev'+i,'')});
-  const net=$('#rknet');net.classList.remove('fly','on','zap');
-  const res=()=>{const r={0:['⚡','rkhit'],1:['…',''],2:['+⚡','rkzap'],3:['❄','rkice'],4:['✓','rkdodge']};Object.entries(r).forEach(([i,[t,c]])=>{const e=mnEl('ev'+i);if(c)e.classList.add(c);mnSay('ev'+i,esc(t),'sm')})};
-  if(b===K.g3&&into===b){/* the net flies once the line is typed */}
-  else if(b>=K.g4){net.classList.add('on');res()}
-  if(b>=K.g4&&b<=K.g6&&into===K.g4){net.classList.add('zap');sfx('sfx-denied',.4)}
-  if(into===K.g6)cmtCry(135,.5);
-  if(into===K.g7){mnEl('ev2')?.classList.add('rkzap');setTimeout(()=>{if(!live())return;const a=RK_SF.ev[2],t=RK_SF.jam;mnShot('rkz',[a[0],a[1]-14],[t[0],t[1]-16],380,()=>{if(!live())return;$('#mnflash').classList.remove('go');void $('#mnflash').offsetWidth;$('#mnflash').classList.add('go')})},300)}}
-// the net (after g3's line): it flies from James over the group, sparks, and everyone answers differently; then g4
-function rkNet(run,cb){const n=$('#rknet');if(!n)return cb();n.classList.add('fly');sfx('sfx-ball-toss',.6);setTimeout(()=>{if(S.sc?.run!==run)return;n.classList.add('on','zap');sfx('sfx-denied',.45);cmtCry(135,.4);cb()},900)}
-// the blue scene: the battle screen; the bet; ×4 and Meowth's mark; the Thunderbolt
-function rkCorner(b,into,run){const K=RK_K,live=()=>S.sc?.run===run,bt=$('#rkbt');bt.classList.toggle('hs',b>=K.c0&&b<=K.c1);
+// the green scene from the balloon: through Durkheim's mode the eight are one grey huddle; Jessie flips it to Marx's: black against white,
+// a scuffle; Jolteon wanders off, the net drops on it (g4 -> g5), the colour comes back, the current runs up the rope and the balloon pops
+function rkSafari(b,into,run){const K=RK_K,F=RK_SF,live=()=>S.sc?.run===run,inn=$('#mnin'),mode=b<K.g2||(b===K.g2&&into===b)?0:1,caught=b>=K.g5;
+  const bal=$('#rkbal');bal.classList.remove('gone','rkblast','shake','in');bal.style.animationDelay='';if(into===K.g0){bal.classList.add('in')}
+  inn.classList.toggle('rkdk',b<K.g5&&mode===0);inn.classList.toggle('rkmx',b>=K.g1&&b<K.g5&&mode===1);
+  const dial=$('#rkdial');dial.classList.toggle('on',b>=K.g1&&b<=K.g4);dial.dataset.m=mode;
+  if(into===K.g2)setTimeout(()=>{if(!live())return;sfx('sfx-flip',.7);dial.dataset.m=1;inn.classList.remove('rkdk');inn.classList.add('rkmx');RK_EV.forEach((e,i)=>{if(i!==2||b<K.g4)mnGo2('ev'+i,F.one[i],F.two[i],330)})},900);
+  RK_EV.forEach((e,i)=>{const el=mnEl('ev'+i);el.classList.remove('rkhit','rkzap','rkw','rkfight');mnSay('ev'+i,'');
+    let at=b<K.g1||mode===0?F.one[i]:F.two[i];if(i===2&&b>=K.g4)at=F.aside;
+    mnPut('ev'+i,at,i<4?'r':'l',0);if(F.white.includes(i))el.classList.add('rkw');if(b>=K.g2&&b<K.g5&&!(into===K.g2))el.classList.add('rkfight');
+    el.style.animationDelay=(i*.13)+'s'});
+  if(into===K.g2)setTimeout(()=>{if(live())RK_EV.forEach((e,i)=>mnEl('ev'+i).classList.add('rkfight'))},1300);
+  if(into===K.g4){mnPut('ev2',F.two[2],'r',0);setTimeout(()=>{if(live())mnGo2('ev2',F.two[2],F.aside,700)},500)}
+  const rope=$('#rkrope'),net=$('#rknet');rope.classList.toggle('on',b>=K.g5);net.classList.remove('fly','zap');net.classList.toggle('on',b>=K.g5);
+  if(caught){const j=mnEl('ev2');j.classList.add('rkhit')}
+  if(into===K.g5){net.classList.add('zap');sfx('sfx-denied',.4);cmtCry(135,.5)}
+  if(into===K.g6){setTimeout(()=>{if(!live())return;const A=F.aside,B=F.bal;mnEl('ev2')?.classList.add('rkzap');sfx('sfx-denied',.5);mnShot('rkz',[A[0],A[1]-22],[B[0],B[1]],700,()=>{if(!live())return;bal.classList.add('shake');sfx('sfx-bump',.6)})},400)}
+  else if(b===K.g6)bal.classList.add('shake');
+  if(into===K.g7){bal.classList.add('shake');setTimeout(()=>{if(!live())return;mnFlash([F.bal[0],F.bal[1]-40]);sfx('sfx-ball-poof',.8);rope.classList.remove('on');net.classList.remove('on')},1200)}}
+// a straight walk between two map points (the Eeveelutions have no floor grid here)
+function mnGo2(k,a,b,ms){const el=mnEl(k);if(!el)return;mnPut(k,a,b[0]<a[0]?'l':'r',0);const d=Math.hypot(b[0]-a[0],b[1]-a[1]);if(d<1)return;mnWalk(k,[a,b],b[0]<a[0]?'l':'r',d/ms*1000)}
+// the net (after g4's line): the rope runs down from the basket to Jolteon, the net closes on it; then g5
+function rkNet(run,cb){const r=$('#rkrope'),n=$('#rknet');if(!n)return cb();r.classList.add('on');sfx('sfx-ball-toss',.6);setTimeout(()=>{if(S.sc?.run!==run)return;n.classList.add('fly','on');setTimeout(()=>{if(S.sc?.run!==run)return;sfx('sfx-caught-mon',.5);cb()},500)},600)}
+// the blue scene: the whole Game Corner (c0-c1), then a close-up of one slot machine with the battle on its screen (c2-c5): the Hat over
+// Gyarados, then over Pikachu; the Thunderbolt and the damage formula building under it; back to the room for the call and the blast
+function rkCorner(b,into,run){const K=RK_K,live=()=>S.sc?.run===run,sl=$('#rkslot'),bt=$('#rkbt'),fx=$('#rkfx'),close=b>=K.c2&&b<=K.c5;
+  sl.classList.toggle('on',close);if(into===K.c2){sl.classList.remove('zoom');void sl.offsetWidth;setTimeout(()=>{if(live()){sl.classList.add('zoom');sfx('sfx-tink',.4)}},700)}else sl.classList.toggle('zoom',close);
   $('#rkhsg').textContent=ll('גריפינדור','Gryffindor');$('#rkhsp').textContent=ll('הפלפאף','Hufflepuff');
-  bt.classList.toggle('x4',b>=K.c2);bt.classList.toggle('pred',b>=K.c2);$('#rkpred').dataset.t=ll('מיאות׳: 0','Meowth: 0');
-  const hp=$('#rkhpg'),done=b>K.c3||(b===K.c3&&into!==b);hp.style.transition='none';hp.style.width=done?'0%':'100%';bt.classList.toggle('ko',done);bt.classList.remove('zap');
-  if(into===K.c3){setTimeout(()=>{if(!live())return;bt.classList.add('zap');cmtCry(25,.5);sfx('sfx-denied',.35);setTimeout(()=>{if(!live())return;hp.style.transition='width .9s linear';hp.style.width='0%';
-    setTimeout(()=>{if(!live())return;bt.classList.add('ko');sfx('sfx-faint-fall',.5);cmtCry(130,.4);sfx('sfx-tink',.6)},1000)},500)},300)}
-  if(into===K.c2)sfx('sfx-excl',.5)}
+  bt.classList.toggle('hg',b>=K.c2);bt.classList.toggle('hp2',b>=K.c3);bt.classList.toggle('hat1',b===K.c2);bt.classList.toggle('hat2',b===K.c3);
+  if(into===K.c2||into===K.c3)setTimeout(()=>{if(live())sfx('sfx-shooting-star',.4)},into===K.c2?1500:200);
+  const hp=$('#rkhpg'),hn=$('#rkhpn'),done=b>K.c5||(b===K.c5&&into!==b);hp.style.transition='none';hp.style.width=done?'0%':'100%';hn.textContent=(done?0:170)+'/170';bt.classList.toggle('ko',done);bt.classList.remove('zap');
+  fx.classList.remove('go');fx.classList.toggle('on',b===K.c5);fx.classList.toggle('all',b===K.c5&&into!==b);
+  if(into===K.c5){void fx.offsetWidth;fx.classList.add('go');setTimeout(()=>{if(!live())return;bt.classList.add('zap');cmtCry(25,.5);sfx('sfx-denied',.35)},200);
+    [0,1,2,3,4,5,6].forEach(i=>setTimeout(()=>{if(live())sfx('sfx-tink',.25)},450+i*260));
+    setTimeout(()=>{if(!live())return;hp.style.transition='width .9s linear';hp.style.width='0%';let v=170;const t=setInterval(()=>{v=Math.max(0,v-19);hn.textContent=v+'/170';if(!v||!live())clearInterval(t)},100);
+      setTimeout(()=>{if(!live())return;bt.classList.add('ko');sfx('sfx-faint-fall',.5);cmtCry(130,.4)},1000)},2400)}}
 // the purple scene: Mt. Moon (the Clefairy dance, Dragonite, the FAIRY tag, Jacinthe, the Moonblast)
 function rkMoon(b,into,run){const K=RK_K,P=MN_P.moon,live=()=>S.sc?.run===run,G=mnFeet('moon',P.dra),Cf=mnFeet('moon',P.clf),O=mnFeet('moon',RK_MN.jes);
   const fw=b>=K.m2;if(b<=K.m1||b>=K.m8)mnDance(true,fw?'clef0':null);else{mnDance(false);[1,2,3].forEach(i=>mnPut('clef'+i,mnRing(i),0,0))}
@@ -5261,8 +5360,8 @@ function rkBetAns(v){const G=S.game;if(G?.g!=='rkbet'||G.ph!=='run')return;S.myG
 // Next/back inside the scene: a pick waits for the subject (Next walks them there); the net flies before g4
 function rkGo(d){const C=S.sc,b=C.b,K=RK_K;if(d<=0)return false;
   if(rkOpt(b)==='pick'&&S.rk.pk&&S.rk.pk.ph!=='open'){if(S.rk.pk.ph==='go')rkAutoPick();return true}
-  if(b===K.g3&&!C.net){C.net=1;C.fly=1;rkNet(C.run,()=>{C.fly=0;if(cur()?.id==='rk-4'&&S.sc.b===K.g3)go(1)});return true}
-  if(b!==K.g3)C.net=0;return false}
+  if(b===K.g4&&!C.net){C.net=1;C.fly=1;rkNet(C.run,()=>{C.fly=0;if(cur()?.id==='rk-4'&&S.sc.b===K.g4)go(1)});return true}
+  if(b!==K.g4)C.net=0;return false}
 delete SC_DROP['s-moon'];SC_DROP['rk-4']=SC['rk-4'].drop;
 
 const lsIn=(x,y)=>{const[tx,ty]=lkT(x,y);return tx>LS.x0&&ty>LS.y0+1&&tx<LS.x0+LS.bw/LS.z/LK.t-1&&ty<LS.y0+LS.bh/LS.z/LK.t-1&&lkAt(tx,ty)==='g'};
