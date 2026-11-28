@@ -1822,18 +1822,17 @@ body:has(.intronudge) #introfab{display:none}
 .cpop{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:200;background:#160f2a;opacity:0;pointer-events:none;transition:opacity .5s;overflow:hidden}
 .cpop.in{opacity:1}
 .cpopst{position:absolute;inset:0}
-.cplogo{position:absolute;left:50%;top:110px;width:900px;transform:translateX(-50%);image-rendering:pixelated}
+.cpbg{position:absolute;left:0;top:20px;width:1920px;height:1039px;image-rendering:pixelated}
+.cplamp{position:absolute;left:1474px;top:612px;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;background:radial-gradient(rgba(255,236,140,.55),rgba(255,236,140,0) 65%);transition:opacity .25s}
+.cpop.lampoff .cplamp{opacity:0}
+.cpdark{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .6s;z-index:5}
+.cpop.dark .cpdark{opacity:1}
 .cprun{position:absolute;inset:0;pointer-events:none}
-.cpr{position:absolute;left:0;width:128px;height:168px;animation:cprx var(--d) linear infinite;animation-delay:var(--w)}
-.cpr u{position:absolute;inset:0;text-decoration:none}
-.cpr i{position:absolute;inset:0;background-size:384px 672px;background-repeat:no-repeat;image-rendering:pixelated;animation:cprf .42s steps(3) infinite,cprrow var(--d) linear infinite;animation-delay:0s,var(--w)}
-.cpr.jump u{animation:cprj .7s ease-out}
-@keyframes cprx{0%{transform:translateX(-180px)}50%{transform:translateX(2000px)}100%{transform:translateX(-180px)}}
-@keyframes cprf{from{background-position-x:0}to{background-position-x:-384px}}
-@keyframes cprrow{0%,49.9%{background-position-y:-336px}50%,100%{background-position-y:-168px}}
-@keyframes cprj{0%,100%{transform:none}40%{transform:translateY(-90px)}}
+.cpr{position:absolute;width:0;height:0}
+.cpr i{position:absolute;left:-64px;top:-156px;width:128px;height:168px;background-size:384px 840px;background-repeat:no-repeat;image-rendering:pixelated}
 .cpttl{position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:48px;opacity:0;transition:opacity .8s}
 .cpop.ttl .cpttl{opacity:1}
+.cpttl{z-index:10}
 .cpttl img{width:620px;image-rendering:pixelated}
 .cpttl h1{color:#fff;font:400 66px/1.3 var(--display);text-align:center;max-width:1500px;margin:0}
 .mna[data-k^="cp"] .lsbub{top:-74px}
@@ -1852,7 +1851,7 @@ body:has(.intronudge) #introfab{display:none}
 .cppan .cpin{display:none}
 .cppan .cpin.on{display:flex}
 .cppan .cpin.in{animation:rkpop .45s cubic-bezier(.3,1.5,.5,1)}
-.cpfc{display:inline-block;flex:none;width:64px;height:84px;background-size:192px 336px;background-position:0 0;background-repeat:no-repeat;image-rendering:pixelated}
+.cpfc{display:inline-block;flex:none;width:64px;height:84px;background-size:192px 420px;background-position:0 0;background-repeat:no-repeat;image-rendering:pixelated}
 .cpgoal{align-items:center;gap:28px}
 .cpgoal>img{width:130px}
 .cpgoal b{display:block;font-size:34px}
@@ -1885,7 +1884,7 @@ body:has(.intronudge) #introfab{display:none}
 .cpsl.fly{animation:cpslin .45s cubic-bezier(.3,1.5,.5,1) both}
 @keyframes cpslin{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 .cppf{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center}
-.cppf .cpfc{width:32px;height:42px;background-size:96px 168px;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff)}
+.cppf .cpfc{width:32px;height:42px;background-size:96px 210px;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff)}
 .cppf b{font-size:30px;color:#fff;text-shadow:0 2px 0 #7a1f22,0 0 6px #7a1f22}
 .cppf.fly{animation:rkpop .45s .5s cubic-bezier(.3,1.5,.5,1) both}
 .cppc{margin:0;font-size:20px;color:#6A6458}
@@ -1898,7 +1897,6 @@ body:has(.intronudge) #introfab{display:none}
 .cpml.on{opacity:1}
 .cpml.now{box-shadow:0 0 0 3px var(--c)}
 .cpml.in{animation:rkpop .45s cubic-bezier(.3,1.5,.5,1)}
-.cpml[data-k="ex"]{margin-inline-start:44px}
 .cpml>b{font-size:30px;color:var(--c);min-width:84px}
 .cpml span{flex:1;font-size:24px;font-weight:700;display:flex;flex-direction:column}
 .cpml small{font-size:16px;font-weight:400;color:#6A6458}
@@ -1910,7 +1908,7 @@ body:has(.intronudge) #introfab{display:none}
 .cpcw{display:flex;align-items:center;gap:12px;font-size:28px}
 .cpline{font-size:30px;line-height:1.4;font-weight:700;margin:0}
 .cpchip{position:absolute;top:6px;left:6px;right:6px;z-index:6;background:rgba(22,26,46,.92);color:#fff;border:2px solid #F2C94C;border-radius:12px;padding:4px 8px;display:flex;align-items:center;gap:8px;font-size:14px}
-.cpchip .cpfc{width:32px;height:42px;background-size:96px 168px}
+.cpchip .cpfc{width:32px;height:42px;background-size:96px 210px}
 .cpchip span{flex:1;display:flex;flex-direction:column}
 .cpchip em{color:#F2C94C;font-style:normal;font-weight:700}
 .cpchip button{background:none;border:1px solid #9FA7C7;color:#C9CFE3;border-radius:8px;font-size:12px;padding:4px 6px}
@@ -2164,7 +2162,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795864181';
+const BUILDV='1795868827';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -5049,7 +5047,7 @@ const mnPath=(w,a,b)=>mnBfs(w,a,b).map(t=>mnFeet(w,t));
 const mnPpl=()=>gamePlayers().filter(p=>!p.remote).map((p,i)=>{const v=S.gIn?.[p.id]?.av;return {p,n:v!=null&&v>=0&&v<LK_MINI?v:(i*7+3)%LK_MINI}});
 function mnSpr(k){if(/^ev\d$/.test(k))return{st:`width:48px;height:48px;background-image:url(img/cm-${RK_EV[+k[2]]}.png);background-size:288px 48px`,w:48,h:48,s:MN_SC.ev};if(k==='oak')return{st:oakStyle(),w:72,h:72,s:MN_SC.oak};if(/^p:/.test(k))return{st:owStyle(+S.mnN[k]),w:68,h:68,s:MN_SC.p};
   const kind=k.replace(/\d+$/,''),[img,cw,ch,c,r,z]=MN_SPR[kind];return{st:`width:${cw*z}px;height:${ch*z}px;background-image:url(${img});background-size:${c*cw*z}px ${r*ch*z}px`,w:cw*z,h:ch*z,s:MN_SC[kind]}}
-function mnPos(k,d,f){if(k==='cptv')return '0px 0px';if(/^ev\d$/.test(k)){const c={l:0,r:0,u:2,d:4}[d]??4;return `${-(c+((f||0)%2))*48}px 0px`}if(k==='oak')return oakPos(d,f);if(/^p:/.test(k))return owPos(+S.mnN[k],d,f);const kind=k.replace(/\d+$/,''),[,cw,ch,,,z]=MN_SPR[kind];
+function mnPos(k,d,f){if(k==='cptv')return '0px 0px';if(/^cp/.test(k)&&d&&d[0]==='s'&&MN_SPR[k]){const[,cw,ch,,,z]=MN_SPR[k];return `${-({s:0,sl:1,sr:2}[d]||0)*cw*z}px ${-4*ch*z}px`}if(/^ev\d$/.test(k)){const c={l:0,r:0,u:2,d:4}[d]??4;return `${-(c+((f||0)%2))*48}px 0px`}if(k==='oak')return oakPos(d,f);if(/^p:/.test(k))return owPos(+S.mnN[k],d,f);const kind=k.replace(/\d+$/,''),[,cw,ch,,,z]=MN_SPR[kind];
   if(kind==='clef'||kind==='drago')return `${-(f||0)*cw*z}px ${-(d||0)*ch*z}px`;return `${-f*cw*z}px ${-'dlru'.indexOf(d)*ch*z}px`}
 // the sprite's bottom row sits 3 px under the feet point, and it is scaled from there
 function mnActorHTML(k,name){const s=mnSpr(k);return `<div class="lsp mna" data-k="${k}"${/^p:/.test(k)?` data-p="${k.slice(2)}"`:''} style="display:none">${name?`<b>${esc(name)}</b>`:''}<i class="lks" style="${s.st};left:${-s.w/2}px;top:${-s.h+3}px;transform:scale(${s.s});transform-origin:50% ${s.h-3}px"></i></div>`}
@@ -5207,23 +5205,23 @@ function mnStage(k,into,run,arrive){const live=()=>S.sc?.run===run&&cur()?.id===
 // off and Eyal explains the five layers as stops on the journey. Each friend's line is read aloud by a player: stage/cast {roles, now, next}.
 MN_MAP.cgym=['img/tw-gym2.webp',272,272];MN_MAP.cafe=['img/cp-cafe.webp',446,354];
 MN_GRID.cgym={ox:0,oy:0,ts:16,g:[]};MN_GRID.cafe={ox:0,oy:0,ts:22,g:[]};
-const CP_FILE={mon:'monica',cha:'chandler',pho:'phoebe',ros:'ross',joe:'joey',rac:'rachel',gun:'gunther'},CP_READ=['mon','cha','pho','ros','joe','rac'];
-Object.entries(CP_FILE).forEach(([k,f])=>{MN_SPR['cp'+k]=['img/cp-'+f+'.png',32,42,3,4,2,[1,0,2,0]];MN_SC['cp'+k]=.83});
+const CP_FILE={mon:'monica',cha:'chandler',pho:'phoebe',ros:'ross',joe:'joey',rac:'rachel',gun:'gunther'},CP_READ=['mon','cha','pho','ros','joe','rac'],CP_ROLE=[...CP_READ,'gun'];
+Object.entries(CP_FILE).forEach(([k,f])=>{MN_SPR['cp'+k]=['img/cp-'+f+'.png',32,42,3,5,2,[1,0,2,0]];MN_SC['cp'+k]=.83});
 MN_SPR.cpsq=['img/cp-squirtle.png',28,24,3,5,2,[1,0,2,0]];MN_SPR.cptv=['img/cp-tv.png',30,40,1,1,2,[0]];MN_SPR.eyal=['img/lw-eyal.png',21,32,3,4,2,[1,0,2,0]];
 Object.assign(MN_SC,{cpsq:1.05,cptv:1.15,eyal:1.2});
 const CP_WHO={mon:[['מוניקה','Monica'],'img/frf-monica.webp'],cha:[['צ׳נדלר','Chandler'],'img/frf-chandler.webp'],pho:[['פיבי','Phoebe'],'img/frf-phoebe.webp'],
   ros:[['רוס','Ross'],'img/frf-ross.webp'],joe:[['ג׳ואי','Joey'],'img/frf-joey.webp'],rac:[['רייצ׳ל','Rachel'],'img/frf-rachel.webp'],gun:[['גאנתר','Gunther'],'img/frf-gunther.webp']};
 // the café, map px (the picture at half size): where each one sits or stands (feet), facing
-const CP_AT={mon:[241,209,'r'],cha:[294,181,'d'],pho:[323,181,'d'],ros:[352,181,'d'],joe:[401,207,'l'],rac:[124,160,'d'],gun:[76,160,'d'],
-  monCounter:[94,207,'u'],monTable:[300,248,'u']};
+const CP_AT={mon:[243,205,'sr'],cha:[294,174,'s'],pho:[323,174,'s'],ros:[352,174,'s'],joe:[403,205,'sl'],rac:[124,160,'d'],gun:[76,160,'d']};
+
 // what stands in front of the seated (drawn over them, z = its bottom row): the sofa's seat, the two armchairs, the counter
-const CP_TOP=[['sofa',272,172,376,184],['red',218,202,264,226],['green',384,200,431,226],['counter',41,149,177,195]];
+const CP_TOP=[['counter',41,149,177,195]];
 // questions: the sentence (or the scenario) and the score; Rachel answers "don't know"
 const CP_Q={qmon:{w:'mon',sc:5,clip:'frg-monica',t:['קשה למוניקה לעשות דברים בחצי כוח','Monica finds it hard to do things halfway']},
   qcha:{w:'cha',sc:4,clip:'frg-chandler',t:['רשימות, לוחות זמנים ותוכנית מסודרת עוזרים למוניקה לתפקד','Lists, schedules and an orderly plan help Monica function']},
   qpho:{w:'pho',sc:3,clip:'frg-phoebe',t:['יש במוניקה צדדים שגם אנשים קרובים לא מכירים','There are sides of Monica that even close people don’t know']},
   qros:{w:'ros',sc:1,clip:'frg-ross',t:['קשה למוניקה להודות בטעות, בעיקר מול אחרים','It’s hard for Monica to admit a mistake, especially in front of others']},
-  qjoe:{w:'joe',sc:[5,1],clip:'frg-joey',scn:1},
+  qjoe:{w:'joe',sc:5,clip:'frg-joey',t:['מוניקה עוצרת ויכוחים בתקיפות','Monica firmly stops arguments']},
   qrac:{w:'rac',sc:0,clip:'frg-rachel',t:['למוניקה קל לסמוך על אנשים חדשים','Monica finds it easy to trust new people']}};
 // the cups: how many each gets, on which beat, where they land (map px, the first cup; the rest beside it)
 const CP_CUPS=[['mon',9,'w0'],['ros',4,'w1'],['cha',3,'w1'],['pho',1,'w1'],['joe',1,'w1'],['rac',1,'w1'],['gun',1,'w1']],CP_TRAY=[323,200];
@@ -5236,7 +5234,7 @@ SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפ�
     ['g2','סקווירטל, את הטלוויזיה בבקשה!','Squirtle, the TV please!','eyal'],
     ['g3','יש לי בדיוק את הפרק המתאים.','I have just the right episode.','eyal'],
     ['op','','','sys','auto'],
-    ['c0','אייל שלח לכם שאלון. עליי.','Eyal sent you all a questionnaire. About me.','mon'],
+    ['c0','תקשיבו, חברים! יש שאלון שמגלה מה הפוקימון שלי. תענו עליו בשבילי. עכשיו. ובכנות. אני אבדוק.','Listen up, everyone! There\'s a questionnaire that finds out my Pokémon. Answer it for me. Now. Honestly. I\'ll check.','mon'],
     ['c1','כל אחד מהם עונה על אותו שאלון על מוניקה, כולל מוניקה עצמה. וכל אחד מקבל את השאלות בסדר אקראי משלו.','Each of them answers the same questionnaire about Monica, Monica included. And each gets the questions in their own random order.','eyal'],
     ['c3','הסוג הראשון: משפט, ומדרגים אותו מ־1 עד 5.','The first kind: a sentence, rated from 1 to 5.','eyal'],
     ['xmon','…','…','mon','ask'],
@@ -5244,25 +5242,24 @@ SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפ�
     ['xcha','…','…','cha','ask'],
     ['qcha','הכול מסודר. חוץ מהארון שהיא נועלת. פתחתי אותו פעם. אני עדיין לא ישן טוב. אז ארבע.','Everything is in order. Except the closet she keeps locked. I opened it once. I still don’t sleep well. So, four.','cha','lol'],
     ['xpho','…','…','pho','ask'],
-    ['qpho','צדדים שאף אחד לא מכיר? בטח! למשל שהיא וצ׳נדלר… אוי. הם לא יודעים שאנחנו יודעים. אממ… שלוש.','Sides nobody knows? Sure! Like how she and Chandler… oh. They don’t know that we know. Umm… three.','pho','lol'],
+    ['qpho','צדדים שאף אחד לא מכיר? בטח! למשל שהיא וצ׳נדלר… אוי. הם בעצם לא יודעים שאנחנו יודעים שהם יודעים שאנחנו יודעים. אממ… שלוש.','Sides nobody knows? Sure! Like how she and Chandler… oh. They actually don’t know that we know they know we know. Umm… three.','pho','lol'],
     ['xros','…','…','ros','ask'],
     ['qros','מוניקה? ממש לא. היא לא כמו אנשים מסוימים שמתעקשים עשר שנים ש… היינו בהפסקה!','Monica? Not at all. She’s not like certain people who insist for ten years that… WE WERE ON A BREAK!','ros','lol'],
-    ['c4','הסוג השני: תרחיש. כמה תגובות, וכל תגובה מקבלת ציון משלה.','The second kind: a scenario. A few reactions, and each one gets its own score.','eyal'],
     ['xjoe','…','…','joe','ask'],
-    ['qjoe','מוניקה עוצרת כל ויכוח בשנייה. לא בגלל שמישהו נפגע, בגלל שהאוכל מתקרר. ואני איתה.','Monica stops every argument in a second. Not because someone got hurt. Because the food is getting cold. And I’m with her.','joe','lol'],
+    ['qjoe','מוניקה עוצרת כל ויכוח בשנייה. לא בגלל שמישהו נפגע, בגלל שהאוכל מתקרר. ואני איתה. חמש.','Monica stops every argument in a second. Not because someone got hurt. Because the food is getting cold. And I’m with her. Five.','joe','lol'],
     ['xrac','…','…','rac','ask'],
     ['qrac','לא יודעת. בפעם האחרונה שניחשתי בחידון על חבר, אמרתי ״טרנספונסטר״ והפסדנו את הדירה.','Don’t know. The last time I guessed in a quiz about a friend, I said "transponster" and we lost the apartment.','rac','lol'],
     ['c5','ותמיד אפשר לענות ״לא יודע״. עדיף חור בנתונים מאשר ניחוש.','And you can always answer "don’t know". Better a gap in the data than a guess.','eyal'],
     ['w0','כל אחד רואה את מוניקה קצת אחרת. כדי לחבר את כל התשובות, לנבדק תמיד יש 45%, ואת השאר הוא מחלק מראש בין החברים.','Each of them sees Monica a little differently. To put all the answers together, the subject always gets 45%, and hands out the rest among the friends in advance.','eyal'],
     ['w1','את השאר אני מחלקת. יש לי שיטה.','I hand out the rest. I have a system.','mon'],
-    ['w2','וגאנתר, המלצר. לפעמים מי שרואה מהצד רואה משהו שהחברים מפספסים.','And Gunther, the waiter. Sometimes someone watching from the side sees what friends miss.','eyal'],
+    ['w2','אני מעביר את האחוזים שלי לרייצ׳ל.','I’m giving my percent to Rachel.','gun'],
     ['w3','לא. ככה זה לא עובד.','No. That’s not how it works.','mon','aww'],
     ['w4',`${n} כבר ${sgF('חילק','חילקה')} את העוגה ${sgF('שלו','שלה')} לפני הערב.`,`${n} already split ${sgF('his','her')} pie before tonight.`,'eyal'],
     ['e0','המשך יבוא…','To be continued…','sys'],
     ['m0','אז מה בעצם בודקות 151 השאלות? חמש שכבות, וכל אחת מהן היא תחנה במסע שלנו.','So what do the 151 questions actually check? Five layers, and each one is a stop on our journey.','eyal'],
-    ['m1','סוגים: הכוח שאתה מביא לעולם. ומאותן תשובות בדיוק: האפיון הנוסף, סוג שחזק אצלך אבל לא נכנס לכרטיס.','Types: the power you bring into the world. And from the very same answers: the extra trait, a type that is strong in you but didn’t make the card.','eyal'],
+    ['m1','סוגים: הכוח שאתה מביא לעולם.','Types: the power you bring into the world.','eyal'],
     ['m2','סטטים: איפה אתה חזק ואיפה פגיע. ואבולוציה: מה צריך לקרות כדי שתשתנה.','Stats: where you are strong and where you are vulnerable. And evolution: what has to happen for you to change.','eyal'],
-    ['m3','ובסוף, שאלת הבונוס של מיו. וכל השכבות ייפגשו בהיכל התהילה.','And at the end, Mew’s bonus question. All the layers meet in the Hall of Fame.','eyal']]};
+    ['m3','את האפיון הנוסף נפגוש בקורס השמיני, ובסוף: שאלת הבונוס של מיו. וכל השכבות ייפגשו בהיכל התהילה.','We\'ll meet the extra trait in course eight, and at the end: Mew\'s bonus question. All the layers meet in the Hall of Fame.','eyal']]};
 {const c=SC['ep-2'];c.name=SC['op-1'].name;SC_DROP['ep-2']=c.drop}
 const CP_L=()=>SC['ep-2'].lines(subjectName()),CP_K=Object.fromEntries(CP_L().map((l,i)=>[l[0],i]));
 const cpKey=b=>CP_L()[b]?.[0]||'',cpSec=b=>{const k=cpKey(b);return k==='op'?'o':k[0]==='q'||k[0]==='x'?'q':k[0]};
@@ -5270,7 +5267,7 @@ const cpKey=b=>CP_L()[b]?.[0]||'',cpSec=b=>{const k=cpKey(b);return k==='op'?'o'
 const cpQ=k=>CP_Q[k]||(k[0]==='x'?CP_Q['q'+k.slice(1)]:null);
 const cpWorld=b=>({g:'cgym',o:'cgym',m:'cgym'})[cpSec(b)]||'cafe';
 // the gym: Eyal on the leader's spot, the TV comes along the platform from the right, Squirtle behind it (then asleep beside it)
-const CP_G={eyal:[8,3],tv:[10.1,4.1],tv0:[14.4,4.1],sq:[11.2,4.2],sq0:[15.5,4.2],cam:[40,8,232,200],tvr:[156,52,174,68]};
+const CP_G={eyal:[8,3],tv:[10.1,4.1],tv0:[14.4,4.1],sq:[11.2,4.2],sq0:[15.5,4.2],cam:[40,8,232,200],tvr:[162,51.5,175,61.5]};
 let CP_LAST=0;function cpLaugh(){let i;do{i=1+Math.floor(Math.random()*8)}while(i===CP_LAST);CP_LAST=i;sfx('sfx-laugh'+i,.75)}
 function cpActor(k,name){return rkActorHTML(k,name)}
 function cpWorldHTML(w){const[img,mw,mh]=MN_MAP[w],Z=MN_Z;
@@ -5283,11 +5280,11 @@ function cpSetWorld(w){if(S.mn.world===w&&$('#mnin'))return false;S.mn.world=w;$
 function epEnter(it,atEnd){const C=S.sc,n=scBeats(it.id).length;C.b=atEnd?n-1:0;S.mn=S.mn||{};S.mn.world='';S.cp={sid:S.cp?.sid||String(Date.now()%1e7),rev:atEnd?Object.fromEntries(CP_L().map(l=>[l[0],1])):{},gunAt:0};
   epBuild(it,!atEnd);epApply(C.b,!atEnd);if(!atEnd)music(null)}
 function epBuild(it,fresh){const cf=SC[it.id],cv=$('#cv'),bar=scSec(cf.bar)?.querySelector('div[style*="top:1022px"]')?.outerHTML||'',ml=EN?1920-60-MN_BW:60,n=subjectName();
-  const runners=CP_READ.map((k,i)=>`<div class="cpr" style="--d:${7+i*1.3}s;--w:${-i*1.7}s;bottom:${150+(i%3)*22}px"><u><i style="background-image:url(img/cp-${CP_FILE[k]}.png)"></i></u></div>`).join('');
-  const op=`<div class="cpop" id="cpop"><div class="cpopst"><img class="cplogo" src="img/fr8-logo.webp" alt=""><div class="frset cpset"><img class="frfount" src="img/fr8-fountain.png" alt="">${frWater()}<img class="frcouch" src="img/fr8-couch.png" alt=""><img class="frlamp" src="img/fr8-lamp.png" alt=""></div><div class="cprun">${runners}</div></div>
+  const runners=CP_READ.map(k=>`<div class="cpr" data-k="${k}"><i style="background-image:url(img/cp-${CP_FILE[k]}.png)"></i></div>`).join('');
+  const op=`<div class="cpop" id="cpop"><div class="cpopst"><img class="cpbg" src="img/cp-open.webp" alt=""><i class="cplamp" id="cplamp"></i><div class="cprun" id="cprun">${runners}</div><i class="cpdark"></i></div>
     <div class="cpttl"><img src="img/fr8-logo.webp" alt=""><h1>${ll('הפרק שבו כולם מחפשים את הפוקימון של מוניקה','The One Where Everyone Looks for Monica\'s Pokémon')}</h1></div></div>`;
-  const model=[['ty','#EE8130',ll('סוגים','Types'),'40%',[5,6],ll('94 שאלות → 40% + 7%','94 questions → 40% + 7%')],['ex','#A98FF3',ll('אפיון נוסף','Extra trait'),'7%','hof',ll('מאותן 94 תשובות','from the same 94 answers')],
-    ['st','#6390F0',ll('סטטים','Stats'),'30%',[7],ll('36 שאלות','36 questions')],['ev','#7AC74C',ll('אבולוציה','Evolution'),'18%',[8],ll('20 שאלות','20 questions')],['mw','#F95587',ll('שאלת מיו','Mew\'s question'),'5%','hof',ll('שאלה אחת','1 question')]]
+  const model=[['ty','#EE8130',ll('סוגים','Types'),'40%',[5,6],ll('94 שאלות','94 questions')],['st','#6390F0',ll('סטטים','Stats'),'30%',[7],ll('36 שאלות','36 questions')],
+    ['ev','#7AC74C',ll('אבולוציה','Evolution'),'18%',[8],ll('20 שאלות','20 questions')],['ex','#A98FF3',ll('אפיון נוסף','Extra trait'),'7%',[8],''],['mw','#F95587',ll('שאלת מיו','Mew\'s question'),'5%','hof',ll('שאלה אחת','1 question')]]
     .map(([k,c,t,p,at,q])=>`<div class="cpml" data-k="${k}" style="--c:${c}"><b>${p}</b><span>${t}<small>${q}</small></span><em>${at==='hof'?`<img src="img/it-poke-ball.webp" alt="">${ll('היכל התהילה','Hall of Fame')}`:at.map(x=>`<img src="img/badge-${x}.webp" alt="">`).join('')+ll(at.length>1?` תגים ${at.join('–')}`:` תג ${at[0]}`,at.length>1?` badges ${at.join('–')}`:` badge ${at[0]}`)}</em></div>`).join('');
   const pan=`<p class="sceb" dir="ltr" id="cpeb"></p><h2 id="cph2"></h2>
     <div class="cpin cpgoal" data-s="goal"><img src="img/badge-2.webp" alt=""><div><b>${ll(`הפוקימון של ${esc(n)}`,`${esc(n)}'s Pokémon`)}</b><span><img src="img/it-poke-ball.webp" alt=""> ?</span></div></div>
@@ -5318,13 +5315,14 @@ function epApply(b,anim){const C=S.sc,B=scBeats(C.id),L=CP_L();++C.run;clearInte
   if(swap&&key!=='m0'){const bl=$('#mnblink');bl.classList.add('on');C.fly=1;setTimeout(()=>{if(!live())return;paint();bl.classList.remove('on');C.fly=0},380)}else paint();
   cpPanel(b,stepIn);cpCastPub();
   if(stepIn&&key==='m0')sfx('sfx-tink',.4);
+  if(stepIn&&key==='w0'){sfx('sfx-guitar',.7);const bl=$('#mnblink');bl?.classList.add('on');setTimeout(()=>bl?.classList.remove('on'),420)}
   scType(B[b].t,anim);
   // the opener: the camera dives into the screen, the theme with the gang, the title, then Central Perk
   {const op=$('#cpop');if(key!=='op')op?.classList.remove('ttl','in')}
-  if(key==='op'){const op=$('#cpop');op.classList.remove('ttl','in');
-    if(stepIn){C.fly=1;sfx('sfx-teleport',.35);setTimeout(()=>{if(!live())return;op.classList.add('in');music('mus-friends',{vol:.32,loop:false});cpJumps(run)},900);
-      S.cpAT=setTimeout(()=>{if(!live())return;op.classList.add('ttl');music(null);sfx('sfx-tink',.5);S.cpAT=setTimeout(()=>{if(!live())return;C.fly=0;scGo(1)},3600)},900+12000)}
-    else op.classList.add('in','ttl')}}
+  if(key==='op'){const op=$('#cpop');op.classList.remove('ttl','in','dark','lampoff');
+    if(stepIn){C.fly=1;sfx('sfx-teleport',.35);setTimeout(()=>{if(!live())return;op.classList.add('in');music('mus-friends',{vol:.32,loop:false});cpOpenRun(run)},900);
+      S.cpAT=setTimeout(()=>{if(!live())return;op.classList.add('ttl');sfx('sfx-guitar',.8);S.cpAT=setTimeout(()=>{if(!live())return;C.fly=0;scGo(1)},3800)},900+CP_OPT.end)}
+    else{op.classList.add('in','ttl');cpOpenSeat()}}}
 // the stage at beat b; `into` = the beat being stepped into (its animation plays); `from` = the world we came from
 function cpStage(b,into,run,from){const key=cpKey(b),K=CP_K,live=()=>S.sc?.run===run&&cur()?.id==='ep-2',w=S.mn.world;
   if(w==='cgym'){const G=CP_G,pl=mnPpl(),seats=TOWN.gym2.seats;mnAt('eyal',G.eyal,'d');pl.forEach(({p},i)=>mnAt('p:'+p.id,seats[i%seats.length],'u'));
@@ -5354,7 +5352,21 @@ function cpStage(b,into,run,from){const key=cpKey(b),K=CP_K,live=()=>S.sc?.run==
   if(b<=K.w0)Object.entries(CP_Q).forEach(([q,Q])=>{if(b===K.w0||(K[q]<=b&&S.cp.rev[q]))cpScore(Q.w,false)});
   cpCups(b,into);
   $('#cpball')?.classList.toggle('on',key==='e0');if(key==='e0'&&into===b)sfx('sfx-ball-toss',.4)}
-// the opener: now and then one of the gang jumps
+// the opener (screen px of #cpop): 0-5 s they walk back and forth on the grass, now and then a jump; then each walks to their seat and hops on;
+// at 7 s the lamp goes out, then black; the title comes over the guitar lick
+const CP_OPT={walk:5000,sit:6900,lamp:7000,dark:7350,end:8000,feet:1048,seat:922,seats:{mon:690,cha:798,pho:906,ros:1014,joe:1122,rac:1230},k:4};
+function cpOpenPos(el,x,y,row,f){const k=CP_OPT.k;el.style.left=x+'px';el.style.top=y+'px';const sp=el.querySelector('i');sp.style.backgroundPosition=`${-f*32*k}px ${-row*42*k}px`}
+function cpOpenSeat(){document.querySelectorAll('#cprun .cpr').forEach(el=>cpOpenPos(el,CP_OPT.seats[el.dataset.k],CP_OPT.seat,4,0))}
+function cpOpenRun(run){const O=CP_OPT,L=[...document.querySelectorAll('#cprun .cpr')],t0=performance.now(),st=L.map((el,i)=>({el,x:180+i*290,d:i%2?-1:1,v:260+i*28,j:0,h:0}));
+  clearInterval(S.cpJ);const op=$('#cpop');let last=t0;
+  S.cpJ=setInterval(()=>{const t=performance.now(),dt=(t-last)/1000,el0=t-t0;last=t;if(S.sc?.run!==run||cur()?.id!=='ep-2'||!op?.isConnected){clearInterval(S.cpJ);return}
+    st.forEach((p,i)=>{const seat=O.seats[p.el.dataset.k];let row=p.d>0?2:1,f=Math.floor(el0/140+i)%3,y=O.feet;
+      if(el0<O.walk){p.x+=p.d*p.v*dt;if(p.x>1800){p.x=1800;p.d=-1}if(p.x<120){p.x=120;p.d=1}if(!p.j&&Math.random()<dt*.35)p.j=el0;if(p.j){const u=(el0-p.j)/650;if(u>=1)p.j=0;else y-=Math.sin(u*Math.PI)*90}}
+      else if(el0<O.sit-500&&Math.abs(p.x-seat)>6){p.d=seat>p.x?1:-1;row=p.d>0?2:1;p.x+=p.d*Math.min(Math.abs(seat-p.x),520*dt)}
+      else{p.x=seat;if(!p.h)p.h=el0;const u=Math.min(1,(el0-p.h)/420);y=O.feet+(O.seat-O.feet)*u-Math.sin(u*Math.PI)*70;row=u<1?0:4;f=0}
+      cpOpenPos(p.el,p.x,y,row,f)});
+    if(el0>=O.lamp&&!op.classList.contains('lampoff')){op.classList.add('lampoff');sfx('sfx-tink',.35);music(null)}
+    if(el0>=O.dark)op.classList.add('dark');if(el0>=O.end)clearInterval(S.cpJ)},40)}
 function cpJumps(run){clearInterval(S.cpJ);S.cpJ=setInterval(()=>{if(S.sc?.run!==run||cur()?.id!=='ep-2'){clearInterval(S.cpJ);return}const L=[...document.querySelectorAll('#cpop .cpr')];if(!L.length)return;const el=L[Math.floor(Math.random()*L.length)];if(el.classList.contains('jump'))return;el.classList.add('jump');setTimeout(()=>el.classList.remove('jump'),720)},800)}
 function cpSleep(on){const el=mnEl('cpsq');if(!el)return;clearInterval(el._z);const sp=el.querySelector('.lks');if(!on){sp.style.backgroundPosition=mnPos('cpsq','d',0);mnSay('cpsq','');return}
   let f=0;sp.style.backgroundPosition=`0px ${-4*24*2}px`;mnSay('cpsq','💤','mk');el._z=setInterval(()=>{if(!el.isConnected){clearInterval(el._z);return}f^=1;sp.style.backgroundPosition=`${-f*28*2}px ${-4*24*2}px`},700)}
@@ -5371,9 +5383,10 @@ function cpCups(b,into){const box=$('#cpcups');if(!box)return;const K=CP_K,Z=MN_
   if(into===b&&n0)[0,350,700].forEach(t=>setTimeout(()=>sfx('sfx-tink',.3),200+t));
   // Gunther's cup: walked over to Rachel's, then back
   const g=box.querySelector('[data-w="gun"]');if(!g)return;const R=CP_CUPAT.rac,Gp=CP_CUPAT.gun;
-  if(b===K.w3){const run=S.sc.run,live=()=>S.sc?.run===run&&cur()?.id==='ep-2';
-    if(into===b){const[gx,gy]=CP_AT.gun;mnWalk('cpgun',[[gx,gy],[R[0]-14,gy]],'r',40,()=>{if(!live())return;g.style.transition='left .5s,top .5s';g.style.left=(R[0]+9)*Z+'px';sfx('sfx-tink',.4);
-      setTimeout(()=>{if(!live())return;mnSay('cpgun','♥','sm');setTimeout(()=>{if(!live())return;mnSay('cpgun','');g.style.left=Gp[0]*Z+'px';mnWalk('cpgun',[[R[0]-14,gy],[gx,gy]],'d',40)},2600)},500)})}
+  const run=S.sc.run,live=()=>S.sc?.run===run&&cur()?.id==='ep-2',[gx,gy]=CP_AT.gun,near=[R[0]-14,gy];
+  if(b===K.w2){if(into===b)mnWalk('cpgun',[[gx,gy],near],'r',40,()=>{if(!live())return;g.style.transition='left .5s,top .5s';g.style.left=(R[0]+9)*Z+'px';sfx('sfx-tink',.4);mnSay('cpgun','♥','sm')});
+    else{mnPut('cpgun',near,'r',0);g.style.left=(R[0]+9)*Z+'px';mnSay('cpgun','♥','sm')}}
+  else if(b===K.w3){if(into===b){mnPut('cpgun',near,'r',0);g.style.left=(R[0]+9)*Z+'px';setTimeout(()=>{if(!live())return;g.style.transition='left .6s';g.style.left=Gp[0]*Z+'px';sfx('sfx-tink',.35);mnWalk('cpgun',[near,[gx,gy]],'d',40)},900)}
     else g.style.left=Gp[0]*Z+'px'}}
 // the panel
 const cpWords=t=>esc(t).split(/\s+/).filter(Boolean).map(w=>`<span class="frw">${w}</span>`).join(' ');
@@ -5401,16 +5414,16 @@ function cpPanel(b,stepIn){const key=cpKey(b),sec=cpSec(b),K=CP_K,Q=cpQ(key);
       :`<p class="cpst" dir="auto">${W(ll(...Q.t))}</p>${dots(Q.sc)}`);
     if(ask&&stepIn)cpRead(S.sc.run)}
   if(show==='w')$('#cpw').innerHTML=cpPie(b,stepIn);
-  if(show==='m'){const L={ty:K.m1,ex:K.m1,st:K.m2,ev:K.m2,mw:K.m3};$('#lspan').querySelectorAll('.cpml').forEach(e=>{const at=L[e.dataset.k],on=b>=at;e.classList.toggle('on',on);e.classList.toggle('now',b===at);if(stepIn&&b===at){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});}}
+  if(show==='m'){const L={ty:K.m1,st:K.m2,ev:K.m2,ex:K.m3,mw:K.m3};$('#lspan').querySelectorAll('.cpml').forEach(e=>{const at=L[e.dataset.k],on=b>=at;e.classList.toggle('on',on);e.classList.toggle('now',b===at);if(stepIn&&b===at){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});}}
 // ---------- reading roles: the subject is Monica, the rest of the friends' lines go round the others (not remote, not the host) ----------
 const cpH=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return h};
-function cpRoles(){const pl=gamePlayers().filter(p=>!p.remote&&!isPresenter(p)),no=id=>!!S.gIn?.[id]?.cpNo,sj=subjId(),R={},ks=['cha','pho','ros','joe','rac'];
+function cpRoles(){const pl=gamePlayers().filter(p=>!p.remote&&!isPresenter(p)),no=id=>!!S.gIn?.[id]?.cpNo,sj=subjId(),R={},ks=['cha','pho','ros','joe','rac','gun'];
   const others=pl.filter(p=>p.id!==sj&&!no(p.id)).sort((a,b)=>cpH(a.id+S.cp.sid)-cpH(b.id+S.cp.sid));
   if(sj&&pl.some(p=>p.id===sj)&&!no(sj))R[sj]=['mon'];else ks.unshift('mon');
   if(others.length)ks.forEach((k,i)=>{const p=others[i%others.length];(R[p.id]||(R[p.id]=[])).push(k)});return R}
 function cpCastPub(){if(!S.db||!isScreen())return;const it=cur();let d={sid:''};
   if(it?.id==='ep-2'&&S.sc?.id==='ep-2'&&S.cp){S.cp.roles=cpRoles();const L=CP_L(),b=S.sc.b,l=L[b],nx=L.slice(b+1).find(x=>x[3]!=='eyal'&&x[3]!=='sys'&&x[0][0]!=='x');
-    const on=b>=CP_K.c0&&b<CP_K.m0;d={sid:S.cp.sid,roles:on?S.cp.roles:{},now:on&&CP_READ.includes(l[3])&&l[0][0]!=='x'?{w:l[3],he:l[1],en:l[2],k:l[0]}:null,next:on&&nx&&CP_READ.includes(nx[3])?nx[3]:''}}
+    const on=b>=CP_K.c0&&b<CP_K.m0;d={sid:S.cp.sid,roles:on?S.cp.roles:{},now:on&&CP_ROLE.includes(l[3])&&l[0][0]!=='x'?{w:l[3],he:l[1],en:l[2],k:l[0]}:null,next:on&&nx&&CP_ROLE.includes(nx[3])?nx[3]:''}}
   const k=JSON.stringify(d);if(k===S.castKey)return;S.castKey=k;S.db.doc('stage/cast').set(d).catch(()=>{})}
 setInterval(()=>{try{if(isScreen()&&cur()?.id==='ep-2')cpCastPub()}catch(e){}},1500);
 // the phone: who you read; when it's your line, the whole phone is the line
