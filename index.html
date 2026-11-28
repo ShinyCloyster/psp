@@ -2162,7 +2162,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795868827';
+const BUILDV='1795869593';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -5224,7 +5224,7 @@ const CP_Q={qmon:{w:'mon',sc:5,clip:'frg-monica',t:['קשה למוניקה לע�
   qjoe:{w:'joe',sc:5,clip:'frg-joey',t:['מוניקה עוצרת ויכוחים בתקיפות','Monica firmly stops arguments']},
   qrac:{w:'rac',sc:0,clip:'frg-rachel',t:['למוניקה קל לסמוך על אנשים חדשים','Monica finds it easy to trust new people']}};
 // the cups: how many each gets, on which beat, where they land (map px, the first cup; the rest beside it)
-const CP_CUPS=[['mon',9,'w0'],['ros',4,'w1'],['cha',3,'w1'],['pho',1,'w1'],['joe',1,'w1'],['rac',1,'w1'],['gun',1,'w1']],CP_TRAY=[323,200];
+const CP_CUPS=[['mon',9,'w1'],['ros',4,'w1b'],['cha',3,'w1b'],['pho',1,'w1b'],['joe',1,'w1b'],['rac',1,'w1b'],['gun',1,'w1b']];
 const CP_CUPAT={ros:[340,191],cha:[285,191],pho:[323,191],joe:[378,218],rac:[128,172],gun:[78,172]},CP_PYR=[[287,207],[295,207],[303,207],[311,207],[291,201],[299,201],[307,201],[295,195],[303,195]];
 const CP_COL={mon:'#E5484D',ros:'#4A7BE0',cha:'#3DBE6A',pho:'#F2C94C',joe:'#9B5DE5',rac:'#F28C38',gun:'#8A8F99'};
 SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפוקימון של מוניקה','The One Where Everyone Looks for Monica\'s Pokémon'],drop:['k-divider','e-layers','k-raters','k-scenario'],bar:'k-divider',
@@ -5250,16 +5250,18 @@ SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפ�
     ['xrac','…','…','rac','ask'],
     ['qrac','לא יודעת. בפעם האחרונה שניחשתי בחידון על חבר, אמרתי ״טרנספונסטר״ והפסדנו את הדירה.','Don’t know. The last time I guessed in a quiz about a friend, I said "transponster" and we lost the apartment.','rac','lol'],
     ['c5','ותמיד אפשר לענות ״לא יודע״. עדיף חור בנתונים מאשר ניחוש.','And you can always answer "don’t know". Better a gap in the data than a guess.','eyal'],
-    ['w0','כל אחד רואה את מוניקה קצת אחרת. כדי לחבר את כל התשובות, לנבדק תמיד יש 45%, ואת השאר הוא מחלק מראש בין החברים.','Each of them sees Monica a little differently. To put all the answers together, the subject always gets 45%, and hands out the rest among the friends in advance.','eyal'],
-    ['w1','את השאר אני מחלקת. יש לי שיטה.','I hand out the rest. I have a system.','mon'],
+    ['w0','רגע, מוניקה. איזה משקל כל אחד מאיתנו מקבל בשאלון הזה?','Wait, Monica. How much weight does each of us get in this questionnaire?','ros'],
+    ['w1','הממ… כתוב כאן שלי תמיד יש 45%.','Hmm… it says here I always get 45%.','mon'],
+    ['w1b','ואת השאר אני מחלקת איך שאני רוצה. מעולה. יש לי שיטה.','And the rest I split however I want. Perfect. I have a system.','mon'],
     ['w2','אני מעביר את האחוזים שלי לרייצ׳ל.','I’m giving my percent to Rachel.','gun'],
     ['w3','לא. ככה זה לא עובד.','No. That’s not how it works.','mon','aww'],
-    ['w4',`${n} כבר ${sgF('חילק','חילקה')} את העוגה ${sgF('שלו','שלה')} לפני הערב.`,`${n} already split ${sgF('his','her')} pie before tonight.`,'eyal'],
     ['e0','המשך יבוא…','To be continued…','sys'],
-    ['m0','אז מה בעצם בודקות 151 השאלות? חמש שכבות, וכל אחת מהן היא תחנה במסע שלנו.','So what do the 151 questions actually check? Five layers, and each one is a stop on our journey.','eyal'],
-    ['m1','סוגים: הכוח שאתה מביא לעולם.','Types: the power you bring into the world.','eyal'],
-    ['m2','סטטים: איפה אתה חזק ואיפה פגיע. ואבולוציה: מה צריך לקרות כדי שתשתנה.','Stats: where you are strong and where you are vulnerable. And evolution: what has to happen for you to change.','eyal'],
-    ['m3','את האפיון הנוסף נפגוש בקורס השמיני, ובסוף: שאלת הבונוס של מיו. וכל השכבות ייפגשו בהיכל התהילה.','We\'ll meet the extra trait in course eight, and at the end: Mew\'s bonus question. All the layers meet in the Hall of Fame.','eyal']]};
+    ['m0',`${n} כבר ${sgF('חילק','חילקה')} את העוגה ${sgF('שלו','שלה')} לפני הערב.`,`${n} already split ${sgF('his','her')} pie before tonight.`,'eyal'],
+    ['m1','אז מה בעצם בודקות 151 השאלות? חמש שכבות, וכל אחת מהן היא תחנה במסע שלנו.','So what do the 151 questions actually check? Five layers, and each one is a stop on our journey.','eyal'],
+    ['m2','סוגים: הכוח שאתה מביא לעולם.','Types: the power you bring into the world.','eyal'],
+    ['m3','סטטים: איפה אתה חזק ואיפה פגיע.','Stats: where you are strong and where you are vulnerable.','eyal'],
+    ['m4','אבולוציה: מה צריך לקרות כדי שתשתנה. ובאותו קורס נפגוש גם את האפיון הנוסף.','Evolution: what has to happen for you to change. And in the same course we\'ll meet the extra trait.','eyal'],
+    ['m5','ובסוף, שאלת הבונוס של מיו. וכל השכבות ייפגשו בהיכל התהילה.','And at the end, Mew\'s bonus question. All the layers meet in the Hall of Fame.','eyal']]};
 {const c=SC['ep-2'];c.name=SC['op-1'].name;SC_DROP['ep-2']=c.drop}
 const CP_L=()=>SC['ep-2'].lines(subjectName()),CP_K=Object.fromEntries(CP_L().map((l,i)=>[l[0],i]));
 const cpKey=b=>CP_L()[b]?.[0]||'',cpSec=b=>{const k=cpKey(b);return k==='op'?'o':k[0]==='q'||k[0]==='x'?'q':k[0]};
@@ -5315,7 +5317,6 @@ function epApply(b,anim){const C=S.sc,B=scBeats(C.id),L=CP_L();++C.run;clearInte
   if(swap&&key!=='m0'){const bl=$('#mnblink');bl.classList.add('on');C.fly=1;setTimeout(()=>{if(!live())return;paint();bl.classList.remove('on');C.fly=0},380)}else paint();
   cpPanel(b,stepIn);cpCastPub();
   if(stepIn&&key==='m0')sfx('sfx-tink',.4);
-  if(stepIn&&key==='w0'){sfx('sfx-guitar',.7);const bl=$('#mnblink');bl?.classList.add('on');setTimeout(()=>bl?.classList.remove('on'),420)}
   scType(B[b].t,anim);
   // the opener: the camera dives into the screen, the theme with the gang, the title, then Central Perk
   {const op=$('#cpop');if(key!=='op')op?.classList.remove('ttl','in')}
@@ -5340,10 +5341,9 @@ function cpStage(b,into,run,from){const key=cpKey(b),K=CP_K,live=()=>S.sc?.run==
   // Central Perk
   const A=CP_AT;
   ['mon','cha','pho','ros','joe','rac','gun'].forEach(k=>{const[x,y,d]=A[k];mnPut('cp'+k,[x,y],d,0)});
-  cpTray(b>=K.w0?CP_TRAY:null);
   // the camera: the friend up close for their question and punchline, the living room for the cups, the counter for Gunther
   const close=(k,wd)=>{const[x,y]=A[k];return [x-(wd||75),y-80,x+(wd||75),y+32]},Q=cpQ(key);
-  const cam=key==='c0'?close('mon',110):Q?close(Q.w,Q.w==='rac'?85:75):(key==='w2'||key==='w3')?[30,96,210,230]:key==='w1'?[0,40,446,330]:(key[0]==='w'||key==='e0')?[190,120,430,290]:[0,0,446,354];
+  const cam=key==='c0'?close('mon',110):Q?close(Q.w,Q.w==='rac'?85:75):(key==='w2'||key==='w3')?[30,96,210,230]:(key[0]==='w'||key==='e0')?[190,120,430,290]:[0,0,446,354];
   mnCam(cam,into===b&&!!from===false);
   // the phones buzz on c0: everyone gets a "!"
   CP_READ.concat('gun').forEach(k=>mnSay('cp'+k,''));
@@ -5374,38 +5374,28 @@ function cpScore(w,pop){const Q=Object.values(CP_Q).find(q=>q.w===w);if(!Q)retur
 function cpReveal(b,pop){const key=cpKey(b),Q=CP_Q[key];if(Q){cpScore(Q.w,pop);cpPanel(b,false)}
 }
 function cpTray(at){const t=$('#cptray');if(!t)return;if(!at){t.style.display='none';return}t.style.display='';t.style.left=(at[0]-11)*MN_Z+'px';t.style.top=(at[1]-6)*MN_Z+'px'}
-// the cups: placed for every beat up to b; the beat being stepped into flies its cups from the tray on the table
-function cpCups(b,into){const box=$('#cpcups');if(!box)return;const K=CP_K,Z=MN_Z,T=CP_TRAY,html=[];let n0=0;
-  CP_CUPS.forEach(([w,n,at])=>{const k=K[at];if(k>b)return;
-    for(let i=0;i<n;i++){const[x,y]=w==='mon'?CP_PYR[i]:[CP_CUPAT[w][0]+i*8,CP_CUPAT[w][1]];const fly=k===into;
-      html.push(`<img class="cpcup${fly?' fly':''}" data-w="${w}" src="img/cp-cup.png" alt="" style="left:${x*Z}px;top:${y*Z}px;z-index:${Math.round(y)+400};${fly?`--fx:${(T[0]-x)*Z}px;--fy:${(T[1]-y)*Z}px;animation-delay:${(n0++)*.08}s`:''}">`)}});
-  box.innerHTML=html.join('');
-  if(into===b&&n0)[0,350,700].forEach(t=>setTimeout(()=>sfx('sfx-tink',.3),200+t));
-  // Gunther's cup: walked over to Rachel's, then back
-  const g=box.querySelector('[data-w="gun"]');if(!g)return;const R=CP_CUPAT.rac,Gp=CP_CUPAT.gun;
-  const run=S.sc.run,live=()=>S.sc?.run===run&&cur()?.id==='ep-2',[gx,gy]=CP_AT.gun,near=[R[0]-14,gy];
-  if(b===K.w2){if(into===b)mnWalk('cpgun',[[gx,gy],near],'r',40,()=>{if(!live())return;g.style.transition='left .5s,top .5s';g.style.left=(R[0]+9)*Z+'px';sfx('sfx-tink',.4);mnSay('cpgun','♥','sm')});
-    else{mnPut('cpgun',near,'r',0);g.style.left=(R[0]+9)*Z+'px';mnSay('cpgun','♥','sm')}}
-  else if(b===K.w3){if(into===b){mnPut('cpgun',near,'r',0);g.style.left=(R[0]+9)*Z+'px';setTimeout(()=>{if(!live())return;g.style.transition='left .6s';g.style.left=Gp[0]*Z+'px';sfx('sfx-tink',.35);mnWalk('cpgun',[near,[gx,gy]],'d',40)},900)}
-    else g.style.left=Gp[0]*Z+'px'}}
+// Gunther: walks over to Rachel on w2 (in the pie his slice joins hers), and back on w3
+function cpCups(b,into){const K=CP_K,run=S.sc.run,live=()=>S.sc?.run===run&&cur()?.id==='ep-2',[gx,gy]=CP_AT.gun,near=[CP_AT.rac[0]-14,gy];
+  if(b===K.w2){if(into===b)mnWalk('cpgun',[[gx,gy],near],'r',40,()=>{if(!live())return;sfx('sfx-tink',.4);mnSay('cpgun','♥','sm')});else{mnPut('cpgun',near,'r',0);mnSay('cpgun','♥','sm')}}
+  else if(b===K.w3&&into===b){mnPut('cpgun',near,'r',0);setTimeout(()=>{if(live())mnWalk('cpgun',[near,[gx,gy]],'d',40)},900)}}
 // the panel
 const cpWords=t=>esc(t).split(/\s+/).filter(Boolean).map(w=>`<span class="frw">${w}</span>`).join(' ');
 function cpRead(run){const ws=[...document.querySelectorAll('#cpq .frw')];let i=0;clearInterval(S.cpRT);
   S.cpRT=setInterval(()=>{if(S.sc?.run!==run||cur()?.id!=='ep-2'){clearInterval(S.cpRT);return}ws.forEach(w=>w.classList.remove('now'));if(i>=ws.length){clearInterval(S.cpRT);return}ws[i].classList.add('on','now');i++},S.fastOn?120:380)}
-// the pie: 20 slices of 5%, in the order the cups were handed out; each friend's face on their part, 45% only on Monica's
-function cpPie(b,stepIn){const K=CP_K,R=132,C=150,sl=[];CP_CUPS.forEach(([w,n,at])=>{for(let i=0;i<n;i++)sl.push([w,K[at]])});
-  const pt=(a,r)=>[C+r*Math.sin(a*Math.PI/180),C-r*Math.cos(a*Math.PI/180)];let d=0;
-  const paths=sl.map(([w,at],i)=>{const a0=i*18,a1=a0+18,[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),on=at<=b,fly=stepIn&&at===b;
-    return `<path class="cpsl${on?' on':''}${fly?' fly':''}" d="M${C},${C} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" style="--c:${CP_COL[w]};${fly?`animation-delay:${(d++)*.08}s`:''}"/>`}).join('');
-  let a=0;const faces=CP_CUPS.map(([w,n,at])=>{const m=a+n*9;a+=n*18;if(K[at]>b)return '';const[x,y]=pt(m,w==='mon'?R*.5:R*.7);
-    return `<div class="cppf${stepIn&&K[at]===b?' fly':''}" style="left:${x}px;top:${y}px"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[w]}.png)"></i>${w==='mon'?'<b>45%</b>':''}</div>`}).join('');
-  return `<div class="cppie"><svg viewBox="0 0 ${2*C} ${2*C}" width="${2*C}" height="${2*C}"><circle cx="${C}" cy="${C}" r="${R}" fill="#EEE8DC"/>${paths}</svg>${faces}</div><p class="cppc">${ll('20 כוסות · 45% תמיד לנבדק','20 cups · 45% always the subject')}</p>`}
+// the pie: one slice per character (Monica's 45%, then the rest), each with the friend's face; 45% the only number
+function cpPie(b,stepIn){const K=CP_K,R=132,C=150,gave=b===K.w2,back=stepIn&&b===K.w3;let a=0,d=0;
+  const pt=(a,r)=>[C+r*Math.sin(a*Math.PI/180),C-r*Math.cos(a*Math.PI/180)];
+  const parts=CP_CUPS.map(([w,n,at])=>{const a0=a,a1=a+n*18;a=a1;const on=K[at]<=b,fly=stepIn&&K[at]===b,[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),col=w==='gun'&&gave?CP_COL.rac:CP_COL[w];
+    const path=`<path class="cpsl${on?' on':''}${fly?' fly':''}${w==='gun'&&(gave&&stepIn||back)?' fly':''}" d="M${C},${C} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 ${a1-a0>180?1:0} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" style="--c:${col};${fly?`animation-delay:${(d++)*.1}s`:''}"/>`;
+    const[x,y]=pt((a0+a1)/2,w==='mon'?R*.5:R*.7),face=!on||(w==='gun'&&gave)?'':`<div class="cppf${fly||(w==='gun'&&back)?' fly':''}" style="left:${x}px;top:${y}px"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[w]}.png)"></i>${w==='mon'?'<b>45%</b>':''}</div>`;
+    return [path,face]});
+  return `<div class="cppie"><svg viewBox="0 0 ${2*C} ${2*C}" width="${2*C}" height="${2*C}"><circle cx="${C}" cy="${C}" r="${R}" fill="#EEE8DC"/>${parts.map(p=>p[0]).join('')}</svg>${parts.map(p=>p[1]).join('')}</div>`}
 function cpPanel(b,stepIn){const key=cpKey(b),sec=cpSec(b),K=CP_K,Q=cpQ(key);
-  const eb={g:'PSP·02 · CASCADE BADGE',o:'PSP·02 · CASCADE BADGE',c:'FRIENDS · THE QUESTIONNAIRE',q:'EXAMPLE · QUESTIONS',w:'ONE PICTURE · 20 CUPS',e:'ONE PICTURE · 20 CUPS',m:'PSP · THE MODEL · 151 QUESTIONS'}[sec];
+  const eb={g:'PSP·02 · CASCADE BADGE',o:'PSP·02 · CASCADE BADGE',c:'FRIENDS · THE QUESTIONNAIRE',q:'EXAMPLE · QUESTIONS',w:'ONE PICTURE · THE WEIGHTS',e:'ONE PICTURE · THE WEIGHTS',m:key==='m0'?'ONE PICTURE · THE WEIGHTS':'PSP · THE MODEL · 151 QUESTIONS'}[sec];
   const h2={g:['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],o:['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],c:['הנבדקת: מוניקה','The subject: Monica'],
-    q:Q?.scn?['תרחיש · כל תגובה מקבלת ציון','Scenario · each reaction gets a score']:['משפט · 1 עד 5','Sentence · 1 to 5'],w:['איך מחברים את כל התשובות?','Putting the answers together'],e:['איך מחברים את כל התשובות?','Putting the answers together'],m:['חמש שכבות, חמש תחנות','Five layers, five stops']}[sec];
+    q:Q?.scn?['תרחיש · כל תגובה מקבלת ציון','Scenario · each reaction gets a score']:['משפט · 1 עד 5','Sentence · 1 to 5'],w:['איך מחברים את כל התשובות?','Putting the answers together'],e:['איך מחברים את כל התשובות?','Putting the answers together'],m:key==='m0'?['איך מחברים את כל התשובות?','Putting the answers together']:['חמש שכבות, חמש תחנות','Five layers, five stops']}[sec];
   $('#cpeb').textContent=eb;$('#cph2').textContent=ll(...h2);
-  const show=sec==='g'||sec==='o'?'goal':sec==='c'?'cast':sec==='q'?'q':sec==='w'||sec==='e'?'w':'m';
+  const show=sec==='g'||sec==='o'?'goal':sec==='c'?'cast':sec==='q'?'q':sec==='w'||sec==='e'||key==='m0'?'w':'m';
   $('#lspan').querySelectorAll('.cpin').forEach(e=>{const on=e.dataset.s===show,was=e.classList.contains('on');e.classList.toggle('on',on);if(on&&!was&&stepIn){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});
   if(show==='cast')$('#cpcast').innerHTML=CP_READ.map(k=>`<figure class="${key==='c0'&&k==='mon'?'now':''}"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[k]}.png)"></i><b>${ll(...CP_WHO[k][0])}</b></figure>`).join('');
   if(show==='q'&&Q){$('#cpq').classList.toggle('scn',!!Q.scn);const ask=key[0]==='x',rev=!ask&&!!S.cp.rev[key],lit=!(ask&&stepIn)?' on':'',W=t=>cpWords(t).replace(/class="frw"/g,`class="frw${lit}"`);
@@ -5413,8 +5403,8 @@ function cpPanel(b,stepIn){const key=cpKey(b),sec=cpSec(b),K=CP_K,Q=cpQ(key);
     $('#cpq').innerHTML=`<div class="cpwho"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[Q.w]}.png)"></i><b>${ll(...CP_WHO[Q.w][0])}${Q.w==='mon'?ll(' על עצמה',' on herself'):''}</b></div>`+(Q.scn?`<p class="cpst sc" dir="auto">${W(ll(...FR_SCN))}</p>${FR_OPT.map((o,i)=>`<div class="cpopt"><p dir="auto">${W(ll(...o))}</p>${dots(Q.sc[i])}</div>`).join('')}`
       :`<p class="cpst" dir="auto">${W(ll(...Q.t))}</p>${dots(Q.sc)}`);
     if(ask&&stepIn)cpRead(S.sc.run)}
-  if(show==='w')$('#cpw').innerHTML=cpPie(b,stepIn);
-  if(show==='m'){const L={ty:K.m1,st:K.m2,ev:K.m2,ex:K.m3,mw:K.m3};$('#lspan').querySelectorAll('.cpml').forEach(e=>{const at=L[e.dataset.k],on=b>=at;e.classList.toggle('on',on);e.classList.toggle('now',b===at);if(stepIn&&b===at){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});}}
+  if(show==='w')$('#cpw').innerHTML=cpPie(key==='m0'?K.w3:b,stepIn&&key!=='m0');
+  if(show==='m'){const L={ty:K.m2,st:K.m3,ev:K.m4,ex:K.m4,mw:K.m5};$('#lspan').querySelectorAll('.cpml').forEach(e=>{const at=L[e.dataset.k],on=b>=at;e.classList.toggle('on',on);e.classList.toggle('now',b===at);if(stepIn&&b===at){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});}}
 // ---------- reading roles: the subject is Monica, the rest of the friends' lines go round the others (not remote, not the host) ----------
 const cpH=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return h};
 function cpRoles(){const pl=gamePlayers().filter(p=>!p.remote&&!isPresenter(p)),no=id=>!!S.gIn?.[id]?.cpNo,sj=subjId(),R={},ks=['cha','pho','ros','joe','rac','gun'];
