@@ -1861,7 +1861,6 @@ body:has(.intronudge) #introfab{display:none}
 .cpcast{flex-wrap:wrap;gap:10px 12px;justify-content:center}
 .cpcast figure{margin:0;width:104px;display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px;border-radius:14px}
 .cpcast figure b{font-size:22px}
-.cpcast figure small{font-size:18px;color:#6A6458}
 .cpcast figure.now{background:#FFF3C4;box-shadow:0 0 0 3px #F2C94C}
 .cpq{flex-direction:column;gap:14px}
 .cpwho{display:flex;align-items:center;gap:12px;font-size:26px}
@@ -1878,17 +1877,21 @@ body:has(.intronudge) #introfab{display:none}
 .cpdots i{font-style:normal;width:54px;height:54px;border-radius:50%;border:3px solid #CFC6B4;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#8B8577}
 .cpdots i.dk{width:auto;border-radius:27px;padding:0 18px;font-size:20px}
 .cpdots i.on{background:#F2C94C;border-color:#161A2E;color:#161A2E;animation:rkpop .45s cubic-bezier(.3,1.5,.5,1)}
-.cpw{flex-direction:column;gap:16px}
-.cpgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
-.cpgrid i{height:54px;border-radius:10px;background:#EEE8DC;display:flex;align-items:center;justify-content:center}
-.cpgrid i img{width:27px;height:24px;opacity:0;image-rendering:pixelated}
-.cpgrid i.on{background:var(--c)}
-.cpgrid i.on img{opacity:1}
-.cpgrid i.ghost{opacity:.45}
-.cpleg{display:flex;flex-wrap:wrap;gap:8px 18px}
-.cpleg span{font-size:22px;opacity:.28;display:flex;gap:6px;align-items:center}
-.cpleg span::before{content:'';width:16px;height:16px;border-radius:4px;background:var(--c)}
-.cpleg span.on{opacity:1}
+.cpw{flex-direction:column;align-items:center;gap:6px}
+.cppie{position:relative;width:300px;height:300px}
+.cppie svg{display:block}
+.cpsl{fill:var(--c);stroke:#FFFDF8;stroke-width:2;opacity:0;transform-origin:150px 150px}
+.cpsl.on{opacity:1}
+.cpsl.fly{animation:cpslin .45s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes cpslin{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.cppf{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center}
+.cppf .cpfc{width:32px;height:42px;background-size:96px 168px;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff)}
+.cppf b{font-size:30px;color:#fff;text-shadow:0 2px 0 #7a1f22,0 0 6px #7a1f22}
+.cppf.fly{animation:rkpop .45s .5s cubic-bezier(.3,1.5,.5,1) both}
+.cppc{margin:0;font-size:20px;color:#6A6458}
+.cpst .frw{color:#B9B2A3;transition:color .2s,background .2s;border-radius:6px}
+.cpst .frw.on{color:#161A2E}
+.cpst .frw.now{background:#F2C94C;color:#161A2E}
 .cpm{flex-direction:column}
 .cpmb{display:flex;flex-direction:column;gap:6px}
 .cpml{display:flex;align-items:center;gap:14px;padding:4px 12px;border-radius:12px;background:#F4EFE4;opacity:.3;border-inline-start:8px solid var(--c)}
@@ -2161,7 +2164,7 @@ const countIds=units=>units.reduce((s,u)=>s+u.ids.length,0);
 const answeredIn=(units,ans)=>units.reduce((s,u)=>s+u.ids.filter(id=>id in ans).length,0);
 
 // ---------- state ----------
-const BUILDV='1795862742';
+const BUILDV='1795864181';
 // background music: one track at a time, crossfaded
 const BGM={cur:null,a:null},MUS_OGG=new Set(['mus-route29','mus-cycling','mus-surfing','mus-lab','mus-wild','mus-trainer']);
 function fadeAudio(a,to,ms,done){if(!a)return;clearInterval(a._f);const from=a.volume,t0=performance.now();a._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k>=1){clearInterval(a._f);done&&done()}},40)}
@@ -5211,10 +5214,10 @@ Object.assign(MN_SC,{cpsq:1.05,cptv:1.15,eyal:1.2});
 const CP_WHO={mon:[['מוניקה','Monica'],'img/frf-monica.webp'],cha:[['צ׳נדלר','Chandler'],'img/frf-chandler.webp'],pho:[['פיבי','Phoebe'],'img/frf-phoebe.webp'],
   ros:[['רוס','Ross'],'img/frf-ross.webp'],joe:[['ג׳ואי','Joey'],'img/frf-joey.webp'],rac:[['רייצ׳ל','Rachel'],'img/frf-rachel.webp'],gun:[['גאנתר','Gunther'],'img/frf-gunther.webp']};
 // the café, map px (the picture at half size): where each one sits or stands (feet), facing
-const CP_AT={mon:[241,209,'r'],cha:[294,179,'d'],pho:[323,179,'d'],ros:[352,179,'d'],joe:[401,207,'l'],rac:[124,160,'d'],gun:[76,160,'d'],
+const CP_AT={mon:[241,209,'r'],cha:[294,181,'d'],pho:[323,181,'d'],ros:[352,181,'d'],joe:[401,207,'l'],rac:[124,160,'d'],gun:[76,160,'d'],
   monCounter:[94,207,'u'],monTable:[300,248,'u']};
 // what stands in front of the seated (drawn over them, z = its bottom row): the sofa's seat, the two armchairs, the counter
-const CP_TOP=[['sofa',272,165,376,182],['red',218,202,264,226],['green',384,194,431,226],['counter',41,149,177,195]];
+const CP_TOP=[['sofa',272,172,376,184],['red',218,202,264,226],['green',384,200,431,226],['counter',41,149,177,195]];
 // questions: the sentence (or the scenario) and the score; Rachel answers "don't know"
 const CP_Q={qmon:{w:'mon',sc:5,clip:'frg-monica',t:['קשה למוניקה לעשות דברים בחצי כוח','Monica finds it hard to do things halfway']},
   qcha:{w:'cha',sc:4,clip:'frg-chandler',t:['רשימות, לוחות זמנים ותוכנית מסודרת עוזרים למוניקה לתפקד','Lists, schedules and an orderly plan help Monica function']},
@@ -5223,10 +5226,9 @@ const CP_Q={qmon:{w:'mon',sc:5,clip:'frg-monica',t:['קשה למוניקה לע�
   qjoe:{w:'joe',sc:[5,1],clip:'frg-joey',scn:1},
   qrac:{w:'rac',sc:0,clip:'frg-rachel',t:['למוניקה קל לסמוך על אנשים חדשים','Monica finds it easy to trust new people']}};
 // the cups: how many each gets, on which beat, where they land (map px, the first cup; the rest beside it)
-const CP_CUPS=[['mon',9,'w3'],['ros',4,'w4'],['cha',3,'w5'],['pho',1,'w6'],['joe',1,'w7'],['rac',1,'w8'],['gun',1,'w9']];
+const CP_CUPS=[['mon',9,'w0'],['ros',4,'w1'],['cha',3,'w1'],['pho',1,'w1'],['joe',1,'w1'],['rac',1,'w1'],['gun',1,'w1']],CP_TRAY=[323,200];
 const CP_CUPAT={ros:[340,191],cha:[285,191],pho:[323,191],joe:[378,218],rac:[128,172],gun:[78,172]},CP_PYR=[[287,207],[295,207],[303,207],[311,207],[291,201],[299,201],[307,201],[295,195],[303,195]];
 const CP_COL={mon:'#E5484D',ros:'#4A7BE0',cha:'#3DBE6A',pho:'#F2C94C',joe:'#9B5DE5',rac:'#F28C38',gun:'#8A8F99'};
-const CP_CLIPW={w4:'frc-ross',w5:'frc-chandler',w6:'frc-phoebe',w7:'frc-joey',w8:'frc-rachel'};
 SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפוקימון של מוניקה','The One Where Everyone Looks for Monica\'s Pokémon'],drop:['k-divider','e-layers','k-raters','k-scenario'],bar:'k-divider',
   lines:n=>[
     ['g0',`אז איך בדיוק נמצא את הפוקימון של ${n}?`,`So how exactly will we find ${n}'s Pokémon?`,'eyal'],
@@ -5235,30 +5237,27 @@ SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפ�
     ['g3','יש לי בדיוק את הפרק המתאים.','I have just the right episode.','eyal'],
     ['op','','','sys','auto'],
     ['c0','אייל שלח לכם שאלון. עליי.','Eyal sent you all a questionnaire. About me.','mon'],
-    ['c1','כל אחד מהם עונה על אותו שאלון על מוניקה. כולל מוניקה עצמה.','Each of them answers the same questionnaire about Monica. Including Monica herself.','eyal'],
-    ['c2','והשאלות מגיעות בסדר אקראי, אז כל אחד באמצע שאלה אחרת.','And the questions come in random order, so each of them is on a different one.','eyal'],
+    ['c1','כל אחד מהם עונה על אותו שאלון על מוניקה, כולל מוניקה עצמה. וכל אחד מקבל את השאלות בסדר אקראי משלו.','Each of them answers the same questionnaire about Monica, Monica included. And each gets the questions in their own random order.','eyal'],
     ['c3','הסוג הראשון: משפט, ומדרגים אותו מ־1 עד 5.','The first kind: a sentence, rated from 1 to 5.','eyal'],
+    ['xmon','…','…','mon','ask'],
     ['qmon','חצי כוח? לא מכירה. בכל קבוצה שאני מצטרפת אליה, הקבוצה שלי תמיד מנצחת. חמש. יש אפשרות לשש?','Halfway? Never heard of it. Whatever group I join, my team always wins. Five. Is there a six?','mon','lol'],
+    ['xcha','…','…','cha','ask'],
     ['qcha','הכול מסודר. חוץ מהארון שהיא נועלת. פתחתי אותו פעם. אני עדיין לא ישן טוב. אז ארבע.','Everything is in order. Except the closet she keeps locked. I opened it once. I still don’t sleep well. So, four.','cha','lol'],
+    ['xpho','…','…','pho','ask'],
     ['qpho','צדדים שאף אחד לא מכיר? בטח! למשל שהיא וצ׳נדלר… אוי. הם לא יודעים שאנחנו יודעים. אממ… שלוש.','Sides nobody knows? Sure! Like how she and Chandler… oh. They don’t know that we know. Umm… three.','pho','lol'],
+    ['xros','…','…','ros','ask'],
     ['qros','מוניקה? ממש לא. היא לא כמו אנשים מסוימים שמתעקשים עשר שנים ש… היינו בהפסקה!','Monica? Not at all. She’s not like certain people who insist for ten years that… WE WERE ON A BREAK!','ros','lol'],
     ['c4','הסוג השני: תרחיש. כמה תגובות, וכל תגובה מקבלת ציון משלה.','The second kind: a scenario. A few reactions, and each one gets its own score.','eyal'],
+    ['xjoe','…','…','joe','ask'],
     ['qjoe','מוניקה עוצרת כל ויכוח בשנייה. לא בגלל שמישהו נפגע, בגלל שהאוכל מתקרר. ואני איתה.','Monica stops every argument in a second. Not because someone got hurt. Because the food is getting cold. And I’m with her.','joe','lol'],
+    ['xrac','…','…','rac','ask'],
     ['qrac','לא יודעת. בפעם האחרונה שניחשתי בחידון על חבר, אמרתי ״טרנספונסטר״ והפסדנו את הדירה.','Don’t know. The last time I guessed in a quiz about a friend, I said "transponster" and we lost the apartment.','rac','lol'],
     ['c5','ותמיד אפשר לענות ״לא יודע״. עדיף חור בנתונים מאשר ניחוש.','And you can always answer "don’t know". Better a gap in the data than a guess.','eyal'],
-    ['w0','שישה אנשים, שש תשובות. אז מי צודק?','Six people, six answers. So who’s right?','eyal'],
-    ['w1','אני. ברור.','Me. Obviously.','mon','lol'],
-    ['w2','כמעט. לנבדק תמיד יש 45%. לא פחות, אבל גם לא יותר.','Almost. The subject always gets 45%. No less, but no more either.','eyal'],
-    ['w3','את השאר אני מחלקת. יש לי שיטה.','I hand out the rest. I have a system.','mon'],
-    ['w4','ארבע כוסות? קל לזכור: כמו מספר הגירושים שלי. ועוד אחת לחתונה הבאה.','Four cups? Easy to remember: like the number of my divorces. Plus one for the next wedding.','ros','lol'],
-    ['w5','פחות מרוס? את יכולה להיות פחות מעליבה?','Less than Ross? Could you BE any more insulting?','cha','lol'],
-    ['w6','כוס אחת. גם במסיבה האחרונה היא שמה אותי על כוסות וקרח. אני מתחילה לזהות דפוס.','One cup. At the last party she also put me on cups and ice. I’m starting to see a pattern.','pho','lol'],
-    ['w7','כוס אחת זה בסדר. אבל קפה בלי מאפין?','One cup is fine. But coffee without a muffin?','joe','lol'],
-    ['w8','זה בכלל לא מה שהזמנתי.','This isn’t what I ordered at all.','rac','lol'],
-    ['w9','וגאנתר, המלצר. לפעמים מי שרואה מהצד רואה משהו שהחברים מפספסים.','And Gunther, the waiter. Sometimes someone watching from the side sees what friends miss.','eyal'],
-    ['w10','לא. ככה זה לא עובד.','No. That’s not how it works.','mon','aww'],
-    ['w11','45% תמיד לנבדק. את השאר הוא מחלק בעצמו, לפי מי שמכיר אותו הכי טוב.','The subject always gets 45%. The rest they hand out themselves, to whoever knows them best.','eyal'],
-    ['w12',`${n} כבר ${sgF('חילק','חילקה')} את הכוסות ${sgF('שלו','שלה')} לפני הערב. איך? זה נשאר ${sgF('בינו','בינה')} לבין המנוע.`,`${n} already handed out ${sgF('his','her')} cups before tonight. How? That stays between ${sgF('him','her')} and the engine.`,'eyal'],
+    ['w0','כל אחד רואה את מוניקה קצת אחרת. כדי לחבר את כל התשובות, לנבדק תמיד יש 45%, ואת השאר הוא מחלק מראש בין החברים.','Each of them sees Monica a little differently. To put all the answers together, the subject always gets 45%, and hands out the rest among the friends in advance.','eyal'],
+    ['w1','את השאר אני מחלקת. יש לי שיטה.','I hand out the rest. I have a system.','mon'],
+    ['w2','וגאנתר, המלצר. לפעמים מי שרואה מהצד רואה משהו שהחברים מפספסים.','And Gunther, the waiter. Sometimes someone watching from the side sees what friends miss.','eyal'],
+    ['w3','לא. ככה זה לא עובד.','No. That’s not how it works.','mon','aww'],
+    ['w4',`${n} כבר ${sgF('חילק','חילקה')} את העוגה ${sgF('שלו','שלה')} לפני הערב.`,`${n} already split ${sgF('his','her')} pie before tonight.`,'eyal'],
     ['e0','המשך יבוא…','To be continued…','sys'],
     ['m0','אז מה בעצם בודקות 151 השאלות? חמש שכבות, וכל אחת מהן היא תחנה במסע שלנו.','So what do the 151 questions actually check? Five layers, and each one is a stop on our journey.','eyal'],
     ['m1','סוגים: הכוח שאתה מביא לעולם. ומאותן תשובות בדיוק: האפיון הנוסף, סוג שחזק אצלך אבל לא נכנס לכרטיס.','Types: the power you bring into the world. And from the very same answers: the extra trait, a type that is strong in you but didn’t make the card.','eyal'],
@@ -5266,7 +5265,9 @@ SC['ep-2']={ep:1,part:1,label:['הפרק שבו כולם מחפשים את הפ�
     ['m3','ובסוף, שאלת הבונוס של מיו. וכל השכבות ייפגשו בהיכל התהילה.','And at the end, Mew’s bonus question. All the layers meet in the Hall of Fame.','eyal']]};
 {const c=SC['ep-2'];c.name=SC['op-1'].name;SC_DROP['ep-2']=c.drop}
 const CP_L=()=>SC['ep-2'].lines(subjectName()),CP_K=Object.fromEntries(CP_L().map((l,i)=>[l[0],i]));
-const cpKey=b=>CP_L()[b]?.[0]||'',cpSec=b=>{const k=cpKey(b);return k==='op'?'o':k[0]==='q'?'q':k[0]};
+const cpKey=b=>CP_L()[b]?.[0]||'',cpSec=b=>{const k=cpKey(b);return k==='op'?'o':k[0]==='q'||k[0]==='x'?'q':k[0]};
+// a friend's turn: x<who> = their question (read word by word), q<who> = their punchline (and the laugh)
+const cpQ=k=>CP_Q[k]||(k[0]==='x'?CP_Q['q'+k.slice(1)]:null);
 const cpWorld=b=>({g:'cgym',o:'cgym',m:'cgym'})[cpSec(b)]||'cafe';
 // the gym: Eyal on the leader's spot, the TV comes along the platform from the right, Squirtle behind it (then asleep beside it)
 const CP_G={eyal:[8,3],tv:[10.1,4.1],tv0:[14.4,4.1],sq:[11.2,4.2],sq0:[15.5,4.2],cam:[40,8,232,200],tvr:[156,52,174,68]};
@@ -5310,7 +5311,7 @@ function epApply(b,anim){const C=S.sc,B=scBeats(C.id),L=CP_L();++C.run;clearInte
   // who speaks: Eyal, a friend (their sprite, their name; a friend's line is a thought), or nobody
   {const nm=st.querySelector('.scname'),lc=$('#sclect'),w=CP_WHO[who],src=who==='eyal'?'img/av-f-eyal.webp':w?.[1];st.classList.toggle('mnsys',who==='sys');st.classList.toggle('cpthink',!!w&&sec==='q');
     if(nm)nm.textContent=who==='eyal'?ll(...SC['ep-2'].name):w?ll(...w[0])+(sec==='q'?' 💭':''):'';if(lc&&src&&!lc.src.endsWith(src)){lc.src=src;lc.classList.remove('rise');void lc.offsetWidth;lc.classList.add('rise')}
-    const clip=CP_Q[key]?.clip||CP_CLIPW[key],v=$('#cpgif');st.classList.toggle('rkgifon',!!clip);if(v){if(clip){const s='img/'+clip+'.mp4';if(!v.src.endsWith(s)){v.src=s;v.play?.().catch(()=>{})}}else{v.pause?.();v.removeAttribute('src')}}}
+    const clip=CP_Q[key]?.clip,v=$('#cpgif');st.classList.toggle('rkgifon',!!clip);if(v){if(clip){const s='img/'+clip+'.mp4';if(!v.src.endsWith(s)){v.src=s;v.play?.().catch(()=>{})}}else{v.pause?.();v.removeAttribute('src')}}}
   st.classList.toggle('cpopon',key==='op');st.classList.toggle('cptbcon',key==='e0');
   const w=cpWorld(b),from=S.mn.world,swap=stepIn&&from&&from!==w;
   const paint=()=>{cpSetWorld(w);cpStage(b,stepIn?b:-1,run,swap?from:'')};
@@ -5339,20 +5340,18 @@ function cpStage(b,into,run,from){const key=cpKey(b),K=CP_K,live=()=>S.sc?.run==
     if(into===K.m0)setTimeout(()=>{if(live()){mnSay('cpsq','!','bang');sfx('sfx-excl',.4)}},1600);else mnSay('cpsq','');
     return}
   // Central Perk
-  const A=CP_AT,monAt=b>=K.w3?A.monTable:A.mon;
-  ['cha','pho','ros','joe','rac','gun'].forEach(k=>{const[x,y,d]=A[k];mnPut('cp'+k,[x,y],d,0)});
-  if(into===K.w3){mnPut('cpmon',[A.mon[0],A.mon[1]],'r',0);cpMonWalk(run)}else mnPut('cpmon',[monAt[0],monAt[1]],b>=K.w3?'u':'r',0);
-  cpTray(b>=K.w3&&!(into===K.w3)?monAt:null);
-  // the camera: the speaker up close during the questions, the living room while the cups go round, the counter for Rachel and Gunther
-  const close=(k,wd)=>{const[x,y]=A[k];return [x-(wd||75),y-80,x+(wd||75),y+32]};
-  const cam=key==='c0'?close('mon',110):(key[0]==='q')?close(CP_Q[key].w,CP_Q[key].w==='rac'?85:75):['w8','w9','w10'].includes(key)?[30,96,210,230]:key==='w3'&&into===b?[60,100,420,300]:(key[0]==='w'||key==='e0')?[190,120,430,290]:[0,0,446,354];
+  const A=CP_AT;
+  ['mon','cha','pho','ros','joe','rac','gun'].forEach(k=>{const[x,y,d]=A[k];mnPut('cp'+k,[x,y],d,0)});
+  cpTray(b>=K.w0?CP_TRAY:null);
+  // the camera: the friend up close for their question and punchline, the living room for the cups, the counter for Gunther
+  const close=(k,wd)=>{const[x,y]=A[k];return [x-(wd||75),y-80,x+(wd||75),y+32]},Q=cpQ(key);
+  const cam=key==='c0'?close('mon',110):Q?close(Q.w,Q.w==='rac'?85:75):(key==='w2'||key==='w3')?[30,96,210,230]:key==='w1'?[0,40,446,330]:(key[0]==='w'||key==='e0')?[190,120,430,290]:[0,0,446,354];
   mnCam(cam,into===b&&!!from===false);
   // the phones buzz on c0: everyone gets a "!"
   CP_READ.concat('gun').forEach(k=>mnSay('cp'+k,''));
   if(key==='c0'&&into===b)setTimeout(()=>{if(!live())return;['cha','pho','ros','joe','rac'].forEach((k,i)=>setTimeout(()=>{if(live()){mnSay('cp'+k,'!','bang');sfx('sfx-excl',.25)}},i*140))},900);
-  // the scores over the heads: once revealed they stay until the cups
-  if(b<K.w3)Object.entries(CP_Q).forEach(([q,Q])=>{if(K[q]<=b&&S.cp.rev[q]&&key!=='c0')cpScore(Q.w,false)});
-  if(b>=K.w0&&b<K.w3)Object.values(CP_Q).forEach(Q=>cpScore(Q.w,false));
+  // the scores over the heads: each once its laugh played; all six on w0; gone once the cups are handed out
+  if(b<=K.w0)Object.entries(CP_Q).forEach(([q,Q])=>{if(b===K.w0||(K[q]<=b&&S.cp.rev[q]))cpScore(Q.w,false)});
   cpCups(b,into);
   $('#cpball')?.classList.toggle('on',key==='e0');if(key==='e0'&&into===b)sfx('sfx-ball-toss',.4)}
 // the opener: now and then one of the gang jumps
@@ -5362,43 +5361,46 @@ function cpSleep(on){const el=mnEl('cpsq');if(!el)return;clearInterval(el._z);co
 function cpScore(w,pop){const Q=Object.values(CP_Q).find(q=>q.w===w);if(!Q)return;const t=Array.isArray(Q.sc)?Q.sc.join(' · '):Q.sc?String(Q.sc):'?';mnSay('cp'+w,esc(t),'sm cpsc'+(pop?' pop':''))}
 function cpReveal(b,pop){const key=cpKey(b),Q=CP_Q[key];if(Q){cpScore(Q.w,pop);cpPanel(b,false)}
 }
-// Monica: from the armchair to the counter, takes the tray, back to the table; then her nine cups go into a pyramid
-function cpMonWalk(run){const live=()=>S.sc?.run===run&&cur()?.id==='ep-2',A=CP_AT,C=S.sc;C.fly=1;
-  const p1=[[A.mon[0],A.mon[1]],[A.mon[0],246],[A.monCounter[0],246],[A.monCounter[0],A.monCounter[1]]],p2=[[A.monCounter[0],A.monCounter[1]],[A.monCounter[0],246],[A.monTable[0],246],[A.monTable[0],A.monTable[1]]];
-  mnCam([20,90,440,300],true);
-  mnWalk('cpmon',p1,'u',75,()=>{if(!live())return;sfx('sfx-tink',.4);cpTray(A.monCounter);setTimeout(()=>{if(!live())return;const t=$('#cptray');
-    mnWalk('cpmon',p2,'u',75,()=>{if(!live())return;cpTray(A.monTable);mnCam([190,120,430,290],true);setTimeout(()=>{if(!live())return;C.fly=0;cpCups(CP_K.w3,CP_K.w3,true)},350)});
-    const el=mnEl('cpmon');if(t&&el){t._f=setInterval(()=>{if(!live()||!el.isConnected){clearInterval(t._f);return}const r=el.style;t.style.left=`calc(${r.left} - ${11*MN_Z}px)`;t.style.top=`calc(${r.top} - ${40*MN_Z}px)`},40);setTimeout(()=>clearInterval(t._f),5200)}},500)})}
-function cpTray(at){const t=$('#cptray');if(!t)return;clearInterval(t._f);if(!at){t.style.display='none';return}t.style.display='';t.style.left=(at[0]-11)*MN_Z+'px';t.style.top=(at[1]-40)*MN_Z+'px'}
-// the cups: placed for every beat up to b; the beat being stepped into flies its cups from the tray (Monica's pyramid once she is at the table)
-function cpCups(b,into,go){const box=$('#cpcups');if(!box)return;const K=CP_K,Z=MN_Z,T=CP_AT.monTable,html=[];
-  CP_CUPS.forEach(([w,n,at])=>{const k=K[at];if(k>b)return;if(k===into&&w==='mon'&&!go)return;
+function cpTray(at){const t=$('#cptray');if(!t)return;if(!at){t.style.display='none';return}t.style.display='';t.style.left=(at[0]-11)*MN_Z+'px';t.style.top=(at[1]-6)*MN_Z+'px'}
+// the cups: placed for every beat up to b; the beat being stepped into flies its cups from the tray on the table
+function cpCups(b,into){const box=$('#cpcups');if(!box)return;const K=CP_K,Z=MN_Z,T=CP_TRAY,html=[];let n0=0;
+  CP_CUPS.forEach(([w,n,at])=>{const k=K[at];if(k>b)return;
     for(let i=0;i<n;i++){const[x,y]=w==='mon'?CP_PYR[i]:[CP_CUPAT[w][0]+i*8,CP_CUPAT[w][1]];const fly=k===into;
-      html.push(`<img class="cpcup${fly?' fly':''}" data-w="${w}" src="img/cp-cup.png" alt="" style="left:${x*Z}px;top:${y*Z}px;z-index:${Math.round(y)+400};${fly?`--fx:${(T[0]-x)*Z}px;--fy:${(T[1]-44-y)*Z}px;animation-delay:${i*.12}s`:''}">`)}});
+      html.push(`<img class="cpcup${fly?' fly':''}" data-w="${w}" src="img/cp-cup.png" alt="" style="left:${x*Z}px;top:${y*Z}px;z-index:${Math.round(y)+400};${fly?`--fx:${(T[0]-x)*Z}px;--fy:${(T[1]-y)*Z}px;animation-delay:${(n0++)*.08}s`:''}">`)}});
   box.innerHTML=html.join('');
-  if(into===b&&CP_CUPS.some(([w,,at])=>K[at]===b)&&(go||cpKey(b)!=='w3'))setTimeout(()=>sfx('sfx-tink',.35),200);
+  if(into===b&&n0)[0,350,700].forEach(t=>setTimeout(()=>sfx('sfx-tink',.3),200+t));
   // Gunther's cup: walked over to Rachel's, then back
   const g=box.querySelector('[data-w="gun"]');if(!g)return;const R=CP_CUPAT.rac,Gp=CP_CUPAT.gun;
-  if(b===K.w10){const run=S.sc.run,live=()=>S.sc?.run===run&&cur()?.id==='ep-2';
-    if(into===b){const el=mnEl('cpgun'),[gx,gy]=CP_AT.gun;mnWalk('cpgun',[[gx,gy],[R[0]-14,gy]],'r',40,()=>{if(!live())return;g.style.transition='left .5s,top .5s';g.style.left=(R[0]+9)*Z+'px';sfx('sfx-tink',.4);
-      setTimeout(()=>{if(!live())return;mnSay('cpgun','♥','sm');setTimeout(()=>{if(!live())return;mnSay('cpgun','');S.cp.gunBack=1;g.style.left=Gp[0]*Z+'px';mnWalk('cpgun',[[R[0]-14,gy],[gx,gy]],'d',40)},2600)},500)})}
+  if(b===K.w3){const run=S.sc.run,live=()=>S.sc?.run===run&&cur()?.id==='ep-2';
+    if(into===b){const[gx,gy]=CP_AT.gun;mnWalk('cpgun',[[gx,gy],[R[0]-14,gy]],'r',40,()=>{if(!live())return;g.style.transition='left .5s,top .5s';g.style.left=(R[0]+9)*Z+'px';sfx('sfx-tink',.4);
+      setTimeout(()=>{if(!live())return;mnSay('cpgun','♥','sm');setTimeout(()=>{if(!live())return;mnSay('cpgun','');g.style.left=Gp[0]*Z+'px';mnWalk('cpgun',[[R[0]-14,gy],[gx,gy]],'d',40)},2600)},500)})}
     else g.style.left=Gp[0]*Z+'px'}}
 // the panel
-function cpPanel(b,stepIn){const key=cpKey(b),sec=cpSec(b),K=CP_K,Q=CP_Q[key];
-  const eb={g:'PSP·02 · CASCADE BADGE',o:'PSP·02 · CASCADE BADGE',c:'FRIENDS · THE QUESTIONNAIRE',q:'EXAMPLE · QUESTIONS',w:'THE WEIGHTS · 20 CUPS',e:'THE WEIGHTS · 20 CUPS',m:'PSP · THE MODEL · 151 QUESTIONS'}[sec];
+const cpWords=t=>esc(t).split(/\s+/).filter(Boolean).map(w=>`<span class="frw">${w}</span>`).join(' ');
+function cpRead(run){const ws=[...document.querySelectorAll('#cpq .frw')];let i=0;clearInterval(S.cpRT);
+  S.cpRT=setInterval(()=>{if(S.sc?.run!==run||cur()?.id!=='ep-2'){clearInterval(S.cpRT);return}ws.forEach(w=>w.classList.remove('now'));if(i>=ws.length){clearInterval(S.cpRT);return}ws[i].classList.add('on','now');i++},S.fastOn?120:380)}
+// the pie: 20 slices of 5%, in the order the cups were handed out; each friend's face on their part, 45% only on Monica's
+function cpPie(b,stepIn){const K=CP_K,R=132,C=150,sl=[];CP_CUPS.forEach(([w,n,at])=>{for(let i=0;i<n;i++)sl.push([w,K[at]])});
+  const pt=(a,r)=>[C+r*Math.sin(a*Math.PI/180),C-r*Math.cos(a*Math.PI/180)];let d=0;
+  const paths=sl.map(([w,at],i)=>{const a0=i*18,a1=a0+18,[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),on=at<=b,fly=stepIn&&at===b;
+    return `<path class="cpsl${on?' on':''}${fly?' fly':''}" d="M${C},${C} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" style="--c:${CP_COL[w]};${fly?`animation-delay:${(d++)*.08}s`:''}"/>`}).join('');
+  let a=0;const faces=CP_CUPS.map(([w,n,at])=>{const m=a+n*9;a+=n*18;if(K[at]>b)return '';const[x,y]=pt(m,w==='mon'?R*.5:R*.7);
+    return `<div class="cppf${stepIn&&K[at]===b?' fly':''}" style="left:${x}px;top:${y}px"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[w]}.png)"></i>${w==='mon'?'<b>45%</b>':''}</div>`}).join('');
+  return `<div class="cppie"><svg viewBox="0 0 ${2*C} ${2*C}" width="${2*C}" height="${2*C}"><circle cx="${C}" cy="${C}" r="${R}" fill="#EEE8DC"/>${paths}</svg>${faces}</div><p class="cppc">${ll('20 כוסות · 45% תמיד לנבדק','20 cups · 45% always the subject')}</p>`}
+function cpPanel(b,stepIn){const key=cpKey(b),sec=cpSec(b),K=CP_K,Q=cpQ(key);
+  const eb={g:'PSP·02 · CASCADE BADGE',o:'PSP·02 · CASCADE BADGE',c:'FRIENDS · THE QUESTIONNAIRE',q:'EXAMPLE · QUESTIONS',w:'ONE PICTURE · 20 CUPS',e:'ONE PICTURE · 20 CUPS',m:'PSP · THE MODEL · 151 QUESTIONS'}[sec];
   const h2={g:['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],o:['השאלון: הרבה זוגות עיניים','The questionnaire: many pairs of eyes'],c:['הנבדקת: מוניקה','The subject: Monica'],
-    q:Q?.scn?['תרחיש · כל תגובה מקבלת ציון','Scenario · each reaction gets a score']:['משפט · 1 עד 5','Sentence · 1 to 5'],w:['של מי הדעה שווה יותר?','Whose opinion counts more?'],e:['של מי הדעה שווה יותר?','Whose opinion counts more?'],m:['חמש שכבות, חמש תחנות','Five layers, five stops']}[sec];
+    q:Q?.scn?['תרחיש · כל תגובה מקבלת ציון','Scenario · each reaction gets a score']:['משפט · 1 עד 5','Sentence · 1 to 5'],w:['איך מחברים את כל התשובות?','Putting the answers together'],e:['איך מחברים את כל התשובות?','Putting the answers together'],m:['חמש שכבות, חמש תחנות','Five layers, five stops']}[sec];
   $('#cpeb').textContent=eb;$('#cph2').textContent=ll(...h2);
   const show=sec==='g'||sec==='o'?'goal':sec==='c'?'cast':sec==='q'?'q':sec==='w'||sec==='e'?'w':'m';
   $('#lspan').querySelectorAll('.cpin').forEach(e=>{const on=e.dataset.s===show,was=e.classList.contains('on');e.classList.toggle('on',on);if(on&&!was&&stepIn){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});
-  if(show==='cast'){const R=S.cp?.roles||{},by={};Object.entries(R).forEach(([id,ks])=>ks.forEach(k=>by[k]=person(id)?.name||''));
-    $('#cpcast').innerHTML=CP_READ.map(k=>`<figure class="${key==='c0'&&k==='mon'?'now':''}"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[k]}.png)"></i><b>${ll(...CP_WHO[k][0])}</b><small>${by[k]?esc(by[k]):'&nbsp;'}</small></figure>`).join('')}
-  if(show==='q'&&Q){$('#cpq').classList.toggle('scn',!!Q.scn);const rev=!!S.cp.rev[key],dots=(sc)=>`<div class="cpdots">${[1,2,3,4,5].map(n=>`<i class="${rev&&sc===n?'on':''}">${n}</i>`).join('')}<i class="dk${rev&&sc===0?' on':''}">${ll('לא יודע','Don\'t know')}</i></div>`;
-    $('#cpq').innerHTML=`<div class="cpwho"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[Q.w]}.png)"></i><b>${ll(...CP_WHO[Q.w][0])}${Q.w==='mon'?ll(' על עצמה',' on herself'):''}</b></div>`+(Q.scn?`<p class="cpst sc" dir="auto">${esc(ll(...FR_SCN))}</p>${FR_OPT.map((o,i)=>`<div class="cpopt"><p dir="auto">${esc(ll(...o))}</p>${dots(Q.sc[i])}</div>`).join('')}`
-      :`<p class="cpst" dir="auto">${esc(ll(...Q.t))}</p>${dots(Q.sc)}`)}
-  if(show==='w'){const got=[];CP_CUPS.forEach(([w,n,at])=>{if(K[at]<=b)for(let i=0;i<n;i++)got.push(w)});const base=b>=K.w2?9:0;
-    $('#cpw').innerHTML=`<div class="cpgrid">${Array.from({length:20},(_,i)=>{const w=got[i]||(i<base?'mon':'');return `<i class="${w?'on':''}${!got[i]&&w?' ghost':''}" style="--c:${CP_COL[w]||'#ddd'}"><img src="img/cp-cup.png" alt=""></i>`}).join('')}</div>
-      <div class="cpleg">${CP_CUPS.map(([w,n,at])=>`<span class="${K[at]<=b||(w==='mon'&&b>=K.w2)?'on':''}" style="--c:${CP_COL[w]}"><b>${ll(...CP_WHO[w][0])}</b>${n*5}%</span>`).join('')}</div>`}
+  if(show==='cast')$('#cpcast').innerHTML=CP_READ.map(k=>`<figure class="${key==='c0'&&k==='mon'?'now':''}"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[k]}.png)"></i><b>${ll(...CP_WHO[k][0])}</b></figure>`).join('');
+  if(show==='q'&&Q){$('#cpq').classList.toggle('scn',!!Q.scn);const ask=key[0]==='x',rev=!ask&&!!S.cp.rev[key],lit=!(ask&&stepIn)?' on':'',W=t=>cpWords(t).replace(/class="frw"/g,`class="frw${lit}"`);
+    const dots=sc=>`<div class="cpdots">${[1,2,3,4,5].map(n=>`<i class="${rev&&sc===n?'on':''}">${n}</i>`).join('')}<i class="dk${rev&&sc===0?' on':''}">${ll('לא יודע','Don\'t know')}</i></div>`;
+    $('#cpq').innerHTML=`<div class="cpwho"><i class="cpfc" style="background-image:url(img/cp-${CP_FILE[Q.w]}.png)"></i><b>${ll(...CP_WHO[Q.w][0])}${Q.w==='mon'?ll(' על עצמה',' on herself'):''}</b></div>`+(Q.scn?`<p class="cpst sc" dir="auto">${W(ll(...FR_SCN))}</p>${FR_OPT.map((o,i)=>`<div class="cpopt"><p dir="auto">${W(ll(...o))}</p>${dots(Q.sc[i])}</div>`).join('')}`
+      :`<p class="cpst" dir="auto">${W(ll(...Q.t))}</p>${dots(Q.sc)}`);
+    if(ask&&stepIn)cpRead(S.sc.run)}
+  if(show==='w')$('#cpw').innerHTML=cpPie(b,stepIn);
   if(show==='m'){const L={ty:K.m1,ex:K.m1,st:K.m2,ev:K.m2,mw:K.m3};$('#lspan').querySelectorAll('.cpml').forEach(e=>{const at=L[e.dataset.k],on=b>=at;e.classList.toggle('on',on);e.classList.toggle('now',b===at);if(stepIn&&b===at){e.classList.remove('in');void e.offsetWidth;e.classList.add('in')}});}}
 // ---------- reading roles: the subject is Monica, the rest of the friends' lines go round the others (not remote, not the host) ----------
 const cpH=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return h};
@@ -5407,9 +5409,9 @@ function cpRoles(){const pl=gamePlayers().filter(p=>!p.remote&&!isPresenter(p)),
   if(sj&&pl.some(p=>p.id===sj)&&!no(sj))R[sj]=['mon'];else ks.unshift('mon');
   if(others.length)ks.forEach((k,i)=>{const p=others[i%others.length];(R[p.id]||(R[p.id]=[])).push(k)});return R}
 function cpCastPub(){if(!S.db||!isScreen())return;const it=cur();let d={sid:''};
-  if(it?.id==='ep-2'&&S.sc?.id==='ep-2'&&S.cp){S.cp.roles=cpRoles();const L=CP_L(),b=S.sc.b,l=L[b],nx=L.slice(b+1).find(x=>x[3]!=='eyal'&&x[3]!=='sys');
-    const on=b>=CP_K.c0&&b<CP_K.m0;d={sid:S.cp.sid,roles:on?S.cp.roles:{},now:on&&CP_READ.includes(l[3])?{w:l[3],he:l[1],en:l[2],k:l[0]}:null,next:on&&nx&&CP_READ.includes(nx[3])?nx[3]:''}}
-  const k=JSON.stringify(d);if(k===S.castKey)return;S.castKey=k;S.db.doc('stage/cast').set(d).catch(()=>{});if(cur()?.id==='ep-2'&&$('#cpeb'))cpPanel(S.sc.b,false)}
+  if(it?.id==='ep-2'&&S.sc?.id==='ep-2'&&S.cp){S.cp.roles=cpRoles();const L=CP_L(),b=S.sc.b,l=L[b],nx=L.slice(b+1).find(x=>x[3]!=='eyal'&&x[3]!=='sys'&&x[0][0]!=='x');
+    const on=b>=CP_K.c0&&b<CP_K.m0;d={sid:S.cp.sid,roles:on?S.cp.roles:{},now:on&&CP_READ.includes(l[3])&&l[0][0]!=='x'?{w:l[3],he:l[1],en:l[2],k:l[0]}:null,next:on&&nx&&CP_READ.includes(nx[3])?nx[3]:''}}
+  const k=JSON.stringify(d);if(k===S.castKey)return;S.castKey=k;S.db.doc('stage/cast').set(d).catch(()=>{})}
 setInterval(()=>{try{if(isScreen()&&cur()?.id==='ep-2')cpCastPub()}catch(e){}},1500);
 // the phone: who you read; when it's your line, the whole phone is the line
 function cpCastCard(me){const C=S.cast;if(!C?.sid||!me||me.remote||isPresenter(me))return '';const mine=C.roles?.[me.id]||[],nm=k=>ll(...CP_WHO[k][0]);
