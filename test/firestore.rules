@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isHost() { return signedIn() && request.auth.token.email == 'eyal.kiryati@gmail.com'; }
+    match /state/{doc}   { allow read: if signedIn(); allow write: if isHost(); }
+    match /setup/{doc}   { allow read, write: if signedIn(); }
+    match /answers/{pid} { allow read, write: if signedIn(); }
+    match /joined/{pid}  { allow read, write: if signedIn(); }
+    match /remote/{rid}  { allow read, write: if signedIn(); }
+    match /stage/{doc}   { allow read, write: if signedIn(); }
+    match /archive/{aid} { allow read, write: if isHost(); }
+    match /invph/{pid} {
+      allow get, delete: if signedIn();
+      allow list: if isHost();
+      allow create: if signedIn() && request.resource.data.keys().hasOnly(['iid','t','data','at'])
+                    && request.resource.data.data is string && request.resource.data.data.size() < 1000000;
+    }
+    match /invites/{iid} {
+      allow get: if signedIn();
+      allow list, delete: if isHost();
+      allow create: if isHost() || (signedIn() && request.resource.data.keys().hasOnly(['subject','g','lang','by','at','av','ans','team'])
+                    && request.resource.data.subject is string && request.resource.data.subject.size() <= 40);
+      allow update: if isHost() || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['team','av','ans','at','sd','loc','tr','date','ph'])
+                    && request.resource.data.team.size() <= 30);
+    }
+  }
+}

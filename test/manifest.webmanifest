@@ -1,0 +1,18 @@
+{
+  "name": "PSP · Pokémon Sociological Paradigm",
+  "short_name": "PSP",
+  "description": "ערב PSP: השאלון, המשחקים והיכל התהילה",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#161A2E",
+  "theme_color": "#161A2E",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
